@@ -55,7 +55,7 @@ create table if not exists journey
         constraint location_id_from_fkey references location,
     location_id_to integer not null
         constraint location_id_to_fkey references location,
-    max_passengers integer default 0,
+    max_passengers integer not null,
     driver_id integer not null
         constraint drive_id_fkey references driver
 );
