@@ -56,28 +56,19 @@ create table if not exists journey
     location_id_to integer not null
         constraint location_id_to_fkey references location,
     max_passengers integer not null,
+    date_time timestamp not null,
     driver_id integer not null
         constraint drive_id_fkey references driver
 );
 
-
-create table if not exists journey_occurrence
+create table if not exists passenger_journey
 (
     id serial not null
-        constraint journey_occurrence_pkey primary key,
-    date_time date not null,
-    journey_id integer not null
-        constraint journey_id_fkey references journey
-);
-
-create table if not exists passenger_journey_occurrence
-(
-    id serial not null
-        constraint passenger_journey_occurrence_pkey primary key,
+        constraint passenger_journey_pkey primary key,
     passenger_id integer not null
         constraint passenger_id_fkey references passenger,
-    journey_occurrence_id integer not null
-        constraint journey_occurrence_id_fkey references journey_occurrence
+    journey_id integer not null
+        constraint journey_id_fkey references journey
 );
 
 create table if not exists weight
