@@ -70,25 +70,3 @@ create table if not exists passenger_journey
     journey_id integer not null
         constraint journey_id_fkey references journey
 );
-
-create table if not exists weight
-(
-    id serial not null
-        constraint weight_pkey primary key,
-    description varchar(255) not null
-);
-
-create table if not exists review
-(
-    id serial not null
-        constraint review_pkey primary key,
-    created_date date not null,
-    weight integer
-        constraint weight_fkey references weight,
-    review varchar(1000) not null,
-    user_id_reviewer integer not null
-        constraint user_id_reviewer_fkey references platform_user,
-    user_id_subject integer not null
-        constraint user_id_subject_fkey references platform_user
-);
-
