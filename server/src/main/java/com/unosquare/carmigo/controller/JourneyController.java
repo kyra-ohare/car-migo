@@ -1,6 +1,7 @@
 package com.unosquare.carmigo.controller;
 
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
+import com.unosquare.carmigo.service.JourneyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +23,14 @@ public class JourneyController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public String getPassengerJourneys(
-            @RequestParam(name = "passenger_id", required = false) final Optional<Integer> passengerId,
-            @RequestParam(name = "driver_id", required = false) final Optional<Integer> driverId) {
+//    public ResponseEntity<String>
+    public String
+    getJourneys(@RequestParam final Map<String, String> paramMap) {
+        final String response = JourneyService.getJourneyParameters(paramMap);
 
-        if (passengerId.isPresent()) {
-            return "Here are all journeys for passenger " + passengerId.get();
-        } else if (driverId.isPresent()) {
-            return "Here are all journeys for driver " + driverId.get();
-        }
-        return "All journeys are here";
+        // response with a response model (JourneyViewModel)
+//        return ResponseEntity.ok("OK");
+        return response;
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
