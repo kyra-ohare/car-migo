@@ -9,13 +9,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserViewModel {
+@NoArgsConstructor
+public class CreatePlatformUserViewModel {
 
     @Size(max = 255)
     @NotBlank
@@ -29,7 +29,7 @@ public class CreateUserViewModel {
 
     @NotBlank
     @JsonProperty("dob")
-    private Timestamp dob;
+    private LocalDateTime dob;
 
     @Size(max = 100)
     @NotBlank
