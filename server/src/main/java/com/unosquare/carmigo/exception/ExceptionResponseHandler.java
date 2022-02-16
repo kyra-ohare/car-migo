@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ExceptionResponseHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
