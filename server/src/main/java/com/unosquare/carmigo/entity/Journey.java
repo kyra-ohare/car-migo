@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -34,11 +35,11 @@ public class Journey {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id_from", nullable = false)
     private Location locationFrom;
 
-    @OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id_to", nullable = false)
     private Location locationTo;
 
@@ -48,7 +49,7 @@ public class Journey {
     @Column(name = "date_time", nullable = false)
     private Timestamp dateTime;
 
-    @OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 }
