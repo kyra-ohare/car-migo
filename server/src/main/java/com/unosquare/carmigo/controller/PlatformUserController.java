@@ -5,9 +5,7 @@ import com.unosquare.carmigo.dto.CreatePassengerDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
 import com.unosquare.carmigo.dto.GetPassengerDTO;
 import com.unosquare.carmigo.dto.GetPlatformUserDTO;
-import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.model.request.CreateDriverViewModel;
-import com.unosquare.carmigo.model.request.CreatePassengerViewModel;
 import com.unosquare.carmigo.model.request.CreatePlatformUserViewModel;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
@@ -32,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor        // new constructor with modelMapper and platform.... args
+@RequiredArgsConstructor
 @RequestMapping("/v1/users")
 public class PlatformUserController
 {
@@ -46,7 +44,8 @@ public class PlatformUserController
     public ResponseEntity<PlatformUserViewModel> getPlatformUser(@PathVariable final int id)
     {
         final GetPlatformUserDTO platformUserDTO = platformUserService.getPlatformUserById(id);
-        final PlatformUserViewModel platformUserViewModel = modelMapper.map(platformUserDTO, PlatformUserViewModel.class);
+        final PlatformUserViewModel platformUserViewModel = modelMapper.map(
+                platformUserDTO, PlatformUserViewModel.class);
         return ResponseEntity.ok(platformUserViewModel);
     }
 
@@ -56,11 +55,12 @@ public class PlatformUserController
             @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
     {
         final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
-                createPlatformUserViewModel, CreatePlatformUserDTO.class);  // creates a POJO
+                createPlatformUserViewModel, CreatePlatformUserDTO.class);
         final GetPlatformUserDTO platformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTO);
         return ResponseEntity.ok(modelMapper.map(platformUserDTO, PlatformUserViewModel.class));
     }
 
+    // TODO
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> patchPlatformUser(@PathVariable final int id)
@@ -98,10 +98,10 @@ public class PlatformUserController
     @PostMapping(value = "/{id}/passengers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PassengerViewModel> createPassenger(
-            @PathVariable final int id, @RequestBody final CreatePassengerViewModel createPassengerViewModel)
+            @PathVariable final int id, @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
     {
         final CreatePassengerDTO createPassengerDTO =
-                modelMapper.map(createPassengerViewModel, CreatePassengerDTO.class);
+                modelMapper.map(createPlatformUserViewModel, CreatePassengerDTO.class);
         final GetPassengerDTO passengerDTO = passengerService.createPassenger(id, createPassengerDTO);
         return ResponseEntity.ok(modelMapper.map(passengerDTO, PassengerViewModel.class));
     }
