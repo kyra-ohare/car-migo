@@ -7,9 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -29,7 +31,8 @@ public class CreatePlatformUserViewModel {
 
     @NotBlank
     @JsonProperty("dob")
-    private LocalDateTime dob;
+    @Temporal(TemporalType.DATE)
+    private Instant dob;
 
     @Size(max = 100)
     @NotBlank

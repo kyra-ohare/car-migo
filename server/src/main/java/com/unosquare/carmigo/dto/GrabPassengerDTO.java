@@ -3,9 +3,7 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class GetDriverDTO
+public class GrabPassengerDTO
 {
     private int id;
-
-    private String licenseNumber;
 }

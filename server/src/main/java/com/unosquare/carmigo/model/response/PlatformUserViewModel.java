@@ -1,11 +1,12 @@
 package com.unosquare.carmigo.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unosquare.carmigo.entity.UserAccessStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -22,11 +23,14 @@ public class PlatformUserViewModel
     private String lastName;
 
     @JsonProperty("dob")
-    private LocalDateTime dob;
+    private Instant dob;
 
     @JsonProperty("email")
     private String email;
 
     @JsonProperty("phoneNumber")
     private String phoneNumber;
+
+    @JsonProperty("userAccessStatusId")
+    private UserAccessStatus userAccessStatus;
 }

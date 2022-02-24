@@ -2,18 +2,16 @@ package com.unosquare.carmigo.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 public class CreatePlatformUserDTO
 {
-    private int id;
-
     private String firstName;
 
     private String lastName;
 
-    private LocalDateTime dob;
+    private Instant dob;
 
     private String email;
 

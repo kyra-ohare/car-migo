@@ -14,6 +14,7 @@ public class ExceptionResponseHandler {
     @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception)
     {
+//        exception.getMessage()
         return ExceptionBuilder.buildErrorResponseRepresentation(
                 HttpStatus.NO_CONTENT, "Resource not found."
         );
