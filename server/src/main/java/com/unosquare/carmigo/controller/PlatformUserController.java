@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
@@ -53,12 +55,15 @@ public class PlatformUserController
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-            @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
+            // TODO @Valid maps to DataIntegrityViolationException instead of MethodArgumentNotValidException
+            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
     {
         final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
                 createPlatformUserViewModel, CreatePlatformUserDTO.class);
         final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTO);
-        return ResponseEntity.ok(modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class));
+
+        final PlatformUserViewModel platformUserViewModel = modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
+        return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
     }
 
     // TODO
@@ -78,7 +83,7 @@ public class PlatformUserController
     public ResponseEntity<?> deletePlatformUser(@PathVariable final int id)
     {
         platformUserService.deletePlatformUserById(id);
-        return ResponseEntity.ok("Ok");
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/{id}/drivers", produces = MediaType.APPLICATION_JSON_VALUE)

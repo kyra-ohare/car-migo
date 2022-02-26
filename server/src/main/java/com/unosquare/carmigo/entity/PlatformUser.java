@@ -33,7 +33,6 @@ public class PlatformUser {
     @Id
     @SequenceGenerator(name = "platform_user_id_seq",
             sequenceName = "platform_user_id_seq",
-            initialValue = 6,
             allocationSize = 1)
     @GeneratedValue(generator = "platform_user_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)

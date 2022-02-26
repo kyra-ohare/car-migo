@@ -1,10 +1,10 @@
-insert into user_access_status(id, status) values (1, 'Staged');
-insert into user_access_status(id, status) values (2, 'Active');
-insert into user_access_status(id, status) values (3, 'Suspended');
-insert into user_access_status(id, status) values (4, 'Locked_out');
+insert into user_access_status(status) values ('Staged');
+insert into user_access_status(status) values ('Active');
+insert into user_access_status(status) values ('Suspended');
+insert into user_access_status(status) values ('Locked_out');
 
-insert into location(id, description) values (1, 'Rostrevor');
-insert into location(id, description) values (2, 'Belfast');
-insert into location(id, description) values (3, 'Downpatrick');
-insert into location(id, description) values (4, 'Armagh');
-insert into location(id, description) values (5, 'Newry');
+insert into location(description) values ('Rostrevor');
+insert into location(description) values ('Belfast');
+insert into location(description) values ('Downpatrick');
+insert into location(description) values ('Armagh');
+insert into location(description) values ('Newry');

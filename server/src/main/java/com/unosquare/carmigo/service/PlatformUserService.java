@@ -42,23 +42,13 @@ public class PlatformUserService
 
     public GrabPlatformUserDTO createPlatformUser(final CreatePlatformUserDTO createPlatformUserDTO)
     {
-        PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
-
+        final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
         platformUser.setCreatedDate(Instant.now());
-//        final TypedQuery<UserAccessStatus> query = entityManager.createQuery(
-//                "SELECT uss FROM UserAccessStatus uss WHERE uss.id = " + INITIAL_USER_STATUS,
-//                UserAccessStatus.class);
-//        final UserAccessStatus userAccessStatus = query.getSingleResult();
 
         final UserAccessStatus userAccessStatus = entityManager.find(UserAccessStatus.class, INITIAL_USER_STATUS);
         platformUser.setUserAccessStatus(userAccessStatus);
 
-        platformUser = platformUserRepository.save(platformUser);
-        return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
-//        try {
-//        } catch(final DataIntegrityViolationException ex) {
-//            throw new ResourceNotFoundException("Email already exists");
-//        }
+        return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
 
     public GrabPlatformUserDTO updatePlatformUser(final int id, JsonPatch patch)
