@@ -42,7 +42,7 @@ public class PlatformUserController
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PlatformUserViewModel> getPlatformUser(@PathVariable final int id)
+    public ResponseEntity<PlatformUserViewModel> getPlatformUserById(@PathVariable final int id)
     {
         final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(id);
         final PlatformUserViewModel platformUserViewModel = modelMapper.map(

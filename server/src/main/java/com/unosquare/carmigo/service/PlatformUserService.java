@@ -13,19 +13,16 @@ import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.MethodParameter;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class PlatformUserService
 {
+
     private static final int INITIAL_USER_STATUS = 1;
 
     private final PlatformUserRepository platformUserRepository;
@@ -34,13 +31,13 @@ public class PlatformUserService
     private final EntityManager entityManager;
 
     public GrabPlatformUserDTO getPlatformUserById(final int id)
-    {   // getById / findById
-        final PlatformUser platformUser = platformUserRepository.findById(id)   // LazyInitializationException
-                .orElseThrow(() -> new ResourceNotFoundException("User id not found."));
-//        return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
-        System.out.println(platformUser.getUserAccessStatus().getStatus());
-        return new GrabPlatformUserDTO();
-//        return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
+    {
+        final PlatformUser platformUser = entityManager.createQuery(
+                        "SELECT pu FROM PlatformUser pu JOIN FETCH pu.userAccessStatus WHERE pu.id = :id",
+                        PlatformUser.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
     }
 
     public GrabPlatformUserDTO createPlatformUser(final CreatePlatformUserDTO createPlatformUserDTO)

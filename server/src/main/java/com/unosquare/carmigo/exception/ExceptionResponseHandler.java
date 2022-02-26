@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.exception;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,15 +11,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class ExceptionResponseHandler {
+public class ExceptionResponseHandler
+{
 
     @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception)
     {
-//        exception.getMessage()
         return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.NO_CONTENT, "Resource not found."
+                HttpStatus.NOT_FOUND, "Resource not found."
         );
+    }
+
+    @ExceptionHandler({NoResultException.class})
+    public ResponseEntity<ErrorResponse> handleNoResultException(final Exception exception)
+    {
+        return ExceptionBuilder.buildErrorResponseRepresentation(
+                HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
