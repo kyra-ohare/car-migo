@@ -1,6 +1,7 @@
 package com.unosquare.carmigo.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unosquare.carmigo.entity.PlatformUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,5 +18,5 @@ public class DriverViewModel
     private String licenseNumber;
 
     @JsonProperty("user")
-    private PlatformUserViewModel user;
+    private PlatformUser platformUser;
 }

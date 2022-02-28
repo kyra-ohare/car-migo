@@ -25,7 +25,7 @@ create table if not exists driver
 (
     id serial not null
         constraint driver_pkey primary key,
-    license_number varchar(50),
+    license_number varchar(100),
     user_id integer not null
         constraint user_id_fkey references platform_user
 );

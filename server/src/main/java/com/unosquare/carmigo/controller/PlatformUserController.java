@@ -55,8 +55,7 @@ public class PlatformUserController
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-            // TODO @Valid maps to DataIntegrityViolationException instead of MethodArgumentNotValidException
-            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
+            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)  // TODO @Valid maps to DataIntegrityViolationException instead of MethodArgumentNotValidException when not-null value is passed
     {
         final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
                 createPlatformUserViewModel, CreatePlatformUserDTO.class);
@@ -89,10 +88,10 @@ public class PlatformUserController
     @PostMapping(value = "/{id}/drivers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DriverViewModel> createDriver(
-            @PathVariable final int id, @RequestBody final CreateDriverViewModel createDriverViewModal)
+            @PathVariable final int id, @Valid @RequestBody final CreateDriverViewModel createDriverViewModal)
     {
         final CreateDriverDTO createDriverDTO = modelMapper.map(createDriverViewModal, CreateDriverDTO.class);
-        final GrabDriverDTO driverDTO = driverService.createDriver(id, createDriverDTO);      // return DTO instead
+        final GrabDriverDTO driverDTO = driverService.createDriver(id, createDriverDTO);
         return ResponseEntity.ok(modelMapper.map(driverDTO, DriverViewModel.class));
     }
 
@@ -101,7 +100,7 @@ public class PlatformUserController
     public ResponseEntity<?> deleteDriver(@PathVariable final int id)
     {
         driverService.deleteDriverById(id);
-        return ResponseEntity.ok("Ok");
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/{id}/passengers", produces = MediaType.APPLICATION_JSON_VALUE)

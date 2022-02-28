@@ -22,7 +22,12 @@ public class DriverService
     public GrabDriverDTO createDriver(final int id, final CreateDriverDTO createDriverDTO)
     {
         final Driver driver = modelMapper.map(createDriverDTO, Driver.class);
-        driver.setPlatformUser(entityManager.getReference(PlatformUser.class, id));
+        final PlatformUser platformUser = entityManager.createQuery(
+                        "SELECT pu FROM PlatformUser pu JOIN FETCH pu.userAccessStatus WHERE pu.id = :id",
+                        PlatformUser.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        driver.setPlatformUser(platformUser);
         return modelMapper.map(driverRepository.save(driver), GrabDriverDTO.class);
     }
 

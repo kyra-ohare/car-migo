@@ -2,6 +2,7 @@ package com.unosquare.carmigo.entity;
 
 import java.time.Instant;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -60,7 +61,7 @@ public class PlatformUser {
     private String phoneNumber;
 
     @Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_access_status_id", nullable = false)
     private UserAccessStatus userAccessStatus;
 

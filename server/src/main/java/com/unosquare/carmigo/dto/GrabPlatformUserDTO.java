@@ -1,18 +1,10 @@
 package com.unosquare.carmigo.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 
-@Setter
-@Getter
-//@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class GrabPlatformUserDTO
 {
     private int id;

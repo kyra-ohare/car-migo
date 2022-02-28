@@ -3,6 +3,7 @@ package com.unosquare.carmigo.exception;
 import javax.persistence.NoResultException;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +36,13 @@ public class ExceptionResponseHandler
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
                 HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler({EmptyResultDataAccessException.class})
+    public ResponseEntity<ErrorResponse> handleEmptyResultDataAccessException(final Exception exception)
+    {
+        return ExceptionBuilder.buildErrorResponseRepresentation(
+                HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
