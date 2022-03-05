@@ -27,7 +27,7 @@ create table if not exists driver
         constraint driver_pkey primary key,
     license_number varchar(100),
     platform_user_id integer unique not null
-        constraint platform_user_id_fkey references platform_user
+        constraint platform_user_id_fkey references platform_user ON DELETE CASCADE
 );
 
 
@@ -36,7 +36,7 @@ create table if not exists passenger
     id serial not null
         constraint passenger_pkey primary key,
     platform_user_id integer unique not null
-        constraint platform_user_id_fkey references platform_user
+        constraint platform_user_id_fkey references platform_user ON DELETE CASCADE
 );
 
 create table if not exists location
