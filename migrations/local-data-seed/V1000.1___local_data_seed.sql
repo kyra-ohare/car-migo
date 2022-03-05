@@ -10,27 +10,27 @@ insert into platform_user(created_date, first_name, last_name, dob, email, passw
     values('2022-02-01', 'Tom', 'Thompson', '2000-09-30', 'tom.thompson@example.com', 'Pass1234!', '0286782453', 1);
 
 
-insert into driver(license_number, user_id)
+insert into driver(license_number, platform_user_id)
     values('35789654', 1);
-insert into driver(license_number, user_id)
+insert into driver(license_number, platform_user_id)
     values('16548329', 2);
-insert into driver(license_number, user_id)
+insert into driver(license_number, platform_user_id)
     values('35789126', 3);
-insert into driver(license_number, user_id)
+insert into driver(license_number, platform_user_id)
     values('65782349', 4);
-insert into driver(license_number, user_id)
+insert into driver(license_number, platform_user_id)
     values('67324982', 5);
 
 
-insert into passenger(user_id)
+insert into passenger(platform_user_id)
     values(1);
-insert into passenger(user_id)
+insert into passenger(platform_user_id)
     values(2);
-insert into passenger(user_id)
+insert into passenger(platform_user_id)
     values(3);
-insert into passenger(user_id)
+insert into passenger(platform_user_id)
     values(4);
-insert into passenger(user_id)
+insert into passenger(platform_user_id)
     values(5);
 
 

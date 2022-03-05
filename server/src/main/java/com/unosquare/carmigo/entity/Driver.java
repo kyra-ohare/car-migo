@@ -37,6 +37,6 @@ public class Driver
     private String licenseNumber;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "platform_user_id", nullable = false)
     private PlatformUser platformUser;
 }

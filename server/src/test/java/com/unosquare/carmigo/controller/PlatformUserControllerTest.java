@@ -8,8 +8,6 @@ import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
-import com.unosquare.carmigo.service.DriverService;
-import com.unosquare.carmigo.service.PassengerService;
 import com.unosquare.carmigo.service.PlatformUserService;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.Before;
@@ -25,13 +23,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlatformUserControllerTest
 {
-
     private static final String API_LEADING = "/v1/users/";
     private static final String POST_PLATFORM_USER_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PlatformUserValid.json");
@@ -44,10 +43,6 @@ public class PlatformUserControllerTest
     private ModelMapper modelMapperMock;
     @Mock
     private PlatformUserService platformUserServiceMock;
-    @Mock
-    private DriverService driverServiceMock;
-    @Mock
-    private PassengerService passengerServiceMock;
 
     @Fixture
     private GrabPlatformUserDTO grabPlatformUserDTOFixture;
@@ -70,10 +65,8 @@ public class PlatformUserControllerTest
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new PlatformUserController(
                         modelMapperMock,
-                        platformUserServiceMock,
-                        driverServiceMock,
-                        passengerServiceMock)
-        ).build();
+                        platformUserServiceMock))
+                .build();
     }
 
     @Test

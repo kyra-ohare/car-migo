@@ -1,7 +1,13 @@
 package com.unosquare.carmigo.entity;
 
-import java.time.Instant;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.ToString.Exclude;
+import org.hibernate.Hibernate;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,14 +19,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.ToString.Exclude;
-import org.hibernate.Hibernate;
+import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -29,8 +29,8 @@ import org.hibernate.Hibernate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "platform_user")
-public class PlatformUser {
-
+public class PlatformUser
+{
     @Id
     @SequenceGenerator(name = "platform_user_id_seq",
             sequenceName = "platform_user_id_seq",
@@ -66,19 +66,21 @@ public class PlatformUser {
     private UserAccessStatus userAccessStatus;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o)
+    {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+        if (null == o || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
-        PlatformUser that = (PlatformUser) o;
-        return id != 0 && Objects.equals(id, that.id);
+        final PlatformUser that = (PlatformUser) o;
+        return 0 != id && Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return getClass().hashCode();
     }
 }

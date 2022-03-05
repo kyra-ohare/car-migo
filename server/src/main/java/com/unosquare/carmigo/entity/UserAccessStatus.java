@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,9 +19,13 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_access_status")
-public class UserAccessStatus {
-
+public class UserAccessStatus
+{
     @Id
+    @SequenceGenerator(name = "user_access_status_id_seq",
+            sequenceName = "user_access_status_id_seq",
+            allocationSize = 1)
+    @GeneratedValue(generator = "user_access_status_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 

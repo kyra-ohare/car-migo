@@ -1,7 +1,5 @@
 package com.unosquare.carmigo.exception;
 
-import javax.persistence.NoResultException;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.NoResultException;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -20,8 +19,7 @@ public class ExceptionResponseHandler
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.NOT_FOUND, "Resource not found."
-        );
+                HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler({NoResultException.class})
@@ -35,7 +33,7 @@ public class ExceptionResponseHandler
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.CONFLICT, exception.getMessage());
+                HttpStatus.CONFLICT, exception.getLocalizedMessage());
     }
 
     @ExceptionHandler({EmptyResultDataAccessException.class})

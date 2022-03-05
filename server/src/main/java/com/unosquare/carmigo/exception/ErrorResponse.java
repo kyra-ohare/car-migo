@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ErrorResponse {
+public class ErrorResponse
+{
     private int status;
     private String error;
     private String message;

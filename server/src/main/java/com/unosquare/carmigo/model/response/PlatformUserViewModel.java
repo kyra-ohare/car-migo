@@ -1,7 +1,6 @@
 package com.unosquare.carmigo.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unosquare.carmigo.entity.UserAccessStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +30,6 @@ public class PlatformUserViewModel
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 
-    @JsonProperty("userAccessStatusId")
-    private UserAccessStatus userAccessStatus;
+    @JsonProperty("userAccessStatus")
+    private UserAccessStatusViewModel userAccessStatus;
 }

@@ -12,9 +12,12 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = PasswordValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidPassword {
+public @interface ValidPassword
+{
     String message() default "Password must contain between 8 and 20 characters and at least 2 of the following: " +
             "Alphanumeric characters, one special character ( @#$%^&+= ), one capital letter.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

@@ -17,8 +17,8 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePlatformUserViewModel {
-
+public class CreatePlatformUserViewModel
+{
     @Size(max = 255)
     @NotBlank
     @JsonProperty("firstName")
