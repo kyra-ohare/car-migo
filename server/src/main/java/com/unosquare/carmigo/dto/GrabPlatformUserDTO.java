@@ -2,10 +2,10 @@ package com.unosquare.carmigo.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
-public class GetPlatformUserDTO
+public class GrabPlatformUserDTO
 {
     private int id;
 
@@ -13,11 +13,13 @@ public class GetPlatformUserDTO
 
     private String lastName;
 
-    private LocalDateTime dob;
+    private Instant dob;
 
     private String email;
 
     private String password;
 
     private String phoneNumber;
+
+    private GrabUserAccessStatusDTO userAccessStatus;
 }

@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -22,10 +23,13 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "driver")
-public class Driver {
-
+public class Driver
+{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "driver_id_seq",
+            sequenceName = "driver_id_seq",
+            allocationSize = 1)
+    @GeneratedValue(generator = "driver_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
     private int id;
 
@@ -33,6 +37,6 @@ public class Driver {
     private String licenseNumber;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "platform_user_id", nullable = false)
     private PlatformUser platformUser;
 }

@@ -17,5 +17,5 @@ public class DriverViewModel
     private String licenseNumber;
 
     @JsonProperty("user")
-    private PlatformUserViewModel user;
+    private PlatformUserViewModel platformUser;
 }

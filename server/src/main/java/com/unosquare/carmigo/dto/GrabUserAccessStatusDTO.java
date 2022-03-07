@@ -3,7 +3,9 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class GetPassengerDTO
+public class GrabUserAccessStatusDTO
 {
     private int id;
+
+    private String status;
 }

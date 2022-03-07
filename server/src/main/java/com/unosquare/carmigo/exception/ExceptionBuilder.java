@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-public class ExceptionBuilder {
+public class ExceptionBuilder
+{
     public static ResponseEntity<ErrorResponse> buildErrorResponseRepresentation(
             final HttpStatus httpStatus, final String message)
     {

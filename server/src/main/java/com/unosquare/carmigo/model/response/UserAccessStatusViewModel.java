@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class PassengerViewModel
+public class UserAccessStatusViewModel
 {
     @JsonProperty("id")
     private int id;
 
-    @JsonProperty("user")
-    private PlatformUserViewModel platformUser;
+    @JsonProperty("status")
+    private String status;
 }

@@ -2,21 +2,17 @@ package com.unosquare.carmigo.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unosquare.carmigo.annotation.ValidPassword;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CreatePlatformUserViewModel {
-
+@Data
+public class CreatePlatformUserViewModel
+{
     @Size(max = 255)
     @NotBlank
     @JsonProperty("firstName")
@@ -29,7 +25,8 @@ public class CreatePlatformUserViewModel {
 
     @NotBlank
     @JsonProperty("dob")
-    private LocalDateTime dob;
+    @Temporal(TemporalType.DATE)
+    private Instant dob;
 
     @Size(max = 100)
     @NotBlank

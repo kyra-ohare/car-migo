@@ -14,7 +14,7 @@ create table if not exists platform_user
     last_name varchar(255) not null,
     dob date not null,
     email varchar(100) not null
-        constraint user_email_key unique,
+        constraint platform_user_email_key unique,
     password varchar(50) not null,
     phone_number varchar(50),
     user_access_status_id integer not null
@@ -25,9 +25,9 @@ create table if not exists driver
 (
     id serial not null
         constraint driver_pkey primary key,
-    license_number varchar(50),
-    user_id integer not null
-        constraint user_id_fkey references platform_user
+    license_number varchar(100),
+    platform_user_id integer unique not null
+        constraint platform_user_id_fkey references platform_user ON DELETE CASCADE
 );
 
 
@@ -35,8 +35,8 @@ create table if not exists passenger
 (
     id serial not null
         constraint passenger_pkey primary key,
-    user_id integer not null
-        constraint user_id_fkey references platform_user
+    platform_user_id integer unique not null
+        constraint platform_user_id_fkey references platform_user ON DELETE CASCADE
 );
 
 create table if not exists location
@@ -57,8 +57,8 @@ create table if not exists journey
         constraint location_id_to_fkey references location,
     max_passengers integer not null,
     date_time timestamp not null,
-    driver_id integer not null
-        constraint drive_id_fkey references driver
+    driver_id integer
+        constraint journey_driver_id_fkey references driver ON DELETE CASCADE
 );
 
 create table if not exists passenger_journey
@@ -66,7 +66,7 @@ create table if not exists passenger_journey
     id serial not null
         constraint passenger_journey_pkey primary key,
     passenger_id integer not null
-        constraint passenger_id_fkey references passenger,
+        constraint passenger_id_fkey references passenger ON DELETE CASCADE,
     journey_id integer not null
-        constraint journey_id_fkey references journey
+        constraint journey_id_fkey references journey ON DELETE CASCADE
 );

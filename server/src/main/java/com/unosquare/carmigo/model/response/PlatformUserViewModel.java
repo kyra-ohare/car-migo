@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -22,11 +22,14 @@ public class PlatformUserViewModel
     private String lastName;
 
     @JsonProperty("dob")
-    private LocalDateTime dob;
+    private Instant dob;
 
     @JsonProperty("email")
     private String email;
 
     @JsonProperty("phoneNumber")
     private String phoneNumber;
+
+    @JsonProperty("userAccessStatus")
+    private UserAccessStatusViewModel userAccessStatus;
 }
