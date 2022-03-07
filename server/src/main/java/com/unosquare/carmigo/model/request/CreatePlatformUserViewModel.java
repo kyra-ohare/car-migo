@@ -2,10 +2,7 @@ package com.unosquare.carmigo.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unosquare.carmigo.annotation.ValidPassword;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -13,10 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class CreatePlatformUserViewModel
 {
     @Size(max = 255)
