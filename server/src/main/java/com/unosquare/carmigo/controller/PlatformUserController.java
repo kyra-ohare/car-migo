@@ -60,7 +60,6 @@ public class PlatformUserController
         return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
     }
 
-    // TODO
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<PlatformUserViewModel> patchPlatformUser(@PathVariable final int id,

@@ -23,6 +23,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Service
@@ -41,8 +42,7 @@ public class PlatformUserService
 
     public GrabPlatformUserDTO getPlatformUserById(final int id)
     {
-        final PlatformUser platformUser = platformUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found."));
+        final PlatformUser platformUser = findPlatformUserById(id);
         return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
     }
 
@@ -54,13 +54,14 @@ public class PlatformUserService
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
 
-    public GrabPlatformUserDTO updatePlatformUser(final int id, final JsonPatch patch)
+    public GrabPlatformUserDTO updatePlatformUser(final int id, @NotNull final JsonPatch patch)
     {
-        final PlatformUser targetPlatformUser = modelMapper.map(getPlatformUserById(id), PlatformUser.class);
+        final PlatformUser targetPlatformUser = findPlatformUserById(id);
         try {
-            final PlatformUser patchedPlatformUser = applyPatchToPlatformUser(patch, targetPlatformUser);
+            final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(targetPlatformUser, JsonNode.class));
+            final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
             return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
-        } catch (JsonPatchException | JsonProcessingException ex) {
+        } catch (final JsonPatchException | JsonProcessingException ex) {
             throw new ResourceNotFoundException("Error updating user id " + id);
         }
     }
@@ -108,10 +109,9 @@ public class PlatformUserService
         passengerRepository.deleteById(id);
     }
 
-    private PlatformUser applyPatchToPlatformUser(final JsonPatch patch, final PlatformUser targetPlatformUser)
-            throws JsonPatchException, JsonProcessingException
+    private PlatformUser findPlatformUserById(final int id)
     {
-        final JsonNode patched = patch.apply(objectMapper.convertValue(targetPlatformUser, JsonNode.class));
-        return objectMapper.treeToValue(patched, PlatformUser.class);
+        return platformUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found."));
     }
 }
