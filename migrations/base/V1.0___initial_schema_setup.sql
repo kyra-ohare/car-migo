@@ -56,7 +56,7 @@ create table if not exists journey
     location_id_to integer not null
         constraint location_id_to_fkey references location,
     max_passengers integer not null,
-    date_time timestamp not null,
+    date_time date not null,
     driver_id integer
         constraint journey_driver_id_fkey references driver ON DELETE CASCADE
 );
