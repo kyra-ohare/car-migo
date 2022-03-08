@@ -10,10 +10,8 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
-import com.unosquare.carmigo.entity.PassengerJourney;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
-import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,7 +28,6 @@ import javax.persistence.EntityManager;
 public class JourneyService
 {
     private final JourneyRepository journeyRepository;
-    private final PassengerJourneyRepository passengerJourneyRepository;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
