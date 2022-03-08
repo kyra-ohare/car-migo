@@ -64,9 +64,10 @@ public class JourneyController
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteJourneys(@PathVariable final int id)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> deleteJourney(@PathVariable final int id)
     {
-        return "Journey " + id + " was deleted";
+        journeyService.deleteJourneyById(id);
+        return ResponseEntity.noContent().build();
     }
 }

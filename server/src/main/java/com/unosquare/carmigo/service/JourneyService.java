@@ -51,4 +51,9 @@ public class JourneyService
         journey.setDriverId(entityManager.getReference(Driver.class, createJourneyDTO.getDriverId()));
         return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
     }
+
+    public void deleteJourneyById(final int id)
+    {
+        journeyRepository.deleteById(id);
+    }
 }
