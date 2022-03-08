@@ -15,6 +15,9 @@ public class PlatformUserViewModel
     @JsonProperty("id")
     private int id;
 
+    @JsonProperty("createdDate")
+    private Instant createdDate;
+
     @JsonProperty("firstName")
     private String firstName;
 
