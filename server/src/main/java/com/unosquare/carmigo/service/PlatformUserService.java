@@ -54,7 +54,7 @@ public class PlatformUserService
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
 
-    public GrabPlatformUserDTO updatePlatformUser(final int id, @NotNull final JsonPatch patch)
+    public GrabPlatformUserDTO patchPlatformUser(final int id, @NotNull final JsonPatch patch)
     {
         final PlatformUser targetPlatformUser = findPlatformUserById(id);
         try {
