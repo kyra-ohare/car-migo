@@ -28,19 +28,19 @@ import java.util.Map;
 @RequestMapping("/v1/journeys")
 public class JourneyController
 {
-    final ModelMapper modelMapper;
-    final JourneyService journeyService;
+    private final ModelMapper modelMapper;
+    private final JourneyService journeyService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    //    public ResponseEntity<String>
-    public String getJourneys(@RequestParam final Map<String, String> paramMap)
+    public ResponseEntity<JourneyViewModel> getJourneyById(@PathVariable final int id)
     {
-        return JourneyService.getJourneyParameters(paramMap);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(id);
+        final JourneyViewModel journeyViewModel = modelMapper.map(
+                grabJourneyDTO, JourneyViewModel.class);
+        return ResponseEntity.ok(journeyViewModel);
+    }
 
-        // response with a response model (JourneyViewModel)
-
-        //        return ResponseEntity.ok("OK");
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
