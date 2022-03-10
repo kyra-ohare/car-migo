@@ -9,6 +9,8 @@ public class GrabPlatformUserDTO
 {
     private int id;
 
+    private Instant createdDate;
+
     private String firstName;
 
     private String lastName;

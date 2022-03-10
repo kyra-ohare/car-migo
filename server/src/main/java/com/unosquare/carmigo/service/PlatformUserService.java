@@ -56,9 +56,11 @@ public class PlatformUserService
 
     public GrabPlatformUserDTO patchPlatformUser(final int id, @NotNull final JsonPatch patch)
     {
-        final PlatformUser targetPlatformUser = findPlatformUserById(id);
+        final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
+                findPlatformUserById(id), GrabPlatformUserDTO.class);
         try {
-            final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(targetPlatformUser, JsonNode.class));
+            final JsonNode platformUserNode = patch.apply(
+                    objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
             final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
             return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
         } catch (final JsonPatchException | JsonProcessingException ex) {

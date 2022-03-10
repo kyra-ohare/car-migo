@@ -1,6 +1,5 @@
 package com.unosquare.carmigo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,7 +63,6 @@ public class PlatformUser
     @Exclude
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_access_status_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private UserAccessStatus userAccessStatus;
 
     @Override
