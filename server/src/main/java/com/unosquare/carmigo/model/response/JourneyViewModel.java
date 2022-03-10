@@ -31,5 +31,5 @@ public class JourneyViewModel
     private Instant dateTime;
 
     @JsonProperty("driver")
-    private DriverViewModel driverId;
+    private DriverViewModel driver;
 }

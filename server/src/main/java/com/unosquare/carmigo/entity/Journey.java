@@ -58,5 +58,5 @@ public class Journey
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
     @ToString.Exclude
-    private Driver driverId;
+    private Driver driver;
 }
