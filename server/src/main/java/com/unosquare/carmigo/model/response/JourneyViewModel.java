@@ -32,7 +32,4 @@ public class JourneyViewModel
 
     @JsonProperty("driver")
     private DriverViewModel driver;
-
-    @JsonProperty("passenger")
-    private PassengerJourneyViewModel passengerJourney;
 }
