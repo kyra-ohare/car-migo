@@ -48,7 +48,7 @@ public class JourneyService
         journey.setCreatedDate(Instant.now());
         journey.setLocationIdFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
         journey.setLocationIdTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
-        journey.setDriverId(entityManager.getReference(Driver.class, createJourneyDTO.getDriverId()));
+        journey.setDriver(entityManager.getReference(Driver.class, createJourneyDTO.getDriver()));
         return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
     }
 

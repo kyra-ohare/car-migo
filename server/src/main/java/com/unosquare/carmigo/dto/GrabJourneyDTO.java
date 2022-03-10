@@ -19,5 +19,5 @@ public class GrabJourneyDTO
 
     private Instant dateTime;
 
-    private GrabDriverDTO driverId;
+    private GrabDriverDTO driver;
 }

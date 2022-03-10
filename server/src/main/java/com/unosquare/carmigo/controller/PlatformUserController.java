@@ -34,8 +34,8 @@ import javax.validation.Valid;
 @RequestMapping("/v1/users")
 public class PlatformUserController
 {
-    final ModelMapper modelMapper;
-    final PlatformUserService platformUserService;
+    private final ModelMapper modelMapper;
+    private final PlatformUserService platformUserService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
