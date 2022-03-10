@@ -5,6 +5,7 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
+import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,7 +23,13 @@ public class JourneyService
     private final ModelMapper modelMapper;
     private final EntityManager entityManager;
 
-    public static String getJourneyParameters(final Map<String, String> paramMap)
+    public GrabJourneyDTO getJourneyById(final int id)
+    {
+        final Journey journey = journeyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Journey id " + id + " not found."));
+        return modelMapper.map(journey, GrabJourneyDTO.class);
+    }
+
     {
         if (!paramMap.isEmpty()) {
             final Map.Entry<String, String> entry = paramMap.entrySet().iterator().next();
