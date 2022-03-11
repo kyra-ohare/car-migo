@@ -44,7 +44,7 @@ public class JourneyController
         return ResponseEntity.ok(journeyViewModel);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyViewModel>> getJourneys(@RequestParam final Map<String, String> paramMap)
     {
