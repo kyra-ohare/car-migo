@@ -7,12 +7,14 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,22 +32,29 @@ public class JourneyService
         return modelMapper.map(journey, GrabJourneyDTO.class);
     }
 
+    public List<GrabJourneyDTO> getJourneyParameters(final Map<String, String> paramMap)
     {
         if (!paramMap.isEmpty()) {
             final Map.Entry<String, String> entry = paramMap.entrySet().iterator().next();
             final String key = entry.getKey();
-            final String value = entry.getValue();
-
+            final int value;
+            try {
+                value = Integer.parseInt(entry.getValue());
+            } catch (final NumberFormatException ex) {
+                throw new ResourceNotFoundException("ID is not a number.");
+            }
             switch (key) {
                 case "passenger_id":
-                    return "Here are all journeys for passenger " + value;
+                    return null;
                 case "driver_id":
-                    return "Here are all journeys for driver " + value;
+                    final List<Journey> result = journeyRepository.findJourneyByDriverId(value);
+                    return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
                 default:
-                    return "Error retrieving journeys";
+                    throw new ResourceNotFoundException("Resource not found.");
             }
         } else {
-            return "Here are all your journeys";
+            final List<Journey> result = journeyRepository.findAll();
+            return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
         }
     }
 
