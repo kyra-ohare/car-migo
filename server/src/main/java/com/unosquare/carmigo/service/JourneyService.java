@@ -36,19 +36,20 @@ public class JourneyService
     {
         if (!paramMap.isEmpty()) {
             final Map.Entry<String, String> entry = paramMap.entrySet().iterator().next();
-            final String key = entry.getKey();
-            final int value;
+            final String param = entry.getKey();
+            final int id;
             try {
-                value = Integer.parseInt(entry.getValue());
+                id = Integer.parseInt(entry.getValue());
             } catch (final NumberFormatException ex) {
                 throw new ResourceNotFoundException("ID is not a number.");
             }
-            switch (key) {
+            switch (param) {
                 case "passenger_id":
-                    return null;
+//                    final List<Journey> byPassengerIdResult = journeyRepository.findJourneyByPassengerId(id);
+//                    return MapperUtils.mapList(byPassengerIdResult, GrabJourneyDTO.class, modelMapper);
                 case "driver_id":
-                    final List<Journey> result = journeyRepository.findJourneyByDriverId(value);
-                    return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+                    final List<Journey> byDriverIdResult = journeyRepository.findJourneyByDriverId(id);
+                    return MapperUtils.mapList(byDriverIdResult, GrabJourneyDTO.class, modelMapper);
                 default:
                     throw new ResourceNotFoundException("Resource not found.");
             }
