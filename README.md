@@ -23,7 +23,7 @@ docker-compose up -d
 ```
 
 This will spin up three containers: flyway, postgres and pgadmin.
-To interact with the database, go to `localhost:8000` from your browser and enter:
+To interact with the database, go to `localhost:8000` from your browser to open the pgAdmin 4 UI and enter:
 - Email = `admin@car-migo.com`
 - Password = `password`
 
@@ -38,3 +38,6 @@ Once inside the pgAdmin 4, click on `Add New Server`. From the dialog box, enter
 - Leave the rest as it is and `Save`.
 
 Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo > Schemas > public > Tables.
+
+### restart.sh
+This script restarts the containers. You also have the option to restart the volumes.
