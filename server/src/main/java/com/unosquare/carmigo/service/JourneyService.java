@@ -12,14 +12,12 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
-import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 
@@ -37,36 +35,6 @@ public class JourneyService
         final Journey journey = journeyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Journey id " + id + " not found."));
         return modelMapper.map(journey, GrabJourneyDTO.class);
-    }
-
-    public List<GrabJourneyDTO> getJourneyParameters(final Map<String, String> paramMap)
-    {
-        if (!paramMap.isEmpty()) {
-            final Map.Entry<String, String> entry = paramMap.entrySet().iterator().next();
-            final String param = entry.getKey();
-            final int id;
-            try {
-                id = Integer.parseInt(entry.getValue());
-            } catch (final NumberFormatException ex) {
-                throw new ResourceNotFoundException("ID is not a number.");
-            }
-            switch (param) {
-                case "passenger_id":
-//                    final List<PassengerJourney> passengerJourneyList = passengerJourneyRepository.findJourneyByPassengerId(id);
-//                    passengerJourneyList.forEach(System.err::println);
-//                    return null;
-                    final List<Journey> byPassengerIdResult = journeyRepository.findJourneyByPassengerId(id);
-                    return MapperUtils.mapList(byPassengerIdResult, GrabJourneyDTO.class, modelMapper);
-                case "driver_id":
-                    final List<Journey> byDriverIdResult = journeyRepository.findJourneyByDriverId(id);
-                    return MapperUtils.mapList(byDriverIdResult, GrabJourneyDTO.class, modelMapper);
-                default:
-                    throw new ResourceNotFoundException("Resource not found.");
-            }
-        } else {
-            final List<Journey> result = journeyRepository.findAll();
-            return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
-        }
     }
 
     public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO)
