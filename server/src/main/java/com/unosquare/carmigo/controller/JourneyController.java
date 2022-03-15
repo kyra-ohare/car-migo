@@ -44,16 +44,6 @@ public class JourneyController
         return ResponseEntity.ok(journeyViewModel);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<JourneyViewModel>> getJourneys(@RequestParam final Map<String, String> paramMap)
-    {
-        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneyParameters(paramMap);
-        final List<JourneyViewModel> journeyViewModelList = MapperUtils.mapList(
-                grabJourneyDTOList, JourneyViewModel.class, modelMapper);
-        return ResponseEntity.ok(journeyViewModelList);
-    }
-
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public String searchJourneys(@RequestBody final CreateJourneyViewModel createJourneyViewModal)

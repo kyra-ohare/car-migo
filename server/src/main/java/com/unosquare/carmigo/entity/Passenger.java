@@ -45,8 +45,4 @@ public class Passenger
     @OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "passenger_id", nullable = false, insertable = false, updatable = false)
     private List<PassengerJourney> passengerJourney;
-
-
-
-
 }
