@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.controller;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +72,16 @@ public class JourneyController
         final JourneyViewModel journeyViewModel = modelMapper.map(
                 grabJourneyDTO, JourneyViewModel.class);
         return new ResponseEntity<>(journeyViewModel, HttpStatus.CREATED);
+    }
+
+    @PatchMapping(value = "/{journeyId}/drivers/{driverId}", consumes = "application/json-patch+json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<JourneyViewModel> patchJourney(@PathVariable final int journeyId,
+        @PathVariable final int driverId, @RequestBody final JsonPatch patch)
+    {
+        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, driverId, patch);
+        final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
+        return ResponseEntity.ok(journeyViewModel);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
