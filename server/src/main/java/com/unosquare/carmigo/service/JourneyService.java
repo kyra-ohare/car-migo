@@ -30,7 +30,9 @@ import javax.persistence.EntityManager;
 public class JourneyService
 {
     private final JourneyRepository journeyRepository;
+    private final PassengerJourneyRepository passengerJourneyRepository;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
 
     public GrabJourneyDTO getJourneyById(final int id)
@@ -53,7 +55,10 @@ public class JourneyService
             }
             switch (param) {
                 case "passenger_id":
-//                    final List<Journey> byPassengerIdResult = journeyRepository.findJourneyByPassengerId(id);
+                    final List<PassengerJourney> passengerJourneyList = passengerJourneyRepository.findJourneyByPassengerId(id);
+                    passengerJourneyList.forEach(System.err::println);
+                    return null;
+//                    final List<Journey> byPassengerIdResult = passengerJourneyRepository.findJourneyByPassengerId(id);
 //                    return MapperUtils.mapList(byPassengerIdResult, GrabJourneyDTO.class, modelMapper);
                 case "driver_id":
                     final List<Journey> byDriverIdResult = journeyRepository.findJourneyByDriverId(id);
