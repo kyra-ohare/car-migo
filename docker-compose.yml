@@ -1,7 +1,8 @@
-version: "3"
+version: "3.4"
 services:
   db:
-    image: postgres:latest
+    image: postgres:14.2-bullseye
+    container_name: car-migo_postgres
     restart: always
     ports:
       - 5432:5432
@@ -12,12 +13,26 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   flyway:
-   image: flyway/flyway
-   command: -url=jdbc:postgresql://db/carmigo -schemas=public -user=admin
-     -password=password -connectRetries=5 migrate
-   volumes:
-     - ./migrations:/flyway/sql
-   depends_on:
-     - db
+    image: flyway/flyway:8.5.2-alpine
+    container_name: car-migo_flyway
+    command: -url=jdbc:postgresql://db/carmigo -schemas=public -user=admin
+      -password=password -connectRetries=5 migrate
+    volumes:
+      - ./migrations:/flyway/sql
+    depends_on:
+      - db
+  pgadmin:
+    image: dpage/pgadmin4:6.6
+    container_name: car-migo_pgadmin
+    ports:
+      - 8000:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@car-migo.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin:/var/lib/pgadmin
 volumes:
   db:
+    name: car-migo_postgres
+  pgadmin:
+    name: car-migo_pgadmin
