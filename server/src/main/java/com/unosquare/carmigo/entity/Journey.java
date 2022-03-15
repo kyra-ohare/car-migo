@@ -42,12 +42,12 @@ public class Journey
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id_from", nullable = false)
     @ToString.Exclude
-    private Location locationIdFrom;
+    private Location locationFrom;
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id_to", nullable = false)
     @ToString.Exclude
-    private Location locationIdTo;
+    private Location locationTo;
 
     @Column(name = "max_passengers", nullable = false, unique = true)
     private int maxPassengers;
