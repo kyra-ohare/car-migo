@@ -11,9 +11,9 @@ public class GrabJourneyDTO
 
     private Instant createdDate;
 
-    private GrabLocationDTO locationIdFrom;
+    private GrabLocationDTO locationFrom;
 
-    private GrabLocationDTO locationIdTo;
+    private GrabLocationDTO locationTo;
 
     private int maxPassengers;
 

@@ -12,17 +12,17 @@ import java.time.Instant;
 @NoArgsConstructor
 public class JourneyViewModel
 {
-    @JsonProperty("id")
+    @JsonProperty("journeyId")
     private int id;
 
     @JsonProperty("createdDate")
     private Instant createdDate;
 
     @JsonProperty("locationFrom")
-    private LocationViewModel locationIdFrom;
+    private LocationViewModel locationFrom;
 
     @JsonProperty("locationTo")
-    private LocationViewModel locationIdTo;
+    private LocationViewModel locationTo;
 
     @JsonProperty("maxPassengers")
     private int maxPassengers;
