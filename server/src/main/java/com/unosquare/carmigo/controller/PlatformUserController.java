@@ -60,13 +60,12 @@ public class PlatformUserController
         return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
     }
 
-    // TODO
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<PlatformUserViewModel> patchPlatformUser(@PathVariable final int id,
                                                                    @RequestBody final JsonPatch patch)
     {
-        final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.updatePlatformUser(id, patch);
+        final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUser(id, patch);
         final PlatformUserViewModel platformUserViewModel = modelMapper.map(
                 grabPlatformUserDTO, PlatformUserViewModel.class);
         return ResponseEntity.ok(platformUserViewModel);
