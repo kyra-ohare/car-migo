@@ -6,7 +6,6 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
-import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

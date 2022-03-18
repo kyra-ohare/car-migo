@@ -12,13 +12,13 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 
 @Service
