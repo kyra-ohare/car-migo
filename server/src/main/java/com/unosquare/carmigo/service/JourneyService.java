@@ -55,11 +55,11 @@ public class JourneyService
             }
             switch (param) {
                 case "passenger_id":
-                    final List<PassengerJourney> passengerJourneyList = passengerJourneyRepository.findJourneyByPassengerId(id);
-                    passengerJourneyList.forEach(System.err::println);
-                    return null;
-//                    final List<Journey> byPassengerIdResult = passengerJourneyRepository.findJourneyByPassengerId(id);
-//                    return MapperUtils.mapList(byPassengerIdResult, GrabJourneyDTO.class, modelMapper);
+//                    final List<PassengerJourney> passengerJourneyList = passengerJourneyRepository.findJourneyByPassengerId(id);
+//                    passengerJourneyList.forEach(System.err::println);
+//                    return null;
+                    final List<Journey> byPassengerIdResult = journeyRepository.findJourneyByPassengerId(id);
+                    return MapperUtils.mapList(byPassengerIdResult, GrabJourneyDTO.class, modelMapper);
                 case "driver_id":
                     final List<Journey> byDriverIdResult = journeyRepository.findJourneyByDriverId(id);
                     return MapperUtils.mapList(byDriverIdResult, GrabJourneyDTO.class, modelMapper);
