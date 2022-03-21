@@ -73,8 +73,8 @@ public class PlatformUserControllerTest
     public void get_PlatformUser_By_Id_Returns_PlatformUserViewModel() throws Exception
     {
         final int id = anyInt();
-        when(platformUserServiceMock.getPlatformUserById(id)).thenReturn(
-                grabPlatformUserDTOFixture);
+        when(platformUserServiceMock.getPlatformUserById(id))
+            .thenReturn(grabPlatformUserDTOFixture);
         when(modelMapperMock.map(grabPlatformUserDTOFixture, PlatformUserViewModel.class))
                 .thenReturn(platformUserViewModelFixture);
 
@@ -111,7 +111,6 @@ public class PlatformUserControllerTest
     public void delete_PlatformUser_Returns_HttpStatus_No_Content() throws Exception
     {
         doNothing().when(platformUserServiceMock).deletePlatformUserById(anyInt());
-
         mockMvc.perform(delete(API_LEADING + anyInt()))
                 .andExpect(status().isNoContent());
     }

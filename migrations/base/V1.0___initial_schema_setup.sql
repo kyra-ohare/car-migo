@@ -50,13 +50,13 @@ create table if not exists journey
 (
     id serial not null
         constraint journey_pkey primary key,
-    created_date date not null,
+    created_date timestamp not null,
     location_id_from integer not null
         constraint location_id_from_fkey references location,
     location_id_to integer not null
         constraint location_id_to_fkey references location,
     max_passengers integer not null,
-    date_time date not null,
+    date_time timestamp not null,
     driver_id integer
         constraint journey_driver_id_fkey references driver ON DELETE CASCADE
 );

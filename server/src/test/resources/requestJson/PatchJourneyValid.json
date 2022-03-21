@@ -1,0 +1,12 @@
+[
+  {
+    "op": "replace",
+    "path": "/locationFrom/id",
+    "value": "5"
+  },
+  {
+    "op": "replace",
+    "path": "/maxPassengers",
+    "value": "5"
+  }
+]

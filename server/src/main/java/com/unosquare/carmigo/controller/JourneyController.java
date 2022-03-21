@@ -6,6 +6,7 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,7 @@ public class JourneyController
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<JourneyViewModel> createJourney(
-            @RequestBody final CreateJourneyViewModel createJourneyViewModal)
+            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModal)
     {
         final CreateJourneyDTO createJourneyDTO = modelMapper.map(
                 createJourneyViewModal, CreateJourneyDTO.class);
@@ -62,7 +63,7 @@ public class JourneyController
     @PatchMapping(value = "/{journeyId}/drivers/{driverId}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<JourneyViewModel> patchJourney(@PathVariable final int journeyId,
-        @PathVariable final int driverId, @RequestBody final JsonPatch patch)
+        @PathVariable final int driverId, @Valid @RequestBody final JsonPatch patch)
     {
         final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, driverId, patch);
         final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);

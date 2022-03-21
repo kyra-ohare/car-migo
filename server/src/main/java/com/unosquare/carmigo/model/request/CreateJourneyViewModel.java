@@ -1,31 +1,30 @@
 package com.unosquare.carmigo.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 import java.time.Instant;
+import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class CreateJourneyViewModel
 {
-    @NotBlank
-    @JsonProperty("locationFrom")
+    @NotNull
+    @JsonProperty("locationIdFrom")
     private int locationIdFrom;
 
-    @NotBlank
-    @JsonProperty("locationTo")
+    @NotNull
+    @JsonProperty("locationIdTo")
     private int locationIdTo;
 
-    @NotBlank
+    @NotNull
     @JsonProperty("maxPassengers")
     private int maxPassengers;
 
-    @NotBlank
+    @NotNull
     @JsonProperty("dateTime")
     private Instant dateTime;
 
-    @NotBlank
+    @NotNull
     @JsonProperty("driverId")
     private int driver;
 }
