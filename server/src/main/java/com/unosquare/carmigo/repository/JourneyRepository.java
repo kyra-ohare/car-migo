@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface JourneyRepository extends JpaRepository<Journey, Integer>
 {
+    Journey findJourneyById(final int id);
+
     List<Journey> findJourneyByDriverId(final int id);
 }

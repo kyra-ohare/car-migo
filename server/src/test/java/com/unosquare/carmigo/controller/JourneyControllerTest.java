@@ -71,10 +71,8 @@ public class JourneyControllerTest
     @Test
     public void get_Journey_By_Id_Returns_JourneyViewModel() throws Exception
     {
-        when(journeyServiceMock.getJourneyById(anyInt()))
-            .thenReturn(grabJourneyDTOFixture);
-        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyViewModel.class))
-            .thenReturn(journeyViewModelFixture);
+        when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
+        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyViewModel.class)).thenReturn(journeyViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -119,6 +117,7 @@ public class JourneyControllerTest
                 .contentType("application/json-patch+json")
                 .content(PATCH_JOURNEY_INVALID_JSON))
             .andExpect(status().isBadRequest());
+        verify(journeyServiceMock, times(0)).patchJourney(anyInt(), anyInt(), any());
     }
 
     @Test
@@ -127,5 +126,6 @@ public class JourneyControllerTest
         doNothing().when(journeyServiceMock).deleteJourneyById(anyInt());
         mockMvc.perform(delete(API_LEADING + anyInt()))
             .andExpect(status().isNoContent());
+        verify(journeyServiceMock).deleteJourneyById(anyInt());
     }
 }
