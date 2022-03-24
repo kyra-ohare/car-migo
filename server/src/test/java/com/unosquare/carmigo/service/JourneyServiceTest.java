@@ -2,6 +2,7 @@ package com.unosquare.carmigo.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -130,15 +131,22 @@ public class JourneyServiceTest
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
 
+//    @Fixture
+//    private List<Journey> journeysFixture;
     @Fixture
-    private List<Journey> journeysFixture;
+    private List<Journey> journeysFixture = List.of(new Journey());
+
     @Test
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeysFixture);
-        when(journeysFixture.stream().findFirst())
-            .thenReturn(Optional.of(journey));
-//        when(modelMapperMock.map(journey, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeysFixture); // size 3
+        
+//        List<Journey> journeys = List.of(new Journey());
+//        when(journeysFixture.get(anyInt())).thenReturn(journeyFixture);
+//        when(journeyOptionalFixture.isPresent()).thenReturn();
+//        when(journeysFixture.get(anyInt())).thenReturn(journey);
+
+        when(modelMapperMock.map(journeysFixture.get(0), GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final String patchString = "[{ \"op\": \"replace\", \"path\": \"/maxPassengers\", \"value\": \"" + 5 + "\" }]";
         final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
         final JsonPatch patch = JsonPatch.fromJson(objectMapper.readTree(patchString));
@@ -153,7 +161,7 @@ public class JourneyServiceTest
     public void delete_Journey_By_Id_Returns_Void() throws Exception
     {
         journeyService.deleteJourneyById(anyInt());
-        verify(journeyRepositoryMock, times(1)).deleteById(anyInt());
+        verify(journeyRepositoryMock).deleteById(anyInt());
     }
 
 //    private List<JsonPatchOperation> jsonPatchOperation() {

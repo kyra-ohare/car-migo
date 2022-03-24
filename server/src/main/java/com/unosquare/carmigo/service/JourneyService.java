@@ -55,7 +55,7 @@ public class JourneyService
     {
         final List<Journey> journeys = journeyRepository.findJourneyByDriverId(driverId);
         final Optional<Journey> targetJourney = journeys.stream()
-            .filter(journey -> journey.getId() == journeyId).findFirst();
+            .filter(journey -> journey.getId() == journeyId).findFirst(); // make this present
         try {
             if (targetJourney.isPresent()) {
                 final GrabJourneyDTO grabJourneyDTO = modelMapper.map(targetJourney.get(), GrabJourneyDTO.class);
