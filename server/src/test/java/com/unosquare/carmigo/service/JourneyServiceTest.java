@@ -2,10 +2,8 @@ package com.unosquare.carmigo.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -14,17 +12,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.JsonPatchOperation;
 import com.unosquare.carmigo.configuration.MapperConfiguration;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
@@ -32,11 +25,9 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
-import java.io.IOException;
+
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,29 +125,40 @@ public class JourneyServiceTest
 //    @Fixture
 //    private List<Journey> journeysFixture;
     @Fixture
-    private List<Journey> journeysFixture = List.of(new Journey());
-
+    private List<Journey> journeyFixtureList = List.of(new Journey());
+// only mock methods that are calling external calls (dependencies)
+    @Fixture
+    private JsonNode jsonNodeFixture;
     @Test
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeysFixture); // size 3
-        
+        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeyFixtureList); // size 3
+        journeyFixtureList.add(journeyFixture);
+
 //        List<Journey> journeys = List.of(new Journey());
 //        when(journeysFixture.get(anyInt())).thenReturn(journeyFixture);
 //        when(journeyOptionalFixture.isPresent()).thenReturn();
 //        when(journeysFixture.get(anyInt())).thenReturn(journey);
 
-        when(modelMapperMock.map(journeysFixture.get(0), GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        when(modelMapperMock.map(journeyFixtureList.get(0), GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final String patchString = "[{ \"op\": \"replace\", \"path\": \"/maxPassengers\", \"value\": \"" + 5 + "\" }]";
         final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
-        final JsonPatch patch = JsonPatch.fromJson(objectMapper.readTree(patchString));
-        final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTOFixture, JsonNode.class));
-        final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
+
+//        final JsonPatch patch = JsonPatch.fromJson(objectMapper.readTree(patchString));
+//        final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTOFixture, JsonNode.class));
+//        final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
+        when(objectMapperMock.convertValue(any(GrabJourneyDTO.class), JsonNode.class)).thenReturn(jsonNodeFixture);
+
         when(journeyRepositoryMock.save(patchedJourney)).thenReturn(journeyFixture);
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+
+
         final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyFixture.getId(), journeyFixture.getDriver().getId(), any(JsonPatch.class));
     }
 
+    private JsonNode createJsonNodeJourney() {
+
+    }
     @Test
     public void delete_Journey_By_Id_Returns_Void() throws Exception
     {
