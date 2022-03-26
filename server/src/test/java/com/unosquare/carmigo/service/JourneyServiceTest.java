@@ -1,16 +1,11 @@
 package com.unosquare.carmigo.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,14 +20,12 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
-
+import com.unosquare.carmigo.util.ResourceUtility;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,6 +35,8 @@ import org.modelmapper.ModelMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class JourneyServiceTest
 {
+    private static final String PATCH_JOURNEY_VALID_JSON =
+        ResourceUtility.generateStringFromResource("requestJson/PatchJourneyValid.json");
     @Mock
     private JourneyRepository journeyRepositoryMock;
     @Mock
@@ -54,8 +49,6 @@ public class JourneyServiceTest
     @InjectMocks
     private JourneyService journeyService;
 
-    private Journey journey;
-
     @Fixture
     private GrabJourneyDTO grabJourneyDTOFixture;
 
@@ -65,31 +58,24 @@ public class JourneyServiceTest
     @Fixture
     private CreateJourneyDTO createJourneyDTOFixture;
 
+    @Fixture
+    private List<Journey> journeyFixtureList;
+
+    final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
+
     @Before
-    public void classSetUp()
+    public void setUp()
     {
         final JFixture jFixture = new JFixture();
         jFixture.customise().circularDependencyBehaviour().omitSpecimen();
         FixtureAnnotations.initFixtures(this, jFixture);
     }
 
-    @BeforeEach
-    public void setUp()
-    {
-        journey = new Journey();
-    }
-
-    @AfterEach
-    public void tearDown()
-    {
-        journey = null;
-    }
-
     @Test
     public void get_Journey_By_Id_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journey);
-        when(modelMapperMock.map(journey, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journeyFixture);
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(anyInt());
 
         assertThat(grabJourneyDTO.getId()).isEqualTo(grabJourneyDTOFixture.getId());
@@ -122,43 +108,27 @@ public class JourneyServiceTest
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
 
-//    @Fixture
-//    private List<Journey> journeysFixture;
-    @Fixture
-    private List<Journey> journeyFixtureList = List.of(new Journey());
-// only mock methods that are calling external calls (dependencies)
-    @Fixture
-    private JsonNode jsonNodeFixture;
     @Test
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeyFixtureList); // size 3
+        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeyFixtureList);
         journeyFixtureList.add(journeyFixture);
-
-//        List<Journey> journeys = List.of(new Journey());
-//        when(journeysFixture.get(anyInt())).thenReturn(journeyFixture);
-//        when(journeyOptionalFixture.isPresent()).thenReturn();
-//        when(journeysFixture.get(anyInt())).thenReturn(journey);
-
-        when(modelMapperMock.map(journeyFixtureList.get(0), GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
-        final String patchString = "[{ \"op\": \"replace\", \"path\": \"/maxPassengers\", \"value\": \"" + 5 + "\" }]";
-        final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
-
-//        final JsonPatch patch = JsonPatch.fromJson(objectMapper.readTree(patchString));
-//        final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTOFixture, JsonNode.class));
-//        final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
-        when(objectMapperMock.convertValue(any(GrabJourneyDTO.class), JsonNode.class)).thenReturn(jsonNodeFixture);
-
-        when(journeyRepositoryMock.save(patchedJourney)).thenReturn(journeyFixture);
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        final JsonPatch patch = jsonPatch();
+        final JsonNode journeyNode = jsonNodeJourney(patch);
+        when(objectMapperMock.convertValue(grabJourneyDTOFixture, JsonNode.class)).thenReturn(journeyNode);
+        when(objectMapperMock.treeToValue(journeyNode, Journey.class)).thenReturn(journeyFixture);
+        when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(
+            journeyFixture.getId(), journeyFixture.getDriver().getId(), patch);
 
-
-        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyFixture.getId(), journeyFixture.getDriver().getId(), any(JsonPatch.class));
+        assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
+        assertThat(grabJourneyDTO.getLocationFrom().getId()).isEqualTo(grabJourneyDTOFixture.getLocationFrom().getId());
+        verify(journeyRepositoryMock).findJourneyByDriverId(anyInt());
+        verify(journeyRepositoryMock).save(any(Journey.class));
     }
 
-    private JsonNode createJsonNodeJourney() {
-
-    }
     @Test
     public void delete_Journey_By_Id_Returns_Void() throws Exception
     {
@@ -166,11 +136,13 @@ public class JourneyServiceTest
         verify(journeyRepositoryMock).deleteById(anyInt());
     }
 
-//    private List<JsonPatchOperation> jsonPatchOperation() {
-//        final List<JsonPatchOperation> operations = new ArrayList<>();
-//        JsonNode node =
-//        JsonPatchOperation first =
-//        operations.add();
-//        return operations;
-//    }
+    private JsonNode jsonNodeJourney(final JsonPatch jsonPatch) throws Exception
+    {
+        return jsonPatch.apply(objectMapper.convertValue(journeyFixture, JsonNode.class));
+    }
+
+    private JsonPatch jsonPatch() throws Exception
+    {
+        return JsonPatch.fromJson(objectMapper.readTree(PATCH_JOURNEY_VALID_JSON));
+    }
 }
