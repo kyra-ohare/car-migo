@@ -15,13 +15,13 @@ then
   echo "Removed volume $postgres"
 fi
 
-# echo "Restart volume $pgAdmin? (y/n)"
-# read pgAdminResponse
-# if [ $pgAdminResponse = "y" ]
-# then
-#   docker volume rm $pgAdmin > /dev/null 2>&1
-#   echo "Removed volume $pgAdmin"
-# fi
+echo "Restart volume $pgAdmin? (y/n)"
+read pgAdminResponse
+if [ $pgAdminResponse = "y" ]
+then
+  docker volume rm $pgAdmin > /dev/null 2>&1
+  echo "Removed volume $pgAdmin"
+fi
 
 echo "Starting containers again:"
 docker-compose up -d
