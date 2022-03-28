@@ -13,6 +13,7 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.util.MapperUtils;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,9 @@ public class JourneyServiceTest
     private GrabJourneyDTO grabJourneyDTOFixture;
 
     @Fixture
+    private List<GrabJourneyDTO> grabJourneyDTOFixtureList;
+
+    @Fixture
     private Journey journeyFixture;
 
     @Fixture
@@ -87,6 +91,18 @@ public class JourneyServiceTest
         assertThat(grabJourneyDTO.getDateTime()).isEqualTo(grabJourneyDTOFixture.getDateTime());
         assertThat(grabJourneyDTO.getDriver()).isEqualTo(grabJourneyDTOFixture.getDriver());
         verify(journeyRepositoryMock).findJourneyById(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_Returns_List_of_Journeys()
+    {
+        when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
+        final List<GrabJourneyDTO> grabJourneyDTOList =
+            MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
+        final List<GrabJourneyDTO> journeyList = journeyService.getJourneys();
+
+        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        verify(journeyRepositoryMock).findAll();
     }
 
     @Test

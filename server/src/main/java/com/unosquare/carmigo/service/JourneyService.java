@@ -12,6 +12,7 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,12 @@ public class JourneyService
         } catch (final IllegalArgumentException ex) {
             throw new ResourceNotFoundException("Journey id " + id + " not found.");
         }
+    }
+
+    public List<GrabJourneyDTO> getJourneys()
+    {
+        final List<Journey> result = journeyRepository.findAll();
+        return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
     public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO)

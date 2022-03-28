@@ -8,6 +8,7 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.ResourceUtility;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,8 @@ public class JourneyControllerTest
     private GrabJourneyDTO grabJourneyDTOFixture;
     @Fixture
     private JourneyViewModel journeyViewModelFixture;
+    @Fixture
+    private List<GrabJourneyDTO> grabJourneyDTOList;
 
     @Before
     public void setUp() throws Exception
@@ -77,6 +80,17 @@ public class JourneyControllerTest
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneyById(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_Returns_List_of_Journeys() throws Exception
+    {
+        when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDTOList);
+
+        mockMvc.perform(get(API_LEADING)
+                        .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+        verify(journeyServiceMock).getJourneys();
     }
 
     @Test
