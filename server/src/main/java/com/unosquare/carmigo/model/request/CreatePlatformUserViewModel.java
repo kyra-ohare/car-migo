@@ -6,7 +6,7 @@ import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
@@ -14,33 +14,33 @@ import java.time.Instant;
 public class CreatePlatformUserViewModel
 {
     @Size(max = 255)
-    @NotBlank
+    @NotNull
     @JsonProperty("firstName")
     private String firstName;
 
     @Size(max = 255)
-    @NotBlank
+    @NotNull
     @JsonProperty("lastName")
     private String lastName;
 
-    @NotBlank
+    @NotNull
     @JsonProperty("dob")
     @Temporal(TemporalType.DATE)
     private Instant dob;
 
     @Size(max = 100)
-    @NotBlank
+    @NotNull
     @JsonProperty("email")
     private String email;
 
     @Size(max = 50)
-    @NotBlank
+    @NotNull
     @JsonProperty("password")
     @ValidPassword
     private String password;
 
     @Size(max = 50)
-    @NotBlank
+    @NotNull
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 }

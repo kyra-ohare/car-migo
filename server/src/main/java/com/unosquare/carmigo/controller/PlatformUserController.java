@@ -50,7 +50,7 @@ public class PlatformUserController
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)  // TODO @Valid maps to DataIntegrityViolationException instead of MethodArgumentNotValidException when not-null value is passed
+            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
     {
         final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
                 createPlatformUserViewModel, CreatePlatformUserDTO.class);

@@ -20,8 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,49 +65,42 @@ public class PlatformUserControllerTest
         jFixture.customise().circularDependencyBehaviour().omitSpecimen();
         FixtureAnnotations.initFixtures(this, jFixture);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(
-                new PlatformUserController(
-                        modelMapperMock,
-                        platformUserServiceMock))
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new PlatformUserController(modelMapperMock, platformUserServiceMock))
                 .build();
     }
 
     @Test
     public void get_PlatformUser_By_Id_Returns_PlatformUserViewModel() throws Exception
     {
-        final int id = anyInt();
-        when(platformUserServiceMock.getPlatformUserById(id))
-            .thenReturn(grabPlatformUserDTOFixture);
+        when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(grabPlatformUserDTOFixture);
         when(modelMapperMock.map(grabPlatformUserDTOFixture, PlatformUserViewModel.class))
                 .thenReturn(platformUserViewModelFixture);
 
-        mockMvc.perform(get(API_LEADING + id)
+        mockMvc.perform(get(API_LEADING + anyInt())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(platformUserServiceMock).getPlatformUserById(anyInt());
     }
 
     @Test
     public void post_PlatformUser_Returns_HttpStatus_Created() throws Exception
     {
-        when(platformUserServiceMock.createPlatformUser(createPlatformUserDTOFixture))
-                .thenReturn(grabPlatformUserDTOFixture);
-
         mockMvc.perform(post(API_LEADING)
-                        .content(POST_PLATFORM_USER_VALID_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(POST_PLATFORM_USER_VALID_JSON))
                 .andExpect(status().isCreated());
+        verify(platformUserServiceMock).createPlatformUser(any());
     }
 
     @Test
     public void post_PlatformUser_Returns_HttpStatus_Conflict() throws Exception
     {
-        when(platformUserServiceMock.createPlatformUser(createPlatformUserDTOFixture))
-                .thenReturn(grabPlatformUserDTOFixture);
-        System.out.println(POST_PLATFORM_USER_INVALID_JSON);
         mockMvc.perform(post(API_LEADING)
                         .content(POST_PLATFORM_USER_INVALID_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict()); // TODO Expected: 409, Actual: 201
+                .andExpect(status().isBadRequest());
+        verify(platformUserServiceMock, times(0)).createPlatformUser(any());
     }
 
     @Test
@@ -113,5 +109,6 @@ public class PlatformUserControllerTest
         doNothing().when(platformUserServiceMock).deletePlatformUserById(anyInt());
         mockMvc.perform(delete(API_LEADING + anyInt()))
                 .andExpect(status().isNoContent());
+        verify(platformUserServiceMock).deletePlatformUserById(anyInt());
     }
 }

@@ -12,15 +12,14 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
-import javax.persistence.EntityManager;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,17 +54,20 @@ public class JourneyService
     {
         final List<Journey> journeys = journeyRepository.findJourneyByDriverId(driverId);
         final Optional<Journey> targetJourney = journeys.stream()
-            .filter(journey -> journey.getId() == journeyId).findFirst();
+                .filter(journey -> journey.getId() == journeyId)
+                .findFirst();
         try {
             if (targetJourney.isPresent()) {
                 final GrabJourneyDTO grabJourneyDTO = modelMapper.map(targetJourney.get(), GrabJourneyDTO.class);
                 final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
                 final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
                 return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
+            } else {
+                throw new JsonPatchException("No journey was found.");
             }
-            throw new JsonPatchException("targetJourney is empty");
         } catch (final JsonPatchException | JsonProcessingException ex) {
-            throw new ResourceNotFoundException("Error updating journey id " + journeyId + " whose driver's id is " + driverId);
+            throw new ResourceNotFoundException(
+                    "Error updating journey id " + journeyId + " whose driver's id is " + driverId);
         }
     }
 
@@ -74,4 +76,3 @@ public class JourneyService
         journeyRepository.deleteById(id);
     }
 }
-

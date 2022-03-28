@@ -6,7 +6,6 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/journeys")
@@ -35,11 +36,11 @@ public class JourneyController
     public ResponseEntity<JourneyViewModel> getJourneyById(@PathVariable final int id)
     {
         final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(id);
-        final JourneyViewModel journeyViewModel = modelMapper.map(
-                grabJourneyDTO, JourneyViewModel.class);
+        final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
         return ResponseEntity.ok(journeyViewModel);
     }
 
+    // todo
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public String searchJourneys(@RequestBody final CreateJourneyViewModel createJourneyViewModal)
@@ -52,18 +53,17 @@ public class JourneyController
     public ResponseEntity<JourneyViewModel> createJourney(
             @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModal)
     {
-        final CreateJourneyDTO createJourneyDTO = modelMapper.map(
-                createJourneyViewModal, CreateJourneyDTO.class);
+        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModal, CreateJourneyDTO.class);
         final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTO);
-        final JourneyViewModel journeyViewModel = modelMapper.map(
-                grabJourneyDTO, JourneyViewModel.class);
+        final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
         return new ResponseEntity<>(journeyViewModel, HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/{journeyId}/drivers/{driverId}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<JourneyViewModel> patchJourney(@PathVariable final int journeyId,
-        @PathVariable final int driverId, @Valid @RequestBody final JsonPatch patch)
+                                                         @PathVariable final int driverId,
+                                                         @Valid @RequestBody final JsonPatch patch)
     {
         final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, driverId, patch);
         final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
