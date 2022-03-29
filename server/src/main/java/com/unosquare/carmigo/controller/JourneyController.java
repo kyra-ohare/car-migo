@@ -7,7 +7,6 @@ import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.MapperUtils;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +48,7 @@ public class JourneyController
     {
         final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneys();
         final List<JourneyViewModel> journeyViewModelList = MapperUtils.mapList(
-            grabJourneyDTOList, JourneyViewModel.class, modelMapper);
+                grabJourneyDTOList, JourneyViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyViewModelList);
     }
 

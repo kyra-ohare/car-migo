@@ -8,7 +8,6 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.response.JourneyViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.ResourceUtility;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -89,7 +90,7 @@ public class JourneyControllerTest
 
         mockMvc.perform(get(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneys();
     }
 

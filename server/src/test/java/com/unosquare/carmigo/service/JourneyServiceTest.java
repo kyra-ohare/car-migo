@@ -98,7 +98,7 @@ public class JourneyServiceTest
     {
         when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
-            MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
         final List<GrabJourneyDTO> journeyList = journeyService.getJourneys();
 
         assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
