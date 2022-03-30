@@ -15,5 +15,5 @@ public class CreateJourneyDTO
 
     private Instant dateTime;
 
-    private int driver;
+    private int driverId;
 }

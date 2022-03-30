@@ -2,7 +2,6 @@ package com.unosquare.carmigo.repository;
 
 import com.unosquare.carmigo.entity.Journey;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,5 +11,5 @@ public interface JourneyRepository extends JpaRepository<Journey, Integer>
 {
     Journey findJourneyById(final int id);
 
-    List<Journey> findJourneyByDriverId(final int id);
+    List<Journey> findJourneyByDriverId(final int driverId);
 }

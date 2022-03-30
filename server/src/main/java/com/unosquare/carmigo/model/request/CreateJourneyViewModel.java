@@ -27,5 +27,5 @@ public class CreateJourneyViewModel
 
     @NotNull
     @JsonProperty("driverId")
-    private int driver;
+    private int driverId;
 }

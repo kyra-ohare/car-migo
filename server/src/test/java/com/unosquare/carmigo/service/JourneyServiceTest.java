@@ -110,12 +110,12 @@ public class JourneyServiceTest
     {
         final Journey spyJourney = spy(new Journey());
         when(modelMapperMock.map(createJourneyDTOFixture, Journey.class)).thenReturn(spyJourney);
+        when(journeyRepositoryMock.save(spyJourney)).thenReturn(journeyFixture);
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         spyJourney.setCreatedDate(any(Instant.class));
         spyJourney.setLocationFrom(any(Location.class));
         spyJourney.setLocationTo(any(Location.class));
         spyJourney.setDriver(any(Driver.class));
-        when(journeyRepositoryMock.save(spyJourney)).thenReturn(journeyFixture);
-        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTOFixture);
 
         assertThat(grabJourneyDTO.getCreatedDate()).isEqualTo(grabJourneyDTOFixture.getCreatedDate());

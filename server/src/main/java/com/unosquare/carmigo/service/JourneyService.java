@@ -33,12 +33,12 @@ public class JourneyService
 
     public GrabJourneyDTO getJourneyById(final int id)
     {
-        try {
-            final Journey journey = journeyRepository.findJourneyById(id);
-            return modelMapper.map(journey, GrabJourneyDTO.class);
-        } catch (final IllegalArgumentException ex) {
-            throw new ResourceNotFoundException("Journey id " + id + " not found.");
+        final Journey journey = journeyRepository.findJourneyById(id);
+
+        if (journey == null) {
+            throw new ResourceNotFoundException(String.format("Journey id %d not found.", id));
         }
+        return modelMapper.map(journey, GrabJourneyDTO.class);
     }
 
     public List<GrabJourneyDTO> getJourneys()
@@ -53,7 +53,7 @@ public class JourneyService
         journey.setCreatedDate(Instant.now());
         journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
         journey.setLocationTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
-        journey.setDriver(entityManager.getReference(Driver.class, createJourneyDTO.getDriver()));
+        journey.setDriver(entityManager.getReference(Driver.class, createJourneyDTO.getDriverId()));
         return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
     }
 
@@ -63,18 +63,17 @@ public class JourneyService
         final Optional<Journey> targetJourney = journeys.stream()
                 .filter(journey -> journey.getId() == journeyId)
                 .findFirst();
+        final String errorMsg = String.format("Journey id %d whose driver's id is %d not found.", journeyId, driverId);
+        if(targetJourney.isEmpty()) {
+            throw new ResourceNotFoundException(errorMsg);
+        }
         try {
-            if (targetJourney.isPresent()) {
-                final GrabJourneyDTO grabJourneyDTO = modelMapper.map(targetJourney.get(), GrabJourneyDTO.class);
-                final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
-                final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
-                return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
-            } else {
-                throw new JsonPatchException("No journey was found.");
-            }
+            final GrabJourneyDTO grabJourneyDTO = modelMapper.map(targetJourney.get(), GrabJourneyDTO.class);
+            final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
+            final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
+            return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
         } catch (final JsonPatchException | JsonProcessingException ex) {
-            throw new ResourceNotFoundException(
-                    "Error updating journey id " + journeyId + " whose driver's id is " + driverId);
+            throw new ResourceNotFoundException(errorMsg);
         }
     }
 
