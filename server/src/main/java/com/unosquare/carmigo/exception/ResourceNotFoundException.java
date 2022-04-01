@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.exception;
 
-public class ResourceNotFoundException extends RuntimeException
+public final class ResourceNotFoundException extends RuntimeException
 {
     public ResourceNotFoundException(final String message)
     {

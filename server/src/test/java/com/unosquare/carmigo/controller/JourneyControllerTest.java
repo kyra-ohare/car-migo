@@ -117,21 +117,21 @@ public class JourneyControllerTest
     @Test
     public void patch_Journey_Returns_HttpStatus_Accepted() throws Exception
     {
-        mockMvc.perform(patch(API_LEADING + "1/drivers/1")
+        mockMvc.perform(patch(API_LEADING + "1")
                         .contentType("application/json-patch+json")
                         .content(PATCH_JOURNEY_VALID_JSON))
                 .andExpect(status().isOk());
-        verify(journeyServiceMock).patchJourney(anyInt(), anyInt(), any(JsonPatch.class));
+        verify(journeyServiceMock).patchJourney(anyInt(), any(JsonPatch.class));
     }
 
     @Test
     public void patch_Journey_Returns_HttpStatus_BadRequest() throws Exception
     {
-        mockMvc.perform(patch(API_LEADING + "1/drivers/1")
+        mockMvc.perform(patch(API_LEADING + "1")
                         .contentType("application/json-patch+json")
                         .content(PATCH_JOURNEY_INVALID_JSON))
                 .andExpect(status().isBadRequest());
-        verify(journeyServiceMock, times(0)).patchJourney(anyInt(), anyInt(), any(JsonPatch.class));
+        verify(journeyServiceMock, times(0)).patchJourney(anyInt(), any(JsonPatch.class));
     }
 
     @Test

@@ -71,13 +71,12 @@ public class JourneyController
         return new ResponseEntity<>(journeyViewModel, HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{journeyId}/drivers/{driverId}", consumes = "application/json-patch+json")
+    @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<JourneyViewModel> patchJourney(@PathVariable final int journeyId,
-                                                         @PathVariable final int driverId,
+    public ResponseEntity<JourneyViewModel> patchJourney(@PathVariable final int id,
                                                          @Valid @RequestBody final JsonPatch patch)
     {
-        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, driverId, patch);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(id, patch);
         final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
         return ResponseEntity.ok(journeyViewModel);
     }

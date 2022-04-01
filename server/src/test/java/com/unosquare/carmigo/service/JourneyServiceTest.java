@@ -128,8 +128,7 @@ public class JourneyServiceTest
     @Test
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyByDriverId(anyInt())).thenReturn(journeyFixtureList);
-        journeyFixtureList.add(journeyFixture);
+        when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journeyFixture);
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final JsonPatch patch = jsonPatch();
         final JsonNode journeyNode = jsonNodeJourney(patch);
@@ -138,11 +137,11 @@ public class JourneyServiceTest
         when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(
-                journeyFixture.getId(), journeyFixture.getDriver().getId(), patch);
+                journeyFixture.getId(), patch);
 
         assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
         assertThat(grabJourneyDTO.getLocationFrom().getId()).isEqualTo(grabJourneyDTOFixture.getLocationFrom().getId());
-        verify(journeyRepositoryMock).findJourneyByDriverId(anyInt());
+        verify(journeyRepositoryMock).findJourneyById(anyInt());
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
 
