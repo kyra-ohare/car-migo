@@ -15,12 +15,12 @@ import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import com.unosquare.carmigo.util.ResourceUtility;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class JourneyServiceTest
 {
     private static final String PATCH_JOURNEY_VALID_JSON =
@@ -68,7 +68,7 @@ public class JourneyServiceTest
 
     private final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         final JFixture jFixture = new JFixture();
