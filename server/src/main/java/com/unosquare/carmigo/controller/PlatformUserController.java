@@ -34,8 +34,8 @@ import javax.validation.Valid;
 @RequestMapping("/v1/users")
 public class PlatformUserController
 {
-    final ModelMapper modelMapper;
-    final PlatformUserService platformUserService;
+    private final ModelMapper modelMapper;
+    private final PlatformUserService platformUserService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -50,7 +50,7 @@ public class PlatformUserController
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)  // TODO @Valid maps to DataIntegrityViolationException instead of MethodArgumentNotValidException when not-null value is passed
+            @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel)
     {
         final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
                 createPlatformUserViewModel, CreatePlatformUserDTO.class);

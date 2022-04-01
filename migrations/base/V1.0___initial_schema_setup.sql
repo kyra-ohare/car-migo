@@ -50,7 +50,7 @@ create table if not exists journey
 (
     id serial not null
         constraint journey_pkey primary key,
-    created_date date not null,
+    created_date timestamp not null,
     location_id_from integer not null
         constraint location_id_from_fkey references location,
     location_id_to integer not null

@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 public @interface ValidPassword
 {
     String message() default "Password must contain between 8 and 20 characters and at least 2 of the following: " +
-            "Alphanumeric characters, one special character ( @#$%^&+= ), one capital letter.";
+            "Alphanumeric characters, one special character ( @#$%^&+=!? ), one capital letter.";
 
     Class<?>[] groups() default {};
 

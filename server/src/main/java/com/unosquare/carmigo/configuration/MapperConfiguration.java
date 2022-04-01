@@ -19,9 +19,10 @@ public class MapperConfiguration
     public ModelMapper modelMapper()
     {
         final ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setAmbiguityIgnored(true);
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+        mapper.getConfiguration()
+                .setAmbiguityIgnored(true)
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setPropertyCondition(Conditions.isNotNull());
         return mapper;
     }
 

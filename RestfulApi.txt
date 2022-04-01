@@ -1,0 +1,66 @@
+GET /users/{id}
+POST /users
+    Request body:
+    {   // UserViewModel
+        "firstName":"<string>",
+        "lastName":"<string>",
+        "dob":"<date>",
+        "email":"<string>",
+        "password":"<string>",
+        "phoneNumber":"<string>",
+        "userAccessStatusId":<integer>     // from a drop-down menu
+    }
+PATCH /users/{id}
+DELETE /users/{id}
+
+
+GET /users/drivers/{id}
+GET /users/drivers/{id}/journeys
+POST /users/{id}/drivers
+    Request body:
+    {
+        "licenseNumber":"<string>"
+    }
+DELETE /users/drivers/{id}
+
+GET /users/passengers/{id}
+GET /users/passengers/{id}/journeys
+POST /users/{id}/passengers
+DELETE /users/passengers/{id}
+
+
+GET /journeys
+GET /journeys/{id}
+GET /journeys/search
+    Request body:
+    {
+        "locationIdFrom": <integer>,
+        "locationIdTo": <integer>,
+        "dateTime": []
+    }
+POST /journeys
+    Request body:
+    {
+        [
+            "journey": {
+                "locationIdFrom":<integer>,     // from a drop-down menu
+                "locationIdTo":<integer>,       // from a drop-down menu
+                "maxPassengers":<integer>,
+                "dateTime":<timestamp>,
+                "driverId":<integer>
+            }
+        ]
+    }
+PATCH /journeys/{journeyId}/drivers/{driverId}
+DELETE /journeys/{id}
+
+------------------------------------------------
+
+
+GET /reviews?subject_id=<string>
+POST /reviews/reviewer/{id}/subject/{id}
+    Request body:
+    {
+        "weight":<integer>,               // from a drop-down menu
+        "review":"<string>"
+    }

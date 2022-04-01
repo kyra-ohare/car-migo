@@ -1,29 +1,81 @@
 package com.unosquare.carmigo.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.unosquare.carmigo.dto.CreateJourneyDTO;
+import com.unosquare.carmigo.dto.GrabJourneyDTO;
+import com.unosquare.carmigo.entity.Driver;
+import com.unosquare.carmigo.entity.Journey;
+import com.unosquare.carmigo.entity.Location;
+import com.unosquare.carmigo.exception.PatchException;
+import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.util.MapperUtils;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.util.List;
 
 @Service
-public class JourneyService {
+@RequiredArgsConstructor
+public class JourneyService
+{
+    private final JourneyRepository journeyRepository;
+    private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
+    private final EntityManager entityManager;
 
-    public static String getJourneyParameters(final Map<String, String> paramMap)
+    public GrabJourneyDTO getJourneyById(final int id)
     {
-        if (!paramMap.isEmpty()) {
-            final Map.Entry<String, String> entry = paramMap.entrySet().iterator().next();
-            final String key = entry.getKey();
-            final String value = entry.getValue();
+        return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
+    }
 
-            switch (key) {
-                case "passenger_id":
-                    return "Here are all journeys for passenger " + value;
-                case "driver_id":
-                    return "Here are all journeys for driver " + value;
-                default:
-                    return "Error retrieving journeys";
-            }
-        } else {
-            return "Here are all your journeys";
+    public List<GrabJourneyDTO> getJourneys()
+    {
+        final List<Journey> result = journeyRepository.findAll();
+        return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    }
+
+    public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO)
+    {
+        final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);
+        journey.setCreatedDate(Instant.now());
+        journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
+        journey.setLocationTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
+        journey.setDriver(entityManager.getReference(Driver.class, createJourneyDTO.getDriverId()));
+        return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
+    }
+
+    public GrabJourneyDTO patchJourney(final int id, final JsonPatch patch)
+    {
+        final GrabJourneyDTO grabJourneyDTO = modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
+        try {
+            final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
+            final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
+            return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
+        } catch (final JsonPatchException | JsonProcessingException ex) {
+            throw new PatchException(
+                    String.format("It was not possible to patch journey id %d - %s", id, ex.getMessage()));
         }
+    }
+
+    public void deleteJourneyById(final int id)
+    {
+        journeyRepository.deleteById(id);
+    }
+
+    private Journey findJourneyById(final int id)
+    {
+        final Journey journey = journeyRepository.findJourneyById(id);
+        if (journey == null) {
+            throw new ResourceNotFoundException(String.format("Journey id %d not found.", id));
+        }
+        return journey;
     }
 }

@@ -23,7 +23,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Service
@@ -54,7 +53,7 @@ public class PlatformUserService
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
 
-    public GrabPlatformUserDTO patchPlatformUser(final int id, @NotNull final JsonPatch patch)
+    public GrabPlatformUserDTO patchPlatformUser(final int id, final JsonPatch patch)
     {
         final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
                 findPlatformUserById(id), GrabPlatformUserDTO.class);
@@ -73,7 +72,7 @@ public class PlatformUserService
         platformUserRepository.deleteById(id);
     }
 
-    public GrabDriverDTO getDriverById(int id)
+    public GrabDriverDTO getDriverById(final int id)
     {
         final Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver id " + id + " not found."));
@@ -92,7 +91,7 @@ public class PlatformUserService
         driverRepository.deleteById(id);
     }
 
-    public GrabPassengerDTO getPassengerById(int id)
+    public GrabPassengerDTO getPassengerById(final int id)
     {
         final Passenger passenger = passengerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Passenger id " + id + " not found."));
