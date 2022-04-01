@@ -72,7 +72,7 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journey_By_Id_Returns_JourneyViewModelTest() throws Exception
+    public void get_Journey_By_Id_Returns_JourneyViewModel() throws Exception
     {
         when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
         when(modelMapperMock.map(grabJourneyDTOFixture, JourneyViewModel.class)).thenReturn(journeyViewModelFixture);
