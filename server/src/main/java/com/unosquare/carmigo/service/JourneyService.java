@@ -61,7 +61,7 @@ public class JourneyService
             return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
         } catch (final JsonPatchException | JsonProcessingException ex) {
             throw new PatchException(
-                    String.format("It was not possible to patch journey id %d. %s", id, ex.getMessage()));
+                    String.format("It was not possible to patch journey id %d - %s", id, ex.getMessage()));
         }
     }
 
