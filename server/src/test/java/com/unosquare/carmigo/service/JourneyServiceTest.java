@@ -14,6 +14,7 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
+import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,8 +131,8 @@ public class JourneyServiceTest
     {
         when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journeyFixture);
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
-        final JsonPatch patch = jsonPatch();
-        final JsonNode journeyNode = jsonNodeJourney(patch);
+        final JsonPatch patch = PatchUtility.jsonPatch(PATCH_JOURNEY_VALID_JSON);
+        final JsonNode journeyNode = PatchUtility.jsonNode(journeyFixture, patch);
         when(objectMapperMock.convertValue(grabJourneyDTOFixture, JsonNode.class)).thenReturn(journeyNode);
         when(objectMapperMock.treeToValue(journeyNode, Journey.class)).thenReturn(journeyFixture);
         when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);
@@ -150,15 +151,5 @@ public class JourneyServiceTest
     {
         journeyService.deleteJourneyById(anyInt());
         verify(journeyRepositoryMock).deleteById(anyInt());
-    }
-
-    private JsonNode jsonNodeJourney(final JsonPatch jsonPatch) throws Exception
-    {
-        return jsonPatch.apply(objectMapper.convertValue(journeyFixture, JsonNode.class));
-    }
-
-    private JsonPatch jsonPatch() throws Exception
-    {
-        return JsonPatch.fromJson(objectMapper.readTree(PATCH_JOURNEY_VALID_JSON));
     }
 }

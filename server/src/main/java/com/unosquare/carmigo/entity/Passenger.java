@@ -27,7 +27,6 @@ import lombok.ToString.Exclude;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "passenger")
 public class Passenger
 {
@@ -41,11 +40,9 @@ public class Passenger
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "platform_user_id", nullable = false)
-    @Exclude
     private PlatformUser platformUser;
 
     @OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "passenger_id", nullable = false, insertable = false, updatable = false)
-    @Exclude
     private List<PassengerJourney> passengerJourney;
 }

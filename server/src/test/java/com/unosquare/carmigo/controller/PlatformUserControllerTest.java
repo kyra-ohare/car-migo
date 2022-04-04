@@ -3,10 +3,17 @@ package com.unosquare.carmigo.controller;
 import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
+import com.unosquare.carmigo.dto.GrabDriverDTO;
+import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
+import com.unosquare.carmigo.model.request.CreateDriverViewModel;
+import com.unosquare.carmigo.model.response.DriverViewModel;
+import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
 import com.unosquare.carmigo.service.PlatformUserService;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -28,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,9 +44,17 @@ public class PlatformUserControllerTest
 {
     private static final String API_LEADING = "/v1/users/";
     private static final String POST_PLATFORM_USER_VALID_JSON =
-            ResourceUtility.generateStringFromResource("requestJson/PlatformUserValid.json");
+            ResourceUtility.generateStringFromResource("requestJson/PostPlatformUserValid.json");
     private static final String POST_PLATFORM_USER_INVALID_JSON =
-            ResourceUtility.generateStringFromResource("requestJson/PlatformUserInvalid.json");
+            ResourceUtility.generateStringFromResource("requestJson/PostPlatformUserInvalid.json");
+    private static final String PATCH_PLATFORM_USER_VALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PatchPlatformUserValid.json");
+    private static final String PATCH_PLATFORM_USER_INVALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PatchPlatformUserInvalid.json");
+    private static final String POST_DRIVER_VALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PostDriverValid.json");
+    private static final String POST_DRIVER_INVALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PostDriverInvalid.json");
 
     private MockMvc mockMvc;
 
@@ -50,7 +66,15 @@ public class PlatformUserControllerTest
     @Fixture
     private GrabPlatformUserDTO grabPlatformUserDTOFixture;
     @Fixture
+    private GrabDriverDTO grabDriverDTOFixture;
+    @Fixture
+    private GrabPassengerDTO grabPassengerDTOFixture;
+    @Fixture
     private PlatformUserViewModel platformUserViewModelFixture;
+    @Fixture
+    private DriverViewModel driverViewModelFixture;
+    @Fixture
+    private PassengerViewModel passengerViewModelFixture;
     @Fixture
     private CreatePlatformUserDTO createPlatformUserDTOFixture;
     @Fixture
@@ -104,11 +128,111 @@ public class PlatformUserControllerTest
     }
 
     @Test
+    public void patch_PlatformUser_Returns_HttpStatus_Accepted() throws Exception
+    {
+        mockMvc.perform(patch(API_LEADING + "1")
+                        .contentType("application/json-patch+json")
+                        .content(PATCH_PLATFORM_USER_VALID_JSON))
+                .andExpect(status().isOk());
+        verify(platformUserServiceMock).patchPlatformUser(anyInt(), any(JsonPatch.class));
+    }
+
+    @Test
+    public void patch_PlatformUser_Returns_HttpStatus_BadRequest() throws Exception
+    {
+        mockMvc.perform(patch(API_LEADING + "1")
+                        .contentType("application/json-patch+json")
+                        .content(PATCH_PLATFORM_USER_INVALID_JSON))
+                .andExpect(status().isBadRequest());
+        verify(platformUserServiceMock, times(0)).patchPlatformUser(anyInt(), any(JsonPatch.class));
+    }
+
+    @Test
     public void delete_PlatformUser_Returns_HttpStatus_No_Content() throws Exception
     {
         doNothing().when(platformUserServiceMock).deletePlatformUserById(anyInt());
         mockMvc.perform(delete(API_LEADING + anyInt()))
                 .andExpect(status().isNoContent());
         verify(platformUserServiceMock).deletePlatformUserById(anyInt());
+    }
+
+    @Test
+    public void get_Driver_By_Id_Returns_DriverViewModel() throws Exception
+    {
+        when(platformUserServiceMock.getDriverById(anyInt())).thenReturn(grabDriverDTOFixture);
+        when(modelMapperMock.map(grabDriverDTOFixture, DriverViewModel.class))
+                .thenReturn(driverViewModelFixture);
+
+        mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(platformUserServiceMock).getDriverById(anyInt());
+    }
+
+    @Fixture
+    private CreateDriverDTO createDriverDTOFixture;
+    @Fixture
+    private CreateDriverViewModel createDriverViewModalFixture;
+
+    @Test
+    public void post_Driver_Returns_HttpStatus_Created() throws Exception
+    {
+        when(modelMapperMock.map(createDriverViewModalFixture, CreateDriverDTO.class)).thenReturn(createDriverDTOFixture);
+        when(platformUserServiceMock.createDriver(anyInt(), any(CreateDriverDTO.class))).thenReturn(grabDriverDTOFixture);
+        mockMvc.perform(post(API_LEADING + "1/drivers")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(POST_DRIVER_VALID_JSON))
+                .andExpect(status().isCreated());
+        verify(platformUserServiceMock).createDriver(anyInt(), any(CreateDriverDTO.class));
+    }
+
+    @Test
+    public void post_Driver_Returns_HttpStatus_Conflict() throws Exception
+    {
+        mockMvc.perform(post(API_LEADING + "1/drivers")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(POST_DRIVER_INVALID_JSON))
+                .andExpect(status().isBadRequest());
+        verify(platformUserServiceMock, times(0)).createDriver(anyInt(), any(CreateDriverDTO.class));
+    }
+
+    @Test
+    public void delete_Driver_Returns_HttpStatus_No_Content() throws Exception
+    {
+        doNothing().when(platformUserServiceMock).deleteDriverById(anyInt());
+        mockMvc.perform(delete(API_LEADING + "/drivers/" + anyInt()))
+                .andExpect(status().isNoContent());
+        verify(platformUserServiceMock).deleteDriverById(anyInt());
+    }
+
+    @Test
+    public void get_Passenger_By_Id_Returns_PassengerViewModel() throws Exception
+    {
+        when(platformUserServiceMock.getPassengerById(anyInt())).thenReturn(grabPassengerDTOFixture);
+        when(modelMapperMock.map(grabPassengerDTOFixture, PassengerViewModel.class))
+                .thenReturn(passengerViewModelFixture);
+
+        mockMvc.perform(get(API_LEADING + "/passengers/" + anyInt())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+        verify(platformUserServiceMock).getPassengerById(anyInt());
+    }
+
+    @Test
+    public void post_Passenger_Returns_HttpStatus_Created() throws Exception
+    {
+        mockMvc.perform(post(API_LEADING + "1/passengers")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+        verify(platformUserServiceMock).createPassenger(anyInt());
+    }
+
+    @Test
+    public void delete_Passenger_Returns_HttpStatus_No_Content() throws Exception
+    {
+        doNothing().when(platformUserServiceMock).deletePassengerById(anyInt());
+        mockMvc.perform(delete(API_LEADING + "/passengers/" + anyInt()))
+                .andExpect(status().isNoContent());
+        verify(platformUserServiceMock).deletePassengerById(anyInt());
     }
 }

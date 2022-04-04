@@ -75,7 +75,7 @@ public class PlatformUserService
     public GrabDriverDTO getDriverById(final int id)
     {
         final Driver driver = driverRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Driver id " + id + " not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Driver id %d not found.", id)));
         return modelMapper.map(driver, GrabDriverDTO.class);
     }
 
@@ -113,6 +113,6 @@ public class PlatformUserService
     private PlatformUser findPlatformUserById(final int id)
     {
         return platformUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("PlatformUser id %d not found.", id)));
     }
 }

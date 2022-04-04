@@ -71,7 +71,7 @@ public class PlatformUserController
         return ResponseEntity.ok(platformUserViewModel);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deletePlatformUser(@PathVariable final int id)
     {
@@ -96,10 +96,10 @@ public class PlatformUserController
     {
         final CreateDriverDTO createDriverDTO = modelMapper.map(createDriverViewModal, CreateDriverDTO.class);
         final GrabDriverDTO driverDTO = platformUserService.createDriver(id, createDriverDTO);
-        return ResponseEntity.ok(modelMapper.map(driverDTO, DriverViewModel.class));
+        return new ResponseEntity<>(modelMapper.map(driverDTO, DriverViewModel.class), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/drivers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/drivers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteDriver(@PathVariable final int id)
     {
@@ -122,10 +122,10 @@ public class PlatformUserController
     public ResponseEntity<PassengerViewModel> createPassenger(@PathVariable final int id)
     {
         final GrabPassengerDTO passengerDTO = platformUserService.createPassenger(id);
-        return ResponseEntity.ok(modelMapper.map(passengerDTO, PassengerViewModel.class));
+        return new ResponseEntity<>(modelMapper.map(passengerDTO, PassengerViewModel.class), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/passengers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/passengers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deletePassenger(@PathVariable final int id)
     {
