@@ -72,10 +72,7 @@ public class JourneyService
 
     private Journey findJourneyById(final int id)
     {
-        final Journey journey = journeyRepository.findJourneyById(id);
-        if (journey == null) {
-            throw new ResourceNotFoundException(String.format("Journey id %d not found.", id));
-        }
-        return journey;
+        return journeyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
     }
 }

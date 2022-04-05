@@ -27,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,7 +81,7 @@ public class JourneyServiceTest
     @Test
     public void get_Journey_By_Id_Returns_GrabJourneyDTO()
     {
-        when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journeyFixture);
+        when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(anyInt());
 
@@ -91,7 +92,7 @@ public class JourneyServiceTest
         assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
         assertThat(grabJourneyDTO.getDateTime()).isEqualTo(grabJourneyDTOFixture.getDateTime());
         assertThat(grabJourneyDTO.getDriver()).isEqualTo(grabJourneyDTOFixture.getDriver());
-        verify(journeyRepositoryMock).findJourneyById(anyInt());
+        verify(journeyRepositoryMock).findById(anyInt());
     }
 
     @Test
@@ -129,7 +130,7 @@ public class JourneyServiceTest
     @Test
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
-        when(journeyRepositoryMock.findJourneyById(anyInt())).thenReturn(journeyFixture);
+        when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
         when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
         final JsonPatch patch = PatchUtility.jsonPatch(PATCH_JOURNEY_VALID_JSON);
         final JsonNode journeyNode = PatchUtility.jsonNode(journeyFixture, patch);
@@ -142,7 +143,7 @@ public class JourneyServiceTest
 
         assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
         assertThat(grabJourneyDTO.getLocationFrom().getId()).isEqualTo(grabJourneyDTOFixture.getLocationFrom().getId());
-        verify(journeyRepositoryMock).findJourneyById(anyInt());
+        verify(journeyRepositoryMock).findById(anyInt());
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
 

@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JourneyRepository extends JpaRepository<Journey, Integer>
 {
-    Journey findJourneyById(final int id);
 }
