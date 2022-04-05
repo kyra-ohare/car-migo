@@ -19,8 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -53,10 +51,6 @@ public class PlatformUser
     @Column(name = "dob", nullable = false)
     private Instant dob;
 
-    private static String EMAIL_PATTERN = "^([^ @])+@([^ \\.@]+\\.)+([^ \\.@])+$";
-
-//    @Email or
-//    @Pattern(regexp = EMAIL_PATTERN, message = "Please provide a valid email address") String email)
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 

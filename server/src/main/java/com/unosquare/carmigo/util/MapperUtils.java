@@ -5,8 +5,10 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class MapperUtils
+public class MapperUtils
 {
+    private MapperUtils() {}
+
     public static <S, T> List<T> mapList(final List<S> source, final Class<T> targetClass,
                                          final ModelMapper modelMapper)
     {

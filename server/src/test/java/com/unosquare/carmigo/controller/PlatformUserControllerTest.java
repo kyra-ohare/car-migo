@@ -111,7 +111,7 @@ public class PlatformUserControllerTest
     public void post_PlatformUser_Returns_HttpStatus_Created() throws Exception
     {
         mockMvc.perform(post(API_LEADING)
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(POST_PLATFORM_USER_VALID_JSON))
                 .andExpect(status().isCreated());
         verify(platformUserServiceMock).createPlatformUser(any());
@@ -121,8 +121,8 @@ public class PlatformUserControllerTest
     public void post_PlatformUser_Returns_HttpStatus_Conflict() throws Exception
     {
         mockMvc.perform(post(API_LEADING)
-                        .content(POST_PLATFORM_USER_INVALID_JSON)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(POST_PLATFORM_USER_INVALID_JSON))
                 .andExpect(status().isBadRequest());
         verify(platformUserServiceMock, times(0)).createPlatformUser(any());
     }
@@ -164,7 +164,7 @@ public class PlatformUserControllerTest
                 .thenReturn(driverViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(platformUserServiceMock).getDriverById(anyInt());
     }
