@@ -10,11 +10,11 @@ import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
 import com.unosquare.carmigo.service.PlatformUserService;
 import com.unosquare.carmigo.util.ResourceUtility;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PlatformUserControllerTest
 {
     private static final String API_LEADING = "/v1/users/";
@@ -58,7 +58,7 @@ public class PlatformUserControllerTest
     @Fixture
     private UserAccessStatus userAccessStatusFixture;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         final JFixture jFixture = new JFixture();
