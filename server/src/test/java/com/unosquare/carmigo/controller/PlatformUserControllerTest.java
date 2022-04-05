@@ -11,7 +11,6 @@ import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
-import com.unosquare.carmigo.model.request.CreateDriverViewModel;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
@@ -169,21 +168,16 @@ public class PlatformUserControllerTest
         verify(platformUserServiceMock).getDriverById(anyInt());
     }
 
-    @Fixture
-    private CreateDriverDTO createDriverDTOFixture;
-    @Fixture
-    private CreateDriverViewModel createDriverViewModalFixture;
-
     @Test
     public void post_Driver_Returns_HttpStatus_Created() throws Exception
     {
-        when(modelMapperMock.map(createDriverViewModalFixture, CreateDriverDTO.class)).thenReturn(createDriverDTOFixture);
-        when(platformUserServiceMock.createDriver(anyInt(), any(CreateDriverDTO.class))).thenReturn(grabDriverDTOFixture);
         mockMvc.perform(post(API_LEADING + "1/drivers")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(POST_DRIVER_VALID_JSON))
                 .andExpect(status().isCreated());
-        verify(platformUserServiceMock).createDriver(anyInt(), any(CreateDriverDTO.class));
+        System.err.println(POST_DRIVER_VALID_JSON);
+        // todo "times" is currently 0 when it should be 1
+        verify(platformUserServiceMock, times(1)).createDriver(anyInt(), any(CreateDriverDTO.class));
     }
 
     @Test

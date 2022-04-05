@@ -19,12 +19,12 @@ import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PlatformUserServiceTest
 {
     private static final String PATCH_PLATFORM_USER_VALID_JSON =
@@ -77,7 +77,7 @@ public class PlatformUserServiceTest
     @Fixture
     private GrabPassengerDTO grabPassengerDTOFixture;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         final JFixture jFixture = new JFixture();
