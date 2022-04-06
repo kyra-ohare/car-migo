@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import lombok.ToString.Exclude;
 import org.hibernate.Hibernate;
 
 import javax.persistence.CascadeType;
@@ -25,7 +23,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "platform_user")
@@ -60,7 +57,6 @@ public class PlatformUser
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Exclude
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_access_status_id", nullable = false)
     private UserAccessStatus userAccessStatus;
