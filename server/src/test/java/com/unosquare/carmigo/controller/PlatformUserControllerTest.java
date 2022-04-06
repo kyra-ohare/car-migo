@@ -5,12 +5,9 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateDriverDTO;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
-import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
@@ -57,29 +54,15 @@ public class PlatformUserControllerTest
 
     private MockMvc mockMvc;
 
-    @Mock
-    private ModelMapper modelMapperMock;
-    @Mock
-    private PlatformUserService platformUserServiceMock;
+    @Mock private ModelMapper modelMapperMock;
+    @Mock private PlatformUserService platformUserServiceMock;
 
-    @Fixture
-    private GrabPlatformUserDTO grabPlatformUserDTOFixture;
-    @Fixture
-    private GrabDriverDTO grabDriverDTOFixture;
-    @Fixture
-    private GrabPassengerDTO grabPassengerDTOFixture;
-    @Fixture
-    private PlatformUserViewModel platformUserViewModelFixture;
-    @Fixture
-    private DriverViewModel driverViewModelFixture;
-    @Fixture
-    private PassengerViewModel passengerViewModelFixture;
-    @Fixture
-    private CreatePlatformUserDTO createPlatformUserDTOFixture;
-    @Fixture
-    private PlatformUser platformUserFixture;
-    @Fixture
-    private UserAccessStatus userAccessStatusFixture;
+    @Fixture private GrabPlatformUserDTO grabPlatformUserDTOFixture;
+    @Fixture private GrabDriverDTO grabDriverDTOFixture;
+    @Fixture private GrabPassengerDTO grabPassengerDTOFixture;
+    @Fixture private PlatformUserViewModel platformUserViewModelFixture;
+    @Fixture private DriverViewModel driverViewModelFixture;
+    @Fixture private PassengerViewModel passengerViewModelFixture;
 
     @BeforeEach
     public void setUp()

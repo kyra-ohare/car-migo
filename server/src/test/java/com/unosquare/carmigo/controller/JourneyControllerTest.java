@@ -47,17 +47,12 @@ public class JourneyControllerTest
 
     private MockMvc mockMvc;
 
-    @Mock
-    private ModelMapper modelMapperMock;
-    @Mock
-    private JourneyService journeyServiceMock;
+    @Mock private ModelMapper modelMapperMock;
+    @Mock private JourneyService journeyServiceMock;
 
-    @Fixture
-    private GrabJourneyDTO grabJourneyDTOFixture;
-    @Fixture
-    private JourneyViewModel journeyViewModelFixture;
-    @Fixture
-    private List<GrabJourneyDTO> grabJourneyDTOList;
+    @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
+    @Fixture private JourneyViewModel journeyViewModelFixture;
+    @Fixture private List<GrabJourneyDTO> grabJourneyDTOList;
 
     @BeforeEach
     public void setUp() throws Exception

@@ -6,7 +6,6 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.configuration.MapperConfiguration;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
@@ -41,34 +40,16 @@ public class JourneyServiceTest
 {
     private static final String PATCH_JOURNEY_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PatchJourneyValid.json");
-    @Mock
-    private JourneyRepository journeyRepositoryMock;
-    @Mock
-    private ModelMapper modelMapperMock;
-    @Mock
-    private ObjectMapper objectMapperMock;
-    @Mock
-    private EntityManager entityManagerMock;
+    @Mock private JourneyRepository journeyRepositoryMock;
+    @Mock private ModelMapper modelMapperMock;
+    @Mock private ObjectMapper objectMapperMock;
+    @Mock private EntityManager entityManagerMock;
+    @InjectMocks private JourneyService journeyService;
 
-    @InjectMocks
-    private JourneyService journeyService;
-
-    @Fixture
-    private GrabJourneyDTO grabJourneyDTOFixture;
-
-    @Fixture
-    private List<GrabJourneyDTO> grabJourneyDTOFixtureList;
-
-    @Fixture
-    private Journey journeyFixture;
-
-    @Fixture
-    private CreateJourneyDTO createJourneyDTOFixture;
-
-    @Fixture
-    private List<Journey> journeyFixtureList;
-
-    private final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
+    @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
+    @Fixture private Journey journeyFixture;
+    @Fixture private CreateJourneyDTO createJourneyDTOFixture;
+    @Fixture private List<Journey> journeyFixtureList;
 
     @BeforeEach
     public void setUp()

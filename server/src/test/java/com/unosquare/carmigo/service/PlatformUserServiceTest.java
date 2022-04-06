@@ -44,38 +44,22 @@ public class PlatformUserServiceTest
     private static final String PATCH_PLATFORM_USER_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PatchPlatformUserValid.json");
 
-    @Mock
-    private PlatformUserRepository platformUserRepositoryMock;
-    @Mock
-    private DriverRepository driverRepositoryMock;
-    @Mock
-    private PassengerRepository passengerRepositoryMock;
-    @Mock
-    private ModelMapper modelMapperMock;
-    @Mock
-    private ObjectMapper objectMapperMock;
-    @Mock
-    private EntityManager entityManagerMock;
+    @Mock private PlatformUserRepository platformUserRepositoryMock;
+    @Mock private DriverRepository driverRepositoryMock;
+    @Mock private PassengerRepository passengerRepositoryMock;
+    @Mock private ModelMapper modelMapperMock;
+    @Mock private ObjectMapper objectMapperMock;
+    @Mock private EntityManager entityManagerMock;
+    @InjectMocks private PlatformUserService platformUserService;
 
-    @InjectMocks
-    private PlatformUserService platformUserService;
-
-    @Fixture
-    private PlatformUser platformUserFixture;
-    @Fixture
-    private Driver driverFixture;
-    @Fixture
-    private Passenger passengerFixture;
-    @Fixture
-    private CreatePlatformUserDTO createPlatformUserDTOFixture;
-    @Fixture
-    private CreateDriverDTO createDriverDTOFixture;
-    @Fixture
-    private GrabPlatformUserDTO grabPlatformUserDTOFixture;
-    @Fixture
-    private GrabDriverDTO grabDriverDTOFixture;
-    @Fixture
-    private GrabPassengerDTO grabPassengerDTOFixture;
+    @Fixture private PlatformUser platformUserFixture;
+    @Fixture private Driver driverFixture;
+    @Fixture private Passenger passengerFixture;
+    @Fixture private CreatePlatformUserDTO createPlatformUserDTOFixture;
+    @Fixture private CreateDriverDTO createDriverDTOFixture;
+    @Fixture private GrabPlatformUserDTO grabPlatformUserDTOFixture;
+    @Fixture private GrabDriverDTO grabDriverDTOFixture;
+    @Fixture private GrabPassengerDTO grabPassengerDTOFixture;
 
     @BeforeEach
     public void setUp()
