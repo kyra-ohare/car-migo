@@ -84,7 +84,7 @@ public class PlatformUserControllerTest
                 .thenReturn(platformUserViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(platformUserServiceMock).getPlatformUserById(anyInt());
     }
