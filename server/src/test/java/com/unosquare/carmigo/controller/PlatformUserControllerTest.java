@@ -159,7 +159,7 @@ public class PlatformUserControllerTest
                         .content(POST_DRIVER_VALID_JSON))
                 .andExpect(status().isCreated());
         // todo "times" is currently 0 when it should be 1
-        //  verify(platformUserServiceMock, times(1)).createDriver(anyInt(), any(CreateDriverDTO.class));
+        //   verify(platformUserServiceMock, times(1)).createDriver(anyInt(), any(CreateDriverDTO.class));
     }
 
     @Test
