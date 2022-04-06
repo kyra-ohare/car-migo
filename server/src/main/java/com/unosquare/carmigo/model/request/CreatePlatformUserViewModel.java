@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
@@ -31,6 +32,7 @@ public class CreatePlatformUserViewModel
     @Size(max = 100)
     @NotNull
     @JsonProperty("email")
+    @Email(regexp = "^([^ @])+@([^ \\.@]+\\.)+([^ \\.@])+$")
     private String email;
 
     @Size(max = 50)

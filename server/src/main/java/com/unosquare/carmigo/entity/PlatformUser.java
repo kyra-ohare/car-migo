@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import lombok.ToString.Exclude;
 import org.hibernate.Hibernate;
 
 import javax.persistence.CascadeType;
@@ -19,15 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "platform_user")
@@ -53,10 +48,6 @@ public class PlatformUser
     @Column(name = "dob", nullable = false)
     private Instant dob;
 
-    private static String EMAIL_PATTERN = "^([^ @])+@([^ \\.@]+\\.)+([^ \\.@])+$";
-
-//    @Email or
-//    @Pattern(regexp = EMAIL_PATTERN, message = "Please provide a valid email address") String email)
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -66,7 +57,6 @@ public class PlatformUser
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Exclude
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_access_status_id", nullable = false)
     private UserAccessStatus userAccessStatus;

@@ -12,7 +12,7 @@ import java.time.Instant;
 @NoArgsConstructor
 public class JourneyViewModel
 {
-    @JsonProperty("journeyId")
+    @JsonProperty("id")
     private int id;
 
     @JsonProperty("createdDate")

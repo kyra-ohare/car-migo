@@ -1,0 +1,12 @@
+[
+  {
+    "op": "replace",
+    "path": "/email",
+    "value": "patched@example.comm"
+  },
+  {
+    "op": "replace",
+    "path": "/userAccessStatus/id",
+    "value": "2"
+  }
+]

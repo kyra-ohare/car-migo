@@ -14,18 +14,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "passenger_journey")
-public class PassengerJourney {
+public class PassengerJourney
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

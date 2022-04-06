@@ -7,6 +7,8 @@ import java.io.IOException;
 
 public class ResourceUtility
 {
+    private ResourceUtility() {}
+
     public static String generateStringFromResource(final String path)
     {
         try {

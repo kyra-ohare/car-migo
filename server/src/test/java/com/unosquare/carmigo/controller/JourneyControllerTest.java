@@ -47,17 +47,12 @@ public class JourneyControllerTest
 
     private MockMvc mockMvc;
 
-    @Mock
-    private ModelMapper modelMapperMock;
-    @Mock
-    private JourneyService journeyServiceMock;
+    @Mock private ModelMapper modelMapperMock;
+    @Mock private JourneyService journeyServiceMock;
 
-    @Fixture
-    private GrabJourneyDTO grabJourneyDTOFixture;
-    @Fixture
-    private JourneyViewModel journeyViewModelFixture;
-    @Fixture
-    private List<GrabJourneyDTO> grabJourneyDTOList;
+    @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
+    @Fixture private JourneyViewModel journeyViewModelFixture;
+    @Fixture private List<GrabJourneyDTO> grabJourneyDTOList;
 
     @BeforeEach
     public void setUp() throws Exception
@@ -78,7 +73,7 @@ public class JourneyControllerTest
         when(modelMapperMock.map(grabJourneyDTOFixture, JourneyViewModel.class)).thenReturn(journeyViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneyById(anyInt());
     }
@@ -89,7 +84,7 @@ public class JourneyControllerTest
         when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDTOList);
 
         mockMvc.perform(get(API_LEADING)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneys();
     }
@@ -98,7 +93,7 @@ public class JourneyControllerTest
     public void post_Journey_Returns_HttpStatus_Created() throws Exception
     {
         mockMvc.perform(post(API_LEADING)
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(POST_JOURNEY_VALID_JSON))
                 .andExpect(status().isCreated());
         verify(journeyServiceMock).createJourney(any());
@@ -108,7 +103,7 @@ public class JourneyControllerTest
     public void post_Journey_Returns_HttpStatus_BadRequest() throws Exception
     {
         mockMvc.perform(post(API_LEADING)
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(POST_JOURNEY_INVALID_JSON))
                 .andExpect(status().isBadRequest());
         verify(journeyServiceMock, times(0)).createJourney(any());
