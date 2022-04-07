@@ -77,7 +77,7 @@ public class JourneyServiceTest
     }
 
     @Test
-    public void get_Journeys_Returns_List_of_Journeys()
+    public void get_Journeys_Returns_List_of_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
@@ -86,6 +86,18 @@ public class JourneyServiceTest
 
         assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
         verify(journeyRepositoryMock).findAll();
+    }
+
+    @Test
+    public void get_Journeys_By_Passenger_Id_Returns_List_Of_GrabJourneyDTO()
+    {
+        when(journeyRepositoryMock.findJourneysByPassengerId(anyInt())).thenReturn(journeyFixtureList);
+        final List<GrabJourneyDTO> grabJourneyDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
+        final List<GrabJourneyDTO> journeyList = journeyService.getJourneysByPassengerId(anyInt());
+
+        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        verify(journeyRepositoryMock).findJourneysByPassengerId(anyInt());
     }
 
     @Test

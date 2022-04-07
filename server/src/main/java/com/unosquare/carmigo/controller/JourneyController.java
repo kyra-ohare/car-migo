@@ -52,6 +52,16 @@ public class JourneyController
         return ResponseEntity.ok(journeyViewModelList);
     }
 
+    @GetMapping(value = "/passenger/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<JourneyViewModel>> getJourneysByPassengerId(@PathVariable final int id)
+    {
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByPassengerId(id);
+        final List<JourneyViewModel> journeyViewModelList = MapperUtils.mapList(
+                grabJourneyDTOList, JourneyViewModel.class, modelMapper);
+        return ResponseEntity.ok(journeyViewModelList);
+    }
+
     // todo
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

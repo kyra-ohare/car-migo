@@ -42,6 +42,12 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
+    public List<GrabJourneyDTO> getJourneysByPassengerId(final int id)
+    {
+        final List<Journey> result = journeyRepository.findJourneysByPassengerId(id);
+        return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    }
+
     public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO)
     {
         final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);

@@ -90,6 +90,15 @@ public class JourneyControllerTest
     }
 
     @Test
+    public void get_Passenger_By_Id_Returns_List_Of_JourneyViewModel() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/passenger/" + anyInt())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+        verify(journeyServiceMock).getJourneysByPassengerId(anyInt());
+    }
+
+    @Test
     public void post_Journey_Returns_HttpStatus_Created() throws Exception
     {
         mockMvc.perform(post(API_LEADING)

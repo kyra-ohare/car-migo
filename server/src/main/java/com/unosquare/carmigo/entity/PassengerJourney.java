@@ -24,7 +24,6 @@ import javax.persistence.Table;
 @Table(name = "passenger_journey")
 public class PassengerJourney
 {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
