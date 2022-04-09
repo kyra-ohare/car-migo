@@ -42,9 +42,21 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
+    public List<GrabJourneyDTO> getJourneysByDriverId(final int id)
+    {
+        final List<Journey> result = journeyRepository.findJourneysByDriverId(id);
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("No journeys found for driver id %d.", id));
+        }
+        return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    }
+
     public List<GrabJourneyDTO> getJourneysByPassengerId(final int id)
     {
         final List<Journey> result = journeyRepository.findJourneysByPassengerId(id);
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("No journeys found for passenger id %d.", id));
+        }
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 

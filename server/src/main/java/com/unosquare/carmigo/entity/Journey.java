@@ -13,10 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Getter
@@ -54,4 +57,10 @@ public class Journey
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
+
+    @JoinTable(name = "passenger_journey",
+            joinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "journey_id", referencedColumnName = "id"))
+    @OneToMany
+    private List<Passenger> passengers;
 }

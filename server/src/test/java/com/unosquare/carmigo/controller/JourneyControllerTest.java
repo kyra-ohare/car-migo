@@ -5,7 +5,7 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
-import com.unosquare.carmigo.model.response.JourneyViewModel;
+import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +51,7 @@ public class JourneyControllerTest
     @Mock private JourneyService journeyServiceMock;
 
     @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
-    @Fixture private JourneyViewModel journeyViewModelFixture;
+    @Fixture private JourneyDriverViewModel journeyViewModelFixture;
     @Fixture private List<GrabJourneyDTO> grabJourneyDTOList;
 
     @BeforeEach
@@ -70,7 +70,7 @@ public class JourneyControllerTest
     public void get_Journey_By_Id_Returns_JourneyViewModel() throws Exception
     {
         when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
-        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyViewModel.class)).thenReturn(journeyViewModelFixture);
+        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyDriverViewModel.class)).thenReturn(journeyViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -90,7 +90,16 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Passenger_By_Id_Returns_List_Of_JourneyViewModel() throws Exception
+    public void get_Journeys_By_Driver_Id_Returns_List_Of_JourneyPassengerViewModel() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/driver/" + anyInt())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+        verify(journeyServiceMock).getJourneysByDriverId(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_By_Passenger_Id_Returns_List_Of_JourneyDriverViewModel() throws Exception
     {
         mockMvc.perform(get(API_LEADING + "/passenger/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))

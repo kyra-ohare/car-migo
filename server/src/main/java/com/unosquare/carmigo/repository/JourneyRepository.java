@@ -12,4 +12,6 @@ public interface JourneyRepository extends JpaRepository<Journey, Integer>
 {
     @Query("SELECT j FROM Journey j JOIN PassengerJourney pj ON j.id = pj.journey.id WHERE pj.passenger.id = ?1")
     List<Journey> findJourneysByPassengerId(final int id);
+
+    List<Journey> findJourneysByDriverId(final int id);
 }

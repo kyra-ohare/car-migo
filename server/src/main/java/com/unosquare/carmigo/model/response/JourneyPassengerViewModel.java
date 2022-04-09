@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class JourneyViewModel
+public class JourneyPassengerViewModel
 {
     @JsonProperty("id")
     private int id;
@@ -30,6 +31,6 @@ public class JourneyViewModel
     @JsonProperty("dateTime")
     private Instant dateTime;
 
-    @JsonProperty("driver")
-    private DriverViewModel driver;
+    @JsonProperty("passengers")
+    private List<PassengerViewModel> passengers;
 }
