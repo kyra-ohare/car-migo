@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface JourneyRepository extends JpaRepository<Journey, Integer>
 {
-    @Query("SELECT j FROM Journey j JOIN PassengerJourney pj ON j.id = pj.journey.id WHERE pj.passenger.id = ?1")
-    List<Journey> findJourneysByPassengerId(final int id);
-
+    @Query("SELECT DISTINCT j FROM Journey j JOIN PassengerJourney pj ON j = pj.journey WHERE j.driver.id = ?1")
     List<Journey> findJourneysByDriverId(final int id);
+
+    @Query("SELECT DISTINCT j FROM Journey j JOIN PassengerJourney pj ON j = pj.journey WHERE pj.passenger.id = ?1")
+    List<Journey> findJourneysByPassengerId(final int id);
 }
