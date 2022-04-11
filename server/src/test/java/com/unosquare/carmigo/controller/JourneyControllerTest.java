@@ -92,7 +92,7 @@ public class JourneyControllerTest
     @Test
     public void get_Journeys_By_Driver_Id_Returns_List_Of_JourneyPassengerViewModel() throws Exception
     {
-        mockMvc.perform(get(API_LEADING + "/driver/" + anyInt())
+        mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByDriverId(anyInt());
@@ -101,7 +101,7 @@ public class JourneyControllerTest
     @Test
     public void get_Journeys_By_Passenger_Id_Returns_List_Of_JourneyDriverViewModel() throws Exception
     {
-        mockMvc.perform(get(API_LEADING + "/passenger/" + anyInt())
+        mockMvc.perform(get(API_LEADING + "/passengers/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByPassengersId(anyInt());

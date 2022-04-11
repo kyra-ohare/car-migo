@@ -54,7 +54,7 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModelList);
     }
 
-    @GetMapping(value = "/driver/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/drivers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyPassengerViewModel>> getJourneysByDriverId(@PathVariable final int id)
     {
@@ -64,7 +64,7 @@ public class JourneyController
         return ResponseEntity.ok(journeyPassengerViewModelList);
     }
 
-    @GetMapping(value = "/passenger/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/passengers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByPassengerId(@PathVariable final int id)
     {
