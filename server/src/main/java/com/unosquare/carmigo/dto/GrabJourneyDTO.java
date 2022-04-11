@@ -1,6 +1,5 @@
 package com.unosquare.carmigo.dto;
 
-import com.unosquare.carmigo.model.response.PassengerViewModel;
 import lombok.Data;
 
 import java.time.Instant;
