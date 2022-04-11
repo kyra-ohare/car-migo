@@ -89,7 +89,7 @@ public class JourneyServiceTest
     }
 
     @Test
-    public void get_Journeys_By_Driver_Id_Returns_List_Of_GrabJourneyPassengerDTO()
+    public void get_Journeys_By_Driver_Id_Returns_List_Of_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findJourneysByDriverId(anyInt())).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
@@ -101,7 +101,7 @@ public class JourneyServiceTest
     }
 
     @Test
-    public void get_Journeys_By_Passengers_Id_Returns_List_Of_GrabJourneyDriverDTO()
+    public void get_Journeys_By_Passengers_Id_Returns_List_Of_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findJourneysByPassengersId(anyInt())).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
