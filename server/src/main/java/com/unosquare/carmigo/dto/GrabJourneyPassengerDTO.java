@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
-public class GrabJourneyDTO
+public class GrabJourneyPassengerDTO
 {
     private int id;
 

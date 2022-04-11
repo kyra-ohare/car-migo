@@ -7,7 +7,8 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
-import com.unosquare.carmigo.dto.GrabJourneyDTO;
+import com.unosquare.carmigo.dto.GrabJourneyDriverDTO;
+import com.unosquare.carmigo.dto.GrabJourneyPassengerDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
@@ -46,7 +47,7 @@ public class JourneyServiceTest
     @Mock private EntityManager entityManagerMock;
     @InjectMocks private JourneyService journeyService;
 
-    @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
+    @Fixture private GrabJourneyDriverDTO grabJourneyDriverDTOFixture;
     @Fixture private Journey journeyFixture;
     @Fixture private CreateJourneyDTO createJourneyDTOFixture;
     @Fixture private List<Journey> journeyFixtureList;
@@ -63,16 +64,16 @@ public class JourneyServiceTest
     public void get_Journey_By_Id_Returns_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
-        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
-        final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(anyInt());
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDriverDTO.class)).thenReturn(grabJourneyDriverDTOFixture);
+        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.getJourneyById(anyInt());
 
-        assertThat(grabJourneyDTO.getId()).isEqualTo(grabJourneyDTOFixture.getId());
-        assertThat(grabJourneyDTO.getCreatedDate()).isEqualTo(grabJourneyDTOFixture.getCreatedDate());
-        assertThat(grabJourneyDTO.getLocationFrom()).isEqualTo(grabJourneyDTOFixture.getLocationFrom());
-        assertThat(grabJourneyDTO.getLocationTo()).isEqualTo(grabJourneyDTOFixture.getLocationTo());
-        assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
-        assertThat(grabJourneyDTO.getDateTime()).isEqualTo(grabJourneyDTOFixture.getDateTime());
-        assertThat(grabJourneyDTO.getDriver()).isEqualTo(grabJourneyDTOFixture.getDriver());
+        assertThat(grabJourneyDriverDTO.getId()).isEqualTo(grabJourneyDriverDTOFixture.getId());
+        assertThat(grabJourneyDriverDTO.getCreatedDate()).isEqualTo(grabJourneyDriverDTOFixture.getCreatedDate());
+        assertThat(grabJourneyDriverDTO.getLocationFrom()).isEqualTo(grabJourneyDriverDTOFixture.getLocationFrom());
+        assertThat(grabJourneyDriverDTO.getLocationTo()).isEqualTo(grabJourneyDriverDTOFixture.getLocationTo());
+        assertThat(grabJourneyDriverDTO.getMaxPassengers()).isEqualTo(grabJourneyDriverDTOFixture.getMaxPassengers());
+        assertThat(grabJourneyDriverDTO.getDateTime()).isEqualTo(grabJourneyDriverDTOFixture.getDateTime());
+        assertThat(grabJourneyDriverDTO.getDriver()).isEqualTo(grabJourneyDriverDTOFixture.getDriver());
         verify(journeyRepositoryMock).findById(anyInt());
     }
 
@@ -80,35 +81,35 @@ public class JourneyServiceTest
     public void get_Journeys_Returns_List_of_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
-        final List<GrabJourneyDTO> grabJourneyDTOList =
-                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
-        final List<GrabJourneyDTO> journeyList = journeyService.getJourneys();
+        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDriverDTO.class, modelMapperMock);
+        final List<GrabJourneyDriverDTO> journeyList = journeyService.getJourneys();
 
-        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        assertThat(journeyList.size()).isEqualTo(grabJourneyDriverDTOList.size());
         verify(journeyRepositoryMock).findAll();
     }
 
     @Test
-    public void get_Journeys_By_Driver_Id_Returns_List_Of_GrabJourneyDTO()
+    public void get_Journeys_By_Driver_Id_Returns_List_Of_GrabJourneyPassengerDTO()
     {
         when(journeyRepositoryMock.findJourneysByDriverId(anyInt())).thenReturn(journeyFixtureList);
-        final List<GrabJourneyDTO> grabJourneyDTOList =
-                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
-        final List<GrabJourneyDTO> journeyList = journeyService.getJourneysByDriverId(anyInt());
+        final List<GrabJourneyPassengerDTO> grabJourneyPassengerDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyPassengerDTO.class, modelMapperMock);
+        final List<GrabJourneyPassengerDTO> journeyDriverList = journeyService.getJourneysByDriverId(anyInt());
 
-        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        assertThat(journeyDriverList.size()).isEqualTo(grabJourneyPassengerDTOList.size());
         verify(journeyRepositoryMock).findJourneysByDriverId(anyInt());
     }
 
     @Test
-    public void get_Journeys_By_Passenger_Id_Returns_List_Of_GrabJourneyDTO()
+    public void get_Journeys_By_Passenger_Id_Returns_List_Of_GrabJourneyDriverDTO()
     {
         when(journeyRepositoryMock.findJourneysByPassengerId(anyInt())).thenReturn(journeyFixtureList);
-        final List<GrabJourneyDTO> grabJourneyDTOList =
-                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
-        final List<GrabJourneyDTO> journeyList = journeyService.getJourneysByPassengerId(anyInt());
+        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDriverDTO.class, modelMapperMock);
+        final List<GrabJourneyDriverDTO> journeyList = journeyService.getJourneysByPassengerId(anyInt());
 
-        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        assertThat(journeyList.size()).isEqualTo(grabJourneyDriverDTOList.size());
         verify(journeyRepositoryMock).findJourneysByPassengerId(anyInt());
     }
 
@@ -118,17 +119,17 @@ public class JourneyServiceTest
         final Journey spyJourney = spy(new Journey());
         when(modelMapperMock.map(createJourneyDTOFixture, Journey.class)).thenReturn(spyJourney);
         when(journeyRepositoryMock.save(spyJourney)).thenReturn(journeyFixture);
-        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDriverDTO.class)).thenReturn(grabJourneyDriverDTOFixture);
         spyJourney.setCreatedDate(any(Instant.class));
         spyJourney.setLocationFrom(any(Location.class));
         spyJourney.setLocationTo(any(Location.class));
         spyJourney.setDriver(any(Driver.class));
-        final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTOFixture);
+        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.createJourney(createJourneyDTOFixture);
 
-        assertThat(grabJourneyDTO.getCreatedDate()).isEqualTo(grabJourneyDTOFixture.getCreatedDate());
-        assertThat(grabJourneyDTO.getLocationFrom()).isEqualTo(grabJourneyDTOFixture.getLocationFrom());
-        assertThat(grabJourneyDTO.getLocationTo()).isEqualTo(grabJourneyDTOFixture.getLocationTo());
-        assertThat(grabJourneyDTO.getDriver()).isEqualTo(grabJourneyDTOFixture.getDriver());
+        assertThat(grabJourneyDriverDTO.getCreatedDate()).isEqualTo(grabJourneyDriverDTOFixture.getCreatedDate());
+        assertThat(grabJourneyDriverDTO.getLocationFrom()).isEqualTo(grabJourneyDriverDTOFixture.getLocationFrom());
+        assertThat(grabJourneyDriverDTO.getLocationTo()).isEqualTo(grabJourneyDriverDTOFixture.getLocationTo());
+        assertThat(grabJourneyDriverDTO.getDriver()).isEqualTo(grabJourneyDriverDTOFixture.getDriver());
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
 
@@ -136,18 +137,18 @@ public class JourneyServiceTest
     public void patch_Journey_Returns_GrabJourneyDTO() throws Exception
     {
         when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
-        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDriverDTO.class)).thenReturn(grabJourneyDriverDTOFixture);
         final JsonPatch patch = PatchUtility.jsonPatch(PATCH_JOURNEY_VALID_JSON);
         final JsonNode journeyNode = PatchUtility.jsonNode(journeyFixture, patch);
-        when(objectMapperMock.convertValue(grabJourneyDTOFixture, JsonNode.class)).thenReturn(journeyNode);
+        when(objectMapperMock.convertValue(grabJourneyDriverDTOFixture, JsonNode.class)).thenReturn(journeyNode);
         when(objectMapperMock.treeToValue(journeyNode, Journey.class)).thenReturn(journeyFixture);
         when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);
-        when(modelMapperMock.map(journeyFixture, GrabJourneyDTO.class)).thenReturn(grabJourneyDTOFixture);
-        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(
+        when(modelMapperMock.map(journeyFixture, GrabJourneyDriverDTO.class)).thenReturn(grabJourneyDriverDTOFixture);
+        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.patchJourney(
                 journeyFixture.getId(), patch);
 
-        assertThat(grabJourneyDTO.getMaxPassengers()).isEqualTo(grabJourneyDTOFixture.getMaxPassengers());
-        assertThat(grabJourneyDTO.getLocationFrom().getId()).isEqualTo(grabJourneyDTOFixture.getLocationFrom().getId());
+        assertThat(grabJourneyDriverDTO.getMaxPassengers()).isEqualTo(grabJourneyDriverDTOFixture.getMaxPassengers());
+        assertThat(grabJourneyDriverDTO.getLocationFrom().getId()).isEqualTo(grabJourneyDriverDTOFixture.getLocationFrom().getId());
         verify(journeyRepositoryMock).findById(anyInt());
         verify(journeyRepositoryMock).save(any(Journey.class));
     }
