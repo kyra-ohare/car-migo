@@ -54,7 +54,7 @@ public class JourneyService
 
     public List<GrabJourneyDriverDTO> getJourneysByPassengerId(final int id)
     {
-        final List<Journey> result = journeyRepository.findJourneysByPassengerId(id);
+        final List<Journey> result = journeyRepository.findJourneysByPassengersId(id);
         if (result.isEmpty()) {
             throw new ResourceNotFoundException(String.format("No journeys found for passenger id %d.", id));
         }

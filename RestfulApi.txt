@@ -51,7 +51,7 @@ POST /journeys
             }
         ]
     }
-PATCH /journeys/{journeyId}/drivers/{driverId}
+PATCH /journeys/{journeyId}
 DELETE /journeys/{id}
 
 ------------------------------------------------
