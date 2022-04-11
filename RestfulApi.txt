@@ -15,7 +15,6 @@ DELETE /users/{id}
 
 
 GET /users/drivers/{id}
-GET /users/drivers/{id}/journeys
 POST /users/{id}/drivers
     Request body:
     {
@@ -24,13 +23,14 @@ POST /users/{id}/drivers
 DELETE /users/drivers/{id}
 
 GET /users/passengers/{id}
-GET /users/passengers/{id}/journeys
 POST /users/{id}/passengers
 DELETE /users/passengers/{id}
 
 
 GET /journeys
 GET /journeys/{id}
+GET /journeys/drivers/{id}
+GET /journeys/passengers/{id}
 GET /journeys/search
     Request body:
     {
