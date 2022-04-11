@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
-public class GrabJourneyPassengerDTO
+public class GrabJourneyDTO
 {
     private int id;
 
@@ -23,5 +23,5 @@ public class GrabJourneyPassengerDTO
 
     private GrabDriverDTO driver;
 
-    private List<PassengerViewModel> passengers;
+    private List<GrabPassengerDTO> passengers;
 }

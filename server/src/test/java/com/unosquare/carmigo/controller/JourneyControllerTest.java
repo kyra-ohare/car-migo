@@ -4,7 +4,7 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.dto.GrabJourneyDriverDTO;
+import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -50,9 +50,9 @@ public class JourneyControllerTest
     @Mock private ModelMapper modelMapperMock;
     @Mock private JourneyService journeyServiceMock;
 
-    @Fixture private GrabJourneyDriverDTO grabJourneyDriverDTOFixture;
+    @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
     @Fixture private JourneyDriverViewModel journeyViewModelFixture;
-    @Fixture private List<GrabJourneyDriverDTO> grabJourneyDriverDTOList;
+    @Fixture private List<GrabJourneyDTO> grabJourneyDTOList;
 
     @BeforeEach
     public void setUp() throws Exception
@@ -69,8 +69,8 @@ public class JourneyControllerTest
     @Test
     public void get_Journey_By_Id_Returns_JourneyViewModel() throws Exception
     {
-        when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDriverDTOFixture);
-        when(modelMapperMock.map(grabJourneyDriverDTOFixture, JourneyDriverViewModel.class)).thenReturn(journeyViewModelFixture);
+        when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
+        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyDriverViewModel.class)).thenReturn(journeyViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -81,7 +81,7 @@ public class JourneyControllerTest
     @Test
     public void get_Journeys_Returns_List_of_Journeys() throws Exception
     {
-        when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDriverDTOList);
+        when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDTOList);
 
         mockMvc.perform(get(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))

@@ -2,8 +2,7 @@ package com.unosquare.carmigo.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
-import com.unosquare.carmigo.dto.GrabJourneyDriverDTO;
-import com.unosquare.carmigo.dto.GrabJourneyPassengerDTO;
+import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.model.response.JourneyPassengerViewModel;
@@ -39,8 +38,8 @@ public class JourneyController
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<JourneyDriverViewModel> getJourneyById(@PathVariable final int id)
     {
-        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.getJourneyById(id);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDriverDTO, JourneyDriverViewModel.class);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(id);
+        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
@@ -48,9 +47,9 @@ public class JourneyController
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> getJourneys()
     {
-        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList = journeyService.getJourneys();
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneys();
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
-                grabJourneyDriverDTOList, JourneyDriverViewModel.class, modelMapper);
+                grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);
     }
 
@@ -58,9 +57,9 @@ public class JourneyController
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyPassengerViewModel>> getJourneysByDriverId(@PathVariable final int id)
     {
-        final List<GrabJourneyPassengerDTO> grabJourneyPassengerDTOList = journeyService.getJourneysByDriverId(id);
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByDriverId(id);
         final List<JourneyPassengerViewModel> journeyPassengerViewModelList = MapperUtils.mapList(
-                grabJourneyPassengerDTOList, JourneyPassengerViewModel.class, modelMapper);
+                grabJourneyDTOList, JourneyPassengerViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyPassengerViewModelList);
     }
 
@@ -68,9 +67,9 @@ public class JourneyController
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByPassengerId(@PathVariable final int id)
     {
-        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList = journeyService.getJourneysByPassengersId(id);
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByPassengersId(id);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
-                grabJourneyDriverDTOList, JourneyDriverViewModel.class, modelMapper);
+                grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);
     }
 
@@ -88,8 +87,8 @@ public class JourneyController
             @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModal)
     {
         final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModal, CreateJourneyDTO.class);
-        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.createJourney(createJourneyDTO);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDriverDTO, JourneyDriverViewModel.class);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTO);
+        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return new ResponseEntity<>(journeyDriverViewModel, HttpStatus.CREATED);
     }
 
@@ -98,8 +97,8 @@ public class JourneyController
     public ResponseEntity<JourneyDriverViewModel> patchJourney(@PathVariable final int id,
                                                                @Valid @RequestBody final JsonPatch patch)
     {
-        final GrabJourneyDriverDTO grabJourneyDriverDTO = journeyService.patchJourney(id, patch);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDriverDTO, JourneyDriverViewModel.class);
+        final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(id, patch);
+        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 

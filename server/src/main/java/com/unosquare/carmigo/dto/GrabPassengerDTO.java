@@ -8,5 +8,5 @@ public class GrabPassengerDTO
 {
     private int id;
 
-    private PlatformUser platformUser;
+    private GrabPlatformUserDTO platformUser;
 }
