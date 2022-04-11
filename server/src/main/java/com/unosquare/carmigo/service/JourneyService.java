@@ -52,7 +52,7 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyPassengerDTO.class, modelMapper);
     }
 
-    public List<GrabJourneyDriverDTO> getJourneysByPassengerId(final int id)
+    public List<GrabJourneyDriverDTO> getJourneysByPassengersId(final int id)
     {
         final List<Journey> result = journeyRepository.findJourneysByPassengersId(id);
         if (result.isEmpty()) {

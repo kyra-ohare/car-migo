@@ -68,7 +68,7 @@ public class JourneyController
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByPassengerId(@PathVariable final int id)
     {
-        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList = journeyService.getJourneysByPassengerId(id);
+        final List<GrabJourneyDriverDTO> grabJourneyDriverDTOList = journeyService.getJourneysByPassengersId(id);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
                 grabJourneyDriverDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);

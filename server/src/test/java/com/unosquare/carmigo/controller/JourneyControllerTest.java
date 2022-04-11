@@ -104,7 +104,7 @@ public class JourneyControllerTest
         mockMvc.perform(get(API_LEADING + "/passenger/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
-        verify(journeyServiceMock).getJourneysByPassengerId(anyInt());
+        verify(journeyServiceMock).getJourneysByPassengersId(anyInt());
     }
 
     @Test
