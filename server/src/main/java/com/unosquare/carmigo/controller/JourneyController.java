@@ -39,7 +39,8 @@ public class JourneyController
     public ResponseEntity<JourneyDriverViewModel> getJourneyById(@PathVariable final int id)
     {
         final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(id);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
+        final JourneyDriverViewModel journeyDriverViewModel =
+                modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
@@ -88,7 +89,8 @@ public class JourneyController
     {
         final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModal, CreateJourneyDTO.class);
         final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTO);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
+        final JourneyDriverViewModel journeyDriverViewModel =
+                modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return new ResponseEntity<>(journeyDriverViewModel, HttpStatus.CREATED);
     }
 
@@ -98,7 +100,8 @@ public class JourneyController
                                                                @Valid @RequestBody final JsonPatch patch)
     {
         final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(id, patch);
-        final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
+        final JourneyDriverViewModel journeyDriverViewModel =
+                modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
@@ -112,9 +115,10 @@ public class JourneyController
 
     @DeleteMapping(value = "{journeyId}/passengers/{passengerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deletePassengerJourney(@PathVariable final int journeyId, @PathVariable final int passengerId)
+    public ResponseEntity<?> deletePassengerJourney(@PathVariable final int journeyId,
+                                                    @PathVariable final int passengerId)
     {
-        journeyService.deletePassengerJourneyByPassengerId(journeyId, passengerId);
+        journeyService.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
         return ResponseEntity.noContent().build();
     }
 }

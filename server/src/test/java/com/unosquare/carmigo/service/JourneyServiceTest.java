@@ -12,6 +12,7 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -41,6 +42,7 @@ public class JourneyServiceTest
     private static final String PATCH_JOURNEY_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PatchJourneyValid.json");
     @Mock private JourneyRepository journeyRepositoryMock;
+    @Mock private PassengerJourneyRepository passengerJourneyRepositoryMock;
     @Mock private ModelMapper modelMapperMock;
     @Mock private ObjectMapper objectMapperMock;
     @Mock private EntityManager entityManagerMock;
@@ -157,5 +159,12 @@ public class JourneyServiceTest
     {
         journeyService.deleteJourneyById(anyInt());
         verify(journeyRepositoryMock).deleteById(anyInt());
+    }
+
+    @Test
+    public void delete_By_JourneyId_And_PassengerId_Returns_Void()
+    {
+        journeyService.deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+        verify(passengerJourneyRepositoryMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
     }
 }

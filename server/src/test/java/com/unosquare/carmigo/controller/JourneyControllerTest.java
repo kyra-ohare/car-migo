@@ -155,4 +155,13 @@ public class JourneyControllerTest
                 .andExpect(status().isNoContent());
         verify(journeyServiceMock).deleteJourneyById(anyInt());
     }
+
+    @Test
+    public void delete_PassengerJourney_Returns_HttpStatus_No_Content() throws Exception
+    {
+        doNothing().when(journeyServiceMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+        mockMvc.perform(delete(API_LEADING + "1/passengers/1"))
+                .andExpect(status().isNoContent());
+        verify(journeyServiceMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+    }
 }

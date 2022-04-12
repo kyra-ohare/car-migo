@@ -92,7 +92,7 @@ public class JourneyService
     }
 
     @Transactional
-    public void deletePassengerJourneyByPassengerId(final int journeyId, final int passengerId)
+    public void deleteByJourneyIdAndPassengerId(final int journeyId, final int passengerId)
     {
         passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
     }
