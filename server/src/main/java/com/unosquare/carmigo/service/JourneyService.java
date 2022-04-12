@@ -13,10 +13,12 @@ import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
@@ -27,6 +29,7 @@ import java.util.List;
 public class JourneyService
 {
     private final JourneyRepository journeyRepository;
+    private final PassengerJourneyRepository passengerJourneyRepository;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
@@ -86,6 +89,12 @@ public class JourneyService
     public void deleteJourneyById(final int id)
     {
         journeyRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deletePassengerJourneyByPassengerId(final int journeyId, final int passengerId)
+    {
+        passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
     }
 
     private Journey findJourneyById(final int id)

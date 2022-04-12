@@ -102,11 +102,19 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteJourney(@PathVariable final int id)
     {
         journeyService.deleteJourneyById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "{journeyId}/passengers/{passengerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> deletePassengerJourney(@PathVariable final int journeyId, @PathVariable final int passengerId)
+    {
+        journeyService.deletePassengerJourneyByPassengerId(journeyId, passengerId);
         return ResponseEntity.noContent().build();
     }
 }

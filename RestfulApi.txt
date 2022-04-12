@@ -53,6 +53,7 @@ POST /journeys
     }
 PATCH /journeys/{journeyId}
 DELETE /journeys/{id}
+DELETE /journeys/{journeyId}/passengers/{passengerId}
 
 ------------------------------------------------
 
