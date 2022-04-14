@@ -12,6 +12,7 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.repository.JourneyRepository;
+import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -41,6 +42,7 @@ public class JourneyServiceTest
     private static final String PATCH_JOURNEY_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PatchJourneyValid.json");
     @Mock private JourneyRepository journeyRepositoryMock;
+    @Mock private PassengerJourneyRepository passengerJourneyRepositoryMock;
     @Mock private ModelMapper modelMapperMock;
     @Mock private ObjectMapper objectMapperMock;
     @Mock private EntityManager entityManagerMock;
@@ -77,7 +79,7 @@ public class JourneyServiceTest
     }
 
     @Test
-    public void get_Journeys_Returns_List_of_Journeys()
+    public void get_Journeys_Returns_List_of_GrabJourneyDTO()
     {
         when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
@@ -86,6 +88,30 @@ public class JourneyServiceTest
 
         assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
         verify(journeyRepositoryMock).findAll();
+    }
+
+    @Test
+    public void get_Journeys_By_Driver_Id_Returns_List_Of_GrabJourneyDTO()
+    {
+        when(journeyRepositoryMock.findJourneysByDriverId(anyInt())).thenReturn(journeyFixtureList);
+        final List<GrabJourneyDTO> grabJourneyDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
+        final List<GrabJourneyDTO> journeyDriverList = journeyService.getJourneysByDriverId(anyInt());
+
+        assertThat(journeyDriverList.size()).isEqualTo(grabJourneyDTOList.size());
+        verify(journeyRepositoryMock).findJourneysByDriverId(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_By_Passengers_Id_Returns_List_Of_GrabJourneyDTO()
+    {
+        when(journeyRepositoryMock.findJourneysByPassengersId(anyInt())).thenReturn(journeyFixtureList);
+        final List<GrabJourneyDTO> grabJourneyDTOList =
+                MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
+        final List<GrabJourneyDTO> journeyList = journeyService.getJourneysByPassengersId(anyInt());
+
+        assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+        verify(journeyRepositoryMock).findJourneysByPassengersId(anyInt());
     }
 
     @Test
@@ -133,5 +159,12 @@ public class JourneyServiceTest
     {
         journeyService.deleteJourneyById(anyInt());
         verify(journeyRepositoryMock).deleteById(anyInt());
+    }
+
+    @Test
+    public void delete_By_JourneyId_And_PassengerId_Returns_Void()
+    {
+        journeyService.deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+        verify(passengerJourneyRepositoryMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
     }
 }

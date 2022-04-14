@@ -3,6 +3,7 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class GrabJourneyDTO
@@ -20,4 +21,6 @@ public class GrabJourneyDTO
     private Instant dateTime;
 
     private GrabDriverDTO driver;
+
+    private List<GrabPassengerDTO> passengers;
 }
