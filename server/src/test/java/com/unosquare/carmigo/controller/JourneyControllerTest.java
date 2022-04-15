@@ -44,6 +44,8 @@ public class JourneyControllerTest
             ResourceUtility.generateStringFromResource("requestJson/PatchJourneyValid.json");
     private static final String PATCH_JOURNEY_INVALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PatchJourneyInvalid.json");
+    private static final String SEARCH_JOURNEY =
+            ResourceUtility.generateStringFromResource("requestJson/SearchJourney.json");
 
     private MockMvc mockMvc;
 
@@ -105,6 +107,16 @@ public class JourneyControllerTest
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByPassengersId(anyInt());
+    }
+
+    @Test
+    public void search_Journeys_Returns_() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/search")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(SEARCH_JOURNEY))
+                .andExpect(status().isOk());
+        verify(journeyServiceMock).searchJourneys(any());
     }
 
     @Test

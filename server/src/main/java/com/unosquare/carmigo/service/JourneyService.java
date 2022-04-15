@@ -63,6 +63,11 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
+    public GrabJourneyDTO searchJourneys(CreateJourneyDTO createJourneyDTO)
+    {
+        return null;
+    }
+
     public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO)
     {
         final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);

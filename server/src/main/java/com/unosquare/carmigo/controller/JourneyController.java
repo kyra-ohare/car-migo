@@ -76,20 +76,27 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModelList);
     }
 
-    // todo
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public String searchJourneys(@RequestBody final CreateJourneyViewModel createJourneyViewModal)
+    public ResponseEntity<JourneyDriverViewModel> searchJourneys(
+            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModel)
     {
-        return "Here is your search";
+        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModel, CreateJourneyDTO.class);
+        System.err.println(createJourneyViewModel);
+        System.err.println(createJourneyDTO);
+
+        final GrabJourneyDTO grabJourneyDTO = journeyService.searchJourneys(createJourneyDTO);
+        final JourneyDriverViewModel journeyDriverViewModel =
+                modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
+        return new ResponseEntity<>(journeyDriverViewModel, HttpStatus.OK);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<JourneyDriverViewModel> createJourney(
-            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModal)
+            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModel)
     {
-        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModal, CreateJourneyDTO.class);
+        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModel, CreateJourneyDTO.class);
         final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTO);
         final JourneyDriverViewModel journeyDriverViewModel =
                 modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
