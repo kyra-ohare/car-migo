@@ -1,0 +1,76 @@
+logging:
+  level:
+    root: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "beans, health, info, metrics"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
+
+server:
+  port: 8087
+
+spring:
+  datasource:
+    username: admin
+    password: password
+    url: jdbc:postgresql://localhost:5432/carmigo
+  jpa:
+    database-platform: carmigo
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+          time_zone: UTC
+        temp:
+          use_jdbc_metadata_defaults: false
+
+springdoc:
+  api:
+    description: RESTful API for CRUD operations on users (platform users, drivers and passengers) and journeys.
+    title: Car-Migo API
+  show-actuator: true
+  swagger-ui:
+    displayOperationId: true
+    tagsSorter: alpha
+  use-fqn: true
+  writer-with-order-by-keys: true
+
+---
+
+logging:
+  level:
+    root: INFO
+    web: DEBUG
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql:
+              BasicBinder: INFO
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+springdoc:
+  swagger-ui:
+    enabled: false
