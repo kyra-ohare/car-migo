@@ -39,5 +39,10 @@ Once inside the pgAdmin 4, click on `Add New Server`. From the dialog box, enter
 
 Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo > Schemas > public > Tables.
 
+### Run a different Spring Boot profile
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
 ### restart.sh
 This script restarts the containers. You also have the option to restart the volumes.
