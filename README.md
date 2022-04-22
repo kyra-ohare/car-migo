@@ -16,12 +16,16 @@ The application is not about profiting but about car sharing so the passengers c
 - Docker
 
 ## How to run it?
-From your Unix-based terminal, navigate to the root of this project and run
+From your Unix-based terminal, navigate to the root of this project and run:
 ```
 sh run-application.sh
 ```
-This script will create a jar file from Maven package lifecycle. For your convenience, there is no need to have Maven pre-installed because this project ships a Maven Wrapper.
-The script also builds a Docker image named `car-migo` and spins the necessary containers.
+This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven pre-installed because this project ships a Maven Wrapper.
+
+The script also builds a Docker image named `car-migo` and spins the necessary containers. To stop them, run:
+```
+docker-compose down
+```
 
 ### pgAdmin
 This is the chosen database client.
