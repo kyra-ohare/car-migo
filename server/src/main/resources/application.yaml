@@ -17,6 +17,10 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
 
+logging:
+  level:
+    web: DEBUG
+
 management:
   endpoints:
     web:
@@ -28,6 +32,9 @@ management:
   health:
     mail:
       enabled: false
+
+server:
+  port: 8086
 
 springdoc:
   api:
@@ -46,29 +53,25 @@ spring:
     activate:
       on-profile: dev
 
+debug: true
+
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org:
       hibernate:
-        SQL: INFO
+        SQL: DEBUG
         type:
           descriptor:
             sql:
-              BasicBinder: INFO
+              BasicBinder: TRACE
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
+  datasource:
+    url: jdbc:postgresql://db:5432/carmigo
   devtools:
     add-properties: false
-
-logging:
-  level:
-    web: DEBUG
-
-springdoc:
-  swagger-ui:
-    enabled: false

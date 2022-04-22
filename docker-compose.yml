@@ -1,5 +1,13 @@
 version: "3.4"
 services:
+  server:
+    image: car-migo
+    build: .
+    container_name: car-migo_app
+    ports:
+      - 8086:8086
+    depends_on:
+      - db
   db:
     image: postgres:14.2-bullseye
     container_name: car-migo_postgres
@@ -13,7 +21,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   flyway:
-    image: flyway/flyway:8.5.2-alpine
+    image: flyway/flyway:8.5.9-alpine
     container_name: car-migo_flyway
     command: -url=jdbc:postgresql://db/carmigo -schemas=public -user=admin
       -password=password -connectRetries=5 migrate
@@ -22,7 +30,7 @@ services:
     depends_on:
       - db
   pgadmin:
-    image: dpage/pgadmin4:6.7
+    image: dpage/pgadmin4:6.8
     container_name: car-migo_pgadmin
     ports:
       - 8000:80
