@@ -1,9 +1,11 @@
 #!/bin/sh
 
+carmigo="car-migo_app"
 postgres="car-migo_postgres"
 pgAdmin="car-migo_pgadmin"
 
 echo "Removing containers:"
+docker container rm $carmigo -f
 docker container rm $postgres -f
 docker container rm $pgAdmin -f
 
