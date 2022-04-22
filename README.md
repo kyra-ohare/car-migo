@@ -16,7 +16,7 @@ The application is not about profiting but about car sharing so the passengers c
 - Docker
 
 ## How to run it?
-From your terminal, navigate to the root of this project and run
+From your Unix-based terminal, navigate to the root of this project and run
 ```
 sh run-application.sh
 ```

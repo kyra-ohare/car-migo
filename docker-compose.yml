@@ -2,7 +2,6 @@ version: "3.4"
 services:
   server:
     image: car-migo
-    build: .
     container_name: car-migo_app
     ports:
       - 8086:8086
