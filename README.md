@@ -22,7 +22,7 @@ From your Unix-based terminal, navigate to the root of this project and run:
 ```
 This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven pre-installed because this project ships a Maven Wrapper.
 
-The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application will be available at [http://localhost:8086/](http://localhost:8086/){:target="_blank"}.
+The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application will be available at http://localhost:8086/.
 
 To stop the containers, run:
 ```
@@ -31,7 +31,7 @@ docker-compose down
 
 ### pgAdmin
 This is the chosen database client.
-To interact with it, go to <a href="http://localhost:8000/" target="_blank">http://localhost:8000/</a> from your browser to open the pgAdmin 4 UI and enter:
+To interact with it, go to http://localhost:8000/ from your browser to open the pgAdmin 4 UI and enter:
 - Email = `admin@car-migo.com`
 - Password = `password`
 
@@ -52,7 +52,7 @@ This script restarts the containers. You are also given the option to restart th
 
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
-* <a href="http://localhost:8086/swagger-ui/index.html" target="_blank">http://localhost:8086/swagger-ui/index.html</a>
-* <a href="http://localhost:8086/v3/api-docs" target="_blank">http://localhost:8086/v3/api-docs</a>
-* <a href="http://localhost:8086/v3/api-docs.yaml" target="_blank">http://localhost:8086/v3/api-docs.yaml</a> (automatically downloads its yaml file)
-* <a href="http://localhost:8086/v3/api-docs/swagger-config" target="_blank">http://localhost:8086/v3/api-docs/swagger-config</a>
+* http://localhost:8086/swagger-ui/index.html
+* http://localhost:8086/v3/api-docs
+* http://localhost:8086/v3/api-docs.yaml (automatically downloads its yaml file)
+* http://localhost:8086/v3/api-docs/swagger-config
