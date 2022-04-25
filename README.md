@@ -24,7 +24,7 @@ This script will create a jar file from Maven package lifecycle. For convenience
 
 The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application will be available at http://localhost:8086/.
 
-To stop the containers, run:
+To stop and remove the containers, run:
 ```
 docker-compose down
 ```
