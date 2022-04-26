@@ -67,8 +67,7 @@ public class JourneyService
     public List<GrabJourneyDTO> searchJourneys(final Map<String, Integer> params)
     {
         final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToId(
-                params.get("locationFrom"), params.get("locationTo"));
-        System.err.println(result);
+                params.get("locationIdFrom"), params.get("locationIdTo"));
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 

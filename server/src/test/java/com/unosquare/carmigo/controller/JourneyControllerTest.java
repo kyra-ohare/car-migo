@@ -85,8 +85,8 @@ public class JourneyControllerTest
     {
         mockMvc.perform(get(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .param("locationFrom", "1")
-                        .param("locationTo", "2"))
+                        .param("locationIdFrom", "1")
+                        .param("locationIdTo", "2"))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).searchJourneys(any());
     }
