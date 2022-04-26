@@ -26,8 +26,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,15 +49,20 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
-    //    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    //    @ResponseStatus(HttpStatus.OK)
-    //    public ResponseEntity<List<JourneyDriverViewModel>> getJourneys()
-    //    {
-    //        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneys();
-    //        final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
-    //                grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
-    //        return ResponseEntity.ok(journeyDriverViewModelList);
-    //    }
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
+            @RequestParam("locationFrom") final int locationFrom,
+            @RequestParam("locationTo") final int locationTo)
+    {
+        final Map<String, Integer> params = new HashMap<>();
+        params.put("locationFrom", locationFrom);
+        params.put("locationTo", locationTo);
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(params);
+        final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
+                grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
+        return ResponseEntity.ok(journeyDriverViewModelList);
+    }
 
     @GetMapping(value = "/drivers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -73,17 +79,6 @@ public class JourneyController
     public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByPassengerId(@PathVariable final int id)
     {
         final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByPassengersId(id);
-        final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
-                grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
-        return ResponseEntity.ok(journeyDriverViewModelList);
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
-            @RequestParam("search") @NotNull final String search)
-    {
-        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(search);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
                 grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);
