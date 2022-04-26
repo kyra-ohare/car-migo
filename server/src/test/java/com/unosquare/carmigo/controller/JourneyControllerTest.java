@@ -81,14 +81,14 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journeys_Returns_List_of_Journeys() throws Exception
+    public void search_Journeys_Returns_List_of_JourneyDriverViewModel() throws Exception
     {
-        when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDTOList);
-
         mockMvc.perform(get(API_LEADING)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("locationFrom", "1")
+                        .param("locationTo", "2"))
                 .andExpect(status().isOk());
-        verify(journeyServiceMock).getJourneys();
+        verify(journeyServiceMock).searchJourneys(any());
     }
 
     @Test
@@ -107,16 +107,6 @@ public class JourneyControllerTest
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByPassengersId(anyInt());
-    }
-
-    @Test
-    public void search_Journeys_Returns_() throws Exception
-    {
-        mockMvc.perform(get(API_LEADING + "/search")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(SEARCH_JOURNEY))
-                .andExpect(status().isOk());
-        verify(journeyServiceMock).searchJourneys(any());
     }
 
     @Test

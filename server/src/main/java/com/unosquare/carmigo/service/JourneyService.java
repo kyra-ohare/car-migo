@@ -15,18 +15,15 @@ import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
-import com.unosquare.carmigo.util.SpecificationsBuilder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -67,16 +64,11 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
-    public List<GrabJourneyDTO> searchJourneys(final String search)
+    public List<GrabJourneyDTO> searchJourneys(final Map<String, Integer> params)
     {
-        final SpecificationsBuilder<Journey> builder = new SpecificationsBuilder<>();
-        final Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        final Matcher matcher = pattern.matcher(search + ",");
-        while (matcher.find()) {
-            builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
-        }
-        final Specification<Journey> spec = builder.build();
-        final List<Journey> result = journeyRepository.findAll(spec);
+        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToId(
+                params.get("locationFrom"), params.get("locationTo"));
+        System.err.println(result);
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
