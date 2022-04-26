@@ -52,12 +52,12 @@ public class JourneyController
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
-            @RequestParam("locationFrom") final int locationFrom,
-            @RequestParam("locationTo") final int locationTo)
+            @RequestParam("locationIdFrom") final int locationIdFrom,
+            @RequestParam("locationIdTo") final int locationIdTo)
     {
         final Map<String, Integer> params = new HashMap<>();
-        params.put("locationFrom", locationFrom);
-        params.put("locationTo", locationTo);
+        params.put("locationIdFrom", locationIdFrom);
+        params.put("locationIdTo", locationIdTo);
         final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(params);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
                 grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);

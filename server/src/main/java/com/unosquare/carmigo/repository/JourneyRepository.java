@@ -13,5 +13,5 @@ public interface JourneyRepository extends JpaRepository<Journey, Integer>
 
     List<Journey> findJourneysByPassengersId(final int id);
 
-    List<Journey> findJourneysByLocationFromIdAndLocationToId(final int locationFrom, final int locationTo);
+    List<Journey> findJourneysByLocationFromIdAndLocationToId(final int locationIdFrom, final int locationIdTo);
 }
