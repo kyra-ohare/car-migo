@@ -101,7 +101,7 @@ public class JourneyController
     }
 
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<JourneyDriverViewModel> patchJourney(@PathVariable final int id,
                                                                @Valid @RequestBody final JsonPatch patch)
     {
