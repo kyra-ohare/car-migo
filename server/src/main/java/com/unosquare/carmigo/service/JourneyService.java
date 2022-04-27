@@ -64,10 +64,11 @@ public class JourneyService
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
-    public List<GrabJourneyDTO> searchJourneys(final Map<String, Integer> params)
+    public List<GrabJourneyDTO> searchJourneys(final Map<String, String> params)
     {
-        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToId(
-                params.get("locationIdFrom"), params.get("locationIdTo"));
+        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                        Integer.parseInt(params.get("locationIdFrom")), Integer.parseInt(params.get("locationIdTo")),
+                        Instant.parse(params.get("dateTimeFrom")), Instant.parse(params.get("dateTimeTo")));
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
