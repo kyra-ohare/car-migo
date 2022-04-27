@@ -117,7 +117,7 @@ public class JourneyControllerTest
     {
         mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByDriverId(anyInt());
     }
 

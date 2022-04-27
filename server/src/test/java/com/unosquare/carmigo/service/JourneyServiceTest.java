@@ -26,7 +26,9 @@ import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,13 +83,20 @@ public class JourneyServiceTest
     @Test
     public void get_Journeys_Returns_List_of_GrabJourneyDTO()
     {
-        when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
+        when(journeyRepositoryMock.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
                 MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
-        final List<GrabJourneyDTO> journeyList = journeyService.getJourneys();
+        final Map<String, String> params = new HashMap<>();
+            params.put("locationIdFrom", "1");
+            params.put("locationIdTo", "2");
+            params.put("dateTimeFrom", "2022-12-01T09:00:00Z");
+            params.put("dateTimeTo", "2023-12-01T09:00:00Z");
+        final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(params);
 
         assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
-        verify(journeyRepositoryMock).findAll();
+        verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                anyInt(), anyInt(), any(Instant.class), any(Instant.class));
     }
 
     @Test

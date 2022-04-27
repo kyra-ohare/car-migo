@@ -40,9 +40,14 @@ public class JourneyService
         return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
     }
 
-    public List<GrabJourneyDTO> getJourneys()
+    public List<GrabJourneyDTO> searchJourneys(final Map<String, String> params)
     {
-        final List<Journey> result = journeyRepository.findAll();
+        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                Integer.parseInt(params.get("locationIdFrom")), Integer.parseInt(params.get("locationIdTo")),
+                Instant.parse(params.get("dateTimeFrom")), Instant.parse(params.get("dateTimeTo")));
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException("No journeys found.");
+        }
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
@@ -61,14 +66,6 @@ public class JourneyService
         if (result.isEmpty()) {
             throw new ResourceNotFoundException(String.format("No journeys found for passenger id %d.", id));
         }
-        return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
-    }
-
-    public List<GrabJourneyDTO> searchJourneys(final Map<String, String> params)
-    {
-        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
-                        Integer.parseInt(params.get("locationIdFrom")), Integer.parseInt(params.get("locationIdTo")),
-                        Instant.parse(params.get("dateTimeFrom")), Instant.parse(params.get("dateTimeTo")));
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
