@@ -80,11 +80,11 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journey_By_Id_Returns_HttpStatus_BadRequest() throws Exception
+    public void get_Journey_By_Id_Returns_HttpStatus_MethodNotAllowed() throws Exception
     {
         mockMvc.perform(get(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isMethodNotAllowed());
         verify(journeyServiceMock, times(0)).getJourneyById(anyInt());
     }
 
@@ -104,7 +104,7 @@ public class JourneyControllerTest
     @Test
     public void search_Journeys_Returns_HttpStatus_BadRequest() throws Exception
     {
-        mockMvc.perform(get(API_LEADING)
+        mockMvc.perform(get(API_LEADING + "/search")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .param("locationIdFrom", "1")
                         .param("locationIdTo", "2"))
