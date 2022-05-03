@@ -49,7 +49,7 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
             @RequestParam("locationIdFrom") final String locationIdFrom,
