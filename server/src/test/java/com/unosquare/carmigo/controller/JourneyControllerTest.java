@@ -91,7 +91,7 @@ public class JourneyControllerTest
     @Test
     public void search_Journeys_Returns_HttpStatus_Ok() throws Exception
     {
-        mockMvc.perform(get(API_LEADING)
+        mockMvc.perform(get(API_LEADING + "/search")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .param("locationIdFrom", "1")
                         .param("locationIdTo", "2")
