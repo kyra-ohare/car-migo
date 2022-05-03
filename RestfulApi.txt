@@ -28,7 +28,7 @@ DELETE /users/passengers/{id}
 
 
 GET /journeys/{id}
-GET /journeys
+GET /journeys/search
     Request params:
     {
         "locationIdFrom": <integer>,
