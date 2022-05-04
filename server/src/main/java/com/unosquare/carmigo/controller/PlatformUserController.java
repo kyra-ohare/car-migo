@@ -1,12 +1,13 @@
 package com.unosquare.carmigo.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
+import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
-import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
 import com.unosquare.carmigo.model.request.CreateDriverViewModel;
 import com.unosquare.carmigo.model.request.CreatePlatformUserViewModel;
@@ -15,17 +16,12 @@ import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
 import com.unosquare.carmigo.service.PlatformUserService;
-import com.unosquare.carmigo.util.JwtTokenUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -46,24 +42,18 @@ public class PlatformUserController
 {
     private final ModelMapper modelMapper;
     private final PlatformUserService platformUserService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/authenticate")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationViewModel> createAuthenticationToken(
             @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel)
     {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    createAuthenticationViewModel.getEmail(), createAuthenticationViewModel.getPassword()));
-        } catch (final BadCredentialsException ex) {
-            throw new ResourceNotFoundException("Incorrect email and/or password");
-        }
-        final UserDetails userDetails = platformUserService.loadUserByUsername(createAuthenticationViewModel.getEmail());
-        final String jwt = jwtTokenUtils.generateToken(userDetails);
-        final AuthenticationViewModel authenticationViewModel = new AuthenticationViewModel();
-        authenticationViewModel.setJwt(jwt);
+        final CreateAuthenticationDTO createAuthenticationDTO = modelMapper.map(
+                createAuthenticationViewModel, CreateAuthenticationDTO.class);
+        final GrabAuthenticationDTO grabAuthenticationDTO = platformUserService.createAuthenticationToken(
+                createAuthenticationDTO);
+        final AuthenticationViewModel authenticationViewModel = modelMapper.map(
+                grabAuthenticationDTO, AuthenticationViewModel.class);
         return new ResponseEntity<>(authenticationViewModel, HttpStatus.CREATED);
     }
 

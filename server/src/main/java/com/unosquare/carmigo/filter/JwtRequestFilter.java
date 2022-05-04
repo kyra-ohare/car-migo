@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.filter;
 
-import com.unosquare.carmigo.service.PlatformUserService;
+import com.unosquare.carmigo.service.UserDetailsService;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,27 +20,34 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter
 {
-    private final PlatformUserService platformUserService;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenUtils jwtTokenUtils;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
-                                    final FilterChain filterChain) throws ServletException, IOException
+    protected void doFilterInternal(
+            final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain
+    ) throws ServletException, IOException
     {
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
+        final String jwt;
+        final String username;
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtTokenUtils.extractUsername(jwt);
+        } else {
+            filterChain.doFilter(request, response);
+            return;
         }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.platformUserService.loadUserByUsername(username);
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtTokenUtils.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
