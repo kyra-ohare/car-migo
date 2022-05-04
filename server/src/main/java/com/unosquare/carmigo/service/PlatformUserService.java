@@ -20,14 +20,19 @@ import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
-public class PlatformUserService
+public class PlatformUserService implements UserDetailsService
 {
     private static final int INITIAL_USER_STATUS = 1;
 
@@ -114,5 +119,12 @@ public class PlatformUserService
     {
         return platformUserRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("PlatformUser id %d not found.", id)));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException
+    {
+        final PlatformUser currentUser = platformUserRepository.findPlatformUserByEmail(email);
+        return new User(currentUser.getEmail(), currentUser.getPassword(), new ArrayList<>());
     }
 }

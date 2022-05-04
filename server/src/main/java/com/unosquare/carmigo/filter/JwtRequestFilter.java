@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.filter;
 
-import com.unosquare.carmigo.service.CarMigoUserDetailsService;
+import com.unosquare.carmigo.service.PlatformUserService;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter
 {
-    private final CarMigoUserDetailsService userDetailsService;
+    private final PlatformUserService platformUserService;
     private final JwtTokenUtils jwtTokenUtils;
 
     @Override
@@ -35,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter
             username = jwtTokenUtils.extractUsername(jwt);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.platformUserService.loadUserByUsername(username);
             if (jwtTokenUtils.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
