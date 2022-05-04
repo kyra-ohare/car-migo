@@ -14,7 +14,6 @@ import com.unosquare.carmigo.model.response.AuthenticationViewModel;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
-import com.unosquare.carmigo.service.CarMigoUserDetailsService;
 import com.unosquare.carmigo.service.PlatformUserService;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,7 +47,6 @@ public class PlatformUserController
     private final ModelMapper modelMapper;
     private final PlatformUserService platformUserService;
     private final AuthenticationManager authenticationManager;
-    private final CarMigoUserDetailsService userDetailsService;
     private final JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/authenticate")
@@ -62,7 +60,7 @@ public class PlatformUserController
         } catch (final BadCredentialsException ex) {
             throw new ResourceNotFoundException("Incorrect email and/or password");
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(createAuthenticationViewModel.getEmail());
+        final UserDetails userDetails = platformUserService.loadUserByUsername(createAuthenticationViewModel.getEmail());
         final String jwt = jwtTokenUtils.generateToken(userDetails);
         final AuthenticationViewModel authenticationViewModel = new AuthenticationViewModel();
         authenticationViewModel.setJwt(jwt);
