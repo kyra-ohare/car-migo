@@ -43,7 +43,7 @@ public class PlatformUserController
     private final ModelMapper modelMapper;
     private final PlatformUserService platformUserService;
 
-    @PostMapping("/authenticate")
+    @PostMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationViewModel> createAuthenticationToken(
             @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel)
