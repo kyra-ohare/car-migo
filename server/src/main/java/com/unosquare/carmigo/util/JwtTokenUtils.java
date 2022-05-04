@@ -6,6 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +16,12 @@ import java.util.function.Function;
 @Service
 public class JwtTokenUtils
 {
-    // todo change Date to Instant
     // todo
     private final String SECRET_KEY = "secret";
 
     public String generateToken(final UserDetails userDetails)
     {
+        // todo what claims can I have
         final Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
@@ -32,9 +34,15 @@ public class JwtTokenUtils
 
     private String createToken(final Map<String, Object> claims, final String subject)
     {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // possibly 10 hours
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+        final Date now = Date.from(Instant.now());
+        final Date in24Hours = Date.from(now.toInstant().plus(Duration.ofHours(24)));
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(in24Hours)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
     }
 
     public String extractUsername(final String token)
@@ -47,7 +55,7 @@ public class JwtTokenUtils
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver)
+    public <R> R extractClaim(final String token, final Function<Claims, R> claimsResolver)
     {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -60,6 +68,6 @@ public class JwtTokenUtils
 
     private Boolean isTokenExpired(final String token)
     {
-        return extractExpiration(token).before(new Date());
+        return extractExpiration(token).before(Date.from(Instant.now()));
     }
 }
