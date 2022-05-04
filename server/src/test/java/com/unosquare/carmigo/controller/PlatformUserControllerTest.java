@@ -39,6 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PlatformUserControllerTest
 {
     private static final String API_LEADING = "/v1/users/";
+    private static final String POST_AUTHENTICATION_VALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PostAuthenticationValid.json");
+    private static final String POST_AUTHENTICATION_INVALID_JSON =
+            ResourceUtility.generateStringFromResource("requestJson/PostAuthenticationInvalid.json");
     private static final String POST_PLATFORM_USER_VALID_JSON =
             ResourceUtility.generateStringFromResource("requestJson/PostPlatformUserValid.json");
     private static final String POST_PLATFORM_USER_INVALID_JSON =
@@ -77,7 +81,27 @@ public class PlatformUserControllerTest
     }
 
     @Test
-    public void get_PlatformUser_By_Id_Returns_PlatformUserViewModel() throws Exception
+    public void post_Create_Authentication_Token_Returns_HttpStatus_Created() throws Exception
+    {
+        mockMvc.perform(post(API_LEADING + "authenticate")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(POST_AUTHENTICATION_VALID_JSON))
+                .andExpect(status().isCreated());
+        verify(platformUserServiceMock).createAuthenticationToken(any());
+    }
+
+    @Test
+    public void post_Create_Authentication_Token_Returns_HttpStatus_BadRequest() throws Exception
+    {
+        mockMvc.perform(post(API_LEADING + "authenticate")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(POST_AUTHENTICATION_INVALID_JSON))
+                .andExpect(status().isBadRequest());
+        verify(platformUserServiceMock, times(0)).createAuthenticationToken(any());
+    }
+
+    @Test
+    public void get_PlatformUser_By_Id_Returns_HttpStatus_Ok() throws Exception
     {
         when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(grabPlatformUserDTOFixture);
         when(modelMapperMock.map(grabPlatformUserDTOFixture, PlatformUserViewModel.class))
@@ -100,7 +124,7 @@ public class PlatformUserControllerTest
     }
 
     @Test
-    public void post_PlatformUser_Returns_HttpStatus_Conflict() throws Exception
+    public void post_PlatformUser_Returns_HttpStatus_BadRequest() throws Exception
     {
         mockMvc.perform(post(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -139,7 +163,7 @@ public class PlatformUserControllerTest
     }
 
     @Test
-    public void get_Driver_By_Id_Returns_DriverViewModel() throws Exception
+    public void get_Driver_By_Id_Returns_HttpStatus_Ok() throws Exception
     {
         when(platformUserServiceMock.getDriverById(anyInt())).thenReturn(grabDriverDTOFixture);
         when(modelMapperMock.map(grabDriverDTOFixture, DriverViewModel.class))
@@ -182,7 +206,7 @@ public class PlatformUserControllerTest
     }
 
     @Test
-    public void get_Passenger_By_Id_Returns_PassengerViewModel() throws Exception
+    public void get_Passenger_By_Id_Returns_HttpStatus_Ok() throws Exception
     {
         when(platformUserServiceMock.getPassengerById(anyInt())).thenReturn(grabPassengerDTOFixture);
         when(modelMapperMock.map(grabPassengerDTOFixture, PassengerViewModel.class))
