@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.util;
 
+import static com.unosquare.carmigo.contant.AppConstants.SECRET_KEY;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,13 +18,10 @@ import java.util.function.Function;
 @Service
 public class JwtTokenUtils
 {
-    // todo
-    private final String SECRET_KEY = "secret";
-
     public String generateToken(final UserDetails userDetails)
     {
-        // todo what claims can I have
         final Map<String, Object> claims = new HashMap<>();
+        claims.put("admin", false);
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -35,12 +34,12 @@ public class JwtTokenUtils
     private String createToken(final Map<String, Object> claims, final String subject)
     {
         final Date now = Date.from(Instant.now());
-        final Date in24Hours = Date.from(now.toInstant().plus(Duration.ofHours(24)));
+        final Date in10Hours = Date.from(now.toInstant().plus(Duration.ofHours(10)));
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .setExpiration(in24Hours)
+                .setExpiration(in10Hours)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
