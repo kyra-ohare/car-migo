@@ -12,6 +12,7 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -40,13 +40,15 @@ public class JourneyService
         return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
     }
 
-    public List<GrabJourneyDTO> searchJourneys(final Map<String, String> params)
+    public List<GrabJourneyDTO> searchJourneys(final CreateSearchJourneysCriteria createSearchJourneysCriteria)
     {
         final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
-                Integer.parseInt(params.get("locationIdFrom")), Integer.parseInt(params.get("locationIdTo")),
-                Instant.parse(params.get("dateTimeFrom")), Instant.parse(params.get("dateTimeTo")));
+                createSearchJourneysCriteria.getLocationIdFrom(),
+                createSearchJourneysCriteria.getLocationIdTo(),
+                createSearchJourneysCriteria.getDateTimeFrom(),
+                createSearchJourneysCriteria.getDateTimeTo());
         if (result.isEmpty()) {
-            throw new ResourceNotFoundException("No journeys found.");
+            throw new ResourceNotFoundException("No journeys found. " + createSearchJourneysCriteria);
         }
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }

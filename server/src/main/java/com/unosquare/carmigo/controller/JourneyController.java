@@ -4,6 +4,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
+import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.model.response.JourneyPassengerViewModel;
 import com.unosquare.carmigo.service.JourneyService;
@@ -52,17 +53,9 @@ public class JourneyController
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
-            @RequestParam("locationIdFrom") final String locationIdFrom,
-            @RequestParam("locationIdTo") final String locationIdTo,
-            @RequestParam("dateTimeFrom") final String dateTimeFrom,
-            @RequestParam("dateTimeTo") final String dateTimeTo)
+            @Valid final CreateSearchJourneysCriteria createSearchJourneysCriteria)
     {
-        final Map<String, String> params = new HashMap<>();
-            params.put("locationIdFrom", locationIdFrom);
-            params.put("locationIdTo", locationIdTo);
-            params.put("dateTimeFrom", dateTimeFrom);
-            params.put("dateTimeTo", dateTimeTo);
-        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(params);
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(createSearchJourneysCriteria);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
                 grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);
