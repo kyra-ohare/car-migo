@@ -4,6 +4,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
+import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.model.response.JourneyPassengerViewModel;
 import com.unosquare.carmigo.service.JourneyService;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,11 +50,12 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModel);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<JourneyDriverViewModel>> getJourneys()
+    public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
+            @Valid final CreateSearchJourneysCriteria createSearchJourneysCriteria)
     {
-        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneys();
+        final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(createSearchJourneysCriteria);
         final List<JourneyDriverViewModel> journeyDriverViewModelList = MapperUtils.mapList(
                 grabJourneyDTOList, JourneyDriverViewModel.class, modelMapper);
         return ResponseEntity.ok(journeyDriverViewModelList);
@@ -76,20 +81,12 @@ public class JourneyController
         return ResponseEntity.ok(journeyDriverViewModelList);
     }
 
-    // todo
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public String searchJourneys(@RequestBody final CreateJourneyViewModel createJourneyViewModal)
-    {
-        return "Here is your search";
-    }
-
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<JourneyDriverViewModel> createJourney(
-            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModal)
+            @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModel)
     {
-        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModal, CreateJourneyDTO.class);
+        final CreateJourneyDTO createJourneyDTO = modelMapper.map(createJourneyViewModel, CreateJourneyDTO.class);
         final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(createJourneyDTO);
         final JourneyDriverViewModel journeyDriverViewModel =
                 modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
@@ -97,7 +94,7 @@ public class JourneyController
     }
 
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<JourneyDriverViewModel> patchJourney(@PathVariable final int id,
                                                                @Valid @RequestBody final JsonPatch patch)
     {

@@ -1,7 +1,7 @@
 GET /users/{id}
 POST /users
     Request body:
-    {   // UserViewModel
+    {
         "firstName":"<string>",
         "lastName":"<string>",
         "dob":"<date>",
@@ -27,17 +27,17 @@ POST /users/{id}/passengers
 DELETE /users/passengers/{id}
 
 
-GET /journeys
 GET /journeys/{id}
-GET /journeys/drivers/{id}
-GET /journeys/passengers/{id}
 GET /journeys/search
-    Request body:
+    Request params:
     {
         "locationIdFrom": <integer>,
         "locationIdTo": <integer>,
-        "dateTime": []
+        "dateTimeFrom": <timestamp>,
+        "dateTimeTo": <timestamp>
     }
+GET /journeys/drivers/{id}
+GET /journeys/passengers/{id}
 POST /journeys
     Request body:
     {
@@ -51,12 +51,11 @@ POST /journeys
             }
         ]
     }
-PATCH /journeys/{journeyId}
+PATCH /journeys/{id}
 DELETE /journeys/{id}
 DELETE /journeys/{journeyId}/passengers/{passengerId}
 
 ------------------------------------------------
-
 
 GET /reviews?subject_id=<string>
 POST /reviews/reviewer/{id}/subject/{id}
