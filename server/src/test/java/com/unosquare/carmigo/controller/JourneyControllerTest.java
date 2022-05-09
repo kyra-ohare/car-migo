@@ -67,10 +67,11 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journey_By_Id_Returns_JourneyViewModel() throws Exception
+    public void get_Journey_By_Id_Returns_HttpStatus_Ok() throws Exception
     {
         when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
-        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyDriverViewModel.class)).thenReturn(journeyViewModelFixture);
+        when(modelMapperMock.map(grabJourneyDTOFixture, JourneyDriverViewModel.class))
+                .thenReturn(journeyViewModelFixture);
 
         mockMvc.perform(get(API_LEADING + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -79,18 +80,40 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journeys_Returns_List_of_Journeys() throws Exception
+    public void get_Journey_By_Id_Returns_HttpStatus_MethodNotAllowed() throws Exception
     {
-        when(journeyServiceMock.getJourneys()).thenReturn(grabJourneyDTOList);
-
         mockMvc.perform(get(API_LEADING)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
-        verify(journeyServiceMock).getJourneys();
+                .andExpect(status().isMethodNotAllowed());
+        verify(journeyServiceMock, times(0)).getJourneyById(anyInt());
     }
 
     @Test
-    public void get_Journeys_By_Driver_Id_Returns_List_Of_JourneyPassengerViewModel() throws Exception
+    public void search_Journeys_Returns_HttpStatus_Ok() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/search")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("locationIdFrom", "1")
+                        .param("locationIdTo", "2")
+                        .param("dateTimeFrom", "2022-12-01T09:00:00Z")
+                        .param("dateTimeTo", "2023-12-01T09:00:00Z"))
+                .andExpect(status().isOk());
+        verify(journeyServiceMock).searchJourneys(any());
+    }
+
+    @Test
+    public void search_Journeys_Returns_HttpStatus_BadRequest() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/search")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("locationIdFrom", "1")
+                        .param("locationIdTo", "2"))
+                .andExpect(status().isBadRequest());
+        verify(journeyServiceMock, times(0)).searchJourneys(any());
+    }
+
+    @Test
+    public void get_Journeys_By_Driver_Id_Returns_HttpStatus_Ok() throws Exception
     {
         mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -99,12 +122,30 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void get_Journeys_By_Passenger_Id_Returns_List_Of_JourneyDriverViewModel() throws Exception
+    public void get_Journeys_By_Driver_Id_Returns_HttpStatus_BadRequest() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/drivers/")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+        verify(journeyServiceMock, times(0)).getJourneysByDriverId(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_By_Passenger_Id_Returns_HttpStatus_Ok() throws Exception
     {
         mockMvc.perform(get(API_LEADING + "/passengers/" + anyInt())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         verify(journeyServiceMock).getJourneysByPassengersId(anyInt());
+    }
+
+    @Test
+    public void get_Journeys_By_Passenger_Id_Returns_HttpStatus_BadRequest() throws Exception
+    {
+        mockMvc.perform(get(API_LEADING + "/passengers/")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+        verify(journeyServiceMock, times(0)).getJourneysByPassengersId(anyInt());
     }
 
     @Test
@@ -128,7 +169,7 @@ public class JourneyControllerTest
     }
 
     @Test
-    public void patch_Journey_Returns_HttpStatus_Accepted() throws Exception
+    public void patch_Journey_Returns_HttpStatus_Ok() throws Exception
     {
         mockMvc.perform(patch(API_LEADING + "1")
                         .contentType("application/json-patch+json")

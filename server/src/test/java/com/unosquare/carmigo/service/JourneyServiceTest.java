@@ -11,6 +11,7 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
+import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityManager;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -81,13 +83,17 @@ public class JourneyServiceTest
     @Test
     public void get_Journeys_Returns_List_of_GrabJourneyDTO()
     {
-        when(journeyRepositoryMock.findAll()).thenReturn(journeyFixtureList);
+        when(journeyRepositoryMock.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
         final List<GrabJourneyDTO> grabJourneyDTOList =
                 MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class, modelMapperMock);
-        final List<GrabJourneyDTO> journeyList = journeyService.getJourneys();
+        final CreateSearchJourneysCriteria createSearchJourneysCriteria = new CreateSearchJourneysCriteria(
+                5, 1, Instant.now(), Instant.now().plus(Duration.ofDays(1)));
+        final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(createSearchJourneysCriteria);
 
         assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
-        verify(journeyRepositoryMock).findAll();
+        verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                anyInt(), anyInt(), any(Instant.class), any(Instant.class));
     }
 
     @Test

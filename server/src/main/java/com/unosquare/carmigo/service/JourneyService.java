@@ -12,6 +12,7 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -39,9 +40,16 @@ public class JourneyService
         return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
     }
 
-    public List<GrabJourneyDTO> getJourneys()
+    public List<GrabJourneyDTO> searchJourneys(final CreateSearchJourneysCriteria createSearchJourneysCriteria)
     {
-        final List<Journey> result = journeyRepository.findAll();
+        final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
+                createSearchJourneysCriteria.getLocationIdFrom(),
+                createSearchJourneysCriteria.getLocationIdTo(),
+                createSearchJourneysCriteria.getDateTimeFrom(),
+                createSearchJourneysCriteria.getDateTimeTo());
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException("No journeys found. " + createSearchJourneysCriteria);
+        }
         return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
     }
 
