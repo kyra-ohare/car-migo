@@ -27,6 +27,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -46,6 +47,7 @@ public class PlatformUserService
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
     private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
 
     public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO)
@@ -73,6 +75,7 @@ public class PlatformUserService
     {
         final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
         platformUser.setCreatedDate(Instant.now());
+        platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
         platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, INITIAL_USER_STATUS));
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
