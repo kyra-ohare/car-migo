@@ -6,8 +6,10 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
+import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
@@ -17,6 +19,7 @@ import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import com.unosquare.carmigo.util.JwtTokenUtils;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,14 +29,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,16 +57,22 @@ public class PlatformUserServiceTest
     @Mock private PlatformUserRepository platformUserRepositoryMock;
     @Mock private DriverRepository driverRepositoryMock;
     @Mock private PassengerRepository passengerRepositoryMock;
+    @Mock private UserDetailsService userDetailsServiceMock;
     @Mock private ModelMapper modelMapperMock;
     @Mock private ObjectMapper objectMapperMock;
     @Mock private EntityManager entityManagerMock;
+    @Mock private AuthenticationManager authenticationManagerMock;
+    @Mock private BCryptPasswordEncoder bCryptPasswordEncoderMock;
+    @Mock private JwtTokenUtils jwtTokenUtilsMock;
     @InjectMocks private PlatformUserService platformUserService;
 
     @Fixture private PlatformUser platformUserFixture;
     @Fixture private Driver driverFixture;
     @Fixture private Passenger passengerFixture;
+    @Fixture private CreateAuthenticationDTO createAuthenticationDTOFixture;
     @Fixture private CreatePlatformUserDTO createPlatformUserDTOFixture;
     @Fixture private CreateDriverDTO createDriverDTOFixture;
+    @Fixture private GrabAuthenticationDTO grabAuthenticationDTOFixture;
     @Fixture private GrabPlatformUserDTO grabPlatformUserDTOFixture;
     @Fixture private GrabDriverDTO grabDriverDTOFixture;
     @Fixture private GrabPassengerDTO grabPassengerDTOFixture;
@@ -70,10 +86,29 @@ public class PlatformUserServiceTest
     }
 
     @Test
+    public void create_Authentication_Token_Returns_GrabAuthenticationDTO()
+    {
+        final UserDetails spyUserDetails = spy(new User("foo", "foo", new ArrayList<>()));
+        when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
+        when(userDetailsServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail()))
+                .thenReturn(spyUserDetails);
+        when(jwtTokenUtilsMock.generateToken(spyUserDetails)).thenReturn(anyString());
+        final GrabAuthenticationDTO grabAuthenticationDTO =
+                platformUserService.createAuthenticationToken(createAuthenticationDTOFixture);
+        grabAuthenticationDTO.setJwt(grabAuthenticationDTOFixture.getJwt());
+
+        assertThat(grabAuthenticationDTO.getJwt()).isEqualTo(grabAuthenticationDTOFixture.getJwt());
+        verify(authenticationManagerMock).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userDetailsServiceMock).loadUserByUsername(anyString());
+        verify(jwtTokenUtilsMock).generateToken(any(UserDetails.class));
+    }
+
+    @Test
     public void get_PlatformUser_By_Id_Returns_GrabPlatformUserDTO()
     {
         when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
-        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
+        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class))
+                .thenReturn(grabPlatformUserDTOFixture);
         final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(anyInt());
 
         assertThat(grabPlatformUserDTO.getId()).isEqualTo(grabPlatformUserDTOFixture.getId());
@@ -92,12 +127,15 @@ public class PlatformUserServiceTest
         final PlatformUser spyPlatformUser = spy(new PlatformUser());
         when(modelMapperMock.map(createPlatformUserDTOFixture, PlatformUser.class)).thenReturn(spyPlatformUser);
         when(platformUserRepositoryMock.save(spyPlatformUser)).thenReturn(platformUserFixture);
-        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
+        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class))
+                .thenReturn(grabPlatformUserDTOFixture);
         spyPlatformUser.setCreatedDate(any(Instant.class));
-        spyPlatformUser.setFirstName(any(String.class));
-        spyPlatformUser.setLastName(any(String.class));
-        spyPlatformUser.setEmail(any(String.class));
-        final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTOFixture);
+        spyPlatformUser.setFirstName(anyString());
+        spyPlatformUser.setLastName(anyString());
+        spyPlatformUser.setEmail(anyString());
+        spyPlatformUser.setPassword(bCryptPasswordEncoderMock.encode(anyString()));
+        final GrabPlatformUserDTO grabPlatformUserDTO =
+                platformUserService.createPlatformUser(createPlatformUserDTOFixture);
 
         assertThat(grabPlatformUserDTO.getCreatedDate()).isEqualTo(grabPlatformUserDTOFixture.getCreatedDate());
         assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
@@ -110,13 +148,15 @@ public class PlatformUserServiceTest
     public void patch_PlatformUser_Returns_GrabPlatformUserDTO() throws Exception
     {
         when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
-        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
+        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class))
+                .thenReturn(grabPlatformUserDTOFixture);
         final JsonPatch patch = PatchUtility.jsonPatch(PATCH_PLATFORM_USER_VALID_JSON);
         final JsonNode platformUserNode = PatchUtility.jsonNode(platformUserFixture, patch);
         when(objectMapperMock.convertValue(grabPlatformUserDTOFixture, JsonNode.class)).thenReturn(platformUserNode);
         when(objectMapperMock.treeToValue(platformUserNode, PlatformUser.class)).thenReturn(platformUserFixture);
         when(platformUserRepositoryMock.save(platformUserFixture)).thenReturn(platformUserFixture);
-        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
+        when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class))
+                .thenReturn(grabPlatformUserDTOFixture);
         final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUser(
                 platformUserFixture.getId(), patch);
 
@@ -155,7 +195,7 @@ public class PlatformUserServiceTest
         when(modelMapperMock.map(createDriverDTOFixture, Driver.class)).thenReturn(spyDriver);
         when(driverRepositoryMock.save(spyDriver)).thenReturn(driverFixture);
         when(modelMapperMock.map(driverFixture, GrabDriverDTO.class)).thenReturn(grabDriverDTOFixture);
-        spyDriver.setLicenseNumber(any(String.class));
+        spyDriver.setLicenseNumber(anyString());
         spyDriver.setPlatformUser(any(PlatformUser.class));
         final GrabDriverDTO grabDriverDTO = platformUserService.createDriver(1, createDriverDTOFixture);
 
