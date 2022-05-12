@@ -1,10 +1,9 @@
 package com.unosquare.carmigo.util;
 
-import static com.unosquare.carmigo.constant.AppConstants.SECRET_KEY;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +17,12 @@ import java.util.function.Function;
 @Service
 public class JwtTokenUtils
 {
+    @Value("${application.secret.key}")
+    private String key;
+
     public String generateToken(final UserDetails userDetails)
     {
         final Map<String, Object> claims = new HashMap<>();
-        claims.put("admin", false);
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -40,7 +41,7 @@ public class JwtTokenUtils
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(in10Hours)
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
@@ -62,7 +63,7 @@ public class JwtTokenUtils
 
     private Claims extractAllClaims(final String token)
     {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(final String token)
