@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.util;
 
-import static com.unosquare.carmigo.contant.AppConstants.SECRET_KEY;
+import static com.unosquare.carmigo.constant.AppConstants.SECRET_KEY;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
