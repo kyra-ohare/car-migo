@@ -1,13 +1,17 @@
 package com.unosquare.carmigo.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
+import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
+import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
 import com.unosquare.carmigo.model.request.CreateDriverViewModel;
 import com.unosquare.carmigo.model.request.CreatePlatformUserViewModel;
+import com.unosquare.carmigo.model.response.AuthenticationViewModel;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
@@ -38,6 +42,20 @@ public class PlatformUserController
 {
     private final ModelMapper modelMapper;
     private final PlatformUserService platformUserService;
+
+    @PostMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AuthenticationViewModel> createAuthenticationToken(
+            @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel)
+    {
+        final CreateAuthenticationDTO createAuthenticationDTO = modelMapper.map(
+                createAuthenticationViewModel, CreateAuthenticationDTO.class);
+        final GrabAuthenticationDTO grabAuthenticationDTO = platformUserService.createAuthenticationToken(
+                createAuthenticationDTO);
+        final AuthenticationViewModel authenticationViewModel = modelMapper.map(
+                grabAuthenticationDTO, AuthenticationViewModel.class);
+        return new ResponseEntity<>(authenticationViewModel, HttpStatus.CREATED);
+    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

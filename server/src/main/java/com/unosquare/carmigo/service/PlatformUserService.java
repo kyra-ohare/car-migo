@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
+import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
@@ -18,8 +20,14 @@ import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -34,10 +42,28 @@ public class PlatformUserService
     private final PlatformUserRepository platformUserRepository;
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
+    private final UserDetailsService userDetailsService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
+    private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtTokenUtils jwtTokenUtils;
 
+    public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO)
+    {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    createAuthenticationDTO.getEmail(), createAuthenticationDTO.getPassword()));
+        } catch (final BadCredentialsException ex) {
+            throw new ResourceNotFoundException("Incorrect email and/or password");
+        }
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(createAuthenticationDTO.getEmail());
+        final String jwt = jwtTokenUtils.generateToken(userDetails);
+        final GrabAuthenticationDTO grabAuthenticationDTO = new GrabAuthenticationDTO();
+        grabAuthenticationDTO.setJwt(jwt);
+        return grabAuthenticationDTO;
+    }
 
     public GrabPlatformUserDTO getPlatformUserById(final int id)
     {
@@ -49,6 +75,7 @@ public class PlatformUserService
     {
         final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
         platformUser.setCreatedDate(Instant.now());
+        platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
         platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, INITIAL_USER_STATUS));
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }

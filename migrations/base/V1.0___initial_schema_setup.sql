@@ -15,7 +15,7 @@ create table if not exists platform_user
     dob date not null,
     email varchar(100) not null
         constraint platform_user_email_key unique,
-    password varchar(50) not null,
+    password varchar(65) not null,
     phone_number varchar(50),
     user_access_status_id integer not null
         constraint user_access_status_id_fkey references user_access_status
