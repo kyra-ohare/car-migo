@@ -24,7 +24,6 @@ import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +41,7 @@ public class PlatformUserService
     private final PlatformUserRepository platformUserRepository;
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
-    private final UserDetailsService userDetailsService;
+    private final UserSecurityService userSecurityService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final EntityManager entityManager;
@@ -52,13 +51,9 @@ public class PlatformUserService
 
     public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO)
     {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    createAuthenticationDTO.getEmail(), createAuthenticationDTO.getPassword()));
-        } catch (final BadCredentialsException ex) {
-            throw new ResourceNotFoundException("Incorrect email and/or password");
-        }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(createAuthenticationDTO.getEmail());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                createAuthenticationDTO.getEmail(), createAuthenticationDTO.getPassword()));
+        final UserDetails userDetails = userSecurityService.loadUserByUsername(createAuthenticationDTO.getEmail());
         final String jwt = jwtTokenUtils.generateToken(userDetails);
         final GrabAuthenticationDTO grabAuthenticationDTO = new GrabAuthenticationDTO();
         grabAuthenticationDTO.setJwt(jwt);

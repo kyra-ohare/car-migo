@@ -43,6 +43,13 @@ public class ExceptionResponseHandler
                 HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(final Exception exception)
+    {
+        return ExceptionBuilder.buildErrorResponseRepresentation(
+                HttpStatus.FORBIDDEN, exception.getMessage());
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleBeanValidationException(
             final MethodArgumentNotValidException methodArgumentNotValidException)

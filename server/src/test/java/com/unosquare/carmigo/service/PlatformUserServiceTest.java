@@ -57,7 +57,7 @@ public class PlatformUserServiceTest
     @Mock private PlatformUserRepository platformUserRepositoryMock;
     @Mock private DriverRepository driverRepositoryMock;
     @Mock private PassengerRepository passengerRepositoryMock;
-    @Mock private UserDetailsService userDetailsServiceMock;
+    @Mock private UserSecurityService userSecurityServiceMock;
     @Mock private ModelMapper modelMapperMock;
     @Mock private ObjectMapper objectMapperMock;
     @Mock private EntityManager entityManagerMock;
@@ -90,7 +90,7 @@ public class PlatformUserServiceTest
     {
         final UserDetails spyUserDetails = spy(new User("foo", "foo", new ArrayList<>()));
         when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
-        when(userDetailsServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail()))
+        when(userSecurityServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail()))
                 .thenReturn(spyUserDetails);
         when(jwtTokenUtilsMock.generateToken(spyUserDetails)).thenReturn(anyString());
         final GrabAuthenticationDTO grabAuthenticationDTO =
@@ -99,7 +99,7 @@ public class PlatformUserServiceTest
 
         assertThat(grabAuthenticationDTO.getJwt()).isEqualTo(grabAuthenticationDTOFixture.getJwt());
         verify(authenticationManagerMock).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(userDetailsServiceMock).loadUserByUsername(anyString());
+        verify(userSecurityServiceMock).loadUserByUsername(anyString());
         verify(jwtTokenUtilsMock).generateToken(any(UserDetails.class));
     }
 
