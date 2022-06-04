@@ -20,17 +20,21 @@ import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import com.unosquare.carmigo.util.AuthenticationUtils;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,9 +64,9 @@ public class PlatformUserService
         return grabAuthenticationDTO;
     }
 
-    public GrabPlatformUserDTO getPlatformUserById(final int id)
+    public GrabPlatformUserDTO getPlatformUserById(final int id, final Authentication authentication)
     {
-        final PlatformUser platformUser = findPlatformUserById(id);
+        final PlatformUser platformUser = findPlatformUserById(id, authentication);
         return modelMapper.map(platformUser, GrabPlatformUserDTO.class);
     }
 
@@ -75,10 +79,11 @@ public class PlatformUserService
         return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
     }
 
-    public GrabPlatformUserDTO patchPlatformUser(final int id, final JsonPatch patch)
+    public GrabPlatformUserDTO patchPlatformUser(
+            final int id, final JsonPatch patch, final Authentication authentication)
     {
         final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
-                findPlatformUserById(id), GrabPlatformUserDTO.class);
+                findPlatformUserById(id, authentication), GrabPlatformUserDTO.class);
         try {
             final JsonNode platformUserNode = patch.apply(
                     objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
@@ -89,52 +94,81 @@ public class PlatformUserService
         }
     }
 
-    public void deletePlatformUserById(final int id)
+    public void deletePlatformUserById(final int id, final Authentication authentication)
     {
+        findPlatformUserById(id, authentication);
         platformUserRepository.deleteById(id);
     }
 
-    public GrabDriverDTO getDriverById(final int id)
+    public GrabDriverDTO getDriverById(final int id, final Authentication authentication)
     {
-        final Driver driver = driverRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Driver id %d not found.", id)));
+        final Driver driver = findDriverById(id, authentication);
+        AuthenticationUtils.verifyUserPermission(driver.getPlatformUser().getEmail(), authentication);
         return modelMapper.map(driver, GrabDriverDTO.class);
     }
 
-    public GrabDriverDTO createDriver(final int id, final CreateDriverDTO createDriverDTO)
+    public GrabDriverDTO createDriver(
+            final int id, final CreateDriverDTO createDriverDTO, final Authentication authentication)
     {
         final Driver driver = modelMapper.map(createDriverDTO, Driver.class);
         driver.setPlatformUser(entityManager.getReference(PlatformUser.class, id));
+        AuthenticationUtils.verifyUserPermission(driver.getPlatformUser().getEmail(), authentication);
         return modelMapper.map(driverRepository.save(driver), GrabDriverDTO.class);
     }
 
-    public void deleteDriverById(final int id)
+    public void deleteDriverById(final int id, final Authentication authentication)
     {
+        findDriverById(id, authentication);
         driverRepository.deleteById(id);
     }
 
-    public GrabPassengerDTO getPassengerById(final int id)
+    public GrabPassengerDTO getPassengerById(final int id, final Authentication authentication)
     {
-        final Passenger passenger = passengerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Passenger id " + id + " not found."));
+        final Passenger passenger = findPassengerById(id, authentication);
         return modelMapper.map(passenger, GrabPassengerDTO.class);
     }
 
-    public GrabPassengerDTO createPassenger(final int id)
+    public GrabPassengerDTO createPassenger(final int id, final Authentication authentication)
     {
         final Passenger passenger = new Passenger();
         passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, id));
+        AuthenticationUtils.verifyUserPermission(passenger.getPlatformUser().getEmail(), authentication);
         return modelMapper.map(passengerRepository.save(passenger), GrabPassengerDTO.class);
     }
 
-    public void deletePassengerById(final int id)
+    public void deletePassengerById(final int id, final Authentication authentication)
     {
+        findPassengerById(id, authentication);
         passengerRepository.deleteById(id);
     }
 
-    private PlatformUser findPlatformUserById(final int id)
+    private PlatformUser findPlatformUserById(final int id, final Authentication authentication)
     {
-        return platformUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("PlatformUser id %d not found.", id)));
+        final Optional<PlatformUser> optionalPlatformUser = platformUserRepository.findById(id);
+        if (optionalPlatformUser.isPresent()) {
+            AuthenticationUtils.verifyUserPermission(optionalPlatformUser.get().getEmail(), authentication);
+            return optionalPlatformUser.get();
+        }
+        throw new EntityNotFoundException(String.format("PlatformUser id %d not found.", id));
+    }
+
+    private Driver findDriverById(final int id, final Authentication authentication)
+    {
+        final Optional<Driver> optionalDriver = driverRepository.findById(id);
+        if (optionalDriver.isPresent()) {
+            AuthenticationUtils.verifyUserPermission(optionalDriver.get().getPlatformUser().getEmail(), authentication);
+            return optionalDriver.get();
+        }
+        throw new EntityNotFoundException(String.format("Driver id %d not found.", id));
+    }
+
+    private Passenger findPassengerById(final int id, final Authentication authentication)
+    {
+        final Optional<Passenger> optionalPassenger = passengerRepository.findById(id);
+        if (optionalPassenger.isPresent()) {
+            AuthenticationUtils.verifyUserPermission(optionalPassenger.get().getPlatformUser().getEmail(), authentication);
+            return optionalPassenger.get();
+        }
+        throw new EntityNotFoundException(String.format("Passenger id %d not found.", id));
     }
 }

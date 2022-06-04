@@ -1,8 +1,9 @@
-insert into user_access_status(status) values ('Staged');
-insert into user_access_status(status) values ('Active');
-insert into user_access_status(status) values ('Suspended');
-insert into user_access_status(status) values ('Locked_out');
-insert into user_access_status(status) values ('Admin');
+insert into user_access_status(status) values ('STAGED');
+insert into user_access_status(status) values ('ACTIVE');
+insert into user_access_status(status) values ('SUSPENDED');
+insert into user_access_status(status) values ('LOCKED_OUT');
+insert into user_access_status(status) values ('ADMIN');
+insert into user_access_status(status) values ('DEV');
 
 insert into location(description) values ('Rostrevor');
 insert into location(description) values ('Belfast');

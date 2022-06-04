@@ -17,8 +17,13 @@ import java.util.function.Function;
 @Service
 public class JwtTokenUtils
 {
-    @Value("${application.secret.key}")
+//    private JwtTokenUtils() {}
+
+    @Value("${application.token.secret.key}")
     private String key;
+
+    @Value("${application.token.expiration.in-hours}")
+    private int hours;
 
     public String generateToken(final UserDetails userDetails)
     {
@@ -35,12 +40,12 @@ public class JwtTokenUtils
     private String createToken(final Map<String, Object> claims, final String subject)
     {
         final Date now = Date.from(Instant.now());
-        final Date in10Hours = Date.from(now.toInstant().plus(Duration.ofHours(10)));
+        final Date inSuchHours = Date.from(now.toInstant().plus(Duration.ofHours(hours)));
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .setExpiration(in10Hours)
+                .setExpiration(inSuchHours)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }

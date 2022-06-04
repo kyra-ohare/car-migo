@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import java.util.stream.Collectors;
 
@@ -15,15 +16,12 @@ import java.util.stream.Collectors;
 public class ExceptionResponseHandler
 {
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler({
+            EmptyResultDataAccessException.class,
+            EntityNotFoundException.class,
+            ResourceNotFoundException.class,
+            NoResultException.class})
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception)
-    {
-        return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.NOT_FOUND, exception.getMessage());
-    }
-
-    @ExceptionHandler({NoResultException.class})
-    public ResponseEntity<ErrorResponse> handleNoResultException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
                 HttpStatus.NOT_FOUND, exception.getMessage());
@@ -33,14 +31,7 @@ public class ExceptionResponseHandler
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.CONFLICT, exception.getLocalizedMessage());
-    }
-
-    @ExceptionHandler({EmptyResultDataAccessException.class})
-    public ResponseEntity<ErrorResponse> handleEmptyResultDataAccessException(final Exception exception)
-    {
-        return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.NOT_FOUND, exception.getMessage());
+                HttpStatus.CONFLICT, "Duplicate Entity: " + exception.getMessage());
     }
 
     @ExceptionHandler({AuthenticationException.class})

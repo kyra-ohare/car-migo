@@ -12,6 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.unosquare.carmigo.contant.AppContants.ADMIN;
+import static com.unosquare.carmigo.contant.AppContants.DEV;
+
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
@@ -23,9 +26,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
     {
         httpSecurity.csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/v1/users/authenticate").permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/info").permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/info").hasAuthority(DEV)
+                .antMatchers(HttpMethod.GET, "/actuator/health").hasAnyAuthority(ADMIN, DEV)
                 .antMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
