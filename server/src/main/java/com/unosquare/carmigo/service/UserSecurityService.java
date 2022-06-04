@@ -18,6 +18,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.unosquare.carmigo.contant.AppContants.ACTIVE;
+import static com.unosquare.carmigo.contant.AppContants.ADMIN;
+import static com.unosquare.carmigo.contant.AppContants.DEV;
+import static com.unosquare.carmigo.contant.AppContants.LOCKED_OUT;
+import static com.unosquare.carmigo.contant.AppContants.STAGED;
+import static com.unosquare.carmigo.contant.AppContants.SUSPENDED;
+
 @Service
 @RequiredArgsConstructor
 public class UserSecurityService implements UserDetailsService
@@ -39,11 +46,11 @@ public class UserSecurityService implements UserDetailsService
 
     /**
      * Returns the user along with their type of access which can be:<br>
-     * * Active - user can use the application without restrictions.<br>
-     * * Admin - user has admin privileges such as see other users' information.<br>
-     * * Locked_out - user is locked out after 5 failed attempts.<br>
-     * * Staged - account has been created but no email verification yet.<br>
-     * * Suspended - user can see journeys and update profile. User cannot create/apply for journeys, accept/reject
+     * * ACTIVE - user can use the application without restrictions.<br>
+     * * ADMIN - user has admin privileges such as see other users' information.<br>
+     * * LOCKED_OUT - user is locked out after 5 failed attempts.<br>
+     * * STAGED - account has been created but no email verification yet.<br>
+     * * SUSPENDED - user can see journeys and update profile. User cannot create/apply for journeys, accept/reject
      * passengers.
      *
      * @param currentUser  PlatformUser from the database
@@ -53,14 +60,15 @@ public class UserSecurityService implements UserDetailsService
     private UserDetails getUserDetails(final PlatformUser currentUser, final String accessStatus)
     {
         switch (accessStatus) {
-            case "Active":
-            case "Admin":
-            case "Suspended":
+            case ACTIVE:
+            case ADMIN:
+            case DEV:
+            case SUSPENDED:
                 return new User(currentUser.getEmail(), currentUser.getPassword(), true, true,
                         true, true, getAuthorities(accessStatus));
-            case "Locked_out":
+            case LOCKED_OUT:
                 throw new AuthenticationException("User is locked out after 5 failed attempts.");
-            case "Staged":
+            case STAGED:
                 throw new AuthenticationException("User needs to confirm the email.");
             default:
                 throw new NoResultException("Unknown UserAccessStatus property.");
