@@ -7,8 +7,6 @@ import java.io.IOException;
 
 public class ResourceUtility
 {
-    private ResourceUtility() {}
-
     public static String generateStringFromResource(final String path)
     {
         try {
@@ -17,4 +15,6 @@ public class ResourceUtility
             return "Cannot retrieve resource entity";
         }
     }
+
+    private ResourceUtility() {}
 }

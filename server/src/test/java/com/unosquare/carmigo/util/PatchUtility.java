@@ -9,8 +9,6 @@ public class PatchUtility
 {
     private static final ObjectMapper objectMapper = new MapperConfiguration().objectMapper();
 
-    private PatchUtility() {}
-
     public static JsonNode jsonNode(final Object entity, final JsonPatch jsonPatch) throws Exception
     {
         return jsonPatch.apply(objectMapper.convertValue(entity, JsonNode.class));
@@ -20,4 +18,6 @@ public class PatchUtility
     {
         return JsonPatch.fromJson(objectMapper.readTree(json));
     }
+
+    private PatchUtility() {}
 }

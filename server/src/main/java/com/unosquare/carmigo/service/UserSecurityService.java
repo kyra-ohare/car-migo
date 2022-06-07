@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,8 +49,7 @@ public class UserSecurityService implements UserDetailsService
      * * ADMIN - user has admin privileges such as see other users' information.<br>
      * * LOCKED_OUT - user is locked out after 5 failed attempts.<br>
      * * STAGED - account has been created but no email verification yet.<br>
-     * * SUSPENDED - user can see journeys and update profile. User cannot create/apply for journeys, accept/reject
-     * passengers.
+     * * SUSPENDED - user can update profile. User cannot create/apply for journeys, accept/reject passengers.
      *
      * @param currentUser  PlatformUser from the database
      * @param accessStatus the type of access this user has
@@ -77,8 +75,6 @@ public class UserSecurityService implements UserDetailsService
 
     private Collection<? extends GrantedAuthority> getAuthorities(final String accessStatus)
     {
-        final List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(accessStatus));
-        return authorities;
+        return List.of(new SimpleGrantedAuthority(accessStatus));
     }
 }

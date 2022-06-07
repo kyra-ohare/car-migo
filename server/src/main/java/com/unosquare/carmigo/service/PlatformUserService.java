@@ -103,7 +103,6 @@ public class PlatformUserService
     public GrabDriverDTO getDriverById(final int id, final Authentication authentication)
     {
         final Driver driver = findDriverById(id, authentication);
-        AuthenticationUtils.verifyUserPermission(driver.getPlatformUser().getEmail(), authentication);
         return modelMapper.map(driver, GrabDriverDTO.class);
     }
 
