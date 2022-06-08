@@ -17,8 +17,6 @@ import java.util.function.Function;
 @Service
 public class JwtTokenUtils
 {
-//    private JwtTokenUtils() {}
-
     @Value("${application.token.secret.key}")
     private String key;
 
