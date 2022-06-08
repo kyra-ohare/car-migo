@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.NoResultException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.unosquare.carmigo.contant.AppContants.ACTIVE;
 import static com.unosquare.carmigo.contant.AppContants.ADMIN;
@@ -33,11 +34,11 @@ public class UserSecurityService implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(final String email)
     {
-        final PlatformUser currentUser = platformUserRepository.findPlatformUserByEmail(email);
-        if (currentUser != null) {
-            final String accessStatus = currentUser.getUserAccessStatus().getStatus();
+        final Optional<PlatformUser> currentUser = platformUserRepository.findPlatformUserByEmail(email);
+        if (currentUser.isPresent()) {
+            final String accessStatus = currentUser.get().getUserAccessStatus().getStatus();
             if (StringUtils.isNotBlank(accessStatus)) {
-                return getUserDetails(currentUser, accessStatus);
+                return getUserDetails(currentUser.get(), accessStatus);
             }
         }
         throw new ResourceNotFoundException(String.format("Incorrect email (%s) and/or password", email));
