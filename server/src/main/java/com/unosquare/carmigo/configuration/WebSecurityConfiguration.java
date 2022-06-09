@@ -1,19 +1,25 @@
 package com.unosquare.carmigo.configuration;
 
-import com.unosquare.carmigo.filter.JwtRequestFilter;
+import com.unosquare.carmigo.exception.AuthenticationException;
+import com.unosquare.carmigo.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.context.annotation.RequestScope;
 
-import static com.unosquare.carmigo.contant.AppContants.ADMIN;
-import static com.unosquare.carmigo.contant.AppContants.DEV;
+import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.contant.AppConstants.DEV;
+import static com.unosquare.carmigo.contant.AppConstants.NO_PERMISSIONS;
 
 @EnableWebSecurity
 @RequiredArgsConstructor

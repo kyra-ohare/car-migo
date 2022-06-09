@@ -5,6 +5,8 @@ import com.google.common.base.CharMatcher;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import static com.unosquare.carmigo.contant.AppConstants.SPECIAL_CHARACTERS;
+
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String>
 {
     private static final CharMatcher ALPHANUMERIC_RULE = CharMatcher
@@ -12,7 +14,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
             .or(CharMatcher.inRange('a', 'z'))
             .or(CharMatcher.inRange('0', '9'))
             .precomputed();
-    private static final CharMatcher SIGNS_RULE = CharMatcher.anyOf("@#$%^&+=!?").precomputed();
+    private static final CharMatcher SIGNS_RULE = CharMatcher.anyOf(SPECIAL_CHARACTERS).precomputed();
     private static final CharMatcher UPPERCASE_RULE = CharMatcher.inRange('A', 'Z').precomputed();
 
     @Override

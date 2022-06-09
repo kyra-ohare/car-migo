@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
+import static com.unosquare.carmigo.contant.AppConstants.EMAIL_REGEX;
+
 @Data
 public class CreatePlatformUserViewModel
 {
@@ -36,7 +38,7 @@ public class CreatePlatformUserViewModel
     @NotEmpty
     @NotNull
     @JsonProperty("email")
-    @Email(regexp = "^([^ @])+@([^ \\.@]+\\.)+([^ \\.@])+$")
+    @Email(regexp = EMAIL_REGEX)
     private String email;
 
     @Size(max = 50)

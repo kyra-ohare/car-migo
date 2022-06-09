@@ -8,14 +8,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static com.unosquare.carmigo.contant.AppConstants.VALID_PASSWORD_MESSAGE;
+
 @Documented
 @Constraint(validatedBy = PasswordValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassword
 {
-    String message() default "Password must contain between 8 and 20 characters and at least 2 of the following: " +
-            "Alphanumeric characters, one special character ( @#$%^&+=!? ), one capital letter.";
+    String message() default VALID_PASSWORD_MESSAGE;
 
     Class<?>[] groups() default {};
 
