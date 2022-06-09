@@ -1,6 +1,6 @@
-package com.unosquare.carmigo.filter;
+package com.unosquare.carmigo.security;
 
-import com.unosquare.carmigo.service.UserSecurityService;
+import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

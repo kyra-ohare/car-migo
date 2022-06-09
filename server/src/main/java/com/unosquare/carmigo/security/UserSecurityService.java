@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.service;
+package com.unosquare.carmigo.security;
 
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.exception.AuthenticationException;
@@ -18,12 +18,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.unosquare.carmigo.contant.AppContants.ACTIVE;
-import static com.unosquare.carmigo.contant.AppContants.ADMIN;
-import static com.unosquare.carmigo.contant.AppContants.DEV;
-import static com.unosquare.carmigo.contant.AppContants.LOCKED_OUT;
-import static com.unosquare.carmigo.contant.AppContants.STAGED;
-import static com.unosquare.carmigo.contant.AppContants.SUSPENDED;
+import static com.unosquare.carmigo.contant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.contant.AppConstants.DEV;
+import static com.unosquare.carmigo.contant.AppConstants.LOCKED_OUT;
+import static com.unosquare.carmigo.contant.AppConstants.STAGED;
+import static com.unosquare.carmigo.contant.AppConstants.SUSPENDED;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +36,7 @@ public class UserSecurityService implements UserDetailsService
     {
         final Optional<PlatformUser> currentUser = platformUserRepository.findPlatformUserByEmail(email);
         if (currentUser.isPresent()) {
-            final String accessStatus = currentUser.get().getUserAccessStatus().getStatus();
-            if (StringUtils.isNotBlank(accessStatus)) {
-                return getUserDetails(currentUser.get(), accessStatus);
-            }
+            return getUserDetails(currentUser.get());
         }
         throw new ResourceNotFoundException(String.format("Incorrect email (%s) and/or password", email));
     }
@@ -53,18 +50,17 @@ public class UserSecurityService implements UserDetailsService
      * * SUSPENDED - user can update profile. User cannot create/apply for journeys, accept/reject passengers.
      *
      * @param currentUser  PlatformUser from the database
-     * @param accessStatus the type of access this user has
      * @return the UserDetails
      */
-    private UserDetails getUserDetails(final PlatformUser currentUser, final String accessStatus)
+    private UserDetails getUserDetails(final PlatformUser currentUser)
     {
-        switch (accessStatus) {
+        switch (currentUser.getUserAccessStatus().getStatus()) {
             case ACTIVE:
             case ADMIN:
             case DEV:
             case SUSPENDED:
-                return new User(currentUser.getEmail(), currentUser.getPassword(), true, true,
-                        true, true, getAuthorities(accessStatus));
+                return new SiteUser(currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(),
+                        currentUser.getUserAccessStatus().getStatus(), List.of());
             case LOCKED_OUT:
                 throw new AuthenticationException("User is locked out after 5 failed attempts.");
             case STAGED:
@@ -72,10 +68,5 @@ public class UserSecurityService implements UserDetailsService
             default:
                 throw new NoResultException("Unknown UserAccessStatus property.");
         }
-    }
-
-    private Collection<? extends GrantedAuthority> getAuthorities(final String accessStatus)
-    {
-        return List.of(new SimpleGrantedAuthority(accessStatus));
     }
 }

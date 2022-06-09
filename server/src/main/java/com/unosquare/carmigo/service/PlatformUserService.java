@@ -20,6 +20,7 @@ import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.AuthenticationUtils;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;

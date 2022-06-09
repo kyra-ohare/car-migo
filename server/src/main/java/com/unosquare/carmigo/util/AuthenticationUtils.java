@@ -1,13 +1,15 @@
 package com.unosquare.carmigo.util;
 
 import com.unosquare.carmigo.exception.AuthenticationException;
+import com.unosquare.carmigo.security.SiteUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import static com.unosquare.carmigo.contant.AppContants.ACTIVE;
-import static com.unosquare.carmigo.contant.AppContants.ADMIN;
-import static com.unosquare.carmigo.contant.AppContants.DEV;
-import static com.unosquare.carmigo.contant.AppContants.NO_PERMISSIONS;
+import static com.unosquare.carmigo.contant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.contant.AppConstants.DEV;
+import static com.unosquare.carmigo.contant.AppConstants.NO_PERMISSIONS;
 
 public class AuthenticationUtils
 {
@@ -15,10 +17,8 @@ public class AuthenticationUtils
 
     public static void verifyUserPermission(final String username, final Authentication authentication)
     {
-        String userAccess = "";
-        for (final GrantedAuthority item : authentication.getAuthorities()) {
-            userAccess = item.getAuthority();
-        }
+        String userAccess = ((SiteUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUserAccessStatus();
         if (!(authentication.isAuthenticated()
                 && (username.equals(authentication.getName())
                 && (userAccess.equals(ACTIVE) || userAccess.equals(ADMIN) || userAccess.equals(DEV))))) {
