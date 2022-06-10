@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 
-public class SiteUser extends User
+public class CustomUserDetails extends User
 {
     private static final long serialVersionUID = 7027723211089349611L;
 
@@ -13,8 +13,8 @@ public class SiteUser extends User
 
     private String userAccessStatus;
 
-    public SiteUser(final int id, final String username, final String password, final String userAccessStatus,
-                    final Collection<? extends GrantedAuthority> authorities)
+    public CustomUserDetails(final int id, final String username, final String password,
+                             final String userAccessStatus, final Collection<? extends GrantedAuthority> authorities)
     {
         super(username, password, authorities);
         this.id = id;

@@ -5,16 +5,11 @@ import com.unosquare.carmigo.exception.AuthenticationException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +42,9 @@ public class UserSecurityService implements UserDetailsService
      * * ADMIN - user has admin privileges such as see other users' information.<br>
      * * LOCKED_OUT - user is locked out after 5 failed attempts.<br>
      * * STAGED - account has been created but no email verification yet.<br>
-     * * SUSPENDED - user can update profile. User cannot create/apply for journeys, accept/reject passengers.
+     * * SUSPENDED - user can see and update profile. User cannot create/apply for journeys, accept/reject passengers.
      *
-     * @param currentUser  PlatformUser from the database
+     * @param currentUser PlatformUser from the database
      * @return the UserDetails
      */
     private UserDetails getUserDetails(final PlatformUser currentUser)
@@ -59,7 +54,7 @@ public class UserSecurityService implements UserDetailsService
             case ADMIN:
             case DEV:
             case SUSPENDED:
-                return new SiteUser(currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(),
+                return new CustomUserDetails(currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(),
                         currentUser.getUserAccessStatus().getStatus(), List.of());
             case LOCKED_OUT:
                 throw new AuthenticationException("User is locked out after 5 failed attempts.");

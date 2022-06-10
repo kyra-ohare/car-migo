@@ -4,9 +4,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -31,7 +33,7 @@ public class ExceptionResponseHandler
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(final Exception exception)
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
-                HttpStatus.CONFLICT, "Duplicate Entity: " + exception.getMessage());
+                HttpStatus.CONFLICT, exception.getCause().getCause().toString());
     }
 
     @ExceptionHandler({AuthenticationException.class})
@@ -39,6 +41,13 @@ public class ExceptionResponseHandler
     {
         return ExceptionBuilder.buildErrorResponseRepresentation(
                 HttpStatus.FORBIDDEN, exception.getMessage());
+    }
+
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(final Exception exception)
+    {
+        return ExceptionBuilder.buildErrorResponseRepresentation(
+                HttpStatus.METHOD_NOT_ALLOWED, exception.getMessage());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})

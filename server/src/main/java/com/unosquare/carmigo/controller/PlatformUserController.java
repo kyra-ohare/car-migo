@@ -15,6 +15,7 @@ import com.unosquare.carmigo.model.response.AuthenticationViewModel;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
+import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,6 +43,7 @@ public class PlatformUserController
 {
     private final ModelMapper modelMapper;
     private final PlatformUserService platformUserService;
+    private final AppUser appUser;
 
     @PostMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -61,9 +62,9 @@ public class PlatformUserController
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PlatformUserViewModel> getPlatformUserById(
-            @PathVariable final int id, final Authentication authentication)
+            @PathVariable final int id)
     {
-        final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(id, authentication);
+        final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(id, appUser.get());
         final PlatformUserViewModel platformUserViewModel = modelMapper.map(
                 grabPlatformUserDTO, PlatformUserViewModel.class);
         return ResponseEntity.ok(platformUserViewModel);
@@ -85,10 +86,10 @@ public class PlatformUserController
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<PlatformUserViewModel> patchPlatformUser(
-            @PathVariable final int id, @RequestBody final JsonPatch patch, final Authentication authentication)
+            @PathVariable final int id, @RequestBody final JsonPatch patch)
     {
         final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUser(
-                id, patch, authentication);
+                id, patch, appUser.get());
         final PlatformUserViewModel platformUserViewModel = modelMapper.map(
                 grabPlatformUserDTO, PlatformUserViewModel.class);
         return ResponseEntity.ok(platformUserViewModel);
@@ -96,18 +97,18 @@ public class PlatformUserController
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deletePlatformUser(@PathVariable final int id, final Authentication authentication)
+    public ResponseEntity<?> deletePlatformUser(@PathVariable final int id)
     {
-        platformUserService.deletePlatformUserById(id, authentication);
+        platformUserService.deletePlatformUserById(id, appUser.get());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/drivers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<DriverViewModel> getDriverById(
-            @PathVariable final int id, final Authentication authentication)
+            @PathVariable final int id)
     {
-        final GrabDriverDTO grabDriverDTO = platformUserService.getDriverById(id, authentication);
+        final GrabDriverDTO grabDriverDTO = platformUserService.getDriverById(id, appUser.get());
         final DriverViewModel driverViewModel = modelMapper.map(
                 grabDriverDTO, DriverViewModel.class);
         return ResponseEntity.ok(driverViewModel);
@@ -115,28 +116,27 @@ public class PlatformUserController
 
     @PostMapping(value = "/{id}/drivers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<DriverViewModel> createDriver(@PathVariable final int id,
-            @Valid @RequestBody final CreateDriverViewModel createDriverViewModal, final Authentication authentication)
+    public ResponseEntity<DriverViewModel> createDriver(
+            @PathVariable final int id, @Valid @RequestBody final CreateDriverViewModel createDriverViewModal)
     {
         final CreateDriverDTO createDriverDTO = modelMapper.map(createDriverViewModal, CreateDriverDTO.class);
-        final GrabDriverDTO driverDTO = platformUserService.createDriver(id, createDriverDTO, authentication);
+        final GrabDriverDTO driverDTO = platformUserService.createDriver(id, createDriverDTO, appUser.get());
         return new ResponseEntity<>(modelMapper.map(driverDTO, DriverViewModel.class), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/drivers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteDriver(@PathVariable final int id, final Authentication authentication)
+    public ResponseEntity<?> deleteDriver(@PathVariable final int id)
     {
-        platformUserService.deleteDriverById(id, authentication);
+        platformUserService.deleteDriverById(id, appUser.get());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/passengers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PassengerViewModel> getPassengerById(
-            @PathVariable final int id, final Authentication authentication)
+    public ResponseEntity<PassengerViewModel> getPassengerById(@PathVariable final int id)
     {
-        final GrabPassengerDTO grabPassengerDTO = platformUserService.getPassengerById(id, authentication);
+        final GrabPassengerDTO grabPassengerDTO = platformUserService.getPassengerById(id, appUser.get());
         final PassengerViewModel passengerViewModel = modelMapper.map(
                 grabPassengerDTO, PassengerViewModel.class);
         return ResponseEntity.ok(passengerViewModel);
@@ -144,18 +144,17 @@ public class PlatformUserController
 
     @PostMapping(value = "/{id}/passengers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PassengerViewModel> createPassenger(
-            @PathVariable final int id, final Authentication authentication)
+    public ResponseEntity<PassengerViewModel> createPassenger(@PathVariable final int id)
     {
-        final GrabPassengerDTO passengerDTO = platformUserService.createPassenger(id, authentication);
+        final GrabPassengerDTO passengerDTO = platformUserService.createPassenger(id, appUser.get());
         return new ResponseEntity<>(modelMapper.map(passengerDTO, PassengerViewModel.class), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/passengers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deletePassenger(@PathVariable final int id, final Authentication authentication)
+    public ResponseEntity<?> deletePassenger(@PathVariable final int id)
     {
-        platformUserService.deletePassengerById(id, authentication);
+        platformUserService.deletePassengerById(id, appUser.get());
         return ResponseEntity.noContent().build();
     }
 }
