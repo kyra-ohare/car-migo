@@ -12,27 +12,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 @Configuration
-public class MapperConfiguration
-{
-    @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public ModelMapper modelMapper()
-    {
-        final ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration()
-                .setAmbiguityIgnored(true)
-                .setMatchingStrategy(MatchingStrategies.STRICT)
-                .setPropertyCondition(Conditions.isNotNull());
-        return mapper;
-    }
+public class MapperConfiguration {
 
-    @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public ObjectMapper objectMapper()
-    {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        return objectMapper;
-    }
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+  public ModelMapper modelMapper() {
+    final ModelMapper mapper = new ModelMapper();
+    mapper.getConfiguration()
+        .setAmbiguityIgnored(true)
+        .setMatchingStrategy(MatchingStrategies.STRICT)
+        .setPropertyCondition(Conditions.isNotNull());
+    return mapper;
+  }
+
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+  public ObjectMapper objectMapper() {
+    final ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    return objectMapper;
+  }
 }

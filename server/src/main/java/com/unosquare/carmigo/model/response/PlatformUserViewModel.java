@@ -1,38 +1,37 @@
 package com.unosquare.carmigo.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlatformUserViewModel
-{
-    @JsonProperty("id")
-    private int id;
+public class PlatformUserViewModel {
 
-    @JsonProperty("createdDate")
-    private Instant createdDate;
+  @JsonProperty("id")
+  private int id;
 
-    @JsonProperty("firstName")
-    private String firstName;
+  @JsonProperty("createdDate")
+  private Instant createdDate;
 
-    @JsonProperty("lastName")
-    private String lastName;
+  @JsonProperty("firstName")
+  private String firstName;
 
-    @JsonProperty("dob")
-    private Instant dob;
+  @JsonProperty("lastName")
+  private String lastName;
 
-    @JsonProperty("email")
-    private String email;
+  @JsonProperty("dob")
+  private Instant dob;
 
-    @JsonProperty("phoneNumber")
-    private String phoneNumber;
+  @JsonProperty("email")
+  private String email;
 
-    @JsonProperty("userAccessStatus")
-    private UserAccessStatusViewModel userAccessStatus;
+  @JsonProperty("phoneNumber")
+  private String phoneNumber;
+
+  @JsonProperty("userAccessStatus")
+  private UserAccessStatusViewModel userAccessStatus;
 }

@@ -1,36 +1,35 @@
 package com.unosquare.carmigo.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Instant;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class JourneyPassengerViewModel
-{
-    @JsonProperty("id")
-    private int id;
+public class JourneyPassengerViewModel {
 
-    @JsonProperty("createdDate")
-    private Instant createdDate;
+  @JsonProperty("id")
+  private int id;
 
-    @JsonProperty("locationFrom")
-    private LocationViewModel locationFrom;
+  @JsonProperty("createdDate")
+  private Instant createdDate;
 
-    @JsonProperty("locationTo")
-    private LocationViewModel locationTo;
+  @JsonProperty("locationFrom")
+  private LocationViewModel locationFrom;
 
-    @JsonProperty("maxPassengers")
-    private int maxPassengers;
+  @JsonProperty("locationTo")
+  private LocationViewModel locationTo;
 
-    @JsonProperty("dateTime")
-    private Instant dateTime;
+  @JsonProperty("maxPassengers")
+  private int maxPassengers;
 
-    @JsonProperty("passengers")
-    private List<PassengerViewModel> passengers;
+  @JsonProperty("dateTime")
+  private Instant dateTime;
+
+  @JsonProperty("passengers")
+  private List<PassengerViewModel> passengers;
 }

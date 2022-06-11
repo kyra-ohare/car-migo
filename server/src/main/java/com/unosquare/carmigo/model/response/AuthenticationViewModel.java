@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AuthenticationViewModel
-{
-    @JsonProperty("jwt")
-    private String jwt;
+public class AuthenticationViewModel {
+
+  @JsonProperty("jwt")
+  private String jwt;
 }

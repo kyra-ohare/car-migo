@@ -3,9 +3,9 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class GrabLocationDTO
-{
-    private int id;
+public class GrabLocationDTO {
 
-    private String description;
+  private int id;
+
+  private String description;
 }

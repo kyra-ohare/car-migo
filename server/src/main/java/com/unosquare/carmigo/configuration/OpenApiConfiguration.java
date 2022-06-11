@@ -12,36 +12,32 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class OpenApiConfiguration
-{
-    @Value("${springdoc.api.title}")
-    private String title;
+public class OpenApiConfiguration {
 
-    @Value("${springdoc.api.description}")
-    private String description;
+  @Value("${springdoc.api.title}")
+  private String title;
 
-    @Bean
-    public OpenAPI setUpOpenAPI()
-    {
-        return new OpenAPI()
-                .info(info())
-                .components(components())
-                .addSecurityItem(securityItem());
-    }
+  @Value("${springdoc.api.description}")
+  private String description;
 
-    private Info info()
-    {
-        return new Info().title(this.title).description(this.description);
-    }
+  @Bean
+  public OpenAPI setUpOpenAPI() {
+    return new OpenAPI()
+        .info(info())
+        .components(components())
+        .addSecurityItem(securityItem());
+  }
 
-    private Components components()
-    {
-        return new Components().addSecuritySchemes("Bearer",
-                new SecurityScheme().type(Type.APIKEY).name("Authorization").in(In.HEADER));
-    }
+  private Info info() {
+    return new Info().title(this.title).description(this.description);
+  }
 
-    private SecurityRequirement securityItem()
-    {
-        return new SecurityRequirement().addList("Bearer");
-    }
+  private Components components() {
+    return new Components().addSecuritySchemes("Bearer",
+        new SecurityScheme().type(Type.APIKEY).name("Authorization").in(In.HEADER));
+  }
+
+  private SecurityRequirement securityItem() {
+    return new SecurityRequirement().addList("Bearer");
+  }
 }

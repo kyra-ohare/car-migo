@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LocationViewModel
-{
-    @JsonProperty("id")
-    private int id;
+public class LocationViewModel {
 
-    @JsonProperty("description")
-    private String description;
+  @JsonProperty("id")
+  private int id;
+
+  @JsonProperty("description")
+  private String description;
 }
