@@ -1,10 +1,5 @@
 package com.unosquare.carmigo.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -22,18 +21,18 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "passenger_journey")
-public class PassengerJourney
-{
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
-    private int id;
+public class PassengerJourney {
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "passenger_id", nullable = false)
-    private Passenger passenger;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "id", updatable = false, nullable = false)
+  private int id;
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "journey_id", nullable = false)
-    private Journey journey;
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "passenger_id", nullable = false)
+  private Passenger passenger;
+
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "journey_id", nullable = false)
+  private Journey journey;
 }

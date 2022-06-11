@@ -14,34 +14,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
-{
-    private final JwtRequestFilter jwtRequestFilter;
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(final HttpSecurity httpSecurity) throws Exception
-    {
-        httpSecurity.csrf().disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/v1/users/authenticate").permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/info").permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-                .antMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+  private final JwtRequestFilter jwtRequestFilter;
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception
-    {
-        return super.authenticationManagerBean();
-    }
+  @Override
+  protected void configure(final HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.csrf().disable().authorizeRequests()
+        .antMatchers(HttpMethod.POST, "/v1/users/authenticate").permitAll()
+        .antMatchers(HttpMethod.GET, "/actuator/info").permitAll()
+        .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+        .antMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
+        .anyRequest().authenticated()
+        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder()
-    {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

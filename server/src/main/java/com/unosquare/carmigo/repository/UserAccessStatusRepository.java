@@ -5,6 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserAccessStatusRepository extends JpaRepository<UserAccessStatus, Integer>
-{
-}
+public interface UserAccessStatusRepository extends JpaRepository<UserAccessStatus, Integer> {}

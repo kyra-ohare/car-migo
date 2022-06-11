@@ -3,9 +3,9 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class CreateAuthenticationDTO
-{
-    private String email;
+public class CreateAuthenticationDTO {
 
-    private String password;
+  private String email;
+
+  private String password;
 }

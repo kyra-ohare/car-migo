@@ -8,11 +8,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserAccessStatusViewModel
-{
-    @JsonProperty("id")
-    private int id;
+public class UserAccessStatusViewModel {
 
-    @JsonProperty("status")
-    private String status;
+  @JsonProperty("id")
+  private int id;
+
+  @JsonProperty("status")
+  private String status;
 }

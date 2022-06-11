@@ -3,9 +3,9 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class GrabPassengerDTO
-{
-    private int id;
+public class GrabPassengerDTO {
 
-    private GrabPlatformUserDTO platformUser;
+  private int id;
+
+  private GrabPlatformUserDTO platformUser;
 }

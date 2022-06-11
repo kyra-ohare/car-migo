@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DriverViewModel
-{
-    @JsonProperty("id")
-    private int id;
+public class DriverViewModel {
 
-    @JsonProperty("licenseNumber")
-    private String licenseNumber;
+  @JsonProperty("id")
+  private int id;
 
-    @JsonProperty("user")
-    private PlatformUserViewModel platformUser;
+  @JsonProperty("licenseNumber")
+  private String licenseNumber;
+
+  @JsonProperty("user")
+  private PlatformUserViewModel platformUser;
 }

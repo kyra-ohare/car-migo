@@ -1,19 +1,18 @@
 package com.unosquare.carmigo.dto;
 
+import java.time.Instant;
 import lombok.Data;
 
-import java.time.Instant;
-
 @Data
-public class CreateJourneyDTO
-{
-    private int locationIdFrom;
+public class CreateJourneyDTO {
 
-    private int locationIdTo;
+  private int locationIdFrom;
 
-    private int maxPassengers;
+  private int locationIdTo;
 
-    private Instant dateTime;
+  private int maxPassengers;
 
-    private int driverId;
+  private Instant dateTime;
+
+  private int driverId;
 }

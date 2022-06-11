@@ -3,11 +3,11 @@ package com.unosquare.carmigo.dto;
 import lombok.Data;
 
 @Data
-public class GrabDriverDTO
-{
-    private int id;
+public class GrabDriverDTO {
 
-    private String licenseNumber;
+  private int id;
 
-    private GrabPlatformUserDTO platformUser;
+  private String licenseNumber;
+
+  private GrabPlatformUserDTO platformUser;
 }

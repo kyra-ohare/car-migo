@@ -1,11 +1,7 @@
 package com.unosquare.carmigo.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.Hibernate;
-
+import java.time.Instant;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,8 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.time.Instant;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
 @Entity
 @Getter
@@ -26,57 +25,53 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "platform_user")
-public class PlatformUser
-{
-    @Id
-    @SequenceGenerator(name = "platform_user_id_seq",
-            sequenceName = "platform_user_id_seq",
-            allocationSize = 1)
-    @GeneratedValue(generator = "platform_user_id_seq", strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
-    private int id;
+public class PlatformUser {
 
-    @Column(name = "created_date", nullable = false)
-    private Instant createdDate;
+  @Id
+  @SequenceGenerator(name = "platform_user_id_seq", sequenceName = "platform_user_id_seq", allocationSize = 1)
+  @GeneratedValue(generator = "platform_user_id_seq", strategy = GenerationType.SEQUENCE)
+  @Column(name = "id", updatable = false, nullable = false)
+  private int id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+  @Column(name = "created_date", nullable = false)
+  private Instant createdDate;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+  @Column(name = "first_name", nullable = false)
+  private String firstName;
 
-    @Column(name = "dob", nullable = false)
-    private Instant dob;
+  @Column(name = "last_name", nullable = false)
+  private String lastName;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+  @Column(name = "dob", nullable = false)
+  private Instant dob;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+  @Column(name = "email", nullable = false, unique = true)
+  private String email;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+  @Column(name = "password", nullable = false)
+  private String password;
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_access_status_id", nullable = false)
-    private UserAccessStatus userAccessStatus;
+  @Column(name = "phone_number")
+  private String phoneNumber;
 
-    @Override
-    public boolean equals(final Object o)
-    {
-        if (this == o) {
-            return true;
-        }
-        if (null == o || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        final PlatformUser that = (PlatformUser) o;
-        return 0 != id && Objects.equals(id, that.id);
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_access_status_id", nullable = false)
+  private UserAccessStatus userAccessStatus;
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
     }
-
-    @Override
-    public int hashCode()
-    {
-        return getClass().hashCode();
+    if (null == o || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+      return false;
     }
+    final PlatformUser that = (PlatformUser) o;
+    return 0 != id && Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

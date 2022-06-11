@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PlatformUserRepository extends JpaRepository<PlatformUser, Integer>
-{
-    PlatformUser findPlatformUserByEmail(final String email);
+public interface PlatformUserRepository extends JpaRepository<PlatformUser, Integer> {
+
+  PlatformUser findPlatformUserByEmail(final String email);
 }
