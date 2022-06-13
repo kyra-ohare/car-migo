@@ -12,7 +12,10 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.model.request.CreateCalculateRouteCriteria;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.openfeign.Distance;
+import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -33,6 +36,7 @@ public class JourneyService {
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
+  private final Distance distance;
 
   public GrabJourneyDTO getJourneyById(final int id) {
     return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
@@ -43,7 +47,7 @@ public class JourneyService {
         createSearchJourneysCriteria.getLocationIdFrom(), createSearchJourneysCriteria.getLocationIdTo(),
         createSearchJourneysCriteria.getDateTimeFrom(), createSearchJourneysCriteria.getDateTimeTo());
     if (result.isEmpty()) {
-      throw new ResourceNotFoundException("No journeys found. " + createSearchJourneysCriteria);
+      throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
     }
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
@@ -84,6 +88,11 @@ public class JourneyService {
     }
   }
 
+  public DistanceHolder calculateRoute(final CreateCalculateRouteCriteria createCalculateRouteCriteria) {
+    final String request = prepareRequestToDistanceOpenFeign(createCalculateRouteCriteria);
+    return distance.getDistance(request);
+  }
+
   public void deleteJourneyById(final int id) {
     journeyRepository.deleteById(id);
   }
@@ -96,5 +105,14 @@ public class JourneyService {
   private Journey findJourneyById(final int id) {
     return journeyRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
+  }
+
+  private String prepareRequestToDistanceOpenFeign(final CreateCalculateRouteCriteria criteria) {
+    final StringBuilder request = new StringBuilder("[{\"t\":");
+    request.append("\"").append(criteria.getCityFrom()).append(",").append(criteria.getCountryFrom()).append("\"");
+    request.append("},{\"t\":");
+    request.append("\"").append(criteria.getCityTo()).append(",").append(criteria.getCountryTo()).append("\"");
+    request.append("}]");
+    return request.toString();
   }
 }

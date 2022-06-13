@@ -29,7 +29,7 @@ services:
     depends_on:
       - db
   pgadmin:
-    image: dpage/pgadmin4:6.8
+    image: dpage/pgadmin4:6.10
     container_name: car-migo_pgadmin
     ports:
       - 8000:80

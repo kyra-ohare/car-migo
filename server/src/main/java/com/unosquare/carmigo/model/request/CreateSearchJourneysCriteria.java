@@ -1,6 +1,5 @@
 package com.unosquare.carmigo.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,18 +9,14 @@ import org.hibernate.validator.constraints.Range;
 public class CreateSearchJourneysCriteria {
 
   @Range(min = 1)
-  @JsonProperty("locationIdFrom")
-  final int locationIdFrom;
+  private int locationIdFrom;
 
   @Range(min = 1)
-  @JsonProperty("locationIdTo")
-  final int locationIdTo;
+  private int locationIdTo;
 
   @NotNull
-  @JsonProperty("dateTimeFrom")
-  final Instant dateTimeFrom;
+  private Instant dateTimeFrom;
 
   @NotNull
-  @JsonProperty("dateTimeTo")
-  final Instant dateTimeTo;
+  private Instant dateTimeTo;
 }
