@@ -3,18 +3,18 @@ package com.unosquare.carmigo.openfeign;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
-public class Properties {
+public class Stats {
 
-  private String type;
-  private Geocode geocode;
-  private List<Airport> airports;
+  private List<Double> antipodia;
+
+  private Equator equator;
+
+  private double northpole;
+
+  private double southpople;
 }

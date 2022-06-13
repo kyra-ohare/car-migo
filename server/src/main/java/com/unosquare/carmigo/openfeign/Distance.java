@@ -1,15 +1,24 @@
 package com.unosquare.carmigo.openfeign;
 
-import com.unosquare.carmigo.configuration.OpenFeignDistanceConfiguration;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
-@FeignClient(value = "distance",
-    url = "${open-feign.distance.endpoint}",
-    configuration = OpenFeignDistanceConfiguration.class)
-public interface Distance {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
+public class Distance {
 
-  @GetMapping(value = "?route={route}")
-  DistanceHolder getDistance(@PathVariable final String route);
+  private double haversine;
+
+  private double greatCircle;
+
+  private double vincenty;
+
+  private double radians;
+
+  private double dagrees;
+
+  private List<Flight> flight;
 }

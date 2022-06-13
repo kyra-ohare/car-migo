@@ -3,21 +3,27 @@ package com.unosquare.carmigo.openfeign;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-@NoArgsConstructor
-@ToString
 public class Geocode {
 
-  private int id;
+  private long id;
+
   private String name;
-  private long lat;
-  private long lng;
+
+  @JsonIgnoreProperties("lat")
+  private double latitude;
+
+  @JsonIgnoreProperties("lng")
+  private double longitude;
+
+  @JsonIgnoreProperties("lang")
+  private String language;
+
   private String country;
+
   private List<Region> regions;
 }

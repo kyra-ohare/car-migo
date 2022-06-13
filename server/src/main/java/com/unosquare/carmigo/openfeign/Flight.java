@@ -1,16 +1,19 @@
 package com.unosquare.carmigo.openfeign;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Geometry {
+public class Flight {
 
-  private String type;
+  private String start;
 
-  private List<Double> coordinates;
+  private String dest;
+
+  private double distance;
+
+  private String time;
 }

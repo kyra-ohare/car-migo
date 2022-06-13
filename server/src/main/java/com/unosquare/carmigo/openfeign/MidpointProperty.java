@@ -8,9 +8,15 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Geometry {
+public class MidpointProperty {
 
   private String type;
 
-  private List<Double> coordinates;
+  private Geocode geocode;
+
+  private List<Region> regions;
+
+  private List<Airport> airports;
+
+  private Stats stats;
 }

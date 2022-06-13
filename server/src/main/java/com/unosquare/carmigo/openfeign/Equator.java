@@ -1,16 +1,15 @@
 package com.unosquare.carmigo.openfeign;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Geometry {
+public class Equator {
 
-  private String type;
+  private double distance;
 
-  private List<Double> coordinates;
+  private String bearing;
 }

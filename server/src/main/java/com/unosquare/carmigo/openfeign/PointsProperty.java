@@ -8,9 +8,13 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Geometry {
+public class PointsProperty {
 
   private String type;
 
-  private List<Double> coordinates;
+  private Geocode geocode;
+
+  private List<Airport> airports;
+
+  private Stats stats;
 }

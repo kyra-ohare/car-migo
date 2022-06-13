@@ -8,9 +8,12 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Geometry {
+public class Steps {
+  private List<Double> start;
 
-  private String type;
+  private List<Double> end;
 
-  private List<Double> coordinates;
+  private Distance distance;
+
+  private Midpoint midpoint;
 }
