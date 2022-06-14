@@ -3,12 +3,12 @@ package com.unosquare.carmigo.controller;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
-import com.unosquare.carmigo.model.request.CreateCalculateRouteCriteria;
+import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.model.response.DistanceViewModel;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.model.response.JourneyPassengerViewModel;
-import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.MapperUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -108,9 +108,9 @@ public class JourneyController {
     return ResponseEntity.noContent().build();
   }
 
-  @GetMapping(value = "/calculateRoute")
+  @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<DistanceHolder> calculateRoute(@Valid CreateCalculateRouteCriteria criteria) {
-    return ResponseEntity.ok(journeyService.calculateRoute(criteria));
+  public ResponseEntity<DistanceViewModel> calculateDistance(@Valid final CreateCalculateDistanceCriteria criteria) {
+    return ResponseEntity.ok(journeyService.calculateDistance(criteria));
   }
 }

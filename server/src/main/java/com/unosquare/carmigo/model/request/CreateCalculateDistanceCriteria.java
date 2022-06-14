@@ -6,16 +6,16 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class CreateCalculateRouteCriteria {
+public class CreateCalculateDistanceCriteria {
 
   @NotNull
-  private String cityFrom;
+  private String locationFrom;
 
   @NotNull
   private String countryFrom;
 
   @NotNull
-  private String cityTo;
+  private String locationTo;
 
   @NotNull
   private String countryTo;

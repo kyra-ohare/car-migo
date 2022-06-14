@@ -1,21 +1,17 @@
 package com.unosquare.carmigo.openfeign;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class Steps {
-  private List<Double> start;
+public class Bearing {
 
-  private List<Double> end;
+  private String exact;
 
-  private Distance distance;
+  private String rough;
 
-  private Midpoint midpoint;
-
-  private Bearing bearing;
+  private double bearing;
 }

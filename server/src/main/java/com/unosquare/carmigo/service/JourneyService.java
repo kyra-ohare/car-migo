@@ -12,9 +12,10 @@ import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
-import com.unosquare.carmigo.model.request.CreateCalculateRouteCriteria;
+import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
-import com.unosquare.carmigo.openfeign.Distance;
+import com.unosquare.carmigo.model.response.DistanceViewModel;
+import com.unosquare.carmigo.openfeign.DistanceApi;
 import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
@@ -22,6 +23,7 @@ import com.unosquare.carmigo.util.MapperUtils;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class JourneyService {
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
-  private final Distance distance;
+  private final DistanceApi distanceApi;
 
   public GrabJourneyDTO getJourneyById(final int id) {
     return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
@@ -88,9 +90,10 @@ public class JourneyService {
     }
   }
 
-  public DistanceHolder calculateRoute(final CreateCalculateRouteCriteria createCalculateRouteCriteria) {
-    final String request = prepareRequestToDistanceOpenFeign(createCalculateRouteCriteria);
-    return distance.getDistance(request);
+  public DistanceViewModel calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
+    final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
+    DistanceHolder distanceHolder = distanceApi.getDistance(request);
+    return convertDistanceHolderToDistanceViewModel(distanceHolder);
   }
 
   public void deleteJourneyById(final int id) {
@@ -107,12 +110,48 @@ public class JourneyService {
         .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
   }
 
-  private String prepareRequestToDistanceOpenFeign(final CreateCalculateRouteCriteria criteria) {
+  private String prepareRequestToDistanceApi(final CreateCalculateDistanceCriteria criteria) {
     final StringBuilder request = new StringBuilder("[{\"t\":");
-    request.append("\"").append(criteria.getCityFrom()).append(",").append(criteria.getCountryFrom()).append("\"");
+    request.append("\"").append(criteria.getLocationFrom()).append(",").append(criteria.getCountryFrom()).append("\"");
     request.append("},{\"t\":");
-    request.append("\"").append(criteria.getCityTo()).append(",").append(criteria.getCountryTo()).append("\"");
+    request.append("\"").append(criteria.getLocationTo()).append(",").append(criteria.getCountryTo()).append("\"");
     request.append("}]");
     return request.toString();
+  }
+
+  private DistanceViewModel convertDistanceHolderToDistanceViewModel(final DistanceHolder distanceHolder) {
+    if (distanceHolder.getPoints().size() == 2) {
+      final DistanceViewModel.Coordinate coordinatesFrom = new DistanceViewModel.Coordinate();
+      coordinatesFrom.setLatitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLatitude());
+      coordinatesFrom.setLongitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLongitude());
+      final DistanceViewModel.Location locationFrom = new DistanceViewModel.Location();
+      locationFrom.setLocation(distanceHolder.getPoints().get(0).getProperties().getGeocode().getName());
+      locationFrom.setCoordinates(coordinatesFrom);
+
+      final DistanceViewModel.Coordinate coordinatesTo = new DistanceViewModel.Coordinate();
+      coordinatesTo.setLatitude(distanceHolder.getPoints().get(1).getProperties().getGeocode().getLatitude());
+      coordinatesTo.setLongitude(distanceHolder.getPoints().get(1).getProperties().getGeocode().getLongitude());
+      final DistanceViewModel.Location locationTo = new DistanceViewModel.Location();
+      locationTo.setLocation(distanceHolder.getPoints().get(1).getProperties().getGeocode().getName());
+      locationTo.setCoordinates(coordinatesTo);
+
+      final double km = distanceHolder.getSteps().get(0).getDistance().getGreatCircle();
+      final DistanceViewModel.Distance distance = new DistanceViewModel.Distance();
+      distance.setKm(Math.round(km * 10d) / 10d);
+      distance.setMi(Math.round(convertKmToMi(km) * 10d) / 10d);
+
+      final DistanceViewModel response = new DistanceViewModel();
+      response.setLocationFrom(locationFrom);
+      response.setLocationTo(locationTo);
+      response.setDistance(distance);
+
+      return response;
+    }
+    throw new NoResultException("DistanceHolder is empty");
+  }
+
+  private double convertKmToMi(final double km) {
+    final double conversionFactor = 1.609344;
+    return km / conversionFactor;
   }
 }

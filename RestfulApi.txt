@@ -36,7 +36,7 @@ GET /journeys/search
         "dateTimeFrom": <timestamp>,
         "dateTimeTo": <timestamp>
     }
-GET /journeys/calculateRoute
+GET /journeys/calculateDistance
 GET /journeys/drivers/{id}
 GET /journeys/passengers/{id}
 POST /journeys
