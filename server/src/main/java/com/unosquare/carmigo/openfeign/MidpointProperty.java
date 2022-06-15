@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MidpointProperty {
 
   private String type;
