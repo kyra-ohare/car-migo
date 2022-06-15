@@ -120,7 +120,7 @@ public class JourneyService {
   }
 
   private DistanceViewModel convertDistanceHolderToDistanceViewModel(final DistanceHolder distanceHolder) {
-    if (distanceHolder.getPoints().size() == 2) {
+    if (distanceHolder.getPoints().size() > 1) {
       final DistanceViewModel.Coordinate coordinatesFrom = new DistanceViewModel.Coordinate();
       coordinatesFrom.setLatitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLatitude());
       coordinatesFrom.setLongitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLongitude());
@@ -147,7 +147,7 @@ public class JourneyService {
 
       return response;
     }
-    throw new NoResultException("DistanceHolder is empty");
+    throw new NoResultException("DistanceHolder is empty.");
   }
 
   private double convertKmToMi(final double km) {

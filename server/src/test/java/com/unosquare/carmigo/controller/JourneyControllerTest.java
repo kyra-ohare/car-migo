@@ -17,6 +17,7 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
+import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -185,5 +186,27 @@ public class JourneyControllerTest {
     mockMvc.perform(delete(API_LEADING + "1/passengers/1"))
         .andExpect(status().isNoContent());
     verify(journeyServiceMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+  }
+
+  @Test
+  public void calculate_Distance_Returns_HttpStatus_Ok() throws Exception {
+    mockMvc.perform(get(API_LEADING + "/calculateDistance")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("locationFrom", "Belfast")
+            .param("countryFrom", "GBR")
+            .param("locationTo", "Newry")
+            .param("countryTo", "GBR"))
+        .andExpect(status().isOk());
+    verify(journeyServiceMock).calculateDistance(any(CreateCalculateDistanceCriteria.class));
+  }
+
+  @Test
+  public void calculate_Distance_Returns_HttpStatus_BadRequest() throws Exception {
+    mockMvc.perform(get(API_LEADING + "/calculateDistance")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("locationFrom", "Belfast")
+            .param("countryFrom", "GBR"))
+        .andExpect(status().isBadRequest());
+    verify(journeyServiceMock, times(0)).calculateDistance(any(CreateCalculateDistanceCriteria.class));
   }
 }

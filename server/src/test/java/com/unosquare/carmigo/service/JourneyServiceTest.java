@@ -3,6 +3,7 @@ package com.unosquare.carmigo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,13 +19,17 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
+import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.model.response.DistanceViewModel;
+import com.unosquare.carmigo.openfeign.DistanceApi;
+import com.unosquare.carmigo.openfeign.DistanceHolder;
+import com.unosquare.carmigo.openfeign.Points;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -48,12 +53,16 @@ public class JourneyServiceTest {
   @Mock private ModelMapper modelMapperMock;
   @Mock private ObjectMapper objectMapperMock;
   @Mock private EntityManager entityManagerMock;
+  @Mock private DistanceApi distanceApiMock;
   @InjectMocks private JourneyService journeyService;
 
   @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
   @Fixture private Journey journeyFixture;
   @Fixture private CreateJourneyDTO createJourneyDTOFixture;
   @Fixture private List<Journey> journeyFixtureList;
+  @Fixture private CreateSearchJourneysCriteria createSearchJourneysCriteriaFixture;
+  @Fixture private DistanceHolder distanceHolderFixture;
+  @Fixture private CreateCalculateDistanceCriteria createCalculateDistanceCriteriaFixture;
 
   @BeforeEach
   public void setUp() {
@@ -79,14 +88,12 @@ public class JourneyServiceTest {
   }
 
   @Test
-  public void get_Journeys_Returns_List_of_GrabJourneyDTO() {
+  public void search_Journeys_Returns_List_of_GrabJourneyDTO() {
     when(journeyRepositoryMock.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
         anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
     final List<GrabJourneyDTO> grabJourneyDTOList = MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class,
         modelMapperMock);
-    final CreateSearchJourneysCriteria createSearchJourneysCriteria = new CreateSearchJourneysCriteria(
-        5, 1, Instant.now(), Instant.now().plus(Duration.ofDays(1)));
-    final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(createSearchJourneysCriteria);
+    final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(createSearchJourneysCriteriaFixture);
 
     assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
     verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
@@ -162,5 +169,28 @@ public class JourneyServiceTest {
   public void delete_By_JourneyId_And_PassengerId_Returns_Void() {
     journeyService.deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
     verify(passengerJourneyRepositoryMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
+  }
+
+  @Test
+  public void calculate_Distance_Returns_DistanceViewModel() {
+    DistanceHolder distanceHolder = new DistanceHolder();
+    distanceHolder.setPoints(List.of(new Points(), new Points()));
+    when(distanceApiMock.getDistance(anyString())).thenReturn(distanceHolderFixture);
+    final DistanceViewModel distanceViewModel = journeyService
+        .calculateDistance(createCalculateDistanceCriteriaFixture);
+
+    assertThat(distanceViewModel.getLocationFrom().getLocation())
+        .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getName());
+    assertThat(distanceViewModel.getLocationFrom().getCoordinates().getLatitude())
+        .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getLatitude());
+    assertThat(distanceViewModel.getLocationFrom().getCoordinates().getLongitude())
+        .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getLongitude());
+    assertThat(distanceViewModel.getLocationTo().getLocation())
+        .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getName());
+    assertThat(distanceViewModel.getLocationTo().getCoordinates().getLatitude())
+        .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getLatitude());
+    assertThat(distanceViewModel.getLocationTo().getCoordinates().getLongitude())
+        .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getLongitude());
+    verify(distanceApiMock).getDistance(anyString());
   }
 }
