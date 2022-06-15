@@ -1,9 +1,9 @@
-package com.unosquare.carmigo.model.response;
+package com.unosquare.carmigo.dto;
 
 import lombok.Data;
 
 @Data
-public class DistanceViewModel {
+public class GrabDistanceDTO {
 
   private Location locationFrom;
 

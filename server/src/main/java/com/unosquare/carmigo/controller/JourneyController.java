@@ -2,6 +2,7 @@ package com.unosquare.carmigo.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
+import com.unosquare.carmigo.dto.GrabDistanceDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateJourneyViewModel;
@@ -111,6 +112,8 @@ public class JourneyController {
   @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<DistanceViewModel> calculateDistance(@Valid final CreateCalculateDistanceCriteria criteria) {
-    return ResponseEntity.ok(journeyService.calculateDistance(criteria));
+    final GrabDistanceDTO grabDistanceDTO = journeyService.calculateDistance(criteria);
+    final DistanceViewModel distanceViewModel = modelMapper.map(grabDistanceDTO,DistanceViewModel.class);
+    return ResponseEntity.ok(distanceViewModel);
   }
 }

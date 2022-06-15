@@ -15,6 +15,7 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
+import com.unosquare.carmigo.dto.GrabDistanceDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
@@ -172,24 +173,24 @@ public class JourneyServiceTest {
   }
 
   @Test
-  public void calculate_Distance_Returns_DistanceViewModel() {
+  public void calculate_Distance_Returns_GrabDistanceDTO() {
     DistanceHolder distanceHolder = new DistanceHolder();
     distanceHolder.setPoints(List.of(new Points(), new Points()));
     when(distanceApiMock.getDistance(anyString())).thenReturn(distanceHolderFixture);
-    final DistanceViewModel distanceViewModel = journeyService
+    final GrabDistanceDTO grabDistanceDTO = journeyService
         .calculateDistance(createCalculateDistanceCriteriaFixture);
 
-    assertThat(distanceViewModel.getLocationFrom().getLocation())
+    assertThat(grabDistanceDTO.getLocationFrom().getLocation())
         .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getName());
-    assertThat(distanceViewModel.getLocationFrom().getCoordinates().getLatitude())
+    assertThat(grabDistanceDTO.getLocationFrom().getCoordinates().getLatitude())
         .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getLatitude());
-    assertThat(distanceViewModel.getLocationFrom().getCoordinates().getLongitude())
+    assertThat(grabDistanceDTO.getLocationFrom().getCoordinates().getLongitude())
         .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getLongitude());
-    assertThat(distanceViewModel.getLocationTo().getLocation())
+    assertThat(grabDistanceDTO.getLocationTo().getLocation())
         .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getName());
-    assertThat(distanceViewModel.getLocationTo().getCoordinates().getLatitude())
+    assertThat(grabDistanceDTO.getLocationTo().getCoordinates().getLatitude())
         .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getLatitude());
-    assertThat(distanceViewModel.getLocationTo().getCoordinates().getLongitude())
+    assertThat(grabDistanceDTO.getLocationTo().getCoordinates().getLongitude())
         .isEqualTo(distanceHolderFixture.getPoints().get(1).getProperties().getGeocode().getLongitude());
     verify(distanceApiMock).getDistance(anyString());
   }

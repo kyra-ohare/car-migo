@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
+import com.unosquare.carmigo.dto.GrabDistanceDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
@@ -90,7 +91,7 @@ public class JourneyService {
     }
   }
 
-  public DistanceViewModel calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
+  public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
     final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
     DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderToDistanceViewModel(distanceHolder);
@@ -119,28 +120,28 @@ public class JourneyService {
     return request.toString();
   }
 
-  private DistanceViewModel convertDistanceHolderToDistanceViewModel(final DistanceHolder distanceHolder) {
+  private GrabDistanceDTO convertDistanceHolderToDistanceViewModel(final DistanceHolder distanceHolder) {
     if (distanceHolder.getPoints().size() > 1) {
-      final DistanceViewModel.Coordinate coordinatesFrom = new DistanceViewModel.Coordinate();
+      final GrabDistanceDTO.Coordinate coordinatesFrom = new GrabDistanceDTO.Coordinate();
       coordinatesFrom.setLatitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLatitude());
       coordinatesFrom.setLongitude(distanceHolder.getPoints().get(0).getProperties().getGeocode().getLongitude());
-      final DistanceViewModel.Location locationFrom = new DistanceViewModel.Location();
+      final GrabDistanceDTO.Location locationFrom = new GrabDistanceDTO.Location();
       locationFrom.setLocation(distanceHolder.getPoints().get(0).getProperties().getGeocode().getName());
       locationFrom.setCoordinates(coordinatesFrom);
 
-      final DistanceViewModel.Coordinate coordinatesTo = new DistanceViewModel.Coordinate();
+      final GrabDistanceDTO.Coordinate coordinatesTo = new GrabDistanceDTO.Coordinate();
       coordinatesTo.setLatitude(distanceHolder.getPoints().get(1).getProperties().getGeocode().getLatitude());
       coordinatesTo.setLongitude(distanceHolder.getPoints().get(1).getProperties().getGeocode().getLongitude());
-      final DistanceViewModel.Location locationTo = new DistanceViewModel.Location();
+      final GrabDistanceDTO.Location locationTo = new GrabDistanceDTO.Location();
       locationTo.setLocation(distanceHolder.getPoints().get(1).getProperties().getGeocode().getName());
       locationTo.setCoordinates(coordinatesTo);
 
       final double km = distanceHolder.getSteps().get(0).getDistance().getGreatCircle();
-      final DistanceViewModel.Distance distance = new DistanceViewModel.Distance();
+      final GrabDistanceDTO.Distance distance = new GrabDistanceDTO.Distance();
       distance.setKm(Math.round(km * 10d) / 10d);
       distance.setMi(Math.round(convertKmToMi(km) * 10d) / 10d);
 
-      final DistanceViewModel response = new DistanceViewModel();
+      final GrabDistanceDTO response = new GrabDistanceDTO();
       response.setLocationFrom(locationFrom);
       response.setLocationTo(locationTo);
       response.setDistance(distance);
