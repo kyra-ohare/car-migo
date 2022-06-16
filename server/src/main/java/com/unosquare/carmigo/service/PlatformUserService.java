@@ -155,45 +155,4 @@ public class PlatformUserService {
     }
     throw new EntityNotFoundException(String.format("Passenger id %d not found.", id));
   }
-
-  public void deletePlatformUserById(final int id) {
-    platformUserRepository.deleteById(id);
-  }
-
-  public GrabDriverDTO getDriverById(final int id) {
-    final Driver driver = driverRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException(String.format("Driver id %d not found.", id)));
-    return modelMapper.map(driver, GrabDriverDTO.class);
-  }
-
-  public GrabDriverDTO createDriver(final int id, final CreateDriverDTO createDriverDTO) {
-    final Driver driver = modelMapper.map(createDriverDTO, Driver.class);
-    driver.setPlatformUser(entityManager.getReference(PlatformUser.class, id));
-    return modelMapper.map(driverRepository.save(driver), GrabDriverDTO.class);
-  }
-
-  public void deleteDriverById(final int id) {
-    driverRepository.deleteById(id);
-  }
-
-  public GrabPassengerDTO getPassengerById(final int id) {
-    final Passenger passenger = passengerRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Passenger id " + id + " not found."));
-    return modelMapper.map(passenger, GrabPassengerDTO.class);
-  }
-
-  public GrabPassengerDTO createPassenger(final int id) {
-    final Passenger passenger = new Passenger();
-    passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, id));
-    return modelMapper.map(passengerRepository.save(passenger), GrabPassengerDTO.class);
-  }
-
-  public void deletePassengerById(final int id) {
-    passengerRepository.deleteById(id);
-  }
-
-  private PlatformUser findPlatformUserById(final int id) {
-    return platformUserRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException(String.format("PlatformUser id %d not found.", id)));
-  }
 }
