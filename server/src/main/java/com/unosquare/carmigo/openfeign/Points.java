@@ -9,9 +9,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Points {
 
-  private String type;
-
   private PointsProperty properties;
-
-  private Geometry geometry;
 }

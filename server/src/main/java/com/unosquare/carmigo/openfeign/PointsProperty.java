@@ -10,11 +10,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PointsProperty {
 
-  private String type;
-
   private Geocode geocode;
-
-  private List<Airport> airports;
-
-  private Stats stats;
 }

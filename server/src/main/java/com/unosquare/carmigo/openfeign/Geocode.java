@@ -11,8 +11,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Geocode {
 
-  private long id;
-
   private String name;
 
   @JsonProperty("lat")
@@ -20,11 +18,4 @@ public class Geocode {
 
   @JsonProperty("lng")
   private double longitude;
-
-  @JsonProperty("lang")
-  private String language;
-
-  private String country;
-
-  private List<Region> regions;
 }

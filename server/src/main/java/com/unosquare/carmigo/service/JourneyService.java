@@ -125,7 +125,6 @@ public class JourneyService {
           distanceHolder.getPoints().get(1).getProperties().getGeocode()));
       grabDistanceDTO.setDistance(convertToDistanceViewModelDistance(
           distanceHolder.getSteps().get(0).getDistance().getGreatCircle()));
-
       return grabDistanceDTO;
     }
     throw new NoResultException("DistanceHolder is empty.");

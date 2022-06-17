@@ -9,13 +9,6 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Steps {
-  private List<Double> start;
-
-  private List<Double> end;
 
   private Distance distance;
-
-  private Midpoint midpoint;
-
-  private Bearing bearing;
 }
