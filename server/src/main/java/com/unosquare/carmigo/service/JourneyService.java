@@ -94,7 +94,7 @@ public class JourneyService {
   public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
     final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
     DistanceHolder distanceHolder = distanceApi.getDistance(request);
-    return convertDistanceHolderToDistanceViewModel(distanceHolder);
+    return convertDistanceHolderToGrabDistanceDto(distanceHolder);
   }
 
   public void deleteJourneyById(final int id) {
@@ -116,41 +116,31 @@ public class JourneyService {
         + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
   }
 
-  private GrabDistanceDTO convertDistanceHolderToDistanceViewModel(final DistanceHolder distanceHolder) {
+  private GrabDistanceDTO convertDistanceHolderToGrabDistanceDto(final DistanceHolder distanceHolder) {
     if (distanceHolder.getPoints().size() > 1) {
       final GrabDistanceDTO grabDistanceDTO = new GrabDistanceDTO();
-      grabDistanceDTO.setLocationFrom(convertToDistanceViewModelLocationFrom(
+      grabDistanceDTO.setLocationFrom(convertToGrabDistanceDtoLocation(
           distanceHolder.getPoints().get(0).getProperties().getGeocode()));
-      grabDistanceDTO.setLocationTo(convertToDistanceViewModelLocationTo(
+      grabDistanceDTO.setLocationTo(convertToGrabDistanceDtoLocation(
           distanceHolder.getPoints().get(1).getProperties().getGeocode()));
-      grabDistanceDTO.setDistance(convertToDistanceViewModelDistance(
+      grabDistanceDTO.setDistance(convertToGrabDistanceDtoDistance(
           distanceHolder.getSteps().get(0).getDistance().getGreatCircle()));
       return grabDistanceDTO;
     }
     throw new NoResultException("DistanceHolder is empty.");
   }
 
-  private GrabDistanceDTO.Location convertToDistanceViewModelLocationFrom(final Geocode geocode) {
-    final GrabDistanceDTO.Coordinate coordinatesFrom = new GrabDistanceDTO.Coordinate();
-    coordinatesFrom.setLatitude(geocode.getLatitude());
-    coordinatesFrom.setLongitude(geocode.getLongitude());
-    final GrabDistanceDTO.Location locationFrom = new GrabDistanceDTO.Location();
-    locationFrom.setLocation(geocode.getName());
-    locationFrom.setCoordinates(coordinatesFrom);
-    return locationFrom;
+  private GrabDistanceDTO.Location convertToGrabDistanceDtoLocation(final Geocode geocode) {
+    final GrabDistanceDTO.Coordinate coordinates = new GrabDistanceDTO.Coordinate();
+    coordinates.setLatitude(geocode.getLatitude());
+    coordinates.setLongitude(geocode.getLongitude());
+    final GrabDistanceDTO.Location location = new GrabDistanceDTO.Location();
+    location.setLocation(geocode.getName());
+    location.setCoordinates(coordinates);
+    return location;
   }
 
-  private GrabDistanceDTO.Location convertToDistanceViewModelLocationTo(final Geocode geocode) {
-    final GrabDistanceDTO.Coordinate coordinatesTo = new GrabDistanceDTO.Coordinate();
-    coordinatesTo.setLatitude(geocode.getLatitude());
-    coordinatesTo.setLongitude(geocode.getLongitude());
-    final GrabDistanceDTO.Location locationTo = new GrabDistanceDTO.Location();
-    locationTo.setLocation(geocode.getName());
-    locationTo.setCoordinates(coordinatesTo);
-    return locationTo;
-  }
-
-  private GrabDistanceDTO.Distance convertToDistanceViewModelDistance(final double km) {
+  private GrabDistanceDTO.Distance convertToGrabDistanceDtoDistance(final double km) {
     final GrabDistanceDTO.Distance distance = new GrabDistanceDTO.Distance();
     distance.setKm(Math.round(km * 10d) / 10d);
     distance.setMi(Math.round(convertKmToMi(km) * 10d) / 10d);
