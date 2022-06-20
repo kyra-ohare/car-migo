@@ -1,11 +1,10 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.contant.AppConstants.ACTIVE;
-import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
-import static com.unosquare.carmigo.contant.AppConstants.DEV;
-import static com.unosquare.carmigo.contant.AppConstants.LOCKED_OUT;
-import static com.unosquare.carmigo.contant.AppConstants.NO_PERMISSIONS;
-import static com.unosquare.carmigo.contant.AppConstants.STAGED;
+import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.constant.AppConstants.DEV;
+import static com.unosquare.carmigo.constant.AppConstants.LOCKED_OUT;
+import static com.unosquare.carmigo.constant.AppConstants.STAGED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
