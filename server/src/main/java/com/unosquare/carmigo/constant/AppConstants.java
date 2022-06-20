@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.contant;
+package com.unosquare.carmigo.constant;
 
 public interface AppConstants {
 

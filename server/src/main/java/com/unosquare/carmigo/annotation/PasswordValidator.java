@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.annotation;
 
-import static com.unosquare.carmigo.contant.AppConstants.SPECIAL_CHARACTERS;
+import static com.unosquare.carmigo.constant.AppConstants.SPECIAL_CHARACTERS;
 
 import com.google.common.base.CharMatcher;
 import javax.validation.ConstraintValidator;

@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.configuration;
 
-import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
-import static com.unosquare.carmigo.contant.AppConstants.DEV;
+import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.constant.AppConstants.DEV;
 
 import com.unosquare.carmigo.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;

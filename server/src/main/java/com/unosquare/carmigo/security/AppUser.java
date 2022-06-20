@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.security;
 
-import static com.unosquare.carmigo.contant.AppConstants.NO_PERMISSIONS;
+import static com.unosquare.carmigo.constant.AppConstants.NO_PERMISSIONS;
 
 import com.unosquare.carmigo.exception.AuthenticationException;
 import java.util.Collection;

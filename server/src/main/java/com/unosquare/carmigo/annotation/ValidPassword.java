@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.annotation;
 
-import static com.unosquare.carmigo.contant.AppConstants.VALID_PASSWORD_MESSAGE;
+import static com.unosquare.carmigo.constant.AppConstants.VALID_PASSWORD_MESSAGE;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

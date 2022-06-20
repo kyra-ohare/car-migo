@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.model.request;
 
-import static com.unosquare.carmigo.contant.AppConstants.EMAIL_REGEX;
+import static com.unosquare.carmigo.constant.AppConstants.EMAIL_REGEX;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unosquare.carmigo.annotation.ValidPassword;

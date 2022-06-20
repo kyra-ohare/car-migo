@@ -1,10 +1,10 @@
 package com.unosquare.carmigo.util;
 
-import static com.unosquare.carmigo.contant.AppConstants.ACTIVE;
-import static com.unosquare.carmigo.contant.AppConstants.ADMIN;
-import static com.unosquare.carmigo.contant.AppConstants.DEV;
-import static com.unosquare.carmigo.contant.AppConstants.NO_PERMISSIONS;
-import static com.unosquare.carmigo.contant.AppConstants.SUSPENDED;
+import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.constant.AppConstants.DEV;
+import static com.unosquare.carmigo.constant.AppConstants.NO_PERMISSIONS;
+import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.exception.AuthenticationException;
 import com.unosquare.carmigo.security.AppUser;
