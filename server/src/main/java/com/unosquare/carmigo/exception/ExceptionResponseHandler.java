@@ -30,7 +30,7 @@ public class ExceptionResponseHandler {
         exception.getCause().getCause().toString());
   }
 
-  @ExceptionHandler({AuthenticationException.class})
+  @ExceptionHandler({UnauthorizedException.class})
   public ResponseEntity<ErrorResponse> handleAuthenticationException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.FORBIDDEN, exception.getMessage());
   }

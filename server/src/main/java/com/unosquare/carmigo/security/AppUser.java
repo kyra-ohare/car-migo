@@ -1,8 +1,8 @@
 package com.unosquare.carmigo.security;
 
-import static com.unosquare.carmigo.constant.AppConstants.NO_PERMISSIONS;
+import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 
-import com.unosquare.carmigo.exception.AuthenticationException;
+import com.unosquare.carmigo.exception.UnauthorizedException;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class AppUser {
           .authorities(customUserDetails.getAuthorities())
           .build();
     }
-    throw new AuthenticationException(NO_PERMISSIONS);
+    throw new UnauthorizedException(NOT_PERMITTED);
   }
 
   @Getter

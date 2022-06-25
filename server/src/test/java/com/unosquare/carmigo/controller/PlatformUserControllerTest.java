@@ -22,7 +22,7 @@ import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
-import com.unosquare.carmigo.exception.AuthenticationException;
+import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.model.response.PlatformUserViewModel;
@@ -111,14 +111,14 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void get_PlatformUser_By_Id_Throws_AuthenticationException() {
+  public void get_PlatformUser_By_Id_Throws_UnauthorizedException() {
     try {
       when(platformUserServiceMock.getPlatformUserById(anyInt(), any(AppUser.Current.class)))
-          .thenThrow(AuthenticationException.class);
+          .thenThrow(UnauthorizedException.class);
 
       mockMvc.perform(get(API_LEADING + "1").contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).getPlatformUserById(anyInt(), any());
   }
@@ -160,15 +160,15 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void patch_PlatformUser_Throws_AuthenticationException() {
+  public void patch_PlatformUser_Throws_UnauthorizedException() {
     try {
       when(platformUserServiceMock.patchPlatformUser(
-          anyInt(), any(JsonPatch.class), any(AppUser.Current.class))).thenThrow(AuthenticationException.class);
+          anyInt(), any(JsonPatch.class), any(AppUser.Current.class))).thenThrow(UnauthorizedException.class);
       mockMvc.perform(patch(API_LEADING + "1")
           .contentType("application/json-patch+json")
           .content(PATCH_PLATFORM_USER_VALID_JSON));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).patchPlatformUser(anyInt(), any(JsonPatch.class), any());
   }
@@ -182,14 +182,14 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void delete_PlatformUser_Throws_AuthenticationException() {
+  public void delete_PlatformUser_Throws_UnauthorizedException() {
     try {
-      doThrow(AuthenticationException.class).when(platformUserServiceMock)
+      doThrow(UnauthorizedException.class).when(platformUserServiceMock)
           .deletePlatformUserById(anyInt(), any(AppUser.Current.class));
       mockMvc.perform(delete(API_LEADING + "1"))
           .andExpect(status().isNoContent());
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).deletePlatformUserById(anyInt(), any());
   }
@@ -203,14 +203,14 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void get_Driver_By_Id_Throws_AuthenticationException() {
+  public void get_Driver_By_Id_Throws_UnauthorizedException() {
     try {
       when(platformUserServiceMock.getDriverById(anyInt(), any(AppUser.Current.class)))
-          .thenThrow(AuthenticationException.class);
+          .thenThrow(UnauthorizedException.class);
 
       mockMvc.perform(get(API_LEADING + "drivers/1").contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).getDriverById(anyInt(), any());
   }
@@ -235,16 +235,16 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void post_Driver_Throws_AuthenticationException() {
+  public void post_Driver_Throws_UnauthorizedException() {
     try {
       when(platformUserServiceMock.createDriver(anyInt(), any(CreateDriverDTO.class), any())).thenThrow(
-          AuthenticationException.class);
+          UnauthorizedException.class);
 
       mockMvc.perform(post(API_LEADING + "1/drivers")
           .contentType(MediaType.APPLICATION_JSON_VALUE)
           .content(POST_DRIVER_VALID_JSON));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).createDriver(anyInt(), any(), any());
   }
@@ -258,13 +258,13 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void delete_Driver_Throws_AuthenticationException() {
+  public void delete_Driver_Throws_UnauthorizedException() {
     try {
-      doThrow(AuthenticationException.class).when(platformUserServiceMock).deleteDriverById(anyInt(), any());
+      doThrow(UnauthorizedException.class).when(platformUserServiceMock).deleteDriverById(anyInt(), any());
 
       mockMvc.perform(delete(API_LEADING + "/drivers/1"));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).deleteDriverById(anyInt(), any());
   }
@@ -278,14 +278,14 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void get_Passenger_By_Id_Throws_AuthenticationException() {
+  public void get_Passenger_By_Id_Throws_UnauthorizedException() {
     try {
-      when(platformUserServiceMock.getPassengerById(anyInt(), any())).thenThrow(AuthenticationException.class);
+      when(platformUserServiceMock.getPassengerById(anyInt(), any())).thenThrow(UnauthorizedException.class);
 
       mockMvc.perform(get(API_LEADING + "/passengers/1")
           .contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).getPassengerById(anyInt(), any());
   }
@@ -299,14 +299,14 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void post_Passenger_Throws_AuthenticationException() {
+  public void post_Passenger_Throws_UnauthorizedException() {
     try {
-      when(platformUserServiceMock.createPassenger(anyInt(), any())).thenThrow(AuthenticationException.class);
+      when(platformUserServiceMock.createPassenger(anyInt(), any())).thenThrow(UnauthorizedException.class);
 
       mockMvc.perform(post(API_LEADING + "1/passengers")
           .contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).createPassenger(anyInt(), any());
   }
@@ -320,13 +320,13 @@ public class PlatformUserControllerTest {
   }
 
   @Test
-  public void delete_Passenger_Throws_AuthenticationException() {
+  public void delete_Passenger_Throws_UnauthorizedException() {
     try {
-      doThrow(AuthenticationException.class).when(platformUserServiceMock).deletePassengerById(anyInt(), any());
+      doThrow(UnauthorizedException.class).when(platformUserServiceMock).deletePassengerById(anyInt(), any());
 
       mockMvc.perform(delete(API_LEADING + "/passengers/1"));
     } catch (final Exception ex) {
-      assertTrue(ex.getCause() instanceof AuthenticationException);
+      assertTrue(ex.getCause() instanceof UnauthorizedException);
     }
     verify(platformUserServiceMock).deletePassengerById(anyInt(), any());
   }

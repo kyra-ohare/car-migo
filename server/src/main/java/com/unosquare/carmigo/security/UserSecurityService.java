@@ -8,8 +8,7 @@ import static com.unosquare.carmigo.constant.AppConstants.STAGED;
 import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.exception.AuthenticationException;
-import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class UserSecurityService implements UserDetailsService {
     if (currentUser.isPresent()) {
       return getUserDetails(currentUser.get());
     }
-    throw new ResourceNotFoundException(String.format("Incorrect email (%s) and/or password", email));
+    throw new UnauthorizedException(String.format("Incorrect email (%s) and/or password", email));
   }
 
   /**
@@ -55,9 +54,9 @@ public class UserSecurityService implements UserDetailsService {
         return new CustomUserDetails(currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(),
             currentUser.getUserAccessStatus().getStatus(), List.of());
       case LOCKED_OUT:
-        throw new AuthenticationException("User is locked out after 5 failed attempts.");
+        throw new UnauthorizedException("User is locked out after 5 failed attempts.");
       case STAGED:
-        throw new AuthenticationException("User needs to confirm the email.");
+        throw new UnauthorizedException("User needs to confirm the email.");
       default:
         throw new NoResultException("Unknown UserAccessStatus property.");
     }

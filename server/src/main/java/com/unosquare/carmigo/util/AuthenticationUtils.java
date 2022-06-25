@@ -3,10 +3,10 @@ package com.unosquare.carmigo.util;
 import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
 import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
 import static com.unosquare.carmigo.constant.AppConstants.DEV;
-import static com.unosquare.carmigo.constant.AppConstants.NO_PERMISSIONS;
+import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
-import com.unosquare.carmigo.exception.AuthenticationException;
+import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.security.AppUser;
 
 public class AuthenticationUtils {
@@ -28,7 +28,7 @@ public class AuthenticationUtils {
         ))
         || userAccess.equals(ADMIN) || userAccess.equals(DEV)
     )) {
-      throw new AuthenticationException(NO_PERMISSIONS);
+      throw new UnauthorizedException(NOT_PERMITTED);
     }
   }
 
