@@ -19,7 +19,8 @@ public class ExceptionResponseHandler {
       EmptyResultDataAccessException.class,
       EntityNotFoundException.class,
       ResourceNotFoundException.class,
-      NoResultException.class})
+      NoResultException.class,
+      HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_FOUND, exception.getMessage());
   }
@@ -33,11 +34,6 @@ public class ExceptionResponseHandler {
   @ExceptionHandler({UnauthorizedException.class})
   public ResponseEntity<ErrorResponse> handleAuthenticationException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.FORBIDDEN, exception.getMessage());
-  }
-
-  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-  public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(final Exception exception) {
-    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.METHOD_NOT_ALLOWED, exception.getMessage());
   }
 
   @ExceptionHandler({MethodArgumentNotValidException.class})
