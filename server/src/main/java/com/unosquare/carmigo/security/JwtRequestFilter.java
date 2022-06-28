@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.security;
 
+import com.unosquare.carmigo.exception.ExpiredJwtException;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -48,6 +49,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+      } else {
+        throw new ExpiredJwtException("Expired JWT token");
       }
     }
     filterChain.doFilter(request, response);

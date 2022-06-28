@@ -4,16 +4,19 @@ import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
 import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
 import static com.unosquare.carmigo.constant.AppConstants.DEV;
 import static com.unosquare.carmigo.constant.AppConstants.LOCKED_OUT;
+import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.constant.AppConstants.STAGED;
 import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -51,14 +54,18 @@ public class UserSecurityService implements UserDetailsService {
       case ADMIN:
       case DEV:
       case SUSPENDED:
-        return new CustomUserDetails(currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(),
-            currentUser.getUserAccessStatus().getStatus(), List.of());
+        return new CustomUserDetails(
+            currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(), getAuthorities(currentUser));
       case LOCKED_OUT:
         throw new UnauthorizedException("User is locked out after 5 failed attempts.");
       case STAGED:
         throw new UnauthorizedException("User needs to confirm the email.");
       default:
-        throw new NoResultException("Unknown UserAccessStatus property.");
+        throw new UnauthorizedException(NOT_PERMITTED);
     }
+  }
+
+  private Collection<? extends GrantedAuthority> getAuthorities(final PlatformUser currentUser) {
+    return List.of(new SimpleGrantedAuthority(currentUser.getUserAccessStatus().getStatus()));
   }
 }

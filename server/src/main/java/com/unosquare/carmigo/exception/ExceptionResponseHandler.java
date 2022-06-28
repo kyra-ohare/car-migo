@@ -31,7 +31,9 @@ public class ExceptionResponseHandler {
         exception.getCause().getCause().toString());
   }
 
-  @ExceptionHandler({UnauthorizedException.class})
+  @ExceptionHandler({
+      UnauthorizedException.class,
+      ExpiredJwtException.class})
   public ResponseEntity<ErrorResponse> handleAuthenticationException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.FORBIDDEN, exception.getMessage());
   }

@@ -14,12 +14,9 @@ public class CustomUserDetails extends User {
 
   private int id;
 
-  private String userAccessStatus;
-
-  public CustomUserDetails(final int id, final String username, final String password, final String userAccessStatus,
+  public CustomUserDetails(final int id, final String username, final String password,
       final Collection<? extends GrantedAuthority> authorities) {
     super(username, password, authorities);
     this.id = id;
-    this.userAccessStatus = userAccessStatus;
   }
 }

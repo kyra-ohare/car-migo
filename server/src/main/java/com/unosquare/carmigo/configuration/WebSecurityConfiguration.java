@@ -24,11 +24,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable().authorizeRequests()
+        .antMatchers("/v1/admin/users/**").hasAuthority(ADMIN)
         .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/users/authenticate").permitAll()
         .antMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
-        .antMatchers(HttpMethod.GET, "/actuator/info").hasAuthority(DEV)
-        .antMatchers(HttpMethod.GET, "/actuator/health").hasAnyAuthority(ADMIN, DEV)
+        .antMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN, DEV)
         .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
         .antMatchers(HttpMethod.GET, "/v3/api-docs/swagger-config").permitAll()
         .antMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()

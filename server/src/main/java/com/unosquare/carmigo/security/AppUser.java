@@ -3,7 +3,7 @@ package com.unosquare.carmigo.security;
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import java.util.Collection;
+import java.util.ArrayList;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +26,7 @@ public class AppUser {
       return Current.builder()
           .id(customUserDetails.getId())
           .username(customUserDetails.getUsername())
-          .userAccessStatus(customUserDetails.getUserAccessStatus())
-          .authorities(customUserDetails.getAuthorities())
+          .userAccessStatus(getUserAccessStatus(customUserDetails))
           .build();
     }
     throw new UnauthorizedException(NOT_PERMITTED);
@@ -40,6 +39,13 @@ public class AppUser {
     private int id;
     private String username;
     private String userAccessStatus;
-    private Collection<? extends GrantedAuthority> authorities;
+  }
+
+  private String getUserAccessStatus(final CustomUserDetails currentAppUser) {
+    final ArrayList<GrantedAuthority> authorities = new ArrayList<>(currentAppUser.getAuthorities());
+    if (authorities.get(0).getAuthority() == null) {
+      throw new UnauthorizedException(NOT_PERMITTED);
+    }
+    return authorities.get(0).getAuthority();
   }
 }
