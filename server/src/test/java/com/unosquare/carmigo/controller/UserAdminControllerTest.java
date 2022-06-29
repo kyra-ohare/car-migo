@@ -17,30 +17,20 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.service.UserService;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class UserControllerTest {
+public class UserAdminControllerTest {
 
-  private static final String API_LEADING = "/v1/users/";
-  private static final String POST_AUTHENTICATION_VALID_JSON =
-      ResourceUtility.generateStringFromResource("requestJson/PostAuthenticationValid.json");
-  private static final String POST_AUTHENTICATION_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("requestJson/PostAuthenticationInvalid.json");
-  private static final String POST_PLATFORM_USER_VALID_JSON =
-      ResourceUtility.generateStringFromResource("requestJson/PostPlatformUserValid.json");
-  private static final String POST_PLATFORM_USER_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("requestJson/PostPlatformUserInvalid.json");
+  private static final String API_LEADING = "/v1/admin/users/";
   private static final String PATCH_PLATFORM_USER_VALID_JSON =
       ResourceUtility.generateStringFromResource("requestJson/PatchPlatformUserValid.json");
   private static final String PATCH_PLATFORM_USER_INVALID_JSON =
@@ -52,8 +42,6 @@ public class UserControllerTest {
 
   private MockMvc mockMvc;
 
-  @Mock private ModelMapper modelMapperMock;
-  @Mock private UserService userServiceMock;
   @Mock private UserControllerHelper userControllerHelperMock;
 
   @BeforeEach
@@ -62,30 +50,12 @@ public class UserControllerTest {
     jFixture.customise().circularDependencyBehaviour().omitSpecimen();
     FixtureAnnotations.initFixtures(this, jFixture);
 
-    mockMvc = MockMvcBuilders.standaloneSetup(
-            new UserController(modelMapperMock, userServiceMock, userControllerHelperMock))
-        .build();
-  }
-
-  @Test
-  public void post_Create_Authentication_Token_Returns_HttpStatus_Created() throws Exception {
-    mockMvc.perform(post(API_LEADING + "authenticate")
-            .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_AUTHENTICATION_VALID_JSON))
-        .andExpect(status().isCreated());
-    verify(userServiceMock).createAuthenticationToken(any());
-  }
-
-  @Test
-  public void post_Create_Authentication_Token_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(post(API_LEADING + "authenticate")
-            .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_AUTHENTICATION_INVALID_JSON))
-        .andExpect(status().isBadRequest());
-    verify(userServiceMock, times(0)).createAuthenticationToken(any());
+    mockMvc = MockMvcBuilders.standaloneSetup(new UserAdminController(userControllerHelperMock)).build();
   }
 
   @Test
   public void get_Profile_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(get(API_LEADING + "profile").
+    mockMvc.perform(get(API_LEADING + anyInt()).
             contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
     verify(userControllerHelperMock).getPlatformUserById(anyInt());
@@ -96,7 +66,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       when(userControllerHelperMock.getPlatformUserById(anyInt())).thenThrow(UnauthorizedException.class);
-      mockMvc.perform(get(API_LEADING + "profile").contentType(MediaType.APPLICATION_JSON_VALUE));
+      mockMvc.perform(get(API_LEADING + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
@@ -106,24 +76,8 @@ public class UserControllerTest {
   }
 
   @Test
-  public void post_PlatformUser_Returns_HttpStatus_Created() throws Exception {
-    mockMvc.perform(post(API_LEADING)
-            .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_PLATFORM_USER_VALID_JSON))
-        .andExpect(status().isCreated());
-    verify(userServiceMock).createPlatformUser(any());
-  }
-
-  @Test
-  public void post_PlatformUser_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(post(API_LEADING)
-            .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_PLATFORM_USER_INVALID_JSON))
-        .andExpect(status().isBadRequest());
-    verify(userServiceMock, times(0)).createPlatformUser(any());
-  }
-
-  @Test
   public void patch_PlatformUser_Returns_HttpStatus_Accepted() throws Exception {
-    mockMvc.perform(patch(API_LEADING)
+    mockMvc.perform(patch(API_LEADING + 0)
             .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_VALID_JSON))
         .andExpect(status().isAccepted());
     verify(userControllerHelperMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
@@ -131,7 +85,7 @@ public class UserControllerTest {
 
   @Test
   public void patch_PlatformUser_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(patch(API_LEADING)
+    mockMvc.perform(patch(API_LEADING + 0)
             .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_INVALID_JSON))
         .andExpect(status().isBadRequest());
     verify(userControllerHelperMock, times(0)).patchPlatformUserById(anyInt(), any(JsonPatch.class));
@@ -143,7 +97,7 @@ public class UserControllerTest {
     try {
       when(userControllerHelperMock.patchPlatformUserById(anyInt(), any(JsonPatch.class)))
           .thenThrow(UnauthorizedException.class);
-      mockMvc.perform(patch(API_LEADING)
+      mockMvc.perform(patch(API_LEADING + 0)
           .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_VALID_JSON));
     } catch (final Exception e) {
       ex = e;
@@ -155,7 +109,7 @@ public class UserControllerTest {
 
   @Test
   public void delete_PlatformUser_Returns_HttpStatus_No_Content() throws Exception {
-    mockMvc.perform(delete(API_LEADING)).andExpect(status().isNoContent());
+    mockMvc.perform(delete(API_LEADING + anyInt())).andExpect(status().isNoContent());
     verify(userControllerHelperMock).deletePlatformUserById(anyInt());
   }
 
@@ -164,7 +118,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       doThrow(UnauthorizedException.class).when(userControllerHelperMock).deletePlatformUserById(anyInt());
-      mockMvc.perform(delete(API_LEADING));
+      mockMvc.perform(delete(API_LEADING + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
@@ -175,7 +129,7 @@ public class UserControllerTest {
 
   @Test
   public void get_Driver_By_Id_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(get(API_LEADING + "drivers/profile")
+    mockMvc.perform(get(API_LEADING + "drivers/" + anyInt())
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
     verify(userControllerHelperMock).getDriverById(anyInt());
@@ -186,7 +140,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       when(userControllerHelperMock.getDriverById(anyInt())).thenThrow(UnauthorizedException.class);
-      mockMvc.perform(get(API_LEADING + "drivers/profile").contentType(MediaType.APPLICATION_JSON_VALUE));
+      mockMvc.perform(get(API_LEADING + "drivers/" + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
@@ -197,7 +151,7 @@ public class UserControllerTest {
 
   @Test
   public void post_Driver_Returns_HttpStatus_Created() throws Exception {
-    mockMvc.perform(post(API_LEADING + "drivers")
+    mockMvc.perform(post(API_LEADING + "0/drivers")
             .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_VALID_JSON))
         .andExpect(status().isCreated());
     verify(userControllerHelperMock).createDriverById(anyInt(), any());
@@ -205,7 +159,7 @@ public class UserControllerTest {
 
   @Test
   public void post_Driver_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(post(API_LEADING + "drivers")
+    mockMvc.perform(post(API_LEADING + "0/drivers")
             .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_INVALID_JSON))
         .andExpect(status().isBadRequest());
     verify(userControllerHelperMock, times(0)).createDriverById(anyInt(), any());
@@ -216,7 +170,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       when(userControllerHelperMock.createDriverById(anyInt(), any())).thenThrow(UnauthorizedException.class);
-      mockMvc.perform(post(API_LEADING + "drivers")
+      mockMvc.perform(post(API_LEADING + "0/drivers")
           .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_VALID_JSON));
     } catch (final Exception e) {
       ex = e;
@@ -228,7 +182,7 @@ public class UserControllerTest {
 
   @Test
   public void delete_Driver_Returns_HttpStatus_No_Content() throws Exception {
-    mockMvc.perform(delete(API_LEADING + "drivers")).andExpect(status().isNoContent());
+    mockMvc.perform(delete(API_LEADING + "drivers/" + anyInt())).andExpect(status().isNoContent());
     verify(userControllerHelperMock).deleteDriverById(anyInt());
   }
 
@@ -237,7 +191,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       doThrow(UnauthorizedException.class).when(userControllerHelperMock).deleteDriverById(anyInt());
-      mockMvc.perform(delete(API_LEADING + "drivers"));
+      mockMvc.perform(delete(API_LEADING + "drivers/" + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
@@ -248,7 +202,7 @@ public class UserControllerTest {
 
   @Test
   public void get_Passenger_By_Id_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(get(API_LEADING + "passengers/profile")
+    mockMvc.perform(get(API_LEADING + "passengers/" + anyInt())
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
     verify(userControllerHelperMock).getPassengerById(anyInt());
@@ -259,7 +213,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       when(userControllerHelperMock.getPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
-      mockMvc.perform(get(API_LEADING + "passengers/profile").contentType(MediaType.APPLICATION_JSON_VALUE));
+      mockMvc.perform(get(API_LEADING + "passengers/" + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
@@ -270,7 +224,7 @@ public class UserControllerTest {
 
   @Test
   public void post_Passenger_Returns_HttpStatus_Created() throws Exception {
-    mockMvc.perform(post(API_LEADING + "passengers")
+    mockMvc.perform(post(API_LEADING + "0/passengers")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isCreated());
     verify(userControllerHelperMock).createPassengerById(anyInt());
@@ -281,7 +235,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       when(userControllerHelperMock.createPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
-      mockMvc.perform(post(API_LEADING + "passengers").contentType(MediaType.APPLICATION_JSON_VALUE));
+      mockMvc.perform(post(API_LEADING + "0/passengers").contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
@@ -292,7 +246,7 @@ public class UserControllerTest {
 
   @Test
   public void delete_Passenger_Returns_HttpStatus_No_Content() throws Exception {
-    mockMvc.perform(delete(API_LEADING + "passengers")).andExpect(status().isNoContent());
+    mockMvc.perform(delete(API_LEADING + "passengers/" + anyInt())).andExpect(status().isNoContent());
     verify(userControllerHelperMock).deletePassengerById(anyInt());
   }
 
@@ -301,7 +255,7 @@ public class UserControllerTest {
     Exception ex = null;
     try {
       doThrow(UnauthorizedException.class).when(userControllerHelperMock).deletePassengerById(anyInt());
-      mockMvc.perform(delete(API_LEADING + "passengers"));
+      mockMvc.perform(delete(API_LEADING + "passengers/" + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
