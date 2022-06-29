@@ -39,7 +39,7 @@ public class UserAdminController {
   @ResponseStatus(HttpStatus.ACCEPTED)
   public ResponseEntity<PlatformUserViewModel> patchPlatformUserById(
       @PathVariable final int id, @RequestBody final JsonPatch patch) {
-    return ResponseEntity.ok(userControllerHelper.patchPlatformUserById(id, patch));
+    return new ResponseEntity<>(userControllerHelper.patchPlatformUserById(id, patch), HttpStatus.ACCEPTED);
   }
 
   @DeleteMapping(value = "/{id}")

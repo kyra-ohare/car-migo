@@ -72,7 +72,7 @@ public class UserController {
   @PatchMapping(consumes = "application/json-patch+json")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public ResponseEntity<PlatformUserViewModel> patchPlatformUser(@RequestBody final JsonPatch patch) {
-    return ResponseEntity.ok(userControllerHelper.patchPlatformUserById(0, patch));
+    return new ResponseEntity<>(userControllerHelper.patchPlatformUserById(0, patch), HttpStatus.ACCEPTED);
   }
 
   @DeleteMapping
