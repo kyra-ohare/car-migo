@@ -27,11 +27,11 @@ import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.AuthenticationUtils;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import java.time.Instant;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -56,6 +56,7 @@ public class UserService {
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtTokenUtils jwtTokenUtils;
   private final AppUser appUser;
+  private final AuthenticationUtils authenticationUtils;
 
   public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -108,10 +109,15 @@ public class UserService {
 
   public GrabDriverDTO createDriver(final int id, final CreateDriverDTO createDriverDTO) {
     final int currentId = getCurrentId(id);
-    final Driver driver = modelMapper.map(createDriverDTO, Driver.class);
-    driver.setPlatformUser(entityManager.getReference(PlatformUser.class, currentId));
-    AuthenticationUtils.verifyUserPermission(currentId, appUser.get());
-    return modelMapper.map(driverRepository.save(driver), GrabDriverDTO.class);
+    try {
+      findEntityById(currentId, driverRepository, Driver.class.getSimpleName());
+    } catch (final EntityNotFoundException ex) {
+      final Driver driver = modelMapper.map(createDriverDTO, Driver.class);
+      driver.setId(currentId);
+      driver.setPlatformUser(entityManager.getReference(PlatformUser.class, currentId));
+      return modelMapper.map(driverRepository.save(driver), GrabDriverDTO.class);
+    }
+    throw new DataIntegrityViolationException(String.format("Driver id %d already exists", currentId));
   }
 
   public void deleteDriverById(final int id) {
@@ -127,10 +133,15 @@ public class UserService {
 
   public GrabPassengerDTO createPassenger(final int id) {
     final int currentId = getCurrentId(id);
-    final Passenger passenger = new Passenger();
-    passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, currentId));
-    AuthenticationUtils.verifyUserPermission(currentId, appUser.get());
-    return modelMapper.map(passengerRepository.save(passenger), GrabPassengerDTO.class);
+    try {
+      findEntityById(currentId, passengerRepository, Passenger.class.getSimpleName());
+    } catch (final EntityNotFoundException ex) {
+      final Passenger passenger = new Passenger();
+      passenger.setId(currentId);
+      passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, currentId));
+      return modelMapper.map(passengerRepository.save(passenger), GrabPassengerDTO.class);
+    }
+    throw new DataIntegrityViolationException(String.format("Passenger id %d already exists", currentId));
   }
 
   public void deletePassengerById(final int id) {
@@ -140,12 +151,9 @@ public class UserService {
   }
 
   private <E> E findEntityById(final int id, final JpaRepository<E, Integer> repository, final String entityName) {
-    final Optional<E> optional = repository.findById(id);
-    if (optional.isPresent()) {
-      AuthenticationUtils.verifyUserPermission(id, appUser.get());
-      return optional.get();
-    }
-    throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_ERROR_MSG, entityName, id));
+    authenticationUtils.verifyUserAuthorization(id);
+    return repository.findById(id).orElseThrow(
+        () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_ERROR_MSG, entityName, id)));
   }
 
   private int getCurrentId(final int id) {

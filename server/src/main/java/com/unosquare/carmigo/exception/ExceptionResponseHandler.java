@@ -27,8 +27,7 @@ public class ExceptionResponseHandler {
 
   @ExceptionHandler({DataIntegrityViolationException.class})
   public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(final Exception exception) {
-    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.CONFLICT,
-        exception.getCause().getCause().toString());
+    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.CONFLICT, exception.getMessage());
   }
 
   @ExceptionHandler({
@@ -42,7 +41,8 @@ public class ExceptionResponseHandler {
   public ResponseEntity<ErrorResponse> handleBeanValidationException(
       final MethodArgumentNotValidException methodArgumentNotValidException) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST,
-        "Argument not valid: " + methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
+        "Argument not valid: " + methodArgumentNotValidException.getBindingResult().getFieldErrors()
+            .stream()
             .map(objectError -> objectError.getField() + " " + objectError.getDefaultMessage())
             .collect(Collectors.joining(", ")));
   }

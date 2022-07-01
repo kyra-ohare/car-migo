@@ -8,10 +8,17 @@ import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.security.AppUser;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
+@AllArgsConstructor
 public class AuthenticationUtils {
 
-  public static void verifyUserPermission(final int id, final AppUser.Current currentAppUser) {
+  private AppUser appUser;
+
+  public void verifyUserAuthorization(final int id) {
+    final AppUser.Current currentAppUser = appUser.get();
     final String whichMethodCalled = StackWalker.getInstance().walk(
             stream -> stream.skip(3).findFirst().orElseThrow())
         .getMethodName();
@@ -31,6 +38,4 @@ public class AuthenticationUtils {
       throw new UnauthorizedException(NOT_PERMITTED);
     }
   }
-
-  private AuthenticationUtils() {}
 }
