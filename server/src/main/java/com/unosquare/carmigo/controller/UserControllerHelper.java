@@ -27,7 +27,7 @@ class UserControllerHelper {
   }
 
   PlatformUserViewModel patchPlatformUserById(final int id, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUser(id, patch);
+    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUserById(id, patch);
     return modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
   }
 
@@ -42,7 +42,7 @@ class UserControllerHelper {
 
   DriverViewModel createDriverById(final int id, final CreateDriverViewModel createDriverViewModel) {
     final CreateDriverDTO createDriverDTO = modelMapper.map(createDriverViewModel, CreateDriverDTO.class);
-    final GrabDriverDTO driverDTO = userService.createDriver(id, createDriverDTO);
+    final GrabDriverDTO driverDTO = userService.createDriverById(id, createDriverDTO);
     return modelMapper.map(driverDTO, DriverViewModel.class);
   }
 
@@ -56,7 +56,7 @@ class UserControllerHelper {
   }
 
   PassengerViewModel createPassengerById(final int id) {
-    final GrabPassengerDTO passengerDTO = userService.createPassenger(id);
+    final GrabPassengerDTO passengerDTO = userService.createPassengerById(id);
     return modelMapper.map(passengerDTO, PassengerViewModel.class);
   }
 

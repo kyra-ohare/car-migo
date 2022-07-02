@@ -1,7 +1,5 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.constant.AppConstants.ENTITY_NOT_FOUND_ERROR_MSG;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +22,7 @@ import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.security.UserSecurityService;
-import com.unosquare.carmigo.util.AuthenticationUtils;
+import com.unosquare.carmigo.security.Authorization;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import java.time.Instant;
 import javax.persistence.EntityManager;
@@ -55,8 +53,8 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtTokenUtils jwtTokenUtils;
+  private final Authorization authorization;
   private final AppUser appUser;
-  private final AuthenticationUtils authenticationUtils;
 
   public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -82,7 +80,7 @@ public class UserService {
     return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
   }
 
-  public GrabPlatformUserDTO patchPlatformUser(final int id, final JsonPatch patch) {
+  public GrabPlatformUserDTO patchPlatformUserById(final int id, final JsonPatch patch) {
     final int currentId = getCurrentId(id);
     final PlatformUser platformUser = findEntityById(
         currentId, platformUserRepository, PlatformUser.class.getSimpleName());
@@ -92,7 +90,7 @@ public class UserService {
       final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
       return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
     } catch (final JsonPatchException | JsonProcessingException ex) {
-      throw new ResourceNotFoundException("Error updating user id " + currentId);
+      throw new ResourceNotFoundException(String.format("Error updating user id %d", currentId));
     }
   }
 
@@ -107,7 +105,7 @@ public class UserService {
     return modelMapper.map(driver, GrabDriverDTO.class);
   }
 
-  public GrabDriverDTO createDriver(final int id, final CreateDriverDTO createDriverDTO) {
+  public GrabDriverDTO createDriverById(final int id, final CreateDriverDTO createDriverDTO) {
     final int currentId = getCurrentId(id);
     try {
       findEntityById(currentId, driverRepository, Driver.class.getSimpleName());
@@ -131,7 +129,7 @@ public class UserService {
     return modelMapper.map(passenger, GrabPassengerDTO.class);
   }
 
-  public GrabPassengerDTO createPassenger(final int id) {
+  public GrabPassengerDTO createPassengerById(final int id) {
     final int currentId = getCurrentId(id);
     try {
       findEntityById(currentId, passengerRepository, Passenger.class.getSimpleName());
@@ -151,9 +149,9 @@ public class UserService {
   }
 
   private <E> E findEntityById(final int id, final JpaRepository<E, Integer> repository, final String entityName) {
-    authenticationUtils.verifyUserAuthorization(id);
+    authorization.verifyUserAuthorization(id);
     return repository.findById(id).orElseThrow(
-        () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_ERROR_MSG, entityName, id)));
+        () -> new EntityNotFoundException(String.format("%s id %d not found.", entityName, id)));
   }
 
   private int getCurrentId(final int id) {

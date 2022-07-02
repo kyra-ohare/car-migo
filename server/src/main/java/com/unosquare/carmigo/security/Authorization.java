@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.util;
+package com.unosquare.carmigo.security;
 
 import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
 import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
@@ -7,13 +7,12 @@ import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.security.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class AuthenticationUtils {
+public class Authorization {
 
   private AppUser appUser;
 
@@ -30,7 +29,7 @@ public class AuthenticationUtils {
             (userAccess.equals(SUSPENDED)
                 &&
                 (whichMethodCalled.equals("getPlatformUserById")
-                    || whichMethodCalled.equals("patchPlatformUser"))
+                    || whichMethodCalled.equals("patchPlatformUserById"))
             )
         ))
         || userAccess.equals(ADMIN) || userAccess.equals(DEV)

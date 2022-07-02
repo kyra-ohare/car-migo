@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
-@Tag(name = "Platform User Controller")
+@Tag(name = "User Controller")
 public class UserController {
 
   private final ModelMapper modelMapper;

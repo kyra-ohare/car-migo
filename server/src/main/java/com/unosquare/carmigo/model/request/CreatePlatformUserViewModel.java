@@ -51,5 +51,4 @@ public class CreatePlatformUserViewModel {
   @NotNull
   @JsonProperty("phoneNumber")
   private String phoneNumber;
-
 }

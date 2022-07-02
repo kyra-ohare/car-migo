@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/admin/users")
-@Tag(name = "Platform User Admin Controller")
-public class UserAdminController {
+@Tag(name = "Admin User Controller")
+public class AdminUserController {
 
   private final UserControllerHelper userControllerHelper;
 

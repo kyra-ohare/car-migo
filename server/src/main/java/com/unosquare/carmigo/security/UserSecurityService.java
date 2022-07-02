@@ -59,7 +59,7 @@ public class UserSecurityService implements UserDetailsService {
       case LOCKED_OUT:
         throw new UnauthorizedException("User is locked out after 5 failed attempts.");
       case STAGED:
-        throw new UnauthorizedException("User needs to confirm the email.");
+        throw new UnauthorizedException("User needs to confirm email.");
       default:
         throw new UnauthorizedException(NOT_PERMITTED);
     }

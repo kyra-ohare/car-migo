@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class UserAdminControllerTest {
+public class AdminUserControllerTest {
 
   private static final String API_LEADING = "/v1/admin/users/";
   private static final String PATCH_PLATFORM_USER_VALID_JSON =
@@ -50,7 +50,7 @@ public class UserAdminControllerTest {
     jFixture.customise().circularDependencyBehaviour().omitSpecimen();
     FixtureAnnotations.initFixtures(this, jFixture);
 
-    mockMvc = MockMvcBuilders.standaloneSetup(new UserAdminController(userControllerHelperMock)).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(new AdminUserController(userControllerHelperMock)).build();
   }
 
   @Test

@@ -30,7 +30,7 @@ import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.security.UserSecurityService;
-import com.unosquare.carmigo.util.AuthenticationUtils;
+import com.unosquare.carmigo.security.Authorization;
 import com.unosquare.carmigo.util.JwtTokenUtils;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -67,7 +67,7 @@ public class UserServiceTest {
   @Mock private AuthenticationManager authenticationManagerMock;
   @Mock private BCryptPasswordEncoder bCryptPasswordEncoderMock;
   @Mock private JwtTokenUtils jwtTokenUtilsMock;
-  @Mock private AuthenticationUtils authenticationUtilsMock;
+  @Mock private Authorization authorizationMock;
   @InjectMocks private UserService userService;
 
   @Fixture private PlatformUser platformUserFixture;
@@ -108,7 +108,7 @@ public class UserServiceTest {
   @Test
   public void get_PlatformUser_By_Id_Returns_GrabPlatformUserDTO() {
     when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
-    doNothing().when(authenticationUtilsMock).verifyUserAuthorization(anyInt());
+    doNothing().when(authorizationMock).verifyUserAuthorization(anyInt());
     when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
     final GrabPlatformUserDTO grabPlatformUserDTO = userService.getPlatformUserById(1);
 
@@ -153,7 +153,7 @@ public class UserServiceTest {
     when(objectMapperMock.treeToValue(platformUserNode, PlatformUser.class)).thenReturn(platformUserFixture);
     when(platformUserRepositoryMock.save(platformUserFixture)).thenReturn(platformUserFixture);
     when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
-    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUser(platformUserFixture.getId(), patch);
+    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUserById(platformUserFixture.getId(), patch);
 
     assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
     assertThat(grabPlatformUserDTO.getLastName()).isEqualTo(grabPlatformUserDTOFixture.getLastName());
@@ -189,8 +189,8 @@ public class UserServiceTest {
     when(entityManagerMock.getReference(eq(PlatformUser.class), anyInt())).thenReturn(platformUserFixture);
     when(driverRepositoryMock.save(spyDriver)).thenReturn(driverFixture);
     when(modelMapperMock.map(driverFixture, GrabDriverDTO.class)).thenReturn(grabDriverDTOFixture);
-    doNothing().when(authenticationUtilsMock).verifyUserAuthorization(anyInt());
-    final GrabDriverDTO grabDriverDTO = userService.createDriver(1, createDriverDTOFixture);
+    doNothing().when(authorizationMock).verifyUserAuthorization(anyInt());
+    final GrabDriverDTO grabDriverDTO = userService.createDriverById(1, createDriverDTOFixture);
 
     assertThat(grabDriverDTO.getLicenseNumber()).isEqualTo(grabDriverDTOFixture.getLicenseNumber());
     assertThat(grabDriverDTO.getPlatformUser()).isEqualTo(grabDriverDTOFixture.getPlatformUser());
@@ -218,8 +218,8 @@ public class UserServiceTest {
   @Test
   public void create_Passenger_Returns_GrabPassengerDTO() {
     when(entityManagerMock.getReference(eq(PlatformUser.class), anyInt())).thenReturn(platformUserFixture);
-    doNothing().when(authenticationUtilsMock).verifyUserAuthorization(anyInt());
-    userService.createPassenger(1);
+    doNothing().when(authorizationMock).verifyUserAuthorization(anyInt());
+    userService.createPassengerById(1);
     verify(passengerRepositoryMock).save(any(Passenger.class));
   }
 

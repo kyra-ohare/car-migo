@@ -8,8 +8,6 @@ public interface AppConstants {
       "following: Alphanumeric characters, one special character ( " + SPECIAL_CHARACTERS + " ), " +
       "one capital letter.";
 
-  String ENTITY_NOT_FOUND_ERROR_MSG = "%s id %d not found.";
-
   String ACTIVE = "ACTIVE";
   String ADMIN = "ADMIN";
   String DEV = "DEV";

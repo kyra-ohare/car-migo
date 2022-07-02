@@ -30,7 +30,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
         .antMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN, DEV)
         .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-        .antMatchers(HttpMethod.GET, "/v3/api-docs/swagger-config").permitAll()
         .antMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()
         .anyRequest().authenticated()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
