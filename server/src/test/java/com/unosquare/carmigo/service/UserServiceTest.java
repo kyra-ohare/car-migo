@@ -92,8 +92,8 @@ public class UserServiceTest {
   public void create_Authentication_Token_Returns_GrabAuthenticationDTO() {
     final UserDetails spyUserDetails = spy(new User("foo", "foo", new ArrayList<>()));
     when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
-    when(userSecurityServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail())).thenReturn(
-        spyUserDetails);
+    when(userSecurityServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail()))
+        .thenReturn(spyUserDetails);
     when(jwtTokenUtilsMock.generateToken(spyUserDetails)).thenReturn(anyString());
     final GrabAuthenticationDTO grabAuthenticationDTO = userService.createAuthenticationToken(
         createAuthenticationDTOFixture);
@@ -133,8 +133,7 @@ public class UserServiceTest {
     spyPlatformUser.setLastName(anyString());
     spyPlatformUser.setEmail(anyString());
     spyPlatformUser.setPassword(bCryptPasswordEncoderMock.encode(anyString()));
-    final GrabPlatformUserDTO grabPlatformUserDTO = userService.createPlatformUser(
-        createPlatformUserDTOFixture);
+    final GrabPlatformUserDTO grabPlatformUserDTO = userService.createPlatformUser(createPlatformUserDTOFixture);
 
     assertThat(grabPlatformUserDTO.getCreatedDate()).isEqualTo(grabPlatformUserDTOFixture.getCreatedDate());
     assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
@@ -153,7 +152,8 @@ public class UserServiceTest {
     when(objectMapperMock.treeToValue(platformUserNode, PlatformUser.class)).thenReturn(platformUserFixture);
     when(platformUserRepositoryMock.save(platformUserFixture)).thenReturn(platformUserFixture);
     when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
-    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUserById(platformUserFixture.getId(), patch);
+    final GrabPlatformUserDTO grabPlatformUserDTO = userService.patchPlatformUserById(
+        platformUserFixture.getId(), patch);
 
     assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
     assertThat(grabPlatformUserDTO.getLastName()).isEqualTo(grabPlatformUserDTOFixture.getLastName());

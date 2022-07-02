@@ -14,7 +14,7 @@ import com.unosquare.carmigo.repository.PlatformUserRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserSecurityService implements UserDetailsService {
 
   private final PlatformUserRepository platformUserRepository;
