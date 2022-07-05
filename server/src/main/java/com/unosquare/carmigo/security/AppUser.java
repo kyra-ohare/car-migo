@@ -18,12 +18,12 @@ public class AppUser {
 
   @Bean
   @RequestScope
-  public Current get() {
+  public CurrentAppUser get() {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication.getPrincipal() instanceof CustomUserDetails) {
       final CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-      return Current.builder()
+      return CurrentAppUser.builder()
           .id(customUserDetails.getId())
           .username(customUserDetails.getUsername())
           .userAccessStatus(getUserAccessStatus(customUserDetails))
@@ -34,7 +34,7 @@ public class AppUser {
 
   @Getter
   @Builder
-  public static class Current {
+  public static class CurrentAppUser {
 
     private int id;
     private String username;

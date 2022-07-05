@@ -7,6 +7,7 @@ import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.exception.UnauthorizedException;
+import com.unosquare.carmigo.security.AppUser.CurrentAppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class Authorization {
   private AppUser appUser;
 
   public void verifyUserAuthorization(final int id) {
-    final AppUser.Current currentAppUser = appUser.get();
+    final CurrentAppUser currentAppUser = appUser.get();
     final String whichMethodCalled = StackWalker.getInstance().walk(
             stream -> stream.skip(3).findFirst().orElseThrow())
         .getMethodName();
