@@ -13,16 +13,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.flextrade.jfixture.FixtureAnnotations;
-import com.flextrade.jfixture.JFixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.exception.UnauthorizedException;
+import com.unosquare.carmigo.service.UserService;
 import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,15 +42,12 @@ public class AdminUserControllerTest {
 
   private MockMvc mockMvc;
 
-  @Mock private UserControllerHelper userControllerHelperMock;
+  @Mock private ModelMapper modelMapperMock;
+  @Mock private UserService userServiceMock;
 
   @BeforeEach
   public void setUp() {
-    final JFixture jFixture = new JFixture();
-    jFixture.customise().circularDependencyBehaviour().omitSpecimen();
-    FixtureAnnotations.initFixtures(this, jFixture);
-
-    mockMvc = MockMvcBuilders.standaloneSetup(new AdminUserController(userControllerHelperMock)).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(new AdminUserController(modelMapperMock, userServiceMock)).build();
   }
 
   @Test
@@ -58,21 +55,21 @@ public class AdminUserControllerTest {
     mockMvc.perform(get(API_LEADING + anyInt()).
             contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
-    verify(userControllerHelperMock).getPlatformUserById(anyInt());
+    verify(userServiceMock).getPlatformUserById(anyInt());
   }
 
   @Test
   public void get_Profile_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.getPlatformUserById(anyInt())).thenThrow(UnauthorizedException.class);
+      when(userServiceMock.getPlatformUserById(anyInt())).thenThrow(UnauthorizedException.class);
       mockMvc.perform(get(API_LEADING + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).getPlatformUserById(anyInt());
+    verify(userServiceMock).getPlatformUserById(anyInt());
   }
 
   @Test
@@ -80,7 +77,7 @@ public class AdminUserControllerTest {
     mockMvc.perform(patch(API_LEADING + 0)
             .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_VALID_JSON))
         .andExpect(status().isAccepted());
-    verify(userControllerHelperMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
+    verify(userServiceMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
   @Test
@@ -88,14 +85,14 @@ public class AdminUserControllerTest {
     mockMvc.perform(patch(API_LEADING + 0)
             .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_INVALID_JSON))
         .andExpect(status().isBadRequest());
-    verify(userControllerHelperMock, times(0)).patchPlatformUserById(anyInt(), any(JsonPatch.class));
+    verify(userServiceMock, times(0)).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
   @Test
   public void patch_PlatformUser_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.patchPlatformUserById(anyInt(), any(JsonPatch.class)))
+      when(userServiceMock.patchPlatformUserById(anyInt(), any(JsonPatch.class)))
           .thenThrow(UnauthorizedException.class);
       mockMvc.perform(patch(API_LEADING + 0)
           .contentType("application/json-patch+json").content(PATCH_PLATFORM_USER_VALID_JSON));
@@ -104,27 +101,27 @@ public class AdminUserControllerTest {
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
+    verify(userServiceMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
   @Test
   public void delete_PlatformUser_Returns_HttpStatus_No_Content() throws Exception {
     mockMvc.perform(delete(API_LEADING + anyInt())).andExpect(status().isNoContent());
-    verify(userControllerHelperMock).deletePlatformUserById(anyInt());
+    verify(userServiceMock).deletePlatformUserById(anyInt());
   }
 
   @Test
   public void delete_PlatformUser_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      doThrow(UnauthorizedException.class).when(userControllerHelperMock).deletePlatformUserById(anyInt());
+      doThrow(UnauthorizedException.class).when(userServiceMock).deletePlatformUserById(anyInt());
       mockMvc.perform(delete(API_LEADING + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).deletePlatformUserById(anyInt());
+    verify(userServiceMock).deletePlatformUserById(anyInt());
   }
 
   @Test
@@ -132,21 +129,21 @@ public class AdminUserControllerTest {
     mockMvc.perform(get(API_LEADING + "drivers/" + anyInt())
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
-    verify(userControllerHelperMock).getDriverById(anyInt());
+    verify(userServiceMock).getDriverById(anyInt());
   }
 
   @Test
   public void get_Driver_By_Id_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.getDriverById(anyInt())).thenThrow(UnauthorizedException.class);
+      when(userServiceMock.getDriverById(anyInt())).thenThrow(UnauthorizedException.class);
       mockMvc.perform(get(API_LEADING + "drivers/" + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).getDriverById(anyInt());
+    verify(userServiceMock).getDriverById(anyInt());
   }
 
   @Test
@@ -154,7 +151,7 @@ public class AdminUserControllerTest {
     mockMvc.perform(post(API_LEADING + "0/drivers")
             .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_VALID_JSON))
         .andExpect(status().isCreated());
-    verify(userControllerHelperMock).createDriverById(anyInt(), any());
+    verify(userServiceMock).createDriverById(anyInt(), any());
   }
 
   @Test
@@ -162,14 +159,14 @@ public class AdminUserControllerTest {
     mockMvc.perform(post(API_LEADING + "0/drivers")
             .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_INVALID_JSON))
         .andExpect(status().isBadRequest());
-    verify(userControllerHelperMock, times(0)).createDriverById(anyInt(), any());
+    verify(userServiceMock, times(0)).createDriverById(anyInt(), any());
   }
 
   @Test
   public void post_Driver_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.createDriverById(anyInt(), any())).thenThrow(UnauthorizedException.class);
+      when(userServiceMock.createDriverById(anyInt(), any())).thenThrow(UnauthorizedException.class);
       mockMvc.perform(post(API_LEADING + "0/drivers")
           .contentType(MediaType.APPLICATION_JSON_VALUE).content(POST_DRIVER_VALID_JSON));
     } catch (final Exception e) {
@@ -177,27 +174,27 @@ public class AdminUserControllerTest {
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).createDriverById(anyInt(), any());
+    verify(userServiceMock).createDriverById(anyInt(), any());
   }
 
   @Test
   public void delete_Driver_Returns_HttpStatus_No_Content() throws Exception {
     mockMvc.perform(delete(API_LEADING + "drivers/" + anyInt())).andExpect(status().isNoContent());
-    verify(userControllerHelperMock).deleteDriverById(anyInt());
+    verify(userServiceMock).deleteDriverById(anyInt());
   }
 
   @Test
   public void delete_Driver_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      doThrow(UnauthorizedException.class).when(userControllerHelperMock).deleteDriverById(anyInt());
+      doThrow(UnauthorizedException.class).when(userServiceMock).deleteDriverById(anyInt());
       mockMvc.perform(delete(API_LEADING + "drivers/" + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).deleteDriverById(anyInt());
+    verify(userServiceMock).deleteDriverById(anyInt());
   }
 
   @Test
@@ -205,21 +202,21 @@ public class AdminUserControllerTest {
     mockMvc.perform(get(API_LEADING + "passengers/" + anyInt())
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk());
-    verify(userControllerHelperMock).getPassengerById(anyInt());
+    verify(userServiceMock).getPassengerById(anyInt());
   }
 
   @Test
   public void get_Passenger_By_Id_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.getPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
+      when(userServiceMock.getPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
       mockMvc.perform(get(API_LEADING + "passengers/" + anyInt()).contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).getPassengerById(anyInt());
+    verify(userServiceMock).getPassengerById(anyInt());
   }
 
   @Test
@@ -227,40 +224,40 @@ public class AdminUserControllerTest {
     mockMvc.perform(post(API_LEADING + "0/passengers")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isCreated());
-    verify(userControllerHelperMock).createPassengerById(anyInt());
+    verify(userServiceMock).createPassengerById(anyInt());
   }
 
   @Test
   public void post_Passenger_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      when(userControllerHelperMock.createPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
+      when(userServiceMock.createPassengerById(anyInt())).thenThrow(UnauthorizedException.class);
       mockMvc.perform(post(API_LEADING + "0/passengers").contentType(MediaType.APPLICATION_JSON_VALUE));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).createPassengerById(anyInt());
+    verify(userServiceMock).createPassengerById(anyInt());
   }
 
   @Test
   public void delete_Passenger_Returns_HttpStatus_No_Content() throws Exception {
     mockMvc.perform(delete(API_LEADING + "passengers/" + anyInt())).andExpect(status().isNoContent());
-    verify(userControllerHelperMock).deletePassengerById(anyInt());
+    verify(userServiceMock).deletePassengerById(anyInt());
   }
 
   @Test
   public void delete_Passenger_Throws_UnauthorizedException() {
     Exception ex = null;
     try {
-      doThrow(UnauthorizedException.class).when(userControllerHelperMock).deletePassengerById(anyInt());
+      doThrow(UnauthorizedException.class).when(userServiceMock).deletePassengerById(anyInt());
       mockMvc.perform(delete(API_LEADING + "passengers/" + anyInt()));
     } catch (final Exception e) {
       ex = e;
     }
     assert ex != null;
     assertTrue(ex.getCause() instanceof UnauthorizedException);
-    verify(userControllerHelperMock).deletePassengerById(anyInt());
+    verify(userServiceMock).deletePassengerById(anyInt());
   }
 }
