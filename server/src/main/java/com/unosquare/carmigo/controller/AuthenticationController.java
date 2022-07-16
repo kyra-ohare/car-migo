@@ -4,7 +4,7 @@ import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
 import com.unosquare.carmigo.model.response.AuthenticationViewModel;
-import com.unosquare.carmigo.service.UserService;
+import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
   private final ModelMapper modelMapper;
-  private final UserService userService;
+  private final PlatformUserService platformUserService;
 
   @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
@@ -33,7 +33,7 @@ public class AuthenticationController {
       @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel) {
     final CreateAuthenticationDTO createAuthenticationDTO = modelMapper.map(
         createAuthenticationViewModel, CreateAuthenticationDTO.class);
-    final GrabAuthenticationDTO grabAuthenticationDTO = userService.createAuthenticationToken(createAuthenticationDTO);
+    final GrabAuthenticationDTO grabAuthenticationDTO = platformUserService.createAuthenticationToken(createAuthenticationDTO);
     final AuthenticationViewModel authenticationViewModel = modelMapper.map(
         grabAuthenticationDTO, AuthenticationViewModel.class);
     return new ResponseEntity<>(authenticationViewModel, HttpStatus.CREATED);
