@@ -22,6 +22,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, "/v1/users/authenticate").permitAll()
+        .antMatchers(HttpMethod.GET, "/v1/journeys/calculateDistance").permitAll()
         .antMatchers(HttpMethod.GET, "/actuator/info").permitAll()
         .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
         .antMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
