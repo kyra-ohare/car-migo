@@ -33,7 +33,8 @@ public class AuthenticationController {
       @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel) {
     final CreateAuthenticationDTO createAuthenticationDTO = modelMapper.map(
         createAuthenticationViewModel, CreateAuthenticationDTO.class);
-    final GrabAuthenticationDTO grabAuthenticationDTO = platformUserService.createAuthenticationToken(createAuthenticationDTO);
+    final GrabAuthenticationDTO grabAuthenticationDTO =
+        platformUserService.createAuthenticationToken(createAuthenticationDTO);
     final AuthenticationViewModel authenticationViewModel = modelMapper.map(
         grabAuthenticationDTO, AuthenticationViewModel.class);
     return new ResponseEntity<>(authenticationViewModel, HttpStatus.CREATED);
