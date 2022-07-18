@@ -29,8 +29,8 @@ public class Authorization {
             ||
             (userAccess.equals(SUSPENDED)
                 &&
-                (whichMethodCalled.equals("getPlatformUserById")
-                    || whichMethodCalled.equals("patchPlatformUserById"))
+                (whichMethodCalled.equals("getPlatformUser")
+                    || whichMethodCalled.equals("patchPlatformUser"))
             )
         ))
         || userAccess.equals(ADMIN) || userAccess.equals(DEV)

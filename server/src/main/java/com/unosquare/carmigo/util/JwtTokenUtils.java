@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.util;
 
+import com.unosquare.carmigo.exception.ExpiredJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -58,7 +59,11 @@ public class JwtTokenUtils {
   }
 
   private Claims extractAllClaims(final String token) {
-    return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    try {
+      return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    } catch (final io.jsonwebtoken.ExpiredJwtException ex) {
+      throw new ExpiredJwtException("Expired JWT token");
+    }
   }
 
   private Boolean isTokenExpired(final String token) {
