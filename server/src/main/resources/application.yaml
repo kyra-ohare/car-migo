@@ -54,6 +54,12 @@ application:
     expiration:
       in-hours: 10
 
+open-feign:
+  distance:
+    endpoint: https://distanceto.p.rapidapi.com/get
+    host: distanceto.p.rapidapi.com
+    key: b032eeff7amsh66f3dfb561292d1p1067b5jsn841d0ef5b06c
+
 ---
 spring:
   config:

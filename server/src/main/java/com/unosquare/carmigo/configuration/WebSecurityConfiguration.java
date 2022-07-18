@@ -28,6 +28,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     httpSecurity.csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/login").permitAll()
+        .antMatchers(HttpMethod.GET, "/v1/journeys/calculateDistance").permitAll()
         .antMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
         .antMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN, DEV)
         .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()

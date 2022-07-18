@@ -6,19 +6,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.unosquare.carmigo.dto.CreateJourneyDTO;
+import com.unosquare.carmigo.dto.GrabDistanceDTO;
 import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.openfeign.DistanceApi;
+import com.unosquare.carmigo.openfeign.DistanceHolder;
+import com.unosquare.carmigo.openfeign.Geocode;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
 import com.unosquare.carmigo.util.MapperUtils;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -33,6 +39,7 @@ public class JourneyService {
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
+  private final DistanceApi distanceApi;
 
   public GrabJourneyDTO getJourneyById(final int id) {
     return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
@@ -43,7 +50,7 @@ public class JourneyService {
         createSearchJourneysCriteria.getLocationIdFrom(), createSearchJourneysCriteria.getLocationIdTo(),
         createSearchJourneysCriteria.getDateTimeFrom(), createSearchJourneysCriteria.getDateTimeTo());
     if (result.isEmpty()) {
-      throw new ResourceNotFoundException("No journeys found. " + createSearchJourneysCriteria);
+      throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
     }
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
@@ -84,6 +91,12 @@ public class JourneyService {
     }
   }
 
+  public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
+    final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
+    DistanceHolder distanceHolder = distanceApi.getDistance(request);
+    return convertDistanceHolderToGrabDistanceDto(distanceHolder);
+  }
+
   public void deleteJourneyById(final int id) {
     journeyRepository.deleteById(id);
   }
@@ -96,5 +109,46 @@ public class JourneyService {
   private Journey findJourneyById(final int id) {
     return journeyRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
+  }
+
+  private String prepareRequestToDistanceApi(final CreateCalculateDistanceCriteria criteria) {
+    return "[{\"t\":\"" + criteria.getLocationFrom() + "," + criteria.getCountryFrom() + "\"},{\"t\":\""
+        + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
+  }
+
+  private GrabDistanceDTO convertDistanceHolderToGrabDistanceDto(final DistanceHolder distanceHolder) {
+    if (distanceHolder.getPoints().size() > 1) {
+      final GrabDistanceDTO grabDistanceDTO = new GrabDistanceDTO();
+      grabDistanceDTO.setLocationFrom(convertToGrabDistanceDtoLocation(
+          distanceHolder.getPoints().get(0).getProperties().getGeocode()));
+      grabDistanceDTO.setLocationTo(convertToGrabDistanceDtoLocation(
+          distanceHolder.getPoints().get(1).getProperties().getGeocode()));
+      grabDistanceDTO.setDistance(convertToGrabDistanceDtoDistance(
+          distanceHolder.getSteps().get(0).getDistance().getGreatCircle()));
+      return grabDistanceDTO;
+    }
+    throw new NoResultException("DistanceHolder is empty.");
+  }
+
+  private GrabDistanceDTO.Location convertToGrabDistanceDtoLocation(final Geocode geocode) {
+    final GrabDistanceDTO.Coordinate coordinates = new GrabDistanceDTO.Coordinate();
+    coordinates.setLatitude(geocode.getLatitude());
+    coordinates.setLongitude(geocode.getLongitude());
+    final GrabDistanceDTO.Location location = new GrabDistanceDTO.Location();
+    location.setLocation(geocode.getName());
+    location.setCoordinates(coordinates);
+    return location;
+  }
+
+  private GrabDistanceDTO.Distance convertToGrabDistanceDtoDistance(final double km) {
+    final GrabDistanceDTO.Distance distance = new GrabDistanceDTO.Distance();
+    distance.setKm(Math.round(km * 10d) / 10d);
+    distance.setMi(Math.round(convertKmToMi(km) * 10d) / 10d);
+    return distance;
+  }
+
+  private double convertKmToMi(final double km) {
+    final double conversionFactor = 1.609344;
+    return km / conversionFactor;
   }
 }
