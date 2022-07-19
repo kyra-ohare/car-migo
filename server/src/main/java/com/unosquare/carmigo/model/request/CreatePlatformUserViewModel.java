@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.model.request;
 
+import static com.unosquare.carmigo.constant.AppConstants.EMAIL_REGEX;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unosquare.carmigo.annotation.ValidPassword;
 import java.time.Instant;
@@ -35,7 +37,7 @@ public class CreatePlatformUserViewModel {
   @NotEmpty
   @NotNull
   @JsonProperty("email")
-  @Email(regexp = "^([^ @])+@([^ \\.@]+\\.)+([^ \\.@])+$")
+  @Email(regexp = EMAIL_REGEX)
   private String email;
 
   @Size(max = 50)

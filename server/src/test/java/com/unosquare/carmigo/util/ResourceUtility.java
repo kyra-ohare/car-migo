@@ -6,8 +6,6 @@ import java.io.IOException;
 
 public class ResourceUtility {
 
-  private ResourceUtility() {}
-
   public static String generateStringFromResource(final String path) {
     try {
       return Resources.toString(Resources.getResource(path), Charsets.UTF_8);
@@ -15,4 +13,6 @@ public class ResourceUtility {
       return "Cannot retrieve resource entity";
     }
   }
+
+  private ResourceUtility() {}
 }

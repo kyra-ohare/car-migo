@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.util;
 
+import com.unosquare.carmigo.exception.ExpiredJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,8 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtTokenUtils {
 
-  @Value("${application.secret.key}")
+  @Value("${application.token.secret.key}")
   private String key;
+
+  @Value("${application.token.expiration.in-hours}")
+  private int hours;
 
   public String generateToken(final UserDetails userDetails) {
     final Map<String, Object> claims = new HashMap<>();
@@ -31,12 +35,12 @@ public class JwtTokenUtils {
 
   private String createToken(final Map<String, Object> claims, final String subject) {
     final Date now = Date.from(Instant.now());
-    final Date in10Hours = Date.from(now.toInstant().plus(Duration.ofHours(10)));
+    final Date inSuchHours = Date.from(now.toInstant().plus(Duration.ofHours(hours)));
     return Jwts.builder()
         .setClaims(claims)
         .setSubject(subject)
         .setIssuedAt(now)
-        .setExpiration(in10Hours)
+        .setExpiration(inSuchHours)
         .signWith(SignatureAlgorithm.HS256, key)
         .compact();
   }
@@ -55,7 +59,11 @@ public class JwtTokenUtils {
   }
 
   private Claims extractAllClaims(final String token) {
-    return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    try {
+      return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    } catch (final io.jsonwebtoken.ExpiredJwtException ex) {
+      throw new ExpiredJwtException("Expired JWT token");
+    }
   }
 
   private Boolean isTokenExpired(final String token) {

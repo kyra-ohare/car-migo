@@ -1,7 +1,6 @@
 package com.unosquare.carmigo.entity;
 
 import java.time.Instant;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 
 @Entity
 @Getter
@@ -57,21 +55,4 @@ public class PlatformUser {
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinColumn(name = "user_access_status_id", nullable = false)
   private UserAccessStatus userAccessStatus;
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (null == o || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    final PlatformUser that = (PlatformUser) o;
-    return 0 != id && Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
 }
