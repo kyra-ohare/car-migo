@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @ActiveProfiles("h2")
 public class DriverControllerTest {
 
-  private static final String API_LEADING = "/v1/drivers/";
+  private static final String API_LEADING = "/v1/drivers";
   private static final String POST_DRIVER_VALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostDriverValid.json");
   private static final String POST_DRIVER_INVALID_JSON =
@@ -61,23 +61,23 @@ public class DriverControllerTest {
   @WithUserDetails(ACTIVE_USER)
   public void testEndpointsWithActiveUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePostRequest(POST_DRIVER_VALID_JSON, status().isCreated());
     controllerUtility.makePostRequest(POST_DRIVER_VALID_JSON, status().isConflict());
     controllerUtility.makePostRequest(POST_DRIVER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_INVALID_JSON,
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_INVALID_JSON,
         status().isBadRequest());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
   }
 
   @Test
@@ -96,69 +96,69 @@ public class DriverControllerTest {
   @WithUserDetails(ADMIN_USER)
   public void testEndpointsWithAdminUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isOk());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
 
     controllerUtility.makePostRequest(POST_DRIVER_VALID_JSON, status().isCreated());
     controllerUtility.makePostRequest(POST_DRIVER_VALID_JSON, status().isConflict());
     controllerUtility.makePostRequest(POST_DRIVER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), POST_DRIVER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), POST_DRIVER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_INVALID_JSON,
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, POST_DRIVER_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, POST_DRIVER_VALID_JSON, status().isConflict());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_VALID_JSON, status().isConflict());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_INVALID_JSON,
         status().isBadRequest());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), POST_DRIVER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), POST_DRIVER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), POST_DRIVER_INVALID_JSON,
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, POST_DRIVER_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, POST_DRIVER_VALID_JSON, status().isConflict());
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, POST_DRIVER_INVALID_JSON,
         status().isBadRequest());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), POST_DRIVER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), POST_DRIVER_VALID_JSON,
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, POST_DRIVER_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, POST_DRIVER_VALID_JSON,
         status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_VALID_JSON, status().isConflict());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_INVALID_JSON, status().isBadRequest());
   }
 
   private void testUnauthorizedUsers(final ResultMatcher expectation) throws Exception {
     controllerUtility.makeGetRequest(status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePostRequest(POST_DRIVER_VALID_JSON, status().isForbidden());
     controllerUtility.makePostRequest(POST_DRIVER_INVALID_JSON, expectation);
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), POST_DRIVER_INVALID_JSON, expectation);
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), POST_DRIVER_VALID_JSON,
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, POST_DRIVER_INVALID_JSON, expectation);
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, POST_DRIVER_VALID_JSON,
         status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), POST_DRIVER_VALID_JSON,
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, POST_DRIVER_VALID_JSON,
         status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), POST_DRIVER_INVALID_JSON, expectation);
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, POST_DRIVER_INVALID_JSON, expectation);
 
     controllerUtility.makeDeleteRequest(status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
 }

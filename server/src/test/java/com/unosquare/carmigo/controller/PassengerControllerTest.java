@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("h2")
 public class PassengerControllerTest {
 
-  private static final String API_LEADING = "/v1/passengers/";
+  private static final String API_LEADING = "/v1/passengers";
   private final static String STAGED_USER = "staged@example.com";
   private static final int STAGED_USER_ID = 1;
   private final static String ACTIVE_USER = "active@example.com";
@@ -55,20 +55,20 @@ public class PassengerControllerTest {
   @WithUserDetails(ACTIVE_USER)
   public void testEndpointsWithActiveUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePostRequest(status().isCreated());
     controllerUtility.makePostRequest(status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
   }
 
   @Test
@@ -87,57 +87,57 @@ public class PassengerControllerTest {
   @WithUserDetails(ADMIN_USER)
   public void testEndpointsWithAdminUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isOk());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNotFound());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
 
     controllerUtility.makePostRequest(status().isCreated());
     controllerUtility.makePostRequest(status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), "", status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), "", status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), "", status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), "", status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), "", status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), "", status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), "", status().isCreated());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), "", status().isConflict());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), "", status().isConflict());
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isCreated());
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isConflict());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isCreated());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isConflict());
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isCreated());
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isConflict());
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isCreated());
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isConflict());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isConflict());
   }
 
   private void testUnauthorizedUsers() throws Exception {
     controllerUtility.makeGetRequest(status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePostRequest(status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(STAGED_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ACTIVE_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(SUSPENDED_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(LOCKED_OUT_USER_ID), "", status().isForbidden());
-    controllerUtility.makePostRequest(String.valueOf(ADMIN_USER_ID), "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isForbidden());
+    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
 
     controllerUtility.makeDeleteRequest(status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
 }

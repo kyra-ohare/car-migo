@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @ActiveProfiles("h2")
 public class PlatformUserControllerTest {
 
-  private static final String API_LEADING = "/v1/users/";
+  private static final String API_LEADING = "/v1/users";
   private static final String POST_PLATFORM_USER_VALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostPlatformUserValid.json");
   private static final String POST_PLATFORM_USER_INVALID_JSON =
@@ -46,12 +46,9 @@ public class PlatformUserControllerTest {
   private final static String ADMIN_USER = "admin@example.com";
   private static int ADMIN_USER_ID = 5;
 
-  @Autowired
-  private MockMvc mockMvc;
-  @Autowired
-  private PlatformUserRepository platformUserRepository;
-  @Autowired
-  private EntityManager entityManager;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private PlatformUserRepository platformUserRepository;
+  @Autowired private EntityManager entityManager;
 
   private ControllerUtility controllerUtility;
 
@@ -79,21 +76,19 @@ public class PlatformUserControllerTest {
   @WithUserDetails(ACTIVE_USER)
   public void testEndpointsWithActiveUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePatchRequest(String.valueOf(ACTIVE_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(ADMIN_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
+    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
     recreatePlatformUser(ACTIVE_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
 
   @Test
@@ -114,46 +109,39 @@ public class PlatformUserControllerTest {
   @WithUserDetails(ADMIN_USER)
   public void testEndpointsWithAdminUser() throws Exception {
     controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isOk());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isOk());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
 
     controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePatchRequest(String.valueOf(STAGED_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isAccepted());
-    controllerUtility.makePatchRequest(String.valueOf(ACTIVE_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isAccepted());
-    controllerUtility.makePatchRequest(String.valueOf(ACTIVE_USER_ID), PATCH_PLATFORM_USER_INVALID_JSON,
-        status().isBadRequest());
-    controllerUtility.makePatchRequest(String.valueOf(SUSPENDED_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isAccepted());
-    controllerUtility.makePatchRequest(String.valueOf(LOCKED_OUT_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isAccepted());
-    controllerUtility.makePatchRequest(String.valueOf(ADMIN_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isAccepted());
-    controllerUtility.makePatchRequest(String.valueOf(ADMIN_USER_ID), PATCH_PLATFORM_USER_INVALID_JSON,
-        status().isBadRequest());
+    controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePatchRequest("/" + SUSPENDED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("/" + LOCKED_OUT_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
     recreatePlatformUser(ADMIN_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
     recreatePlatformUser(STAGED_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
     recreatePlatformUser(ACTIVE_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
     recreatePlatformUser(SUSPENDED_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
     recreatePlatformUser(LOCKED_OUT_USER);
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isNoContent());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
     recreatePlatformUser(ADMIN_USER);
   }
 
@@ -164,32 +152,28 @@ public class PlatformUserControllerTest {
   }
 
   private void testUnauthorizedUsers(final ResultMatcher expectation) throws Exception {
-    controllerUtility.makeGetRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeGetRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, expectation);
-    controllerUtility.makePatchRequest(String.valueOf(STAGED_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
+    controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
+    controllerUtility.makePatchRequest("/" + SUSPENDED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/" + LOCKED_OUT_USER_ID, PATCH_PLATFORM_USER_VALID_JSON,
         status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(ACTIVE_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(ACTIVE_USER_ID), PATCH_PLATFORM_USER_INVALID_JSON, expectation);
-    controllerUtility.makePatchRequest(String.valueOf(SUSPENDED_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(LOCKED_OUT_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(ADMIN_USER_ID), PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest(String.valueOf(ADMIN_USER_ID), PATCH_PLATFORM_USER_INVALID_JSON, expectation);
+    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
 
     controllerUtility.makeDeleteRequest(status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(STAGED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ACTIVE_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(SUSPENDED_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(LOCKED_OUT_USER_ID), status().isForbidden());
-    controllerUtility.makeDeleteRequest(String.valueOf(ADMIN_USER_ID), status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
 
   private void recreatePlatformUser(final String email) {

@@ -20,7 +20,7 @@ public class ControllerUtility {
   }
 
   public void makeGetRequest(final ResultMatcher expectation) throws Exception {
-    makeGetRequest("profile", expectation);
+    makeGetRequest("/profile", expectation);
   }
 
   public void makeGetRequest(final String apiTrailing, final ResultMatcher expectation) throws Exception {
@@ -30,11 +30,11 @@ public class ControllerUtility {
   }
 
   public void makePostRequest(final ResultMatcher expectation) throws Exception {
-    makePostRequest("create", "", expectation);
+    makePostRequest("/create", "", expectation);
   }
 
   public void makePostRequest(final String content, final ResultMatcher expectation) throws Exception {
-    makePostRequest("create", content, expectation);
+    makePostRequest("/create", content, expectation);
   }
 
   public void makePostRequest(final String apiTrailing, final String content, final ResultMatcher expectation)
