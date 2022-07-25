@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS driver
         CONSTRAINT driver_pkey PRIMARY KEY,
     license_number VARCHAR(100),
     platform_user_id INT NOT NULL
-        CONSTRAINT platform_user_id_fkey REFERENCES platform_user
+        CONSTRAINT platform_user_id_fkey REFERENCES platform_user ON DELETE CASCADE
 );
 
 CREATE SEQUENCE IF NOT EXISTS driver_id_seq
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS passenger
     id INT NOT NULL
         CONSTRAINT passenger_pkey PRIMARY KEY,
     platform_user_id INT NOT NULL
-        CONSTRAINT platform_user_id_fkey_2 REFERENCES platform_user
+        CONSTRAINT platform_user_id_fkey_2 REFERENCES platform_user ON DELETE CASCADE
 );
 
 CREATE SEQUENCE IF NOT EXISTS passenger_id_seq
