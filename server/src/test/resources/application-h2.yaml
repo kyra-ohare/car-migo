@@ -15,6 +15,7 @@ spring:
       ddl-auto: none
   sql:
     init:
+      platform: h2
       data-locations: classpath:db/data-h2.sql
       schema-locations: classpath:db/schema-h2.sql
   h2:
@@ -30,5 +31,3 @@ logging:
           descriptor:
             sql:
               BasicBinder: DEBUG
-
-debug: false
