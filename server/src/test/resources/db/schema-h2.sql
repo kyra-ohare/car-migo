@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS platform_user
         CONSTRAINT user_access_status_id_fkey REFERENCES user_access_status
 );
 
-CREATE SEQUENCE IF NOT EXISTS platform_user_id_seq;
---    INCREMENT 1
---    START 6;
+CREATE SEQUENCE IF NOT EXISTS platform_user_id_seq
+    INCREMENT 1
+    START 6;
 
 CREATE TABLE IF NOT EXISTS driver
 (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS driver
 --        CONSTRAINT platform_user_id_fkey REFERENCES platform_user ON DELETE CASCADE
 );
 
-CREATE SEQUENCE IF NOT EXISTS driver_id_seq;
+--CREATE SEQUENCE IF NOT EXISTS driver_id_seq
 --    INCREMENT 1
 --    START 6;
 
@@ -46,6 +46,6 @@ CREATE TABLE IF NOT EXISTS passenger
 --        CONSTRAINT platform_user_id_fkey_2 REFERENCES platform_user ON DELETE CASCADE
 );
 
-CREATE SEQUENCE IF NOT EXISTS passenger_id_seq;
+--CREATE SEQUENCE IF NOT EXISTS passenger_id_seq
 --    INCREMENT 1
 --    START 6;
