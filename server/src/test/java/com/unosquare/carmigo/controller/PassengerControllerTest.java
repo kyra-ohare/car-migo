@@ -2,13 +2,18 @@ package com.unosquare.carmigo.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.unosquare.carmigo.entity.Passenger;
+import com.unosquare.carmigo.entity.PlatformUser;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.util.ControllerUtility;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -21,23 +26,50 @@ import org.springframework.test.web.servlet.MockMvc;
 public class PassengerControllerTest {
 
   private static final String API_LEADING = "/v1/passengers";
-  private final static String STAGED_USER = "staged@example.com";
-  private static final int STAGED_USER_ID = 1;
+  private static final String STAGED_USER = "staged@example.com";
+  private int STAGED_USER_ID = 1;
   private final static String ACTIVE_USER = "active@example.com";
-  private static final int ACTIVE_USER_ID = 2;
+  private int ACTIVE_USER_ID = 2;
   private final static String SUSPENDED_USER = "suspended@example.com";
-  private static final int SUSPENDED_USER_ID = 3;
+  private int SUSPENDED_USER_ID = 3;
   private final static String LOCKED_OUT_USER = "locked_out@example.com";
-  private static final int LOCKED_OUT_USER_ID = 4;
+  private int LOCKED_OUT_USER_ID = 4;
   private final static String ADMIN_USER = "admin@example.com";
-  private static final int ADMIN_USER_ID = 5;
+  private int ADMIN_USER_ID = 5;
 
   private ControllerUtility controllerUtility;
   @Autowired private MockMvc mockMvc;
+  @Autowired private PassengerRepository passengerRepository;
 
   @BeforeEach
   public void setUp() {
     controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
+
+    reassignEntityId(STAGED_USER_ID, STAGED_USER);
+    reassignEntityId(ACTIVE_USER_ID, ACTIVE_USER);
+    reassignEntityId(SUSPENDED_USER_ID, SUSPENDED_USER);
+    reassignEntityId(LOCKED_OUT_USER_ID, LOCKED_OUT_USER);
+    reassignEntityId(ADMIN_USER_ID, ADMIN_USER);
+  }
+
+  private void reassignEntityId(int id, final String email) {
+    final PlatformUser platformUser = new PlatformUser();
+    platformUser.setEmail(email);
+    final Passenger passenger = new Passenger();
+    passenger.setPlatformUser(platformUser);
+
+    ExampleMatcher ignoringExampleMatcher = ExampleMatcher.matchingAny()
+        .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
+        .withIgnorePaths("id");
+
+    Optional<Passenger> result = passengerRepository.findOne(Example.of(passenger, ignoringExampleMatcher));
+
+    if(result.isPresent()) {
+      id = result.get().getId();
+      System.err.printf("** %s id: %d **%n", email, id);
+    } else {
+      System.err.printf("** BAD NEWS --> %s **%n", email);
+    }
   }
 
   @Test
