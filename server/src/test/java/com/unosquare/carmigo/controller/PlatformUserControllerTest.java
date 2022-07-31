@@ -2,8 +2,12 @@ package com.unosquare.carmigo.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.unosquare.carmigo.entity.Driver;
+import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
+import com.unosquare.carmigo.repository.DriverRepository;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.util.ControllerUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -48,6 +52,8 @@ public class PlatformUserControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private PlatformUserRepository platformUserRepository;
+  @Autowired private DriverRepository driverRepository;
+  @Autowired private PassengerRepository passengerRepository;
   @Autowired private EntityManager entityManager;
 
   private ControllerUtility controllerUtility;
@@ -187,24 +193,50 @@ public class PlatformUserControllerTest {
     platformUser.setPhoneNumber("foo");
     switch (email) {
       case "staged@example.com":
-        platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, 1));
-        STAGED_USER_ID = platformUserRepository.save(platformUser).getId();
+        STAGED_USER_ID = reassignPlatformUserId(1, platformUser);
+        recreateDriver(STAGED_USER_ID, platformUser);
+        recreatePassenger(STAGED_USER_ID, platformUser);
         break;
       case "active@example.com":
-        platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, 2));
-        ACTIVE_USER_ID = platformUserRepository.save(platformUser).getId();
+        ACTIVE_USER_ID = reassignPlatformUserId(2, platformUser);
+        recreateDriver(ACTIVE_USER_ID, platformUser);
+        recreatePassenger(ACTIVE_USER_ID, platformUser);
         break;
       case "suspended@example.com":
-        platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, 3));
-        SUSPENDED_USER_ID = platformUserRepository.save(platformUser).getId();
+        SUSPENDED_USER_ID = reassignPlatformUserId(3, platformUser);
+        recreateDriver(SUSPENDED_USER_ID, platformUser);
+        recreatePassenger(SUSPENDED_USER_ID, platformUser);
         break;
       case "locked_out@example.com":
-        platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, 4));
-        LOCKED_OUT_USER_ID = platformUserRepository.save(platformUser).getId();
+        LOCKED_OUT_USER_ID = reassignPlatformUserId(4, platformUser);
+        recreateDriver(LOCKED_OUT_USER_ID, platformUser);
+        recreatePassenger(LOCKED_OUT_USER_ID, platformUser);
         break;
       case "admin@example.com":
-        platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, 5));
-        ADMIN_USER_ID = platformUserRepository.save(platformUser).getId();
+        ADMIN_USER_ID = reassignPlatformUserId(5, platformUser);
+        recreateDriver(ADMIN_USER_ID, platformUser);
+        recreatePassenger(ADMIN_USER_ID, platformUser);
     }
   }
+
+  private int reassignPlatformUserId(final int userAccessStatusId, final PlatformUser platformUser) {
+    platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, userAccessStatusId));
+    return platformUserRepository.save(platformUser).getId();
+  }
+
+  private void recreateDriver(final int id, final PlatformUser platformUser) {
+    final Driver driver = new Driver();
+    driver.setId(id);
+    driver.setLicenseNumber("11111");
+    driver.setPlatformUser(platformUser);
+    driverRepository.save(driver);
+  }
+
+  private void recreatePassenger(final int id, final PlatformUser platformUser) {
+    final Passenger passenger = new Passenger();
+    passenger.setId(id);
+    passenger.setPlatformUser(platformUser);
+    passengerRepository.save(passenger);
+  }
+
 }

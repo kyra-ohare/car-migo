@@ -7,6 +7,7 @@ import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.util.ControllerUtility;
 import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,15 @@ public class PassengerControllerTest {
 
   private static final String API_LEADING = "/v1/passengers";
   private static final String STAGED_USER = "staged@example.com";
-  private int STAGED_USER_ID = 1;
+  private int STAGED_USER_ID = 0;
   private final static String ACTIVE_USER = "active@example.com";
-  private int ACTIVE_USER_ID = 2;
+  private int ACTIVE_USER_ID = 0;
   private final static String SUSPENDED_USER = "suspended@example.com";
-  private int SUSPENDED_USER_ID = 3;
+  private int SUSPENDED_USER_ID = 0;
   private final static String LOCKED_OUT_USER = "locked_out@example.com";
-  private int LOCKED_OUT_USER_ID = 4;
+  private int LOCKED_OUT_USER_ID = 0;
   private final static String ADMIN_USER = "admin@example.com";
-  private int ADMIN_USER_ID = 5;
+  private int ADMIN_USER_ID = 0;
 
   private ControllerUtility controllerUtility;
   @Autowired private MockMvc mockMvc;
@@ -45,14 +46,14 @@ public class PassengerControllerTest {
   public void setUp() {
     controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
 
-    reassignEntityId(STAGED_USER_ID, STAGED_USER);
-    reassignEntityId(ACTIVE_USER_ID, ACTIVE_USER);
-    reassignEntityId(SUSPENDED_USER_ID, SUSPENDED_USER);
-    reassignEntityId(LOCKED_OUT_USER_ID, LOCKED_OUT_USER);
-    reassignEntityId(ADMIN_USER_ID, ADMIN_USER);
+    STAGED_USER_ID = reassignEntityId(STAGED_USER);
+    ACTIVE_USER_ID = reassignEntityId(ACTIVE_USER);
+    SUSPENDED_USER_ID = reassignEntityId(SUSPENDED_USER);
+    LOCKED_OUT_USER_ID = reassignEntityId(LOCKED_OUT_USER);
+    ADMIN_USER_ID = reassignEntityId(ADMIN_USER);
   }
 
-  private void reassignEntityId(int id, final String email) {
+  private int reassignEntityId(final String email) {
     final PlatformUser platformUser = new PlatformUser();
     platformUser.setEmail(email);
     final Passenger passenger = new Passenger();
@@ -64,12 +65,11 @@ public class PassengerControllerTest {
 
     Optional<Passenger> result = passengerRepository.findOne(Example.of(passenger, ignoringExampleMatcher));
 
-    if(result.isPresent()) {
-      id = result.get().getId();
-      System.err.printf("** %s id: %d **%n", email, id);
-    } else {
-      System.err.printf("** BAD NEWS --> %s **%n", email);
+    if (result.isEmpty()) {
+      throw new EntityNotFoundException();
     }
+    System.err.printf("** %s id: %d **%n", email, result.get().getId());
+    return result.get().getId();
   }
 
   @Test
