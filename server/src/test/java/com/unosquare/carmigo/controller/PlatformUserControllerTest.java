@@ -10,7 +10,6 @@ import com.unosquare.carmigo.util.ResourceUtility;
 import java.time.Instant;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +24,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-@Disabled
 public class PlatformUserControllerTest {
 
   private static final String API_LEADING = "/v1/users";
