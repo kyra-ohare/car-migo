@@ -28,21 +28,21 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @ActiveProfiles("h2")
 public class DriverControllerTest {
 
-  private String API_LEADING = "/v1/drivers";
-  private String POST_DRIVER_VALID_JSON =
+  private static final String API_LEADING = "/v1/drivers";
+  private static final String POST_DRIVER_VALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostDriverValid.json");
-  private String POST_DRIVER_INVALID_JSON =
+  private static final String POST_DRIVER_INVALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostDriverInvalid.json");
-  private final static String STAGED_USER = "staged@example.com";
-  private int STAGED_USER_ID = 0;
-  private final static String ACTIVE_USER = "active@example.com";
-  private int ACTIVE_USER_ID = 0;
-  private final static String SUSPENDED_USER = "suspended@example.com";
-  private int SUSPENDED_USER_ID = 0;
-  private final static String LOCKED_OUT_USER = "locked_out@example.com";
-  private int LOCKED_OUT_USER_ID = 0;
-  private final static String ADMIN_USER = "admin@example.com";
-  private int ADMIN_USER_ID = 0;
+  private static final String STAGED_USER = "staged@example.com";
+  private static int STAGED_USER_ID = 0;
+  private static final String ACTIVE_USER = "active@example.com";
+  private static int ACTIVE_USER_ID = 0;
+  private static final String SUSPENDED_USER = "suspended@example.com";
+  private static int SUSPENDED_USER_ID = 0;
+  private static final String LOCKED_OUT_USER = "locked_out@example.com";
+  private static int LOCKED_OUT_USER_ID = 0;
+  private static final String ADMIN_USER = "admin@example.com";
+  private static int ADMIN_USER_ID = 0;
 
   private ControllerUtility controllerUtility;
   @Autowired private MockMvc mockMvc;
@@ -57,25 +57,6 @@ public class DriverControllerTest {
     SUSPENDED_USER_ID = reassignEntityId(SUSPENDED_USER);
     LOCKED_OUT_USER_ID = reassignEntityId(LOCKED_OUT_USER);
     ADMIN_USER_ID = reassignEntityId(ADMIN_USER);
-  }
-
-  private int reassignEntityId(final String email) {
-    final PlatformUser platformUser = new PlatformUser();
-    platformUser.setEmail(email);
-    final Driver driver = new Driver();
-    driver.setPlatformUser(platformUser);
-
-    ExampleMatcher ignoringExampleMatcher = ExampleMatcher.matchingAny()
-        .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
-        .withIgnorePaths("id");
-
-    Optional<Driver> result = driverRepository.findOne(Example.of(driver, ignoringExampleMatcher));
-
-    if (result.isEmpty()) {
-      throw new EntityNotFoundException();
-    }
-    System.err.printf("** %s id: %d **%n", email, result.get().getId());
-    return result.get().getId();
   }
 
   @Test
@@ -193,5 +174,23 @@ public class DriverControllerTest {
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
+  }
+
+  private int reassignEntityId(final String email) {
+    final PlatformUser platformUser = new PlatformUser();
+    platformUser.setEmail(email);
+    final Driver driver = new Driver();
+    driver.setPlatformUser(platformUser);
+
+    ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
+        .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
+        .withIgnorePaths("id");
+
+    Optional<Driver> result = driverRepository.findOne(Example.of(driver, exampleMatcher));
+
+    if (result.isEmpty()) {
+      throw new EntityNotFoundException();
+    }
+    return result.get().getId();
   }
 }

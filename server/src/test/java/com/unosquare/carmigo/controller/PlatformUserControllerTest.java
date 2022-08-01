@@ -39,15 +39,15 @@ public class PlatformUserControllerTest {
       ResourceUtility.generateStringFromResource("jsonAssets/PatchPlatformUserValid.json");
   private static final String PATCH_PLATFORM_USER_INVALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PatchPlatformUserInvalid.json");
-  private final static String STAGED_USER = "staged@example.com";
+  private static final String STAGED_USER = "staged@example.com";
   private static int STAGED_USER_ID = 1;
-  private final static String ACTIVE_USER = "active@example.com";
+  private static final String ACTIVE_USER = "active@example.com";
   private static int ACTIVE_USER_ID = 2;
-  private final static String SUSPENDED_USER = "suspended@example.com";
+  private static final String SUSPENDED_USER = "suspended@example.com";
   private static int SUSPENDED_USER_ID = 3;
-  private final static String LOCKED_OUT_USER = "locked_out@example.com";
+  private static final String LOCKED_OUT_USER = "locked_out@example.com";
   private static int LOCKED_OUT_USER_ID = 4;
-  private final static String ADMIN_USER = "admin@example.com";
+  private static final String ADMIN_USER = "admin@example.com";
   private static int ADMIN_USER_ID = 5;
 
   @Autowired private MockMvc mockMvc;
@@ -92,7 +92,7 @@ public class PlatformUserControllerTest {
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    recreatePlatformUser(ACTIVE_USER);
+    recreateEntities(ACTIVE_USER);
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
@@ -133,22 +133,22 @@ public class PlatformUserControllerTest {
 
     controllerUtility.makeDeleteRequest(status().isNoContent());
     controllerUtility.makeDeleteRequest(status().isNotFound());
-    recreatePlatformUser(ADMIN_USER);
+    recreateEntities(ADMIN_USER);
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
-    recreatePlatformUser(STAGED_USER);
+    recreateEntities(STAGED_USER);
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
-    recreatePlatformUser(ACTIVE_USER);
+    recreateEntities(ACTIVE_USER);
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
-    recreatePlatformUser(SUSPENDED_USER);
+    recreateEntities(SUSPENDED_USER);
     controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
-    recreatePlatformUser(LOCKED_OUT_USER);
+    recreateEntities(LOCKED_OUT_USER);
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
-    recreatePlatformUser(ADMIN_USER);
+    recreateEntities(ADMIN_USER);
   }
 
   private void testUnauthorizedUsersUltra(final ResultMatcher expectation) throws Exception {
@@ -182,7 +182,41 @@ public class PlatformUserControllerTest {
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
   }
 
-  private void recreatePlatformUser(final String email) {
+  private void recreateEntities(final String email) {
+    switch (email) {
+      case "staged@example.com":
+        final PlatformUser stagedPlatformUser = recreatePlatformUser(1, email);
+        STAGED_USER_ID = stagedPlatformUser.getId();
+        recreateDriver(STAGED_USER_ID, stagedPlatformUser);
+        recreatePassenger(STAGED_USER_ID, stagedPlatformUser);
+        break;
+      case "active@example.com":
+        final PlatformUser activePlatformUser = recreatePlatformUser(2, email);
+        ACTIVE_USER_ID = activePlatformUser.getId();
+        recreateDriver(ACTIVE_USER_ID, activePlatformUser);
+        recreatePassenger(ACTIVE_USER_ID, activePlatformUser);
+        break;
+      case "suspended@example.com":
+        final PlatformUser suspendedPlatformUser = recreatePlatformUser(3, email);
+        SUSPENDED_USER_ID = suspendedPlatformUser.getId();
+        recreateDriver(SUSPENDED_USER_ID, suspendedPlatformUser);
+        recreatePassenger(SUSPENDED_USER_ID, suspendedPlatformUser);
+        break;
+      case "locked_out@example.com":
+        final PlatformUser lockedOutPlatformUser = recreatePlatformUser(4, email);
+        LOCKED_OUT_USER_ID = lockedOutPlatformUser.getId();
+        recreateDriver(LOCKED_OUT_USER_ID, lockedOutPlatformUser);
+        recreatePassenger(LOCKED_OUT_USER_ID, lockedOutPlatformUser);
+        break;
+      case "admin@example.com":
+        final PlatformUser adminPlatformUser = recreatePlatformUser(5, email);
+        ADMIN_USER_ID = adminPlatformUser.getId();
+        recreateDriver(ADMIN_USER_ID, adminPlatformUser);
+        recreatePassenger(ADMIN_USER_ID, adminPlatformUser);
+    }
+  }
+
+  private PlatformUser recreatePlatformUser(final int userAccessStatusId, final String email) {
     final PlatformUser platformUser = new PlatformUser();
     platformUser.setCreatedDate(Instant.now());
     platformUser.setFirstName("Foo");
@@ -191,37 +225,8 @@ public class PlatformUserControllerTest {
     platformUser.setEmail(email);
     platformUser.setPassword("foo");
     platformUser.setPhoneNumber("foo");
-    switch (email) {
-      case "staged@example.com":
-        STAGED_USER_ID = reassignPlatformUserId(1, platformUser);
-        recreateDriver(STAGED_USER_ID, platformUser);
-        recreatePassenger(STAGED_USER_ID, platformUser);
-        break;
-      case "active@example.com":
-        ACTIVE_USER_ID = reassignPlatformUserId(2, platformUser);
-        recreateDriver(ACTIVE_USER_ID, platformUser);
-        recreatePassenger(ACTIVE_USER_ID, platformUser);
-        break;
-      case "suspended@example.com":
-        SUSPENDED_USER_ID = reassignPlatformUserId(3, platformUser);
-        recreateDriver(SUSPENDED_USER_ID, platformUser);
-        recreatePassenger(SUSPENDED_USER_ID, platformUser);
-        break;
-      case "locked_out@example.com":
-        LOCKED_OUT_USER_ID = reassignPlatformUserId(4, platformUser);
-        recreateDriver(LOCKED_OUT_USER_ID, platformUser);
-        recreatePassenger(LOCKED_OUT_USER_ID, platformUser);
-        break;
-      case "admin@example.com":
-        ADMIN_USER_ID = reassignPlatformUserId(5, platformUser);
-        recreateDriver(ADMIN_USER_ID, platformUser);
-        recreatePassenger(ADMIN_USER_ID, platformUser);
-    }
-  }
-
-  private int reassignPlatformUserId(final int userAccessStatusId, final PlatformUser platformUser) {
     platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, userAccessStatusId));
-    return platformUserRepository.save(platformUser).getId();
+    return platformUserRepository.save(platformUser);
   }
 
   private void recreateDriver(final int id, final PlatformUser platformUser) {
@@ -238,5 +243,4 @@ public class PlatformUserControllerTest {
     passenger.setPlatformUser(platformUser);
     passengerRepository.save(passenger);
   }
-
 }

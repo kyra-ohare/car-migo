@@ -23,11 +23,11 @@ spring:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org:
       hibernate:
         SQL: DEBUG
         type:
           descriptor:
             sql:
-              BasicBinder: DEBUG
+              BasicBinder: TRACE
