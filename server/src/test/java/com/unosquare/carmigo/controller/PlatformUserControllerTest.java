@@ -13,6 +13,7 @@ import com.unosquare.carmigo.util.ControllerUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
 import java.time.Instant;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,35 +186,31 @@ public class PlatformUserControllerTest {
   private void recreateEntities(final String email) {
     switch (email) {
       case "staged@example.com":
-        final PlatformUser stagedPlatformUser = recreatePlatformUser(1, email);
-        STAGED_USER_ID = stagedPlatformUser.getId();
-        recreateDriver(STAGED_USER_ID, stagedPlatformUser);
-        recreatePassenger(STAGED_USER_ID, stagedPlatformUser);
+        STAGED_USER_ID = recreateEntitiesAndReturnNewId(1, email);
         break;
       case "active@example.com":
-        final PlatformUser activePlatformUser = recreatePlatformUser(2, email);
-        ACTIVE_USER_ID = activePlatformUser.getId();
-        recreateDriver(ACTIVE_USER_ID, activePlatformUser);
-        recreatePassenger(ACTIVE_USER_ID, activePlatformUser);
+        ACTIVE_USER_ID = recreateEntitiesAndReturnNewId(2, email);
         break;
       case "suspended@example.com":
-        final PlatformUser suspendedPlatformUser = recreatePlatformUser(3, email);
-        SUSPENDED_USER_ID = suspendedPlatformUser.getId();
-        recreateDriver(SUSPENDED_USER_ID, suspendedPlatformUser);
-        recreatePassenger(SUSPENDED_USER_ID, suspendedPlatformUser);
+        SUSPENDED_USER_ID = recreateEntitiesAndReturnNewId(3, email);
         break;
       case "locked_out@example.com":
-        final PlatformUser lockedOutPlatformUser = recreatePlatformUser(4, email);
-        LOCKED_OUT_USER_ID = lockedOutPlatformUser.getId();
-        recreateDriver(LOCKED_OUT_USER_ID, lockedOutPlatformUser);
-        recreatePassenger(LOCKED_OUT_USER_ID, lockedOutPlatformUser);
+        LOCKED_OUT_USER_ID = recreateEntitiesAndReturnNewId(4, email);
         break;
       case "admin@example.com":
-        final PlatformUser adminPlatformUser = recreatePlatformUser(5, email);
-        ADMIN_USER_ID = adminPlatformUser.getId();
-        recreateDriver(ADMIN_USER_ID, adminPlatformUser);
-        recreatePassenger(ADMIN_USER_ID, adminPlatformUser);
+        ADMIN_USER_ID = recreateEntitiesAndReturnNewId(5, email);
+        break;
+      default:
+        throw new EntityNotFoundException(String.format("Not possible to create entity for %s", email));
     }
+  }
+
+  private int recreateEntitiesAndReturnNewId(final int userAccessStatusId, final String email) {
+    final PlatformUser platformUser = recreatePlatformUser(userAccessStatusId, email);
+    final int newId = platformUser.getId();
+    recreateDriver(newId, platformUser);
+    recreatePassenger(newId, platformUser);
+    return newId;
   }
 
   private PlatformUser recreatePlatformUser(final int userAccessStatusId, final String email) {
