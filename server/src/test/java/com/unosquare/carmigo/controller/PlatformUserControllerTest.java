@@ -184,33 +184,41 @@ public class PlatformUserControllerTest {
   }
 
   private void recreateEntities(final String email) {
+    final PlatformUser platformUser;
     switch (email) {
       case "staged@example.com":
-        STAGED_USER_ID = recreateEntitiesAndReturnNewId(1, email);
+        platformUser = recreatePlatformUser(1, email);
+        recreateDriver(platformUser);
+        recreatePassenger(platformUser);
+        STAGED_USER_ID = platformUser.getId();
         break;
       case "active@example.com":
-        ACTIVE_USER_ID = recreateEntitiesAndReturnNewId(2, email);
+        platformUser = recreatePlatformUser(2, email);
+        recreateDriver(platformUser);
+        recreatePassenger(platformUser);
+        ACTIVE_USER_ID = platformUser.getId();
         break;
       case "suspended@example.com":
-        SUSPENDED_USER_ID = recreateEntitiesAndReturnNewId(3, email);
+        platformUser = recreatePlatformUser(3, email);
+        recreateDriver(platformUser);
+        recreatePassenger(platformUser);
+        SUSPENDED_USER_ID = platformUser.getId();
         break;
       case "locked_out@example.com":
-        LOCKED_OUT_USER_ID = recreateEntitiesAndReturnNewId(4, email);
+        platformUser = recreatePlatformUser(4, email);
+        recreateDriver(platformUser);
+        recreatePassenger(platformUser);
+        LOCKED_OUT_USER_ID = platformUser.getId();
         break;
       case "admin@example.com":
-        ADMIN_USER_ID = recreateEntitiesAndReturnNewId(5, email);
+        platformUser = recreatePlatformUser(5, email);
+        recreateDriver(platformUser);
+        recreatePassenger(platformUser);
+        ADMIN_USER_ID = platformUser.getId();
         break;
       default:
         throw new EntityNotFoundException(String.format("Not possible to create entity for %s", email));
     }
-  }
-
-  private int recreateEntitiesAndReturnNewId(final int userAccessStatusId, final String email) {
-    final PlatformUser platformUser = recreatePlatformUser(userAccessStatusId, email);
-    final int newId = platformUser.getId();
-    recreateDriver(newId, platformUser);
-    recreatePassenger(newId, platformUser);
-    return newId;
   }
 
   private PlatformUser recreatePlatformUser(final int userAccessStatusId, final String email) {
@@ -226,17 +234,17 @@ public class PlatformUserControllerTest {
     return platformUserRepository.save(platformUser);
   }
 
-  private void recreateDriver(final int id, final PlatformUser platformUser) {
+  private void recreateDriver(final PlatformUser platformUser) {
     final Driver driver = new Driver();
-    driver.setId(id);
+    driver.setId(platformUser.getId());
     driver.setLicenseNumber("11111");
     driver.setPlatformUser(platformUser);
     driverRepository.save(driver);
   }
 
-  private void recreatePassenger(final int id, final PlatformUser platformUser) {
+  private void recreatePassenger(final PlatformUser platformUser) {
     final Passenger passenger = new Passenger();
-    passenger.setId(id);
+    passenger.setId(platformUser.getId());
     passenger.setPlatformUser(platformUser);
     passengerRepository.save(passenger);
   }
