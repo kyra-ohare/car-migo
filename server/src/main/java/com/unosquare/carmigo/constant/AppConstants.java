@@ -8,6 +8,8 @@ public interface AppConstants {
       "following: Alphanumeric characters, one special character ( " + SPECIAL_CHARACTERS + " ), " +
       "one capital letter.";
 
+  int ALIAS_CURRENT_USER = 0;
+
   String ACTIVE = "ACTIVE";
   String ADMIN = "ADMIN";
   String DEV = "DEV";
@@ -15,5 +17,5 @@ public interface AppConstants {
   String STAGED = "STAGED";
   String SUSPENDED = "SUSPENDED";
 
-  String NOT_PERMITTED = "Not permitted";
+  String NOT_PERMITTED = "Not permitted.";
 }

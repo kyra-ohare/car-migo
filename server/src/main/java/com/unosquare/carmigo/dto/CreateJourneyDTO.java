@@ -13,6 +13,4 @@ public class CreateJourneyDTO {
   private int maxPassengers;
 
   private Instant dateTime;
-
-  private int driverId;
 }
