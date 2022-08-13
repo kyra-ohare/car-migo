@@ -1,41 +1,29 @@
 package com.unosquare.carmigo.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.flextrade.jfixture.FixtureAnnotations;
-import com.flextrade.jfixture.JFixture;
-import com.flextrade.jfixture.annotations.Fixture;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.dto.GrabJourneyDTO;
-import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
-import com.unosquare.carmigo.model.response.JourneyDriverViewModel;
-import com.unosquare.carmigo.service.JourneyService;
+import com.unosquare.carmigo.util.ControllerUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.ResultMatcher;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("h2")
 public class JourneyControllerTest {
 
-  private static final String API_LEADING = "/v1/journeys/";
+  private static final String API_LEADING = "/v1/journeys";
   private static final String POST_JOURNEY_VALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostJourneyValid.json");
   private static final String POST_JOURNEY_INVALID_JSON =
@@ -44,152 +32,51 @@ public class JourneyControllerTest {
       ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyValid.json");
   private static final String PATCH_JOURNEY_INVALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyInvalid.json");
+  private static final String STAGED_USER = "staged@example.com";
+  private static final String ACTIVE_USER = "active@example.com";
+  private static final String SUSPENDED_USER = "suspended@example.com";
+  private static final String LOCKED_OUT_USER = "locked_out@example.com";
+  private static final String ADMIN_USER = "admin@example.com";
 
-  private MockMvc mockMvc;
-
-  @Mock private ModelMapper modelMapperMock;
-  @Mock private JourneyService journeyServiceMock;
-
-  @Fixture private GrabJourneyDTO grabJourneyDTOFixture;
-  @Fixture private JourneyDriverViewModel journeyViewModelFixture;
-  @Fixture private List<GrabJourneyDTO> grabJourneyDTOList;
+  @Autowired private MockMvc mockMvc;
+  private ControllerUtility controllerUtility;
 
   @BeforeEach
   public void setUp() throws Exception {
-    final JFixture jFixture = new JFixture();
-    jFixture.customise().circularDependencyBehaviour().omitSpecimen();
-    FixtureAnnotations.initFixtures(this, jFixture);
-
-    mockMvc = MockMvcBuilders.standaloneSetup(new JourneyController(modelMapperMock, journeyServiceMock)).build();
+    controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
   }
 
   @Test
-  public void get_Journey_By_Id_Returns_HttpStatus_Ok() throws Exception {
-    when(journeyServiceMock.getJourneyById(anyInt())).thenReturn(grabJourneyDTOFixture);
-    when(modelMapperMock.map(grabJourneyDTOFixture, JourneyDriverViewModel.class)).thenReturn(journeyViewModelFixture);
-
-    mockMvc.perform(get(API_LEADING + anyInt())
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
+  @WithAnonymousUser
+  public void testSearchJourneysWithAnonymousUser() throws Exception {
+    mockMvc.perform(get(API_LEADING + "/search")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("locationIdFrom", "1")
+            .param("locationIdTo", "2")
+            .param("dateTimeFrom", "2021-11-30T09:00:00Z")
+            .param("dateTimeTo", "2023-12-01T09:00:00Z"))
         .andExpect(status().isOk());
-    verify(journeyServiceMock).getJourneyById(anyInt());
-  }
 
-  @Test
-  public void get_Journey_By_Id_Returns_HttpStatus_MethodNotAllowed() throws Exception {
-    mockMvc.perform(get(API_LEADING)
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isMethodNotAllowed());
-    verify(journeyServiceMock, times(0)).getJourneyById(anyInt());
-  }
-
-  @Test
-  public void search_Journeys_Returns_HttpStatus_Ok() throws Exception {
     mockMvc.perform(get(API_LEADING + "/search")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("locationIdFrom", "1")
             .param("locationIdTo", "2")
             .param("dateTimeFrom", "2022-12-01T09:00:00Z")
             .param("dateTimeTo", "2023-12-01T09:00:00Z"))
-        .andExpect(status().isOk());
-    verify(journeyServiceMock).searchJourneys(any());
-  }
+        .andExpect(status().isNotFound());
 
-  @Test
-  public void search_Journeys_Returns_HttpStatus_BadRequest() throws Exception {
     mockMvc.perform(get(API_LEADING + "/search")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("locationIdFrom", "1")
             .param("locationIdTo", "2"))
         .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).searchJourneys(any());
+
+    testUnauthorizedUsers(status().isForbidden());
   }
 
   @Test
-  public void get_Journeys_By_Driver_Id_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(get(API_LEADING + "/drivers/" + anyInt())
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk());
-    verify(journeyServiceMock).getJourneysByDriverId(anyInt());
-  }
-
-  @Test
-  public void get_Journeys_By_Driver_Id_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(get(API_LEADING + "/drivers/")
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).getJourneysByDriverId(anyInt());
-  }
-
-  @Test
-  public void get_Journeys_By_Passenger_Id_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(get(API_LEADING + "/passengers/" + anyInt())
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk());
-    verify(journeyServiceMock).getJourneysByPassengersId(anyInt());
-  }
-
-  @Test
-  public void get_Journeys_By_Passenger_Id_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(get(API_LEADING + "/passengers/")
-            .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).getJourneysByPassengersId(anyInt());
-  }
-
-  @Test
-  public void post_Journey_Returns_HttpStatus_Created() throws Exception {
-    mockMvc.perform(post(API_LEADING)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(POST_JOURNEY_VALID_JSON))
-        .andExpect(status().isCreated());
-    verify(journeyServiceMock).createJourney(any());
-  }
-
-  @Test
-  public void post_Journey_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(post(API_LEADING)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(POST_JOURNEY_INVALID_JSON))
-        .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).createJourney(any());
-  }
-
-  @Test
-  public void patch_Journey_Returns_HttpStatus_Ok() throws Exception {
-    mockMvc.perform(patch(API_LEADING + "1")
-            .contentType("application/json-patch+json")
-            .content(PATCH_JOURNEY_VALID_JSON))
-        .andExpect(status().isOk());
-    verify(journeyServiceMock).patchJourney(anyInt(), any(JsonPatch.class));
-  }
-
-  @Test
-  public void patch_Journey_Returns_HttpStatus_BadRequest() throws Exception {
-    mockMvc.perform(patch(API_LEADING + "1")
-            .contentType("application/json-patch+json")
-            .content(PATCH_JOURNEY_INVALID_JSON))
-        .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).patchJourney(anyInt(), any(JsonPatch.class));
-  }
-
-  @Test
-  public void delete_Journey_Returns_HttpStatus_No_Content() throws Exception {
-    doNothing().when(journeyServiceMock).deleteJourneyById(anyInt());
-    mockMvc.perform(delete(API_LEADING + anyInt()))
-        .andExpect(status().isNoContent());
-    verify(journeyServiceMock).deleteJourneyById(anyInt());
-  }
-
-  @Test
-  public void delete_PassengerJourney_Returns_HttpStatus_No_Content() throws Exception {
-    doNothing().when(journeyServiceMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
-    mockMvc.perform(delete(API_LEADING + "1/passengers/1"))
-        .andExpect(status().isNoContent());
-    verify(journeyServiceMock).deleteByJourneyIdAndPassengerId(anyInt(), anyInt());
-  }
-
-  @Test
-  public void calculate_Distance_Returns_HttpStatus_Ok() throws Exception {
+  @WithAnonymousUser
+  public void testCalculateDistanceWithAnonymousUser() throws Exception {
     mockMvc.perform(get(API_LEADING + "/calculateDistance")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("locationFrom", "Belfast")
@@ -197,16 +84,135 @@ public class JourneyControllerTest {
             .param("locationTo", "Newry")
             .param("countryTo", "GBR"))
         .andExpect(status().isOk());
-    verify(journeyServiceMock).calculateDistance(any(CreateCalculateDistanceCriteria.class));
-  }
 
-  @Test
-  public void calculate_Distance_Returns_HttpStatus_BadRequest() throws Exception {
     mockMvc.perform(get(API_LEADING + "/calculateDistance")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("locationFrom", "Belfast")
             .param("countryFrom", "GBR"))
         .andExpect(status().isBadRequest());
-    verify(journeyServiceMock, times(0)).calculateDistance(any(CreateCalculateDistanceCriteria.class));
+
+    testUnauthorizedUsers(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(STAGED_USER)
+  public void testEndpointsWithStagedUser() throws Exception {
+    testUnauthorizedUsers(status().isBadRequest());
+  }
+
+  @Test
+  @WithUserDetails(ACTIVE_USER)
+  public void testEndpointsWithActiveUser() throws Exception {
+    controllerUtility.makeGetRequest("/foo", status().isBadRequest());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isOk());
+    controllerUtility.makeGetRequest("/drivers/1", status().isForbidden());
+    controllerUtility.makeGetRequest("/passengers/my-journeys", status().isOk());
+    controllerUtility.makeGetRequest("/passengers/1", status().isForbidden());
+    controllerUtility.makePostRequest("", POST_JOURNEY_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/1/add-passenger", "", status().isConflict());
+    controllerUtility.makePostRequest("/2/add-passenger", "", status().isOk());
+    controllerUtility.makePostRequest("/2/add-passenger", "", status().isConflict());
+    controllerUtility.makeDeleteRequest("/2/remove-passenger", status().isOk());
+    controllerUtility.makeDeleteRequest("/2/remove-passenger", status().isNotFound());
+    controllerUtility.makePostRequest("/1/add-passenger/1", "", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/1/remove-passenger/1", status().isForbidden());
+    controllerUtility.makePatchRequest("/3", PATCH_JOURNEY_VALID_JSON, status().isOk());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makeDeleteRequest("/1", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/6", status().isNoContent());
+    controllerUtility.makeDeleteRequest("/6", status().isNotFound());
+  }
+
+  @Test
+  @WithUserDetails(SUSPENDED_USER)
+  public void testEndpointsWithSuspendedUser() throws Exception {
+    controllerUtility.makeGetRequest("/foo", status().isBadRequest());
+    controllerUtility.makeGetRequest("/1", status().isForbidden());
+    controllerUtility.makeGetRequest("/3", status().isForbidden());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isOk());
+    controllerUtility.makeGetRequest("/drivers/1", status().isForbidden());
+    controllerUtility.makeGetRequest("/passengers/my-journeys", status().isOk());
+    controllerUtility.makeGetRequest("/passengers/1", status().isForbidden());
+    controllerUtility.makePostRequest("", POST_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/1/add-passenger", "", status().isForbidden());
+    controllerUtility.makePostRequest("/3/add-passenger", "", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/1/remove-passenger", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isForbidden());
+    controllerUtility.makePostRequest("/1/add-passenger/3", "", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/1/remove-passenger/3", status().isForbidden());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/4", PATCH_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makeDeleteRequest("/4", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/5", status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(LOCKED_OUT_USER)
+  public void testEndpointsWithLockedOutUser() throws Exception {
+    testUnauthorizedUsers(status().isBadRequest());
+  }
+
+  @Test
+  @WithUserDetails(ADMIN_USER)
+  public void testEndpointsWithAdminUser() throws Exception {
+    controllerUtility.makeGetRequest("/foo", status().isBadRequest());
+    controllerUtility.makeGetRequest("/1", status().isOk());
+    controllerUtility.makeGetRequest("/2", status().isOk());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isNotFound());
+    controllerUtility.makeGetRequest("/drivers/1", status().isOk());
+    controllerUtility.makeGetRequest("/drivers/2", status().isOk());
+    controllerUtility.makeGetRequest("/passengers/my-journeys", status().isOk());
+    controllerUtility.makeGetRequest("/passengers/1", status().isOk());
+    controllerUtility.makeGetRequest("/passengers/2", status().isOk());
+    controllerUtility.makePostRequest("", POST_JOURNEY_VALID_JSON, status().isCreated());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isOk());
+    controllerUtility.makePostRequest("", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/2/add-passenger", "", status().isConflict());
+    controllerUtility.makePostRequest("/3/add-passenger", "", status().isOk());
+    controllerUtility.makePostRequest("/3/add-passenger", "", status().isConflict());
+    controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isOk());
+    controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isNotFound());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_VALID_JSON, status().isOk());
+    controllerUtility.makePatchRequest("/3", PATCH_JOURNEY_VALID_JSON, status().isOk());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makeDeleteRequest("/5", status().isNoContent());
+    controllerUtility.makeDeleteRequest("/5", status().isNotFound());
+    controllerUtility.makeDeleteRequest("/7", status().isNoContent());
+    controllerUtility.makeDeleteRequest("/7", status().isNotFound());
+  }
+
+  private void testUnauthorizedUsers(final ResultMatcher expectation) throws Exception {
+    controllerUtility.makeGetRequest("/foo", expectation);
+    controllerUtility.makeGetRequest("/1", status().isForbidden());
+    controllerUtility.makeGetRequest("/3", status().isForbidden());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isForbidden());
+    controllerUtility.makeGetRequest("/drivers/1", status().isForbidden());
+    controllerUtility.makeGetRequest("/passengers/my-journeys", status().isForbidden());
+    controllerUtility.makeGetRequest("/passengers/1", status().isForbidden());
+    controllerUtility.makePostRequest("", POST_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("", POST_JOURNEY_INVALID_JSON, expectation);
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, expectation);
+    controllerUtility.makePostRequest("/1/add-passenger", "", status().isForbidden());
+    controllerUtility.makePostRequest("/3/add-passenger", "", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/1/remove-passenger", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isForbidden());
+    controllerUtility.makePostRequest("/1/add-passenger/3", "", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/1/remove-passenger/3", status().isForbidden());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/4", PATCH_JOURNEY_VALID_JSON, status().isForbidden());
+    controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_INVALID_JSON, expectation);
+    controllerUtility.makeDeleteRequest("/4", status().isForbidden());
+    controllerUtility.makeDeleteRequest("/5", status().isForbidden());
   }
 }

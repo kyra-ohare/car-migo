@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -45,7 +46,9 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.FORBIDDEN, exception.getMessage());
   }
 
-  @ExceptionHandler({HttpMessageNotReadableException.class})
+  @ExceptionHandler({
+      HttpMessageNotReadableException.class,
+      BindException.class})
   public ResponseEntity<ErrorResponse> handleBadRequestException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());
   }

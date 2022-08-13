@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -46,7 +45,6 @@ public class JourneyController {
 
   @GetMapping(value = "/{journeyId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<JourneyDriverViewModel> getJourneyById(@PathVariable final int journeyId) {
     final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(journeyId);
     final JourneyDriverViewModel journeyDriverViewModel = modelMapper.map(grabJourneyDTO, JourneyDriverViewModel.class);
@@ -54,7 +52,6 @@ public class JourneyController {
   }
 
   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<List<JourneyDriverViewModel>> searchJourneys(
       @Valid final CreateSearchJourneysCriteria createSearchJourneysCriteria) {
     final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(createSearchJourneysCriteria);
@@ -65,35 +62,30 @@ public class JourneyController {
 
   @GetMapping(value = "/drivers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<List<JourneyPassengerViewModel>> getJourneysByCurrentDriver() {
     return ResponseEntity.ok(getJourneysByDriver(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<List<JourneyPassengerViewModel>> getJourneysByDriverId(@PathVariable final int driverId) {
     return ResponseEntity.ok(getJourneysByDriver(driverId));
   }
 
   @GetMapping(value = "/passengers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByCurrentPassenger() {
     return ResponseEntity.ok(getJourneysByPassenger(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/passengers/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<List<JourneyDriverViewModel>> getJourneysByPassengerId(@PathVariable final int passengerId) {
     return ResponseEntity.ok(getJourneysByPassenger(passengerId));
   }
 
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<JourneyDriverViewModel> createJourney(
       @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModel) {
     return new ResponseEntity<>(createJourney(ALIAS_CURRENT_USER, createJourneyViewModel), HttpStatus.CREATED);
@@ -101,7 +93,6 @@ public class JourneyController {
 
   @PostMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<JourneyDriverViewModel> createJourneyByDriverId(
       @PathVariable final int driverId, @Valid @RequestBody final CreateJourneyViewModel createJourneyViewModel) {
     return new ResponseEntity<>(createJourney(driverId, createJourneyViewModel), HttpStatus.CREATED);
@@ -109,14 +100,12 @@ public class JourneyController {
 
   @PostMapping(value = "/{journeyId}/add-passenger", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<JourneyDriverViewModel> addCurrentPassengerToJourney(@PathVariable final int journeyId) {
     return ResponseEntity.ok(addPassengerToJourney(journeyId, ALIAS_CURRENT_USER));
   }
 
   @PostMapping(value = "/{journeyId}/add-passenger/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<JourneyDriverViewModel> addPassengerToThisJourney(
       @PathVariable final int journeyId, @PathVariable final int passengerId) {
     return ResponseEntity.ok(addPassengerToJourney(journeyId, passengerId));
@@ -124,7 +113,6 @@ public class JourneyController {
 
   @PatchMapping(value = "/{journeyId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<JourneyDriverViewModel> patchJourney(
       @PathVariable final int journeyId, @Valid @RequestBody final JsonPatch patch) {
     final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, patch);
@@ -134,7 +122,6 @@ public class JourneyController {
 
   @DeleteMapping(value = "/{journeyId}")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<?> deleteJourney(@PathVariable final int journeyId) {
     journeyService.deleteJourneyById(journeyId);
     return ResponseEntity.noContent().build();
@@ -142,15 +129,13 @@ public class JourneyController {
 
   @DeleteMapping(value = "{journeyId}/remove-passenger")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<?> removeCurrentPassengerFromJourney(@PathVariable final int journeyId) {
     removePassengerFromJourney(journeyId, ALIAS_CURRENT_USER);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping(value = "{journeyId}/remove-passenger/{passengerId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<?> removePassengerFromThisJourney(@PathVariable final int journeyId,
       @PathVariable final int passengerId) {
     removePassengerFromJourney(journeyId, passengerId);
@@ -158,7 +143,6 @@ public class JourneyController {
   }
 
   @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<DistanceViewModel> calculateDistance(@Valid final CreateCalculateDistanceCriteria criteria) {
     final GrabDistanceDTO grabDistanceDTO = journeyService.calculateDistance(criteria);
     final DistanceViewModel distanceViewModel = modelMapper.map(grabDistanceDTO, DistanceViewModel.class);
