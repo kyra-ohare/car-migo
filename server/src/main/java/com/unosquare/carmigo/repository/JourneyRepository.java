@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JourneyRepository extends JpaRepository<Journey, Integer> {
 
-  List<Journey> findJourneysByDriverId(final int id);
+  List<Journey> findJourneysByDriverId(final int driverId);
 
-  List<Journey> findJourneysByPassengersId(final int id);
+  List<Journey> findJourneysByPassengersId(final int passengerId);
 
   List<Journey> findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
       final int locationIdFrom, final int locationIdTo, final Instant dateTimeFrom, final Instant dateTimeTo);

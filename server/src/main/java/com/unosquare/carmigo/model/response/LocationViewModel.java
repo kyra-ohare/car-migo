@@ -10,9 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LocationViewModel {
 
-  @JsonProperty("id")
   private int id;
 
-  @JsonProperty("description")
   private String description;
 }

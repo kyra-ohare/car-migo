@@ -51,8 +51,8 @@ public class JourneyService {
   private final AppUser appUser;
   private final PassengerService passengerService;
 
-  public GrabJourneyDTO getJourneyById(final int id) {
-    return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
+  public GrabJourneyDTO getJourneyById(final int journeyId) {
+    return modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
   }
 
   public List<GrabJourneyDTO> searchJourneys(final CreateSearchJourneysCriteria createSearchJourneysCriteria) {
@@ -62,36 +62,39 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
     }
+    hidePassengerAndMaybeDriverFields(true, result);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByDriverId(final int id) {
-    final List<Journey> result = journeyRepository.findJourneysByDriverId(id);
+  public List<GrabJourneyDTO> getJourneysByDriverId(final int driverId) {
+    final List<Journey> result = journeyRepository.findJourneysByDriverId(driverId);
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this driver.");
     }
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByPassengersId(final int id) {
-    final List<Journey> result = journeyRepository.findJourneysByPassengersId(id);
+  public List<GrabJourneyDTO> getJourneysByPassengersId(final int passengerId) {
+    final List<Journey> result = journeyRepository.findJourneysByPassengersId(passengerId);
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this passenger.");
     }
+    hidePassengerAndMaybeDriverFields(false, result);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public GrabJourneyDTO createJourney(final int id, final CreateJourneyDTO createJourneyDTO) {
+  public GrabJourneyDTO createJourney(final int driverId, final CreateJourneyDTO createJourneyDTO) {
     final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);
     journey.setCreatedDate(Instant.now());
     journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
     journey.setLocationTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
-    journey.setDriver(entityManager.getReference(Driver.class, id));
-    return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
+    journey.setDriver(entityManager.getReference(Driver.class, driverId));
+    final Journey savedJourney = journeyRepository.save(journey);
+    savedJourney.setDriver(null);
+    return modelMapper.map(savedJourney, GrabJourneyDTO.class);
   }
 
-  public GrabJourneyDTO addPassengerToJourney(final int journeyId, final int passengerId) {
-    verifyUserAuthorization(passengerId);
+  public void addPassengerToJourney(final int journeyId, final int passengerId) {
     final Journey journey = findJourneyById(journeyId);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
@@ -106,7 +109,7 @@ public class JourneyService {
     final Passenger passenger = passengerService.findPassengerById(passengerId);
     passengers.add(passenger);
     journey.setPassengers(passengers);
-    return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
+    journeyRepository.save(journey);
   }
 
   public GrabJourneyDTO patchJourney(final int journeyId, final JsonPatch patch) {
@@ -133,7 +136,6 @@ public class JourneyService {
     final List<Passenger> passengers = journey.getPassengers();
     for (Passenger p : passengers) {
       if (p.getId() == passengerId) {
-        verifyUserAuthorization(passengerId);
         passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
         return;
       }
@@ -155,6 +157,15 @@ public class JourneyService {
   private void verifyUserAuthorization(final int userId) {
     if (!(appUser.get().getId() == userId || appUser.get().getUserAccessStatus().equals(ADMIN))) {
       throw new UnauthorizedException(NOT_PERMITTED);
+    }
+  }
+
+  private void hidePassengerAndMaybeDriverFields(final boolean hideDriver, final List<Journey> journeys) {
+    for (final Journey j : journeys) {
+      j.setPassengers(null);
+      if (hideDriver) {
+        j.setDriver(null);
+      }
     }
   }
 
