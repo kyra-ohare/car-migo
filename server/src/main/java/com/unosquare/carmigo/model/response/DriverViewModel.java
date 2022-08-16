@@ -10,10 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DriverViewModel {
 
-  @JsonProperty("id")
   private int id;
 
-  @JsonProperty("licenseNumber")
   private String licenseNumber;
 
   @JsonProperty("user")

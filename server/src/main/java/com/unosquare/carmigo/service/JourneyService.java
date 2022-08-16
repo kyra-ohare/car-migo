@@ -145,7 +145,7 @@ public class JourneyService {
 
   public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
     final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
-    DistanceHolder distanceHolder = distanceApi.getDistance(request);
+    final DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderToGrabDistanceDto(distanceHolder);
   }
 
