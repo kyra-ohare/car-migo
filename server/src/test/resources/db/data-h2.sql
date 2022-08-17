@@ -53,6 +53,12 @@ INSERT INTO journey(id, created_date, location_id_from, location_id_to, max_pass
     VALUES(6, '2022-01-05', 5, 1, 3, '2022-12-03 08:00:00', 2);
 INSERT INTO journey(id, created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
     VALUES(7, '2022-05-10', 2, 1, 2, '2022-12-03 08:00:00', 4);
+INSERT INTO journey(id, created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
+    VALUES(8, '2022-06-11', 5, 1, 3, '2022-10-04 18:00:00', 2);
+INSERT INTO journey(id, created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
+    VALUES(9, '2022-07-12', 2, 4, 2, '2022-09-05 19:00:00', 5);
+INSERT INTO journey(id, created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
+    VALUES(10, '2022-08-13', 1, 5, 1, '2022-08-06 20:00:00', 3);
 
 INSERT INTO passenger_journey(id, passenger_id, journey_id) VALUES(1, 2, 1);
 INSERT INTO passenger_journey(id, passenger_id, journey_id) VALUES(2, 3, 1);
