@@ -1,5 +1,8 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
+import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,8 +14,10 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
+import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.exception.UnauthorizedException;
 import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
 import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
 import com.unosquare.carmigo.openfeign.DistanceApi;
@@ -20,10 +25,13 @@ import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.openfeign.Geocode;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
+import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.util.MapperUtils;
 import java.time.Instant;
 import java.util.List;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,9 +48,11 @@ public class JourneyService {
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
   private final DistanceApi distanceApi;
+  private final AppUser appUser;
+  private final PassengerService passengerService;
 
-  public GrabJourneyDTO getJourneyById(final int id) {
-    return modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
+  public GrabJourneyDTO getJourneyById(final int journeyId) {
+    return modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
   }
 
   public List<GrabJourneyDTO> searchJourneys(final CreateSearchJourneysCriteria createSearchJourneysCriteria) {
@@ -52,63 +62,111 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
     }
+    hidePassengerAndMaybeDriverFields(true, result);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByDriverId(final int id) {
-    final List<Journey> result = journeyRepository.findJourneysByDriverId(id);
+  public List<GrabJourneyDTO> getJourneysByDriverId(final int driverId) {
+    final List<Journey> result = journeyRepository.findJourneysByDriverId(driverId);
     if (result.isEmpty()) {
-      throw new ResourceNotFoundException(String.format("No journeys found for driver id %d.", id));
+      throw new ResourceNotFoundException("No journeys found for this driver.");
     }
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByPassengersId(final int id) {
-    final List<Journey> result = journeyRepository.findJourneysByPassengersId(id);
+  public List<GrabJourneyDTO> getJourneysByPassengersId(final int passengerId) {
+    final List<Journey> result = journeyRepository.findJourneysByPassengersId(passengerId);
     if (result.isEmpty()) {
-      throw new ResourceNotFoundException(String.format("No journeys found for passenger id %d.", id));
+      throw new ResourceNotFoundException("No journeys found for this passenger.");
     }
+    hidePassengerAndMaybeDriverFields(false, result);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
-  public GrabJourneyDTO createJourney(final CreateJourneyDTO createJourneyDTO) {
+  public GrabJourneyDTO createJourney(final int driverId, final CreateJourneyDTO createJourneyDTO) {
     final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);
     journey.setCreatedDate(Instant.now());
     journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
     journey.setLocationTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
-    journey.setDriver(entityManager.getReference(Driver.class, createJourneyDTO.getDriverId()));
-    return modelMapper.map(journeyRepository.save(journey), GrabJourneyDTO.class);
+    journey.setDriver(entityManager.getReference(Driver.class, driverId));
+    final Journey savedJourney = journeyRepository.save(journey);
+    savedJourney.setDriver(null);
+    return modelMapper.map(savedJourney, GrabJourneyDTO.class);
   }
 
-  public GrabJourneyDTO patchJourney(final int id, final JsonPatch patch) {
-    final GrabJourneyDTO grabJourneyDTO = modelMapper.map(findJourneyById(id), GrabJourneyDTO.class);
+  public void addPassengerToJourney(final int journeyId, final int passengerId) {
+    final Journey journey = findJourneyById(journeyId);
+    final List<Passenger> passengers = journey.getPassengers();
+    passengers.forEach(
+        p -> {
+          if (p.getId() == passengerId) {
+            throw new EntityExistsException("Passenger is in this journey already.");
+          }
+        });
+    if (journey.getDriver().getId() == passengerId) {
+      throw new IllegalStateException("Driver cannot be passenger.");
+    }
+    final Passenger passenger = passengerService.findPassengerById(passengerId);
+    passengers.add(passenger);
+    journey.setPassengers(passengers);
+    journeyRepository.save(journey);
+  }
+
+  public GrabJourneyDTO patchJourney(final int journeyId, final JsonPatch patch) {
+    final GrabJourneyDTO grabJourneyDTO = modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
+    verifyUserAuthorization(grabJourneyDTO.getDriver().getId());
     try {
       final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
       final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
       return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
     } catch (final JsonPatchException | JsonProcessingException ex) {
-      throw new PatchException(String.format("It was not possible to patch journey id %d - %s", id, ex.getMessage()));
+      throw new PatchException(String.format("Error updating journey id %d - %s", journeyId, ex.getMessage()));
     }
+  }
+
+  public void deleteJourneyById(final int journeyId) {
+    final Journey journey = findJourneyById(journeyId);
+    verifyUserAuthorization(journey.getDriver().getId());
+    journeyRepository.deleteById(journeyId);
+  }
+
+  @Transactional
+  public void removePassengerFromJourney(final int journeyId, final int passengerId) {
+    final Journey journey = findJourneyById(journeyId);
+    final List<Passenger> passengers = journey.getPassengers();
+    for (Passenger p : passengers) {
+      if (p.getId() == passengerId) {
+        passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
+        return;
+      }
+    }
+    throw new EntityNotFoundException("Passenger is not in this journey.");
   }
 
   public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
     final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
-    DistanceHolder distanceHolder = distanceApi.getDistance(request);
+    final DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderToGrabDistanceDto(distanceHolder);
-  }
-
-  public void deleteJourneyById(final int id) {
-    journeyRepository.deleteById(id);
-  }
-
-  @Transactional
-  public void deleteByJourneyIdAndPassengerId(final int journeyId, final int passengerId) {
-    passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
   }
 
   private Journey findJourneyById(final int id) {
     return journeyRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
+  }
+
+  private void verifyUserAuthorization(final int userId) {
+    if (!(appUser.get().getId() == userId || appUser.get().getUserAccessStatus().equals(ADMIN))) {
+      throw new UnauthorizedException(NOT_PERMITTED);
+    }
+  }
+
+  private void hidePassengerAndMaybeDriverFields(final boolean hideDriver, final List<Journey> journeys) {
+    for (final Journey j : journeys) {
+      j.setPassengers(null);
+      if (hideDriver) {
+        j.setDriver(null);
+      }
+    }
   }
 
   private String prepareRequestToDistanceApi(final CreateCalculateDistanceCriteria criteria) {

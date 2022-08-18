@@ -1,20 +1,20 @@
 package com.unosquare.carmigo.model.request;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
 public class CreateCalculateDistanceCriteria {
 
-  @NotNull
+  @NotEmpty
   private String locationFrom;
 
-  @NotNull
+  @NotEmpty
   private String countryFrom;
 
-  @NotNull
+  @NotEmpty
   private String locationTo;
 
-  @NotNull
+  @NotEmpty
   private String countryTo;
 }

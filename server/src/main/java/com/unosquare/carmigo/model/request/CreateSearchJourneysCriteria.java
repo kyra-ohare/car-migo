@@ -2,16 +2,16 @@ package com.unosquare.carmigo.model.request;
 
 import java.time.Instant;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 
 @Data
 public class CreateSearchJourneysCriteria {
 
-  @Range(min = 1)
+  @Positive
   private int locationIdFrom;
 
-  @Range(min = 1)
+  @Positive
   private int locationIdTo;
 
   @NotNull

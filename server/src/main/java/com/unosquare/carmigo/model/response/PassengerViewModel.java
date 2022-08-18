@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PassengerViewModel {
 
-  @JsonProperty("id")
   private int id;
 
   @JsonProperty("user")

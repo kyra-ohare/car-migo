@@ -43,7 +43,7 @@ public class PassengerService {
     passengerRepository.deleteById(id);
   }
 
-  private Passenger findPassengerById(final int id) {
+  public Passenger findPassengerById(final int id) {
     authorization.verifyUserAuthorization(id);
     return passengerRepository.findById(id).orElseThrow(
         () -> new EntityNotFoundException(String.format("Passenger id %d not found.", id)));
