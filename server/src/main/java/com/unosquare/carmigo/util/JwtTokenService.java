@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtTokenUtils {
+public class JwtTokenService {
 
   @Value("${application.token.secret.key}")
   private String key;
@@ -62,7 +62,7 @@ public class JwtTokenUtils {
     try {
       return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     } catch (final io.jsonwebtoken.ExpiredJwtException ex) {
-      throw new ExpiredJwtException("Expired JWT token");
+      throw new ExpiredJwtException("Expired JWT token.");
     }
   }
 

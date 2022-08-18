@@ -1,8 +1,11 @@
 package com.unosquare.carmigo.model.request;
 
+import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MAX_SIZE;
+import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MIN_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.EMAIL_REGEX;
+import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MAX_SIZE;
+import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MIN_SIZE;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unosquare.carmigo.annotation.ValidPassword;
 import java.time.Instant;
 import javax.persistence.Temporal;
@@ -16,39 +19,29 @@ import lombok.Data;
 @Data
 public class CreatePlatformUserViewModel {
 
-  @Size(max = 255)
   @NotEmpty
-  @NotNull
-  @JsonProperty("firstName")
+  @Size(min = 1, max = 255)
   private String firstName;
 
-  @Size(max = 255)
   @NotEmpty
-  @NotNull
-  @JsonProperty("lastName")
+  @Size(min = 1, max = 255)
   private String lastName;
 
   @NotNull
-  @JsonProperty("dob")
   @Temporal(TemporalType.DATE)
   private Instant dob;
 
-  @Size(max = 100)
   @NotEmpty
-  @NotNull
-  @JsonProperty("email")
+  @Size(min = EMAIL_MIN_SIZE, max = EMAIL_MAX_SIZE)
   @Email(regexp = EMAIL_REGEX)
   private String email;
 
-  @Size(max = 50)
   @NotEmpty
-  @NotNull
-  @JsonProperty("password")
+  @Size(min = PASSWORD_MIN_SIZE, max = PASSWORD_MAX_SIZE)
   @ValidPassword
   private String password;
 
+  @NotEmpty
   @Size(max = 50)
-  @NotNull
-  @JsonProperty("phoneNumber")
   private String phoneNumber;
 }

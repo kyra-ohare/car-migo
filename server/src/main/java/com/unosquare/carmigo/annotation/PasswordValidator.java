@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.annotation;
 
+import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MAX_SIZE;
+import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MIN_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.SPECIAL_CHARACTERS;
 
 import com.google.common.base.CharMatcher;
@@ -24,7 +26,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
     final boolean isValid1 = ALPHANUMERIC_RULE.matchesAnyOf(parameter);
     final boolean isValid2 = SIGNS_RULE.matchesAnyOf(parameter);
     final boolean isValid3 = UPPERCASE_RULE.matchesAnyOf(parameter);
-    final boolean validLength = parameter.length() >= 8 && parameter.length() <= 20;
+    final boolean validLength = parameter.length() >= PASSWORD_MIN_SIZE && parameter.length() <= PASSWORD_MAX_SIZE;
     final boolean onlyValidChars = ALPHANUMERIC_RULE.or(SIGNS_RULE).matchesAllOf(parameter);
 
     return validLength && onlyValidChars && (isValid1 && isValid2 || isValid1 && isValid3 || isValid2 && isValid3);
