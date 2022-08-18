@@ -166,7 +166,7 @@ public class JourneyControllerTest {
     controllerUtility.makeGetRequest("/foo", status().isBadRequest());
     controllerUtility.makeGetRequest("/1", status().isOk());
     controllerUtility.makeGetRequest("/2", status().isOk());
-    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isNotFound());
+    controllerUtility.makeGetRequest("/drivers/my-journeys", status().isOk());
     controllerUtility.makeGetRequest("/drivers/1", status().isOk());
     controllerUtility.makeGetRequest("/drivers/2", status().isOk());
     controllerUtility.makeGetRequest("/passengers/my-journeys", status().isOk());
