@@ -66,7 +66,7 @@ OpenApi 3.0 Specification is implemented. Here are the endpoints:
 * http://localhost:8086/v3/api-docs.yaml (automatically downloads its yaml file)
 * http://localhost:8086/v3/api-docs/swagger-config
 
-Open endpoints, i.e., no credentials are needed:
+Open endpoints, i.e., no credentials needed:
 * http://localhost:8086/v1/users/create
 * http://localhost:8086/v1/login
 * http://localhost:8086/v1/journeys/calculateDistance
