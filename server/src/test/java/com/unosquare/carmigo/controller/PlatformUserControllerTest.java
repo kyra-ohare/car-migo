@@ -67,9 +67,9 @@ public class PlatformUserControllerTest {
   @Test
   @WithAnonymousUser
   public void testEndpointsWithAnonymousUser() throws Exception {
-    controllerUtility.makePostRequest(POST_PLATFORM_USER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest(POST_PLATFORM_USER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest(POST_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isCreated());
+    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isConflict());
+    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
     testUnauthorizedUsersUltra(status().isForbidden());
   }
 
@@ -82,17 +82,17 @@ public class PlatformUserControllerTest {
   @Test
   @WithUserDetails(ACTIVE_USER)
   public void testEndpointsWithActiveUser() throws Exception {
-    controllerUtility.makeGetRequest(status().isOk());
+    controllerUtility.makeGetRequest("/profile", status().isOk());
     controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
     controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
 
-    controllerUtility.makeDeleteRequest(status().isNoContent());
-    controllerUtility.makeDeleteRequest(status().isNotFound());
+    controllerUtility.makeDeleteRequest("", status().isNoContent());
+    controllerUtility.makeDeleteRequest("", status().isNotFound());
     recreateEntities(ACTIVE_USER);
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
@@ -101,8 +101,8 @@ public class PlatformUserControllerTest {
   @Test
   @WithUserDetails(SUSPENDED_USER)
   public void testEndpointsWithSuspendedUser() throws Exception {
-    controllerUtility.makeGetRequest(status().isOk());
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makeGetRequest("/profile", status().isOk());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     testUnauthorizedUsers(status().isBadRequest());
   }
 
@@ -115,15 +115,15 @@ public class PlatformUserControllerTest {
   @Test
   @WithUserDetails(ADMIN_USER)
   public void testEndpointsWithAdminUser() throws Exception {
-    controllerUtility.makeGetRequest(status().isOk());
+    controllerUtility.makeGetRequest("/profile", status().isOk());
     controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
     controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
     controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
     controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
     controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
 
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
     controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
@@ -132,8 +132,8 @@ public class PlatformUserControllerTest {
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
 
-    controllerUtility.makeDeleteRequest(status().isNoContent());
-    controllerUtility.makeDeleteRequest(status().isNotFound());
+    controllerUtility.makeDeleteRequest("", status().isNoContent());
+    controllerUtility.makeDeleteRequest("", status().isNotFound());
     recreateEntities(ADMIN_USER);
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
@@ -153,8 +153,8 @@ public class PlatformUserControllerTest {
   }
 
   private void testUnauthorizedUsersUltra(final ResultMatcher expectation) throws Exception {
-    controllerUtility.makeGetRequest(status().isForbidden());
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
+    controllerUtility.makeGetRequest("/profile", status().isForbidden());
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
     testUnauthorizedUsers(expectation);
   }
 
@@ -165,7 +165,7 @@ public class PlatformUserControllerTest {
     controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
-    controllerUtility.makePatchRequest(PATCH_PLATFORM_USER_INVALID_JSON, expectation);
+    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, expectation);
     controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
     controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
     controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
@@ -175,7 +175,7 @@ public class PlatformUserControllerTest {
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
 
-    controllerUtility.makeDeleteRequest(status().isForbidden());
+    controllerUtility.makeDeleteRequest("", status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
