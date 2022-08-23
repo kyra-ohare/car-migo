@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
+
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.model.response.PassengerViewModel;
 import com.unosquare.carmigo.security.AppUser;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,61 +31,58 @@ public class PassengerController {
   private final AppUser appUser;
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<PassengerViewModel> getCurrentPassengerProfile() {
-    return ResponseEntity.ok(getPassenger(0));
+    return ResponseEntity.ok(getPassenger(ALIAS_CURRENT_USER));
   }
 
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<PassengerViewModel> getPassengerById(@PathVariable final int id) {
-    return ResponseEntity.ok(getPassenger(id));
+  public ResponseEntity<PassengerViewModel> getPassengerById(@PathVariable final int passengerId) {
+    return ResponseEntity.ok(getPassenger(passengerId));
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<PassengerViewModel> createPassenger() {
-    return new ResponseEntity<>(createPassenger(0), HttpStatus.CREATED);
+    return new ResponseEntity<>(createPassenger(ALIAS_CURRENT_USER), HttpStatus.CREATED);
   }
 
-  @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<PassengerViewModel> createPassengerById(@PathVariable final int id) {
-    return new ResponseEntity<>(createPassenger(id), HttpStatus.CREATED);
+  public ResponseEntity<PassengerViewModel> createPassengerById(@PathVariable final int passengerId) {
+    return new ResponseEntity<>(createPassenger(passengerId), HttpStatus.CREATED);
   }
 
   @DeleteMapping
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentPassenger() {
-    deletePassenger(0);
+    deletePassenger(ALIAS_CURRENT_USER);
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping(value = "/{id}")
+  @DeleteMapping(value = "/{passengerId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<?> deletePassengerById(@PathVariable final int id) {
-    deletePassenger(id);
+  public ResponseEntity<?> deletePassengerById(@PathVariable final int passengerId) {
+    deletePassenger(passengerId);
     return ResponseEntity.noContent().build();
   }
 
-  private PassengerViewModel getPassenger(final int id) {
-    final GrabPassengerDTO grabPassengerDTO = passengerService.getPassengerById(getCurrentId(id));
+  private PassengerViewModel getPassenger(final int passengerId) {
+    final GrabPassengerDTO grabPassengerDTO = passengerService.getPassengerById(getCurrentId(passengerId));
     return modelMapper.map(grabPassengerDTO, PassengerViewModel.class);
   }
 
-  private PassengerViewModel createPassenger(final int id) {
-    final GrabPassengerDTO grabPassengerDTO = passengerService.createPassengerById(getCurrentId(id));
+  private PassengerViewModel createPassenger(final int passengerId) {
+    final GrabPassengerDTO grabPassengerDTO = passengerService.createPassengerById(getCurrentId(passengerId));
     return modelMapper.map(grabPassengerDTO, PassengerViewModel.class);
   }
 
-  private void deletePassenger(final int id) {
-    passengerService.deletePassengerById(getCurrentId(id));
+  private void deletePassenger(final int passengerId) {
+    passengerService.deletePassengerById(getCurrentId(passengerId));
   }
 
-  private int getCurrentId(final int id) {
-    return id != 0 ? id : appUser.get().getId();
+  private int getCurrentId(final int passengerId) {
+    return passengerId == ALIAS_CURRENT_USER ? appUser.get().getId() : passengerId;
   }
 }

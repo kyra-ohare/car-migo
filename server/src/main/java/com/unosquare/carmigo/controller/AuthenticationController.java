@@ -5,7 +5,6 @@ import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
 import com.unosquare.carmigo.model.response.AuthenticationViewModel;
 import com.unosquare.carmigo.service.AuthenticationService;
-import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;

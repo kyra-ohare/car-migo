@@ -21,5 +21,5 @@ public interface AppConstants {
   String STAGED = "STAGED";
   String SUSPENDED = "SUSPENDED";
 
-  String NOT_PERMITTED = "Not permitted.";
+  String NOT_PERMITTED = "Not permitted";
 }

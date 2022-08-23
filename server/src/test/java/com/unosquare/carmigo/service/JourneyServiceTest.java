@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -270,6 +271,16 @@ public class JourneyServiceTest {
     assertThrows(UnauthorizedException.class,
         () -> journeyService.deleteJourneyById(anyInt()),
         "UnauthorizedException is expected.");
+    verify(journeyRepositoryMock).findById(anyInt());
+    verify(journeyRepositoryMock, times(0)).deleteById(anyInt());
+  }
+
+  @Test
+  public void delete_Journey_By_Id_Throws_ResourceNotFoundException() {
+    doThrow(ResourceNotFoundException.class).when(journeyRepositoryMock).findById(anyInt());
+    assertThrows(ResourceNotFoundException.class,
+        () -> journeyService.deleteJourneyById(anyInt()),
+        "ResourceNotFoundException is expected.");
     verify(journeyRepositoryMock).findById(anyInt());
     verify(journeyRepositoryMock, times(0)).deleteById(anyInt());
   }
