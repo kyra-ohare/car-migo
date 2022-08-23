@@ -6,9 +6,18 @@ This is my first Spring Boot application.
 It is a match-making system for drivers and passengers.
 Drivers can create rides (a journey and a timeframe) while passengers can accept or reject.
 
+There are 5 types of users:
+* `Staged` users are when a user has created the account but has not confirmed the email yet.
+* `Active` users have access to non-admin endpoints.
+* `Suspended` users can only access their profiles and update some information.
+* `Locked out` users cannot access any endpoints because they had 5 failed attempts to access their accounts.
+* `Admin` users can access admin and non-admin endpoints as well as actuator endpoints.
+* `Dev` users can access their profiles, update some information and access the actuator endpoints.
+
 ## Why?
 It is great for the environment once there will be less CO<sub>2</sub> released into the atmosphere.
-Moreover, there will be less traffic in our cities thus emergency vehicles will respond to emergencies more rapidly, less noise pollution, less road accidents and you can make new friends to top it off.
+Moreover, there will be less traffic in our cities thus emergency vehicles will respond to emergencies more rapidly, 
+less noise pollution, less road accidents, and you can make new friends to top it off.
 The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for fuel costs.
 
 ## Requirements
@@ -48,7 +57,7 @@ Once inside the pgAdmin 4, click on `Add New Server`. From the dialog box, enter
 Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo > Schemas > public > Tables.
 
 ### restart.sh
-This script restarts the containers. You are also given the option to restart the volumes.
+This script restarts the containers. You are also given the option to restart PostgreSQL and pgAdmin volumes.
 
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
@@ -56,3 +65,9 @@ OpenApi 3.0 Specification is implemented. Here are the endpoints:
 * http://localhost:8086/v3/api-docs
 * http://localhost:8086/v3/api-docs.yaml (automatically downloads its yaml file)
 * http://localhost:8086/v3/api-docs/swagger-config
+
+Open endpoints, i.e., no credentials are needed:
+* http://localhost:8086/v1/users/create
+* http://localhost:8086/v1/login
+* http://localhost:8086/v1/journeys/calculateDistance
+* http://localhost:8086/v1/journeys/search

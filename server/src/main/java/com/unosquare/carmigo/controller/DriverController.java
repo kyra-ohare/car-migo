@@ -36,7 +36,7 @@ public class DriverController {
   private final AppUser appUser;
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<DriverViewModel> getCurrentDriverProfile() {
     return ResponseEntity.ok(getDriver(ALIAS_CURRENT_USER));
   }

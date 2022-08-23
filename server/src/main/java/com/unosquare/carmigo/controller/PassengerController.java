@@ -31,7 +31,7 @@ public class PassengerController {
   private final AppUser appUser;
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<PassengerViewModel> getCurrentPassengerProfile() {
     return ResponseEntity.ok(getPassenger(ALIAS_CURRENT_USER));
   }
