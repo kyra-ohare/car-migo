@@ -88,6 +88,7 @@ public class PassengerControllerTest {
   @Test
   @WithUserDetails(SUSPENDED_USER)
   public void testEndpointsWithSuspendedUser() throws Exception {
+    controllerUtility.makeGetRequest("/profile", status().isOk());
     testUnauthorizedUsers();
   }
 
@@ -133,7 +134,6 @@ public class PassengerControllerTest {
   }
 
   private void testUnauthorizedUsers() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isForbidden());
     controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());

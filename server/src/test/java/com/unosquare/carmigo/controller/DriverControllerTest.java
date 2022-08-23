@@ -97,6 +97,7 @@ public class DriverControllerTest {
   @Test
   @WithUserDetails(SUSPENDED_USER)
   public void testEndpointsWithSuspendedUser() throws Exception {
+    controllerUtility.makeGetRequest("/profile", status().isOk());
     testUnauthorizedUsers(status().isBadRequest());
   }
 
@@ -149,7 +150,6 @@ public class DriverControllerTest {
   }
 
   private void testUnauthorizedUsers(final ResultMatcher expectation) throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isForbidden());
     controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
