@@ -33,6 +33,13 @@ public class ControllerUtility {
         .andExpect(expectation);
   }
 
+  public void makePostRequestWithOneParam(final String apiTrailing, final String paramKey, final String paramValue,
+      final ResultMatcher expectation) throws Exception {
+    mockMvc.perform(post(apiLeading + apiTrailing)
+            .contentType(MediaType.APPLICATION_JSON_VALUE).param(paramKey, paramValue))
+        .andExpect(expectation);
+  }
+
   public void makePatchRequest(final String apiTrailing, final String content, final ResultMatcher expectation)
       throws Exception {
     mockMvc.perform(patch(apiLeading + apiTrailing)

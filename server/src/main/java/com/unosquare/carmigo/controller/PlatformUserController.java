@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,6 +36,12 @@ public class PlatformUserController {
   private final ModelMapper modelMapper;
   private final PlatformUserService platformUserService;
   private final AppUser appUser;
+
+  @PostMapping(value = "/confirm-email")
+  public ResponseEntity<?> confirmEmail(@RequestParam final String email) {
+    platformUserService.confirmEmail(email);
+    return ResponseEntity.ok().build();
+  }
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
