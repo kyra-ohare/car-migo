@@ -13,7 +13,7 @@ import com.flextrade.jfixture.annotations.Fixture;
 import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
 import com.unosquare.carmigo.security.UserSecurityService;
-import com.unosquare.carmigo.util.JwtTokenUtils;
+import com.unosquare.carmigo.util.JwtTokenService;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class AuthenticationServiceTest {
 
   @Mock private UserSecurityService userSecurityServiceMock;
   @Mock private AuthenticationManager authenticationManagerMock;
-  @Mock private JwtTokenUtils jwtTokenUtilsMock;
+  @Mock private JwtTokenService jwtTokenServiceMock;
   @InjectMocks private AuthenticationService authenticationService;
 
   @Fixture private CreateAuthenticationDTO createAuthenticationDTOFixture;
@@ -50,7 +50,7 @@ public class AuthenticationServiceTest {
     when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
     when(userSecurityServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail())).thenReturn(
         spyUserDetails);
-    when(jwtTokenUtilsMock.generateToken(spyUserDetails)).thenReturn(anyString());
+    when(jwtTokenServiceMock.generateToken(spyUserDetails)).thenReturn(anyString());
     final GrabAuthenticationDTO grabAuthenticationDTO = authenticationService.createAuthenticationToken(
         createAuthenticationDTOFixture);
     grabAuthenticationDTO.setJwt(grabAuthenticationDTOFixture.getJwt());
@@ -58,6 +58,6 @@ public class AuthenticationServiceTest {
     assertThat(grabAuthenticationDTO.getJwt()).isEqualTo(grabAuthenticationDTOFixture.getJwt());
     verify(authenticationManagerMock).authenticate(any(UsernamePasswordAuthenticationToken.class));
     verify(userSecurityServiceMock).loadUserByUsername(anyString());
-    verify(jwtTokenUtilsMock).generateToken(any(UserDetails.class));
+    verify(jwtTokenServiceMock).generateToken(any(UserDetails.class));
   }
 }

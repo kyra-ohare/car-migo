@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
+
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.model.request.CreateDriverViewModel;
@@ -34,64 +36,62 @@ public class DriverController {
   private final AppUser appUser;
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<DriverViewModel> getCurrentDriverProfile() {
-    return ResponseEntity.ok(getDriver(0));
+    return ResponseEntity.ok(getDriver(ALIAS_CURRENT_USER));
   }
 
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<DriverViewModel> getDriverById(@PathVariable final int id) {
-    return ResponseEntity.ok(getDriver(id));
+  public ResponseEntity<DriverViewModel> getDriverById(@PathVariable final int driverId) {
+    return ResponseEntity.ok(getDriver(driverId));
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<DriverViewModel> createDriver(
       @Valid @RequestBody final CreateDriverViewModel createDriverViewModel) {
-    return new ResponseEntity<>(createDriver(0, createDriverViewModel), HttpStatus.CREATED);
+    return new ResponseEntity<>(createDriver(ALIAS_CURRENT_USER, createDriverViewModel), HttpStatus.CREATED);
   }
 
-  @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<DriverViewModel> createDriverById(
-      @PathVariable final int id, @Valid @RequestBody final CreateDriverViewModel createDriverViewModel) {
-    return new ResponseEntity<>(createDriver(id, createDriverViewModel), HttpStatus.CREATED);
+      @PathVariable final int driverId, @Valid @RequestBody final CreateDriverViewModel createDriverViewModel) {
+    return new ResponseEntity<>(createDriver(driverId, createDriverViewModel), HttpStatus.CREATED);
   }
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentDriver() {
-    deleteDriver(0);
+    deleteDriver(ALIAS_CURRENT_USER);
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping(value = "/{id}")
+  @DeleteMapping(value = "/{driverId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<?> deleteDriverById(@PathVariable final int id) {
-    deleteDriver(id);
+  public ResponseEntity<?> deleteDriverById(@PathVariable final int driverId) {
+    deleteDriver(driverId);
     return ResponseEntity.noContent().build();
   }
 
-  private DriverViewModel getDriver(final int id) {
-    final GrabDriverDTO grabDriverDTO = driverService.getDriverById(getCurrentId(id));
+  private DriverViewModel getDriver(final int driverId) {
+    final GrabDriverDTO grabDriverDTO = driverService.getDriverById(getCurrentId(driverId));
     return modelMapper.map(grabDriverDTO, DriverViewModel.class);
   }
 
-  private DriverViewModel createDriver(final int id, final CreateDriverViewModel createDriverViewModel) {
+  private DriverViewModel createDriver(final int driverId, final CreateDriverViewModel createDriverViewModel) {
     final CreateDriverDTO createDriverDTO = modelMapper.map(createDriverViewModel, CreateDriverDTO.class);
-    final GrabDriverDTO grabDriverDTO = driverService.createDriverById(getCurrentId(id), createDriverDTO);
+    final GrabDriverDTO grabDriverDTO = driverService.createDriverById(getCurrentId(driverId), createDriverDTO);
     return modelMapper.map(grabDriverDTO, DriverViewModel.class);
   }
 
-  private void deleteDriver(final int id) {
-    driverService.deleteDriverById(getCurrentId(id));
+  private void deleteDriver(final int driverId) {
+    driverService.deleteDriverById(getCurrentId(driverId));
   }
 
-  private int getCurrentId(final int id) {
-    return id != 0 ? id : appUser.get().getId();
+  private int getCurrentId(final int driverId) {
+    return driverId == ALIAS_CURRENT_USER ? appUser.get().getId() : driverId;
   }
 }

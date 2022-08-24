@@ -9,14 +9,16 @@ import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
-import com.unosquare.carmigo.exception.ResourceNotFoundException;
+import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
-import com.unosquare.carmigo.security.Authorization;
 import java.time.Instant;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +27,16 @@ import org.springframework.stereotype.Service;
 public class PlatformUserService {
 
   private static final int INITIAL_USER_STATUS = 1;
+  private static final String USER_NOT_FOUND = "User not found";
 
   private final PlatformUserRepository platformUserRepository;
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  private final Authorization authorization;
 
-  public GrabPlatformUserDTO getPlatformUserById(final int id) {
-    return modelMapper.map(findPlatformUserById(id), GrabPlatformUserDTO.class);
+  public GrabPlatformUserDTO getPlatformUserById(final int userId) {
+    return modelMapper.map(findPlatformUserById(userId), GrabPlatformUserDTO.class);
   }
 
   public GrabPlatformUserDTO createPlatformUser(final CreatePlatformUserDTO createPlatformUserDTO) {
@@ -42,28 +44,37 @@ public class PlatformUserService {
     platformUser.setCreatedDate(Instant.now());
     platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
     platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, INITIAL_USER_STATUS));
-    return modelMapper.map(platformUserRepository.save(platformUser), GrabPlatformUserDTO.class);
+    final PlatformUser newPlatformUser;
+    try {
+      newPlatformUser = platformUserRepository.save(platformUser);
+    } catch (final DataIntegrityViolationException ex) {
+      throw new EntityExistsException("Email already in use");
+    }
+    return modelMapper.map(newPlatformUser, GrabPlatformUserDTO.class);
   }
 
-  public GrabPlatformUserDTO patchPlatformUserById(final int id, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(findPlatformUserById(id), GrabPlatformUserDTO.class);
+  public GrabPlatformUserDTO patchPlatformUserById(final int userId, final JsonPatch patch) {
+    final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
+        findPlatformUserById(userId), GrabPlatformUserDTO.class);
     try {
       final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
       final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
       return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
     } catch (final JsonPatchException | JsonProcessingException ex) {
-      throw new ResourceNotFoundException(String.format("Error updating user id %d", id));
+      throw new PatchException(String.format("Error updating user - %s", ex.getMessage()));
     }
   }
 
-  public void deletePlatformUserById(final int id) {
-    findPlatformUserById(id);
-    platformUserRepository.deleteById(id);
+  public void deletePlatformUserById(final int userId) {
+    try {
+      platformUserRepository.deleteById(userId);
+    } catch (final EmptyResultDataAccessException ex) {
+      throw new EntityNotFoundException(USER_NOT_FOUND);
+    }
   }
 
-  private PlatformUser findPlatformUserById(final int id) {
-    authorization.verifyUserAuthorization(id);
-    return platformUserRepository.findById(id).orElseThrow(
-        () -> new EntityNotFoundException(String.format("PlatformUser id %d not found.", id)));
+  private PlatformUser findPlatformUserById(final int userId) {
+    return platformUserRepository.findById(userId).orElseThrow(
+        () -> new EntityNotFoundException(USER_NOT_FOUND));
   }
 }

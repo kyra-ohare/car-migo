@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,6 @@ public class ExceptionResponseHandler {
   }
 
   @ExceptionHandler({
-      DataIntegrityViolationException.class,
       EntityExistsException.class,
       IllegalStateException.class})
   public ResponseEntity<ErrorResponse> handleConflictException(final Exception exception) {
