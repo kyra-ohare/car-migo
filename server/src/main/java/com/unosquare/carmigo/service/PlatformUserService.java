@@ -41,17 +41,15 @@ public class PlatformUserService {
 
   public void confirmEmail(final String email) {
     final Optional<PlatformUser> platformUserOptional = platformUserRepository.findPlatformUserByEmail(email);
-    if (platformUserOptional.isPresent()) {
-      if (!platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE)) {
-        platformUserOptional.get()
-            .setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, ACTIVE_USER_STATUS));
-        platformUserRepository.save(platformUserOptional.get());
-      } else {
-        throw new IllegalStateException("User is already active");
-      }
-    } else {
+    if (platformUserOptional.isEmpty()) {
       throw new EntityNotFoundException(USER_NOT_FOUND);
     }
+    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE)) {
+      throw new IllegalStateException("User is already active");
+    }
+    platformUserOptional.get()
+        .setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, ACTIVE_USER_STATUS));
+    platformUserRepository.save(platformUserOptional.get());
   }
 
   public GrabPlatformUserDTO getPlatformUserById(final int userId) {
