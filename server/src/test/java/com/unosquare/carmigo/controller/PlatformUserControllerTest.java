@@ -70,6 +70,15 @@ public class PlatformUserControllerTest {
     controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isCreated());
     controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isConflict());
     controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
+    controllerUtility.makePostRequest("/confirm-email", "", status().isBadRequest());
+    controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "", status().isNotFound());
+    controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "staged@example.com", status().isOk());
+    controllerUtility.makePostRequestWithOneParam(
+        "/confirm-email", "email", "staged@example.com", status().isConflict());
+    controllerUtility.makePostRequestWithOneParam(
+        "/confirm-email", "email", "fake-staged@example.com", status().isNotFound());
+    controllerUtility.makePostRequestWithOneParam(
+        "/confirm-email", "email", "active@example.com", status().isConflict());
     testUnauthorizedUsersUltra(status().isForbidden());
   }
 

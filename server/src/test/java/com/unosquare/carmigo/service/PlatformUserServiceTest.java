@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +61,35 @@ public class PlatformUserServiceTest {
     final JFixture jFixture = new JFixture();
     jFixture.customise().circularDependencyBehaviour().omitSpecimen();
     FixtureAnnotations.initFixtures(this, jFixture);
+  }
+
+  @Test
+  public void confirm_Email_Returns_Void() {
+    when(platformUserRepositoryMock.findPlatformUserByEmail(anyString())).thenReturn(Optional.of(platformUserFixture));
+    platformUserService.confirmEmail(anyString());
+    verify(platformUserRepositoryMock).findPlatformUserByEmail(anyString());
+    verify(platformUserRepositoryMock).save(any(PlatformUser.class));
+  }
+
+  @Test
+  public void confirm_Email_Throws_IllegalStateException() {
+    when(platformUserRepositoryMock.findPlatformUserByEmail(anyString())).thenReturn(Optional.of(platformUserFixture));
+    platformUserFixture.getUserAccessStatus().setStatus("ACTIVE");
+    assertThrows(IllegalStateException.class,
+        () -> platformUserService.confirmEmail(anyString()),
+        "IllegalStateException is expected.");
+    verify(platformUserRepositoryMock).findPlatformUserByEmail(anyString());
+    verify(platformUserRepositoryMock, times(0)).save(any(PlatformUser.class));
+  }
+
+  @Test
+  public void confirm_Email_Throws_EntityNotFoundException() {
+    when(platformUserRepositoryMock.findPlatformUserByEmail(anyString())).thenReturn(Optional.empty());
+    assertThrows(EntityNotFoundException.class,
+        () -> platformUserService.confirmEmail(anyString()),
+        "EntityNotFoundException is expected.");
+    verify(platformUserRepositoryMock).findPlatformUserByEmail(anyString());
+    verify(platformUserRepositoryMock, times(0)).save(any(PlatformUser.class));
   }
 
   @Test

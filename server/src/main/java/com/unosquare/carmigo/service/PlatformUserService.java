@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,7 @@ import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import java.time.Instant;
+import java.util.Optional;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -26,7 +29,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PlatformUserService {
 
-  private static final int INITIAL_USER_STATUS = 1;
+  private static final int STAGED_USER_STATUS = 1;
+  private static final int ACTIVE_USER_STATUS = 2;
   private static final String USER_NOT_FOUND = "User not found";
 
   private final PlatformUserRepository platformUserRepository;
@@ -34,6 +38,19 @@ public class PlatformUserService {
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  public void confirmEmail(final String email) {
+    final Optional<PlatformUser> platformUserOptional = platformUserRepository.findPlatformUserByEmail(email);
+    if (platformUserOptional.isEmpty()) {
+      throw new EntityNotFoundException(USER_NOT_FOUND);
+    }
+    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE)) {
+      throw new IllegalStateException("User is already active");
+    }
+    platformUserOptional.get()
+        .setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, ACTIVE_USER_STATUS));
+    platformUserRepository.save(platformUserOptional.get());
+  }
 
   public GrabPlatformUserDTO getPlatformUserById(final int userId) {
     return modelMapper.map(findPlatformUserById(userId), GrabPlatformUserDTO.class);
@@ -43,7 +60,7 @@ public class PlatformUserService {
     final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
     platformUser.setCreatedDate(Instant.now());
     platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
-    platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, INITIAL_USER_STATUS));
+    platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, STAGED_USER_STATUS));
     final PlatformUser newPlatformUser;
     try {
       newPlatformUser = platformUserRepository.save(platformUser);
