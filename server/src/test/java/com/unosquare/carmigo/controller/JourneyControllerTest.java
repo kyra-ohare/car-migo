@@ -77,13 +77,15 @@ public class JourneyControllerTest {
   @Test
   @WithAnonymousUser
   public void testCalculateDistanceWithAnonymousUser() throws Exception {
-    mockMvc.perform(get(API_LEADING + "/calculateDistance")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .param("locationFrom", "Belfast")
-            .param("countryFrom", "GBR")
-            .param("locationTo", "Newry")
-            .param("countryTo", "GBR"))
-        .andExpect(status().isOk());
+// This is commented because it may incur fees with RapidApi
+//https://rapidapi.com/Distance.to/api/distance/pricing?utm_source=api-quota-85&utm_medium=email&utm_campaign=Distance
+//    mockMvc.perform(get(API_LEADING + "/calculateDistance")
+//            .contentType(MediaType.APPLICATION_JSON_VALUE)
+//            .param("locationFrom", "Belfast")
+//            .param("countryFrom", "GBR")
+//            .param("locationTo", "Newry")
+//            .param("countryTo", "GBR"))
+//        .andExpect(status().isOk());
 
     mockMvc.perform(get(API_LEADING + "/calculateDistance")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
