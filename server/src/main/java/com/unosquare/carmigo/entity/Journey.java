@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -26,7 +27,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "journey")
-public class Journey {
+public class Journey implements Serializable {
+
+  private static final long serialVersionUID = -7773299486390690039L;
 
   @Id
   @SequenceGenerator(name = "journey_id_seq", sequenceName = "journey_id_seq", allocationSize = 1)

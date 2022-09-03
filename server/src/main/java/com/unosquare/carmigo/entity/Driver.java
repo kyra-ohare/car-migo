@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.entity;
 
+import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "driver")
-public class Driver {
+public class Driver implements Serializable {
+
+  private static final long serialVersionUID = 7388394799795788640L;
 
   @Id
   @Column(name = "id", updatable = false, nullable = false)

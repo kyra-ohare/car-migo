@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.entity;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "location")
-public class Location {
+public class Location implements Serializable {
+
+  private static final long serialVersionUID = 3523461982735207852L;
 
   @Id
   @SequenceGenerator(name = "location_id_seq", sequenceName = "location_id_seq", allocationSize = 1)
