@@ -6,12 +6,12 @@ CREATE TABLE IF NOT EXISTS user_access_status
 );
 
 CREATE SEQUENCE IF NOT EXISTS platform_user_id_seq
-    INCREMENT 1
-    START 6;
+    INCREMENT BY 1
+    START WITH 6;
 
 CREATE TABLE IF NOT EXISTS platform_user
 (
-    id INT NOT NULL DEFAULT platform_user_id_seq.nextval
+    id INT NOT NULL SEQUENCE platform_user_id_seq
         CONSTRAINT platform_user_pkey PRIMARY KEY,
     created_date DATE NOT NULL,
     first_name VARCHAR(255) NOT NULL,
@@ -50,12 +50,12 @@ CREATE TABLE IF NOT EXISTS location
 );
 
 CREATE SEQUENCE IF NOT EXISTS journey_id_seq
-    INCREMENT 1
-    START 11;
+    INCREMENT BY 1
+    START WITH 11;
 
 CREATE TABLE IF NOT EXISTS journey
 (
-    id  INT NOT NULL DEFAULT journey_id_seq.nextval
+    id  INT NOT NULL SEQUENCE journey_id_seq
         CONSTRAINT journey_pkey PRIMARY KEY,
     created_date TIMESTAMP NOT NULL,
     location_id_from INT NOT NULL
@@ -68,12 +68,12 @@ CREATE TABLE IF NOT EXISTS journey
 );
 
 CREATE SEQUENCE IF NOT EXISTS passenger_journey_id_seq
-    INCREMENT 1
-    START 13;
+    INCREMENT BY 1
+    START WITH 13;
 
 CREATE TABLE IF NOT EXISTS passenger_journey
 (
-    id INT NOT NULL DEFAULT passenger_journey_id_seq.nextval
+    id INT NOT NULL SEQUENCE passenger_journey_id_seq
         CONSTRAINT passenger_journey_pkey PRIMARY KEY,
     passenger_id INT NOT NULL,
     journey_id INT NOT NULL

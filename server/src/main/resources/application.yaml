@@ -16,6 +16,12 @@ spring:
           time_zone: UTC
         temp:
           use_jdbc_metadata_defaults: false
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false
+
 
 logging:
   level:

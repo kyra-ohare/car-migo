@@ -77,7 +77,7 @@ public class PlatformUserService {
       final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
       final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
       return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
-    } catch (final JsonPatchException | JsonProcessingException ex) {
+    } catch (final JsonPatchException | JsonProcessingException | DataIntegrityViolationException ex) {
       throw new PatchException(String.format("Error updating user - %s", ex.getMessage()));
     }
   }

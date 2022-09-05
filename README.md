@@ -21,7 +21,7 @@ less noise pollution, less road accidents, and you can make new friends to top i
 The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for fuel costs.
 
 ## Requirements
-- Java 11
+- Java 17
 - Docker
 
 ## How to run it?
