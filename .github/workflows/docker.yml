@@ -9,8 +9,6 @@ on:
       - "updates"
 jobs:
   build:
-    runs-on: ubuntu-latest
-  docker:
     name: Docker
     runs-on: ubuntu-latest
     steps:
