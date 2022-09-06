@@ -6,7 +6,7 @@
 # Queries: ./path/to/local/query, your-org/your-repo/queries@main
 # Command-line programs to run using the OS shell:https://git.io/JvXDl
 
-name: Car-Migo CI/CD with Maven, CodeQL and Docker
+name: Car-Migo builds with Maven and CodeQL
 
 on:
   push:
@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
-    name: Java CI with Maven
+    name: Maven Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
