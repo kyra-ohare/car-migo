@@ -4,7 +4,7 @@ services:
     image: car-migo
     container_name: car-migo_app
     ports:
-      - 8086:8086
+      - "8086:8086"
     depends_on:
       - db
   db:
@@ -12,7 +12,7 @@ services:
     container_name: car-migo_postgres
     restart: always
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_DB: carmigo
       POSTGRES_USER: admin
@@ -32,7 +32,7 @@ services:
     image: dpage/pgadmin4:6
     container_name: car-migo_pgadmin
     ports:
-      - 8000:80
+      - "8000:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@car-migo.com
       PGADMIN_DEFAULT_PASSWORD: password
