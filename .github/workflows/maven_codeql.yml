@@ -59,7 +59,7 @@ jobs:
   docker:
     name: Docker
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.repository.branch == 'updates'
+    if: github.event_name == "pull_request" && github.repository.branch == "updates"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
