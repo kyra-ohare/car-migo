@@ -11,7 +11,14 @@ name: Car-Migo builds with Maven and CodeQL
 on:
   push:
   pull_request:
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      java:
+        description: "Set up JDK 17"
+        default: "17"
+        required: true
+        type: string
+
   schedule:
     - cron: "37 20 * * 4"
 
@@ -22,10 +29,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Set up JDK 17
+      - name: ${{inputs.java.description}}
         uses: actions/setup-java@v3
         with:
-          java-version: "17"
+          java-version: ${{inputs.java.default}}
           distribution: "temurin"
           cache: maven
       - name: Build with Maven

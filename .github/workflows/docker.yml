@@ -6,7 +6,7 @@ name: Docker build and push
 on:
   push:
     branches:
-      - "updates"
+      - "main"
 jobs:
   build:
     name: Docker
@@ -39,3 +39,5 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/carmigo:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/carmigo:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/carmigo:buildcache,mode=max
+      - name: Image digest
+          run: echo ${{ steps.docker_build.outputs.digest }}
