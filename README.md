@@ -73,3 +73,9 @@ Open endpoints, i.e., no credentials needed:
 * http://localhost:8086/v1/login
 * http://localhost:8086/v1/journeys/calculateDistance
 * http://localhost:8086/v1/journeys/search
+
+## Docker Hub
+The latest car-migo image is available at https://hub.docker.com/r/kleydocker/car-migo
+```
+docker pull kleydocker/car-migo
+```
