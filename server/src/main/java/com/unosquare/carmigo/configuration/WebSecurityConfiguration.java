@@ -8,23 +8,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration {
 
   private final JwtRequestFilter jwtRequestFilter;
 
-  @Override
-  protected void configure(final HttpSecurity httpSecurity) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
@@ -38,12 +39,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return httpSecurity.build();
   }
 
   @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
+  public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
+      throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean

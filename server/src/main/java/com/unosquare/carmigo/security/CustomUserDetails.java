@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.security;
 
+import java.io.Serial;
 import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 @Setter
 public class CustomUserDetails extends User {
 
+  @Serial
   private static final long serialVersionUID = 7027723211089349611L;
 
   private int id;

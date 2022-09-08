@@ -21,17 +21,19 @@ less noise pollution, less road accidents, and you can make new friends to top i
 The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for fuel costs.
 
 ## Requirements
-- Java 11
+- Java 17
 - Docker
 
 ## How to run it?
 From your Unix-based terminal, navigate to the root of this project and run:
 ```
-./run-application.sh
+./run-app.sh
 ```
-This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven pre-installed because this project ships a Maven Wrapper.
+This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven
+pre-installed because this project ships a Maven Wrapper.
 
-The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application will be available at http://localhost:8086/.
+The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application
+will be available at http://localhost:8086/.
 
 To stop and remove the containers, run:
 ```
@@ -71,3 +73,9 @@ Open endpoints, i.e., no credentials needed:
 * http://localhost:8086/v1/login
 * http://localhost:8086/v1/journeys/calculateDistance
 * http://localhost:8086/v1/journeys/search
+
+## Docker Hub
+The latest car-migo image is available at https://hub.docker.com/r/kleydocker/car-migo
+```
+docker pull kleydocker/car-migo
+```

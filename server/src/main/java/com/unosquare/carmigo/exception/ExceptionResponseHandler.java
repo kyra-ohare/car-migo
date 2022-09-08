@@ -23,7 +23,6 @@ public class ExceptionResponseHandler {
       EntityNotFoundException.class,
       ResourceNotFoundException.class,
       NoResultException.class,
-      PatchException.class,
       HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<ErrorResponse> handleNotFoundException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_FOUND, exception.getMessage());
@@ -46,6 +45,7 @@ public class ExceptionResponseHandler {
 
   @ExceptionHandler({
       HttpMessageNotReadableException.class,
+      PatchException.class,
       BindException.class})
   public ResponseEntity<ErrorResponse> handleBadRequestException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());

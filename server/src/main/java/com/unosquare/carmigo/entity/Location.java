@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Table(name = "location")
 public class Location implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3523461982735207852L;
 
   @Id
