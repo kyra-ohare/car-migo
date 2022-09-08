@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Table(name = "journey")
 public class Journey implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -7773299486390690039L;
 
   @Id
