@@ -22,7 +22,6 @@ spring:
         composite-indicator:
           enabled: false
 
-
 logging:
   level:
     web: DEBUG
