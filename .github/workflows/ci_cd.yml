@@ -14,6 +14,10 @@ on:
   schedule:
     - cron: '37 20 * * 4'
 
+env:
+#  this is used by /journeys/calculateDistance endpoint
+  CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY: ${{ secrets.CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY }}
+
 jobs:
   maven:
     name: Maven Build
