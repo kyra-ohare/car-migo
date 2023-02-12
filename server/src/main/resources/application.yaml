@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Car-Migo
+    name: Car-Migo ${CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY:unknown_open_feign_distance_key}
   datasource:
     username: admin
     password: password
@@ -44,7 +44,7 @@ server:
 springdoc:
   api:
     description: RESTful API for CRUD operations on users (platform users, drivers and passengers) and journeys.
-    title: Car-Migo API
+    title: ${spring.application.name} API
   show-actuator: true
   swagger-ui:
     displayOperationId: true
@@ -63,7 +63,7 @@ open-feign:
   distance:
     endpoint: https://distanceto.p.rapidapi.com/get
     host: distanceto.p.rapidapi.com
-    key: b032eeff7amsh66f3dfb561292d1p1067b5jsn841d0ef5b06c
+    key: ${CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY:unknown_open_feign_distance_key}
 
 ---
 spring:
