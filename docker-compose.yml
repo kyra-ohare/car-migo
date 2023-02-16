@@ -20,7 +20,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   flyway:
-    image: flyway/flyway:9-alpine
+    image: flyway/flyway:9
     container_name: car-migo_flyway
     command: -url=jdbc:postgresql://db/carmigo -schemas=public -user=admin
       -password=password -connectRetries=5 migrate

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Car-Migo ${CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY:unknown_open_feign_distance_key}
+    name: Car-Migo
   datasource:
     username: admin
     password: password
