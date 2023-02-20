@@ -21,6 +21,16 @@ spring:
       client:
         composite-indicator:
           enabled: false
+  cache:
+    type: redis
+    redis:
+      host: localhost
+      port: 6379
+      time-to-live: 21600000 # 6 hours
+      connection_timeout: 5000
+      command_timeout: 5000
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 
 logging:
   level:
