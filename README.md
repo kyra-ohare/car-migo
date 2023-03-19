@@ -35,6 +35,8 @@ pre-installed because this project ships a Maven Wrapper.
 The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application
 will be available at http://localhost:8086/.
 
+Visit http://localhost:8086/v1/heartbeat to ensure everything is running as expected.
+
 To stop and remove the containers, run:
 ```
 docker-compose down

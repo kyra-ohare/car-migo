@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.controller;
 
-import com.unosquare.carmigo.repository.UserAccessStatus;
+import com.unosquare.carmigo.repository.UserAccessStatusRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Heartbeat Controller")
 public class HeartbeatController {
 
-  private final UserAccessStatus userAccessStatus;
+  private final UserAccessStatusRepository userAccessStatusRepository;
 
   @GetMapping
   public ResponseEntity<Map<String, Boolean>> heartbeat() {
     final var response = new HashMap<String, Boolean>();
-    response.put("Database", canConnectToDb());
+    response.put("Is Database running?", canConnectToDb());
 
     boolean isHealthy = true;
     for (boolean status : response.values()) {
@@ -38,7 +38,7 @@ public class HeartbeatController {
 
   private boolean canConnectToDb() {
     try {
-      return userAccessStatus.findById(1).isPresent();
+      return userAccessStatusRepository.findById(1).isPresent();
     } catch (Exception e) {
       System.err.println("Error occurred during DB health check. " + e.getMessage());
       return false;
