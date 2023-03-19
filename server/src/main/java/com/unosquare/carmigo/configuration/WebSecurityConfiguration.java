@@ -27,6 +27,7 @@ public class WebSecurityConfiguration {
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable().authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
         .antMatchers(HttpMethod.POST, "/v1/login").permitAll()
