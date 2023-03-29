@@ -75,6 +75,8 @@ It will also scan the code and produce a security report using CodeQL Analysis.
 
 Moreover, a Docker image is built and sent to [Docker Hub](#docker-hub) when the code is merged into the main branch.
 
+Git Actions is also scheduled to run once a week, every Monday at 7am UTC.
+
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
 * http://localhost:8086/swagger-ui/index.html
