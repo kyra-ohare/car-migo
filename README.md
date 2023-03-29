@@ -1,10 +1,14 @@
 # Car-Migo
 
-This is my first Spring Boot application.
+Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## What is the application?
-It is a match-making system for drivers and passengers.
-Drivers can create rides (a journey and a timeframe) while passengers can accept or reject.
+The application is quite straightway, you can either advertise rides or query them.
+
+It is a match-making system for drivers and passengers. You can either advertise rides or query them.
+Drivers can create rides (a journey and a timeframe) while passengers can book them.
+
+When inside the car share, you can enjoy the ride and make new friends. Come onboard and experience this new lifestyle.
 
 There are 5 types of users:
 * `Staged` users are when a user has created the account but has not confirmed the email yet.
@@ -62,6 +66,14 @@ Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo 
 
 ### restart.sh
 This script restarts the containers. You are also given the option to restart PostgreSQL and pgAdmin volumes.
+
+## CI/CD
+Git Actions is triggered everytime there is a new code push or a new pull request against the `main` branch.
+
+The script will build the application and run tests using Apache Maven.
+It will also scan the code and produce a security report using CodeQL Analysis.
+
+Moreover, a Docker image is built and sent to [Docker Hub](#docker-hub) when the code is merged into the main branch.
 
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
