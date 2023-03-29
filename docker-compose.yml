@@ -7,6 +7,7 @@ services:
       - "8086:8086"
     depends_on:
       - db
+
   db:
     image: postgres:14-bullseye
     container_name: car-migo_postgres
@@ -19,6 +20,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - db:/var/lib/postgresql/data
+
   flyway:
     image: flyway/flyway:9
     container_name: car-migo_flyway
@@ -28,6 +30,7 @@ services:
       - ./migrations:/flyway/sql
     depends_on:
       - db
+
   pgadmin:
     image: dpage/pgadmin4:6
     container_name: car-migo_pgadmin
@@ -38,6 +41,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
     volumes:
       - pgadmin:/var/lib/pgadmin
+
 volumes:
   db:
     name: car-migo_postgres
