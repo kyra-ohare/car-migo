@@ -3,9 +3,9 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## What is the application?
-The application is quite straightway, you can either advertise rides or query them.
+The application is quite straightway. It is a match-making system for drivers and passengers.
+You can either advertise rides or query them.
 
-It is a match-making system for drivers and passengers. You can either advertise rides or query them.
 Drivers can create rides (a journey and a timeframe) while passengers can book them.
 
 When inside the car share, you can enjoy the ride and make new friends. Come onboard and experience this new lifestyle.
