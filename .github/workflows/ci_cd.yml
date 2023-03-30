@@ -1,18 +1,20 @@
 # For further information about Maven workflows
 # https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-# For further inforamtion about CodeQL workflows
+# For further information about CodeQL workflows
 # Language support: https://git.io/codeql-language-support
 # Queries: ./path/to/local/query, your-org/your-repo/queries@main
 # Command-line programs to run using the OS shell:https://git.io/JvXDl
 
-name: Car-Migo builds with Maven and CodeQL
+name: Car-Migo builds with Maven, CodeQL and Docker
 
 on:
   push:
   pull_request:
+    branches:
+      - main
   schedule:
-    - cron: '37 20 * * 4'
+    - cron: '00 7 * * 1'
 
 env:
 # this is used by /journeys/calculateDistance endpoint
