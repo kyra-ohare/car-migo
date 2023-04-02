@@ -14,7 +14,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '37 20 * * 4'
+    - cron: '00 7 * * 1'
 
 env:
 # this is used by /journeys/calculateDistance endpoint
