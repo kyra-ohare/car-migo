@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
+import static com.unosquare.carmigo.security.UserStatus.ADMIN;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,7 +62,7 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
     }
-    hidePassengerAndMaybeDriverFields(true, result);
+    hidePassengerAndMaybeDriverFields(result, true);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
@@ -79,7 +79,7 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this passenger.");
     }
-    hidePassengerAndMaybeDriverFields(false, result);
+    hidePassengerAndMaybeDriverFields(result, false);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
   }
 
@@ -160,7 +160,7 @@ public class JourneyService {
     }
   }
 
-  private void hidePassengerAndMaybeDriverFields(final boolean hideDriver, final List<Journey> journeys) {
+  private void hidePassengerAndMaybeDriverFields(final List<Journey> journeys, final boolean hideDriver) {
     for (final Journey j : journeys) {
       j.setPassengers(null);
       if (hideDriver) {

@@ -16,12 +16,5 @@ public final class AppConstants {
 
   public static final int ALIAS_CURRENT_USER = 0;
 
-  public static final String ACTIVE = "ACTIVE";
-  public static final String ADMIN = "ADMIN";
-  public static final String DEV = "DEV";
-  public static final String LOCKED_OUT = "LOCKED_OUT";
-  public static final String STAGED = "STAGED";
-  public static final String SUSPENDED = "SUSPENDED";
-
   public static final String NOT_PERMITTED = "Not permitted";
 }

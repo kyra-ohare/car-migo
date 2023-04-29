@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.security.UserStatus.ACTIVE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,15 +13,14 @@ import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
-import java.time.Instant;
-import java.util.Optional;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.Instant;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

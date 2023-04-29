@@ -38,14 +38,14 @@ public class AppUser {
 
     private int id;
     private String username;
-    private String userAccessStatus;
+    private UserStatus userAccessStatus;
   }
 
-  private String getUserAccessStatus(final CustomUserDetails currentAppUser) {
+  private UserStatus getUserAccessStatus(final CustomUserDetails currentAppUser) {
     final ArrayList<GrantedAuthority> authorities = new ArrayList<>(currentAppUser.getAuthorities());
     if (authorities.get(0).getAuthority() == null) {
       throw new UnauthorizedException(NOT_PERMITTED);
     }
-    return authorities.get(0).getAuthority();
+    return UserStatus.valueOf(authorities.get(0).getAuthority());
   }
 }

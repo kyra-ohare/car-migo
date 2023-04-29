@@ -1,6 +1,6 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.security.UserStatus.ACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

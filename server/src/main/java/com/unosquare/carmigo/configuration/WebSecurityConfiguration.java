@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.configuration;
 
-import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
-import static com.unosquare.carmigo.constant.AppConstants.DEV;
+import static com.unosquare.carmigo.security.UserStatus.ADMIN;
+import static com.unosquare.carmigo.security.UserStatus.DEV;
 
 import com.unosquare.carmigo.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class WebSecurityConfiguration {
            .requestMatchers(HttpMethod.POST, "/v1/login").permitAll()
            .requestMatchers(HttpMethod.GET, "/v1/journeys/calculateDistance").permitAll()
            .requestMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
-           .requestMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN, DEV)
+           .requestMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN.toString(), DEV.toString())
            .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
            .requestMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()
            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()

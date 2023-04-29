@@ -1,12 +1,6 @@
 package com.unosquare.carmigo.security;
 
-import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
-import static com.unosquare.carmigo.constant.AppConstants.ADMIN;
-import static com.unosquare.carmigo.constant.AppConstants.DEV;
-import static com.unosquare.carmigo.constant.AppConstants.LOCKED_OUT;
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
-import static com.unosquare.carmigo.constant.AppConstants.STAGED;
-import static com.unosquare.carmigo.constant.AppConstants.SUSPENDED;
 
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.exception.UnauthorizedException;
@@ -49,20 +43,13 @@ public class UserSecurityService implements UserDetailsService {
    * @return the UserDetails
    */
   private UserDetails getUserDetails(final PlatformUser currentUser) {
-    switch (currentUser.getUserAccessStatus().getStatus()) {
-      case ACTIVE:
-      case ADMIN:
-      case DEV:
-      case SUSPENDED:
-        return new CustomUserDetails(
-            currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(), getAuthorities(currentUser));
-      case LOCKED_OUT:
-        throw new UnauthorizedException("User is locked out after 5 failed attempts.");
-      case STAGED:
-        throw new UnauthorizedException("User needs to confirm email.");
-      default:
-        throw new UnauthorizedException(NOT_PERMITTED);
-    }
+    return switch (UserStatus.valueOf(currentUser.getUserAccessStatus().getStatus())) {
+      case ACTIVE, ADMIN, DEV, SUSPENDED -> new CustomUserDetails(
+        currentUser.getId(), currentUser.getEmail(), currentUser.getPassword(), getAuthorities(currentUser));
+      case LOCKED_OUT -> throw new UnauthorizedException("User is locked out after 5 failed attempts.");
+      case STAGED -> throw new UnauthorizedException("User needs to confirm email.");
+      default -> throw new UnauthorizedException(NOT_PERMITTED);
+    };
   }
 
   private Collection<? extends GrantedAuthority> getAuthorities(final PlatformUser currentUser) {
