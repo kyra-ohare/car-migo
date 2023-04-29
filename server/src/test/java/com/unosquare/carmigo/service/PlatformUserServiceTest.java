@@ -175,13 +175,4 @@ public class PlatformUserServiceTest {
     platformUserService.deletePlatformUserById(anyInt());
     verify(platformUserRepositoryMock).deleteById(anyInt());
   }
-
-  @Test
-  public void delete_PlatformUser_Returns_EntityNotFoundException() {
-    doThrow(EntityNotFoundException.class).when(platformUserRepositoryMock).deleteById(anyInt());
-    assertThrows(EntityNotFoundException.class,
-        () -> platformUserService.deletePlatformUserById(anyInt()),
-        "EntityNotFoundException is expected");
-    verify(platformUserRepositoryMock).deleteById(anyInt());
-  }
 }

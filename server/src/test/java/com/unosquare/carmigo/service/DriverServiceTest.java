@@ -109,13 +109,4 @@ public class DriverServiceTest {
     driverService.deleteDriverById(anyInt());
     verify(driverRepositoryMock).deleteById(anyInt());
   }
-
-  @Test
-  public void delete_Driver_By_Id_EntityNotFoundException() {
-    doThrow(EntityNotFoundException.class).when(driverRepositoryMock).deleteById(anyInt());
-    assertThrows(EntityNotFoundException.class,
-        () -> driverService.deleteDriverById(anyInt()),
-        "EntityNotFoundException is expected");
-    verify(driverRepositoryMock).deleteById(anyInt());
-  }
 }

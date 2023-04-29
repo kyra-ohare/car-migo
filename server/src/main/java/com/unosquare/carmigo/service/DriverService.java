@@ -47,11 +47,7 @@ public class DriverService {
   }
 
   public void deleteDriverById(final int driverId) {
-    try {
-      driverRepository.deleteById(driverId);
-    } catch (final EmptyResultDataAccessException ex) {
-      throw new EntityNotFoundException(DRIVER_NOT_FOUND);
-    }
+    driverRepository.deleteById(driverId);
   }
 
   private Driver findDriverById(final int driverId) {

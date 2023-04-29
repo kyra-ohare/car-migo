@@ -83,11 +83,7 @@ public class PlatformUserService {
   }
 
   public void deletePlatformUserById(final int userId) {
-    try {
-      platformUserRepository.deleteById(userId);
-    } catch (final EmptyResultDataAccessException ex) {
-      throw new EntityNotFoundException(USER_NOT_FOUND);
-    }
+    platformUserRepository.deleteById(userId);
   }
 
   private PlatformUser findPlatformUserById(final int userId) {

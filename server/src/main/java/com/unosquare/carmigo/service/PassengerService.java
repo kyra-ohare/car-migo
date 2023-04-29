@@ -46,11 +46,7 @@ public class PassengerService {
   }
 
   public void deletePassengerById(final int passengerId) {
-    try {
-      passengerRepository.deleteById(passengerId);
-    } catch (final EmptyResultDataAccessException ex) {
-      throw new EntityNotFoundException(PASSENGER_NOT_FOUND);
-    }
+    passengerRepository.deleteById(passengerId);
   }
 
   public Passenger findPassengerById(final int passengerId) {

@@ -99,13 +99,4 @@ public class PassengerServiceTest {
     passengerService.deletePassengerById(anyInt());
     verify(passengerRepositoryMock).deleteById(anyInt());
   }
-
-  @Test
-  public void delete_Passenger_By_Id_EntityNotFoundException() {
-    doThrow(EntityNotFoundException.class).when(passengerRepositoryMock).deleteById(anyInt());
-    assertThrows(EntityNotFoundException.class,
-        () -> passengerService.deletePassengerById(anyInt()),
-        "EntityNotFoundException is expected");
-    verify(passengerRepositoryMock).deleteById(anyInt());
-  }
 }
