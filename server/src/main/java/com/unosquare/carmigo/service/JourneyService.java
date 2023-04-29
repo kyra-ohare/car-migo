@@ -84,6 +84,7 @@ public class JourneyService {
   }
 
   public GrabJourneyDTO createJourney(final int driverId, final CreateJourneyDTO createJourneyDTO) {
+//    TODO: Check if driver exists first
     final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);
     journey.setCreatedDate(Instant.now());
     journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
@@ -95,6 +96,7 @@ public class JourneyService {
   }
 
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
+    //    TODO: Check if passenger exists first
     final Journey journey = findJourneyById(journeyId);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(

@@ -43,7 +43,7 @@ public class PlatformUserService {
     if (platformUserOptional.isEmpty()) {
       throw new EntityNotFoundException(USER_NOT_FOUND);
     }
-    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE)) {
+    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE.name())) {
       throw new IllegalStateException("User is already active");
     }
     platformUserOptional.get()
