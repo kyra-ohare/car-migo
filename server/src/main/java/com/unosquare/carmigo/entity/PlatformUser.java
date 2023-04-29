@@ -18,6 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.InstantAsTimestampJdbcType;
 
 @Entity
 @Getter
@@ -37,6 +39,7 @@ public class PlatformUser implements Serializable {
   private int id;
 
   @Column(name = "created_date", nullable = false)
+  @JdbcType(InstantAsTimestampJdbcType.class)
   private Instant createdDate;
 
   @Column(name = "first_name", nullable = false)
@@ -46,6 +49,7 @@ public class PlatformUser implements Serializable {
   private String lastName;
 
   @Column(name = "dob", nullable = false)
+  @JdbcType(InstantAsTimestampJdbcType.class)
   private Instant dob;
 
   @Column(name = "email", nullable = false, unique = true)
