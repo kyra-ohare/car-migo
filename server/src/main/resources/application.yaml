@@ -9,13 +9,15 @@ spring:
     database-platform: carmigo
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           lob:
             non_contextual_creation: true
           time_zone: UTC
         temp:
           use_jdbc_metadata_defaults: false
+        type:
+          preferred_instant_jdbc_type: TIMESTAMP
   cloud:
     discovery:
       client:

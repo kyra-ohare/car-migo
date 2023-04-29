@@ -5,8 +5,8 @@ import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MIN_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MAX_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MIN_SIZE;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data

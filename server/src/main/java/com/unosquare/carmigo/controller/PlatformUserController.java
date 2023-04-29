@@ -10,7 +10,7 @@ import com.unosquare.carmigo.model.response.PlatformUserViewModel;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

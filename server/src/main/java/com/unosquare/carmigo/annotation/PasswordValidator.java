@@ -5,8 +5,8 @@ import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MIN_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.SPECIAL_CHARACTERS;
 
 import com.google.common.base.CharMatcher;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
 

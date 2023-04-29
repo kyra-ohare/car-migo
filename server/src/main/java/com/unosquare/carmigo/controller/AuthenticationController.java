@@ -6,7 +6,7 @@ import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
 import com.unosquare.carmigo.model.response.AuthenticationViewModel;
 import com.unosquare.carmigo.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

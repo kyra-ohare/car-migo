@@ -9,7 +9,7 @@ import com.unosquare.carmigo.model.response.DriverViewModel;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.DriverService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
