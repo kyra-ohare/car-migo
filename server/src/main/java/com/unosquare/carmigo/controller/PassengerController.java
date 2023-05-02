@@ -3,7 +3,7 @@ package com.unosquare.carmigo.controller;
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.unosquare.carmigo.dto.GrabPassengerDTO;
-import com.unosquare.carmigo.model.response.PassengerRequest;
+import com.unosquare.carmigo.model.response.PassengerResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PassengerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,25 +32,25 @@ public class PassengerController {
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PassengerRequest> getCurrentPassengerProfile() {
+  public ResponseEntity<PassengerResponse> getCurrentPassengerProfile() {
     return ResponseEntity.ok(getPassenger(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PassengerRequest> getPassengerById(@PathVariable final int passengerId) {
+  public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable final int passengerId) {
     return ResponseEntity.ok(getPassenger(passengerId));
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  public ResponseEntity<PassengerRequest> createPassenger() {
+  public ResponseEntity<PassengerResponse> createPassenger() {
     return new ResponseEntity<>(createPassenger(ALIAS_CURRENT_USER), HttpStatus.CREATED);
   }
 
   @PostMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PassengerRequest> createPassengerById(@PathVariable final int passengerId) {
+  public ResponseEntity<PassengerResponse> createPassengerById(@PathVariable final int passengerId) {
     return new ResponseEntity<>(createPassenger(passengerId), HttpStatus.CREATED);
   }
 
@@ -68,14 +68,14 @@ public class PassengerController {
     return ResponseEntity.noContent().build();
   }
 
-  private PassengerRequest getPassenger(final int passengerId) {
+  private PassengerResponse getPassenger(final int passengerId) {
     final GrabPassengerDTO grabPassengerDTO = passengerService.getPassengerById(getCurrentId(passengerId));
-    return modelMapper.map(grabPassengerDTO, PassengerRequest.class);
+    return modelMapper.map(grabPassengerDTO, PassengerResponse.class);
   }
 
-  private PassengerRequest createPassenger(final int passengerId) {
+  private PassengerResponse createPassenger(final int passengerId) {
     final GrabPassengerDTO grabPassengerDTO = passengerService.createPassengerById(getCurrentId(passengerId));
-    return modelMapper.map(grabPassengerDTO, PassengerRequest.class);
+    return modelMapper.map(grabPassengerDTO, PassengerResponse.class);
   }
 
   private void deletePassenger(final int passengerId) {

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlatformUserRequest {
+public class PlatformUserResponse {
 
   private int id;
 
@@ -24,5 +24,5 @@ public class PlatformUserRequest {
 
   private String phoneNumber;
 
-  private UserAccessStatusRequest userAccessStatus;
+  private UserAccessStatusResponse userAccessStatus;
 }

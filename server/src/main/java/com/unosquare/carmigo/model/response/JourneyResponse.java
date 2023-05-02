@@ -12,21 +12,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
-public class JourneyViewModel {
+public class JourneyResponse {
 
   private int id;
 
   private Instant createdDate;
 
-  private LocationRequest locationFrom;
+  private LocationResponse locationFrom;
 
-  private LocationRequest locationTo;
+  private LocationResponse locationTo;
 
   private int maxPassengers;
 
   private Instant dateTime;
 
-  private DriverRequest driver;
+  private DriverResponse driver;
 
-  private List<PassengerRequest> passengers;
+  private List<PassengerResponse> passengers;
 }

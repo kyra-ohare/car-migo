@@ -4,7 +4,7 @@ import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.unosquare.carmigo.dto.CreateDriverDTO;
 import com.unosquare.carmigo.dto.GrabDriverDTO;
-import com.unosquare.carmigo.model.response.DriverRequest;
+import com.unosquare.carmigo.model.response.DriverResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.DriverService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,26 +36,26 @@ public class DriverController {
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<DriverRequest> getCurrentDriverProfile() {
+  public ResponseEntity<DriverResponse> getCurrentDriverProfile() {
     return ResponseEntity.ok(getDriver(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<DriverRequest> getDriverById(@PathVariable final int driverId) {
+  public ResponseEntity<DriverResponse> getDriverById(@PathVariable final int driverId) {
     return ResponseEntity.ok(getDriver(driverId));
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  public ResponseEntity<DriverRequest> createDriver(
+  public ResponseEntity<DriverResponse> createDriver(
       @Valid @RequestBody final com.unosquare.carmigo.model.request.DriverRequest driverRequest) {
     return new ResponseEntity<>(createDriver(ALIAS_CURRENT_USER, driverRequest), HttpStatus.CREATED);
   }
 
   @PostMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<DriverRequest> createDriverById(
+  public ResponseEntity<DriverResponse> createDriverById(
       @PathVariable final int driverId, @Valid @RequestBody final com.unosquare.carmigo.model.request.DriverRequest driverRequest) {
     return new ResponseEntity<>(createDriver(driverId, driverRequest), HttpStatus.CREATED);
   }
@@ -75,15 +75,15 @@ public class DriverController {
     return ResponseEntity.noContent().build();
   }
 
-  private DriverRequest getDriver(final int driverId) {
+  private DriverResponse getDriver(final int driverId) {
     final GrabDriverDTO grabDriverDTO = driverService.getDriverById(getCurrentId(driverId));
-    return modelMapper.map(grabDriverDTO, DriverRequest.class);
+    return modelMapper.map(grabDriverDTO, DriverResponse.class);
   }
 
-  private DriverRequest createDriver(final int driverId, final com.unosquare.carmigo.model.request.DriverRequest driverRequest) {
+  private DriverResponse createDriver(final int driverId, final com.unosquare.carmigo.model.request.DriverRequest driverRequest) {
     final CreateDriverDTO createDriverDTO = modelMapper.map(driverRequest, CreateDriverDTO.class);
     final GrabDriverDTO grabDriverDTO = driverService.createDriverById(getCurrentId(driverId), createDriverDTO);
-    return modelMapper.map(grabDriverDTO, DriverRequest.class);
+    return modelMapper.map(grabDriverDTO, DriverResponse.class);
   }
 
   private void deleteDriver(final int driverId) {

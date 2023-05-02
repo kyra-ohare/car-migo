@@ -1,6 +1,5 @@
 package com.unosquare.carmigo.model.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PassengerRequest {
+public class LocationResponse {
 
   private int id;
 
-  @JsonProperty("user")
-  private PlatformUserRequest platformUser;
+  private String description;
 }

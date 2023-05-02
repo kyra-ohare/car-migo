@@ -3,7 +3,7 @@ package com.unosquare.carmigo.model.response;
 import lombok.Data;
 
 @Data
-public class DistanceRequest {
+public class DistanceResponse {
 
   private Location locationFrom;
 

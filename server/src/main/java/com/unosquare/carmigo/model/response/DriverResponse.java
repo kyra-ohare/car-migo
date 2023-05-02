@@ -8,12 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DriverRequest {
+public class DriverResponse {
 
   private int id;
 
   private String licenseNumber;
 
   @JsonProperty("user")
-  private PlatformUserRequest platformUser;
+  private PlatformUserResponse platformUser;
 }

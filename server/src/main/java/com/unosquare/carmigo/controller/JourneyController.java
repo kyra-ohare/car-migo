@@ -9,8 +9,8 @@ import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.model.request.CalculateDistanceCriteriaRequest;
 import com.unosquare.carmigo.model.request.JourneyRequest;
 import com.unosquare.carmigo.model.request.SearchJourneysRequest;
-import com.unosquare.carmigo.model.response.DistanceRequest;
-import com.unosquare.carmigo.model.response.JourneyViewModel;
+import com.unosquare.carmigo.model.response.DistanceResponse;
+import com.unosquare.carmigo.model.response.JourneyResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.JourneyService;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -44,55 +44,55 @@ public class JourneyController {
 
   @GetMapping(value = "/{journeyId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<JourneyViewModel> getJourneyById(@PathVariable final int journeyId) {
+  public ResponseEntity<JourneyResponse> getJourneyById(@PathVariable final int journeyId) {
     final GrabJourneyDTO grabJourneyDTO = journeyService.getJourneyById(journeyId);
-    final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
-    return ResponseEntity.ok(journeyViewModel);
+    final JourneyResponse journeyResponse = modelMapper.map(grabJourneyDTO, JourneyResponse.class);
+    return ResponseEntity.ok(journeyResponse);
   }
 
   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<JourneyViewModel>> searchJourneys(
+  public ResponseEntity<List<JourneyResponse>> searchJourneys(
       @Valid final SearchJourneysRequest searchJourneysRequest) {
     final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.searchJourneys(searchJourneysRequest);
-    final List<JourneyViewModel> journeyViewModelList = MapperUtils.mapList(grabJourneyDTOList,
-        JourneyViewModel.class, modelMapper);
-    return ResponseEntity.ok(journeyViewModelList);
+    final List<JourneyResponse> journeyResponseList = MapperUtils.mapList(grabJourneyDTOList,
+        JourneyResponse.class, modelMapper);
+    return ResponseEntity.ok(journeyResponseList);
   }
 
   @GetMapping(value = "/drivers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<List<JourneyViewModel>> getJourneysByCurrentDriver() {
+  public ResponseEntity<List<JourneyResponse>> getJourneysByCurrentDriver() {
     return ResponseEntity.ok(getJourneysByDriver(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<List<JourneyViewModel>> getJourneysByDriverId(@PathVariable final int driverId) {
+  public ResponseEntity<List<JourneyResponse>> getJourneysByDriverId(@PathVariable final int driverId) {
     return ResponseEntity.ok(getJourneysByDriver(driverId));
   }
 
   @GetMapping(value = "/passengers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<List<JourneyViewModel>> getJourneysByCurrentPassenger() {
+  public ResponseEntity<List<JourneyResponse>> getJourneysByCurrentPassenger() {
     return ResponseEntity.ok(getJourneysByPassenger(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/passengers/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<List<JourneyViewModel>> getJourneysByPassengerId(@PathVariable final int passengerId) {
+  public ResponseEntity<List<JourneyResponse>> getJourneysByPassengerId(@PathVariable final int passengerId) {
     return ResponseEntity.ok(getJourneysByPassenger(passengerId));
   }
 
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  public ResponseEntity<JourneyViewModel> createJourney(
+  public ResponseEntity<JourneyResponse> createJourney(
       @Valid @RequestBody final JourneyRequest journeyRequest) {
     return new ResponseEntity<>(createJourney(ALIAS_CURRENT_USER, journeyRequest), HttpStatus.CREATED);
   }
 
   @PostMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<JourneyViewModel> createJourneyByDriverId(
+  public ResponseEntity<JourneyResponse> createJourneyByDriverId(
       @PathVariable final int driverId, @Valid @RequestBody final JourneyRequest journeyRequest) {
     return new ResponseEntity<>(createJourney(driverId, journeyRequest), HttpStatus.CREATED);
   }
@@ -114,11 +114,11 @@ public class JourneyController {
 
   @PatchMapping(value = "/{journeyId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
-  public ResponseEntity<JourneyViewModel> patchJourney(
+  public ResponseEntity<JourneyResponse> patchJourney(
       @PathVariable final int journeyId, @Valid @RequestBody final JsonPatch patch) {
     final GrabJourneyDTO grabJourneyDTO = journeyService.patchJourney(journeyId, patch);
-    final JourneyViewModel journeyViewModel = modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
-    return ResponseEntity.ok(journeyViewModel);
+    final JourneyResponse journeyResponse = modelMapper.map(grabJourneyDTO, JourneyResponse.class);
+    return ResponseEntity.ok(journeyResponse);
   }
 
   @DeleteMapping(value = "/{journeyId}")
@@ -144,27 +144,27 @@ public class JourneyController {
   }
 
   @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<DistanceRequest> calculateDistance(@Valid final CalculateDistanceCriteriaRequest criteria) {
+  public ResponseEntity<DistanceResponse> calculateDistance(@Valid final CalculateDistanceCriteriaRequest criteria) {
     final GrabDistanceDTO grabDistanceDTO = journeyService.calculateDistance(criteria);
-    final DistanceRequest distanceRequest = modelMapper.map(grabDistanceDTO, DistanceRequest.class);
-    return ResponseEntity.ok(distanceRequest);
+    final DistanceResponse distanceResponse = modelMapper.map(grabDistanceDTO, DistanceResponse.class);
+    return ResponseEntity.ok(distanceResponse);
   }
 
-  private List<JourneyViewModel> getJourneysByDriver(final int driverId) {
+  private List<JourneyResponse> getJourneysByDriver(final int driverId) {
     final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByDriverId(getCurrentUserId(driverId));
-    return MapperUtils.mapList(grabJourneyDTOList, JourneyViewModel.class, modelMapper);
+    return MapperUtils.mapList(grabJourneyDTOList, JourneyResponse.class, modelMapper);
   }
 
-  private List<JourneyViewModel> getJourneysByPassenger(final int passengerId) {
+  private List<JourneyResponse> getJourneysByPassenger(final int passengerId) {
     final List<GrabJourneyDTO> grabJourneyDTOList = journeyService.getJourneysByPassengersId(
         getCurrentUserId(passengerId));
-    return MapperUtils.mapList(grabJourneyDTOList, JourneyViewModel.class, modelMapper);
+    return MapperUtils.mapList(grabJourneyDTOList, JourneyResponse.class, modelMapper);
   }
 
-  private JourneyViewModel createJourney(final int driverId, final JourneyRequest journeyRequest) {
+  private JourneyResponse createJourney(final int driverId, final JourneyRequest journeyRequest) {
     final CreateJourneyDTO createJourneyDTO = modelMapper.map(journeyRequest, CreateJourneyDTO.class);
     final GrabJourneyDTO grabJourneyDTO = journeyService.createJourney(getCurrentUserId(driverId), createJourneyDTO);
-    return modelMapper.map(grabJourneyDTO, JourneyViewModel.class);
+    return modelMapper.map(grabJourneyDTO, JourneyResponse.class);
   }
 
   private int getCurrentUserId(final int id) {
