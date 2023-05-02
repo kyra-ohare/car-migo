@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class AuthenticationViewModel {
+public class UserAccessStatusRequest {
 
-  private String jwt;
+  private int id;
+
+  private String status;
 }

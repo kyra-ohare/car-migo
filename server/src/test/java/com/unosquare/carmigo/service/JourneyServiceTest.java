@@ -27,8 +27,8 @@ import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
-import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.model.request.CalculateDistanceCriteriaRequest;
+import com.unosquare.carmigo.model.request.SearchJourneysRequest;
 import com.unosquare.carmigo.openfeign.DistanceApi;
 import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.openfeign.Points;
@@ -73,9 +73,9 @@ public class JourneyServiceTest {
   @Fixture private Journey journeyFixture;
   @Fixture private CreateJourneyDTO createJourneyDTOFixture;
   @Fixture private List<Journey> journeyFixtureList;
-  @Fixture private CreateSearchJourneysCriteria createSearchJourneysCriteriaFixture;
+  @Fixture private SearchJourneysRequest searchJourneysRequestFixture;
   @Fixture private DistanceHolder distanceHolderFixture;
-  @Fixture private CreateCalculateDistanceCriteria createCalculateDistanceCriteriaFixture;
+  @Fixture private CalculateDistanceCriteriaRequest calculateDistanceCriteriaRequestFixture;
   @Fixture private List<Passenger> passengerFixtureList;
   @Fixture private Passenger passengerFixture;
 
@@ -117,7 +117,7 @@ public class JourneyServiceTest {
         anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
     final List<GrabJourneyDTO> grabJourneyDTOList = MapperUtils.mapList(journeyFixtureList, GrabJourneyDTO.class,
         modelMapperMock);
-    final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(createSearchJourneysCriteriaFixture);
+    final List<GrabJourneyDTO> journeyList = journeyService.searchJourneys(searchJourneysRequestFixture);
 
     assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
     verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
@@ -130,7 +130,7 @@ public class JourneyServiceTest {
         anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
     journeyFixtureList.clear();
     assertThrows(ResourceNotFoundException.class,
-        () -> journeyService.searchJourneys(createSearchJourneysCriteriaFixture),
+        () -> journeyService.searchJourneys(searchJourneysRequestFixture),
         "ResourceNotFoundException is expected.");
     verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
         anyInt(), anyInt(), any(Instant.class), any(Instant.class));
@@ -309,7 +309,7 @@ public class JourneyServiceTest {
     distanceHolder.setPoints(List.of(new Points(), new Points()));
     when(distanceApiMock.getDistance(anyString())).thenReturn(distanceHolderFixture);
     final GrabDistanceDTO grabDistanceDTO = journeyService
-        .calculateDistance(createCalculateDistanceCriteriaFixture);
+        .calculateDistance(calculateDistanceCriteriaRequestFixture);
 
     assertThat(grabDistanceDTO.getLocationFrom().getLocation())
         .isEqualTo(distanceHolderFixture.getPoints().get(0).getProperties().getGeocode().getName());

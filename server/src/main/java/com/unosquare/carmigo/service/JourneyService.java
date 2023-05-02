@@ -18,8 +18,8 @@ import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.model.request.CreateCalculateDistanceCriteria;
-import com.unosquare.carmigo.model.request.CreateSearchJourneysCriteria;
+import com.unosquare.carmigo.model.request.CalculateDistanceCriteriaRequest;
+import com.unosquare.carmigo.model.request.SearchJourneysRequest;
 import com.unosquare.carmigo.openfeign.DistanceApi;
 import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.openfeign.Geocode;
@@ -55,12 +55,12 @@ public class JourneyService {
     return modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
   }
 
-  public List<GrabJourneyDTO> searchJourneys(final CreateSearchJourneysCriteria createSearchJourneysCriteria) {
+  public List<GrabJourneyDTO> searchJourneys(final SearchJourneysRequest searchJourneysRequest) {
     final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
-        createSearchJourneysCriteria.getLocationIdFrom(), createSearchJourneysCriteria.getLocationIdTo(),
-        createSearchJourneysCriteria.getDateTimeFrom(), createSearchJourneysCriteria.getDateTimeTo());
+        searchJourneysRequest.getLocationIdFrom(), searchJourneysRequest.getLocationIdTo(),
+        searchJourneysRequest.getDateTimeFrom(), searchJourneysRequest.getDateTimeTo());
     if (result.isEmpty()) {
-      throw new ResourceNotFoundException("No journeys found for this route. " + createSearchJourneysCriteria);
+      throw new ResourceNotFoundException("No journeys found for this route. " + searchJourneysRequest);
     }
     hidePassengerAndMaybeDriverFields(result, true);
     return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
@@ -145,8 +145,8 @@ public class JourneyService {
     throw new EntityNotFoundException("Passenger is not in this journey.");
   }
 
-  public GrabDistanceDTO calculateDistance(final CreateCalculateDistanceCriteria createCalculateDistanceCriteria) {
-    final String request = prepareRequestToDistanceApi(createCalculateDistanceCriteria);
+  public GrabDistanceDTO calculateDistance(final CalculateDistanceCriteriaRequest calculateDistanceCriteriaRequest) {
+    final String request = prepareRequestToDistanceApi(calculateDistanceCriteriaRequest);
     final DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderToGrabDistanceDto(distanceHolder);
   }
@@ -171,7 +171,7 @@ public class JourneyService {
     }
   }
 
-  private String prepareRequestToDistanceApi(final CreateCalculateDistanceCriteria criteria) {
+  private String prepareRequestToDistanceApi(final CalculateDistanceCriteriaRequest criteria) {
     return "[{\"t\":\"" + criteria.getLocationFrom() + "," + criteria.getCountryFrom() + "\"},{\"t\":\""
         + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
   }

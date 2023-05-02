@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateAuthenticationViewModel {
+public class AuthenticationRequest {
 
   @NotEmpty
   @Size(min = EMAIL_MIN_SIZE, max = EMAIL_MAX_SIZE)

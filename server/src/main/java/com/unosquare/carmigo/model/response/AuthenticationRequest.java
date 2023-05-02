@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LocationViewModel {
+public class AuthenticationRequest {
 
-  private int id;
-
-  private String description;
+  private String jwt;
 }

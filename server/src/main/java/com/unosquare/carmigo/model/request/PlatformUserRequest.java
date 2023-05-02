@@ -17,7 +17,7 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class CreatePlatformUserViewModel {
+public class PlatformUserRequest {
 
   @NotEmpty
   @Size(min = 1, max = 255)

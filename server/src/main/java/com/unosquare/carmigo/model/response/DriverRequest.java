@@ -8,10 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PassengerViewModel {
+public class DriverRequest {
 
   private int id;
 
+  private String licenseNumber;
+
   @JsonProperty("user")
-  private PlatformUserViewModel platformUser;
+  private PlatformUserRequest platformUser;
 }

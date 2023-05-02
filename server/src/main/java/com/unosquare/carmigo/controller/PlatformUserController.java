@@ -5,8 +5,7 @@ import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
 import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
-import com.unosquare.carmigo.model.request.CreatePlatformUserViewModel;
-import com.unosquare.carmigo.model.response.PlatformUserViewModel;
+import com.unosquare.carmigo.model.response.PlatformUserRequest;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,36 +44,36 @@ public class PlatformUserController {
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserViewModel> getCurrentPlatformUserProfile() {
+  public ResponseEntity<PlatformUserRequest> getCurrentPlatformUserProfile() {
     return ResponseEntity.ok(getPlatformUser(ALIAS_CURRENT_USER));
   }
 
   @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserViewModel> getPlatformUserById(@PathVariable final int userId) {
+  public ResponseEntity<PlatformUserRequest> getPlatformUserById(@PathVariable final int userId) {
     return ResponseEntity.ok(getPlatformUser(userId));
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-      @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel) {
+  public ResponseEntity<PlatformUserRequest> createPlatformUser(
+      @Valid @RequestBody final com.unosquare.carmigo.model.request.PlatformUserRequest platformUserRequest) {
     final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
-        createPlatformUserViewModel, CreatePlatformUserDTO.class);
+      platformUserRequest, CreatePlatformUserDTO.class);
     final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTO);
-    final PlatformUserViewModel platformUserViewModel = modelMapper.map(
-        grabPlatformUserDTO, PlatformUserViewModel.class);
+    final PlatformUserRequest platformUserViewModel = modelMapper.map(
+        grabPlatformUserDTO, PlatformUserRequest.class);
     return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
   }
 
   @PatchMapping(consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserViewModel> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
+  public ResponseEntity<PlatformUserRequest> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
     return new ResponseEntity<>(patchPlatformUser(ALIAS_CURRENT_USER, patch), HttpStatus.ACCEPTED);
   }
 
   @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserViewModel> patchPlatformUserById(
+  public ResponseEntity<PlatformUserRequest> patchPlatformUserById(
       @PathVariable final int userId, @RequestBody final JsonPatch patch) {
     return new ResponseEntity<>(patchPlatformUser(userId, patch), HttpStatus.ACCEPTED);
   }
@@ -93,15 +92,15 @@ public class PlatformUserController {
     return ResponseEntity.noContent().build();
   }
 
-  private PlatformUserViewModel getPlatformUser(final int userId) {
+  private PlatformUserRequest getPlatformUser(final int userId) {
     final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(getCurrentId(userId));
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
+    return modelMapper.map(grabPlatformUserDTO, PlatformUserRequest.class);
   }
 
-  private PlatformUserViewModel patchPlatformUser(final int userId, final JsonPatch patch) {
+  private PlatformUserRequest patchPlatformUser(final int userId, final JsonPatch patch) {
     final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUserById(getCurrentId(userId),
         patch);
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
+    return modelMapper.map(grabPlatformUserDTO, PlatformUserRequest.class);
   }
 
   private void deletePlatformUser(final int userId) {

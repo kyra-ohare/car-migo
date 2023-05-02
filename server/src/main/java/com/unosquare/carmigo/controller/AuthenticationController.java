@@ -2,8 +2,7 @@ package com.unosquare.carmigo.controller;
 
 import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
 import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
-import com.unosquare.carmigo.model.request.CreateAuthenticationViewModel;
-import com.unosquare.carmigo.model.response.AuthenticationViewModel;
+import com.unosquare.carmigo.model.response.AuthenticationRequest;
 import com.unosquare.carmigo.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,14 +28,14 @@ public class AuthenticationController {
 
   @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<AuthenticationViewModel> createAuthenticationToken(
-      @Valid @RequestBody final CreateAuthenticationViewModel createAuthenticationViewModel) {
+  public ResponseEntity<AuthenticationRequest> createAuthenticationToken(
+      @Valid @RequestBody final com.unosquare.carmigo.model.request.AuthenticationRequest authenticationRequest) {
     final CreateAuthenticationDTO createAuthenticationDTO = modelMapper.map(
-        createAuthenticationViewModel, CreateAuthenticationDTO.class);
+      authenticationRequest, CreateAuthenticationDTO.class);
     final GrabAuthenticationDTO grabAuthenticationDTO =
         authenticationService.createAuthenticationToken(createAuthenticationDTO);
-    final AuthenticationViewModel authenticationViewModel = modelMapper.map(
-        grabAuthenticationDTO, AuthenticationViewModel.class);
+    final AuthenticationRequest authenticationViewModel = modelMapper.map(
+        grabAuthenticationDTO, AuthenticationRequest.class);
     return new ResponseEntity<>(authenticationViewModel, HttpStatus.CREATED);
   }
 }

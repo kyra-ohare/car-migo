@@ -18,15 +18,15 @@ public class JourneyViewModel {
 
   private Instant createdDate;
 
-  private LocationViewModel locationFrom;
+  private LocationRequest locationFrom;
 
-  private LocationViewModel locationTo;
+  private LocationRequest locationTo;
 
   private int maxPassengers;
 
   private Instant dateTime;
 
-  private DriverViewModel driver;
+  private DriverRequest driver;
 
-  private List<PassengerViewModel> passengers;
+  private List<PassengerRequest> passengers;
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateDriverViewModel {
+public class DriverRequest {
 
   @NotEmpty
   @Size(min = 1, max = 100)

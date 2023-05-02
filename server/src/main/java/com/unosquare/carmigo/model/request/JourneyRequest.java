@@ -6,7 +6,7 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class CreateSearchJourneysCriteria {
+public class JourneyRequest {
 
   @Positive
   private int locationIdFrom;
@@ -14,9 +14,9 @@ public class CreateSearchJourneysCriteria {
   @Positive
   private int locationIdTo;
 
-  @NotNull
-  private Instant dateTimeFrom;
+  @Positive
+  private int maxPassengers;
 
   @NotNull
-  private Instant dateTimeTo;
+  private Instant dateTime;
 }
