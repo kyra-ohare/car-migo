@@ -12,6 +12,7 @@ public class PassengerResponse {
 
   private int id;
 
-  @JsonProperty("user")
+//  TODO
+//  @JsonProperty("user")
   private PlatformUserResponse platformUser;
 }

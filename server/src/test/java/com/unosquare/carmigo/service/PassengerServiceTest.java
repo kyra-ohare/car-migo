@@ -13,9 +13,9 @@ import static org.mockito.Mockito.when;
 import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
-import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
+import com.unosquare.carmigo.model.response.PassengerResponse;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -39,7 +39,7 @@ public class PassengerServiceTest {
 
   @Fixture private PlatformUser platformUserFixture;
   @Fixture private Passenger passengerFixture;
-  @Fixture private GrabPassengerDTO grabPassengerDTOFixture;
+  @Fixture private PassengerResponse passengerResponseFixture;
 
   @BeforeEach
   public void setUp() {
@@ -49,13 +49,13 @@ public class PassengerServiceTest {
   }
 
   @Test
-  public void get_Passenger_By_Id_Returns_GrabPassengerDTO() {
+  public void get_Passenger_By_Id_Returns_PassengerResponse() {
     when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.of(passengerFixture));
-    when(modelMapperMock.map(passengerFixture, GrabPassengerDTO.class)).thenReturn(grabPassengerDTOFixture);
-    final GrabPassengerDTO grabPassengerDTO = passengerService.getPassengerById(1);
+    when(modelMapperMock.map(passengerFixture, PassengerResponse.class)).thenReturn(passengerResponseFixture);
+    final var response = passengerService.getPassengerById(1);
 
-    assertThat(grabPassengerDTO.getId()).isEqualTo(grabPassengerDTOFixture.getId());
-    assertThat(grabPassengerDTO.getPlatformUser()).isEqualTo(grabPassengerDTOFixture.getPlatformUser());
+    assertThat(response.getId()).isEqualTo(passengerResponseFixture.getId());
+    assertThat(response.getPlatformUser()).isEqualTo(passengerResponseFixture.getPlatformUser());
     verify(passengerRepositoryMock).findById(anyInt());
   }
 
@@ -63,13 +63,13 @@ public class PassengerServiceTest {
   public void get_Passenger_By_Id_Throws_EntityNotFoundException() {
     when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
     assertThrows(EntityNotFoundException.class,
-        () -> passengerService.getPassengerById(anyInt()),
-        "EntityNotFoundException is expected.");
+      () -> passengerService.getPassengerById(anyInt()),
+      "EntityNotFoundException is expected.");
     verify(passengerRepositoryMock).findById(anyInt());
   }
 
   @Test
-  public void create_Passenger_Returns_GrabPassengerDTO() {
+  public void create_Passenger_Returns_PassengerResponse() {
     when(entityManagerMock.getReference(eq(PlatformUser.class), anyInt())).thenReturn(platformUserFixture);
     passengerService.createPassengerById(anyInt());
     verify(passengerRepositoryMock).save(any(Passenger.class));
@@ -80,8 +80,8 @@ public class PassengerServiceTest {
     when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
     doThrow(EntityNotFoundException.class).when(passengerRepositoryMock).save(any(Passenger.class));
     assertThrows(EntityNotFoundException.class,
-        () -> passengerService.createPassengerById(anyInt()),
-        "EntityNotFoundException is expected.");
+      () -> passengerService.createPassengerById(anyInt()),
+      "EntityNotFoundException is expected.");
     verify(passengerRepositoryMock).save(any(Passenger.class));
   }
 
@@ -89,8 +89,8 @@ public class PassengerServiceTest {
   public void create_Passenger_Throws_EntityExistsException() {
     when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.of(passengerFixture));
     assertThrows(EntityExistsException.class,
-        () -> passengerService.createPassengerById(anyInt()),
-        "EntityExistsException is expected");
+      () -> passengerService.createPassengerById(anyInt()),
+      "EntityExistsException is expected");
     verify(passengerRepositoryMock, times(0)).save(any(Passenger.class));
   }
 

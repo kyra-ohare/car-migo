@@ -51,7 +51,7 @@ public class DriverServiceTest {
   }
 
   @Test
-  public void get_Driver_By_Id_Returns_GrabDriverDTO() {
+  public void get_Driver_By_Id_Returns_DriverResponse() {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.of(driverFixture));
     when(modelMapperMock.map(driverFixture, DriverResponse.class)).thenReturn(driverResponseFixture);
     final var response = driverService.getDriverById(1);

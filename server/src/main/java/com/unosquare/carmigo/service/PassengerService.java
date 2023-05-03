@@ -1,8 +1,8 @@
 package com.unosquare.carmigo.service;
 
-import com.unosquare.carmigo.dto.GrabPassengerDTO;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
+import com.unosquare.carmigo.model.response.PassengerResponse;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -10,7 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,11 +22,11 @@ public class PassengerService {
   private final ModelMapper modelMapper;
   private final EntityManager entityManager;
 
-  public GrabPassengerDTO getPassengerById(final int passengerId) {
-    return modelMapper.map(findPassengerById(passengerId), GrabPassengerDTO.class);
+  public PassengerResponse getPassengerById(final int passengerId) {
+    return modelMapper.map(findPassengerById(passengerId), PassengerResponse.class);
   }
 
-  public GrabPassengerDTO createPassengerById(final int passengerId) {
+  public PassengerResponse createPassengerById(final int passengerId) {
     try {
       findPassengerById(passengerId);
     } catch (final EntityNotFoundException ex) {
@@ -40,7 +39,7 @@ public class PassengerService {
       } catch (final DataIntegrityViolationException e) {
         throw new EntityNotFoundException("Non-existent user to create a passenger");
       }
-      return modelMapper.map(newPassenger, GrabPassengerDTO.class);
+      return modelMapper.map(newPassenger, PassengerResponse.class);
     }
     throw new EntityExistsException("Passenger already exists");
   }

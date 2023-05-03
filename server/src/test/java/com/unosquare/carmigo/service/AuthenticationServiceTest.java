@@ -45,7 +45,7 @@ public class AuthenticationServiceTest {
   }
 
   @Test
-  public void create_Authentication_Token_Returns_GrabAuthenticationDTO() {
+  public void create_Authentication_Token_Returns_AuthenticationResponse() {
     final UserDetails spyUserDetails = spy(new User("foo", "foo", new ArrayList<>()));
     when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
     when(userSecurityServiceMock.loadUserByUsername(authenticationRequestFixture.getEmail()))
