@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,18 +24,14 @@ public class AuthenticationControllerTest {
   private static final String POST_AUTHENTICATION_INVALID_JSON =
       ResourceUtility.generateStringFromResource("jsonAssets/PostAuthenticationInvalid.json");
 
-  private MockMvc mockMvc;
-
-  @Mock private ModelMapper modelMapperMock;
   @Mock private AuthenticationService authenticationServiceMock;
 
   private ControllerUtility controllerUtility;
 
   @BeforeEach
   public void setUp() {
-    mockMvc = MockMvcBuilders.standaloneSetup(
-            new AuthenticationController(modelMapperMock, authenticationServiceMock))
-        .build();
+    final var mockMvc = MockMvcBuilders.standaloneSetup(
+      new AuthenticationController(authenticationServiceMock)).build();
 
     controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
   }

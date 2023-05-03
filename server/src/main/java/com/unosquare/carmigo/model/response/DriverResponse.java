@@ -14,6 +14,7 @@ public class DriverResponse {
 
   private String licenseNumber;
 
-  @JsonProperty("user")
+//  TODO
+//  @JsonProperty("user")
   private PlatformUserResponse platformUser;
 }

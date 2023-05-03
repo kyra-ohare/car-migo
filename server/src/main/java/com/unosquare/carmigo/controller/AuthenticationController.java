@@ -6,7 +6,6 @@ import com.unosquare.carmigo.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication Controller")
 public class AuthenticationController {
 
-  private final ModelMapper modelMapper;
   private final AuthenticationService authenticationService;
 
   @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
