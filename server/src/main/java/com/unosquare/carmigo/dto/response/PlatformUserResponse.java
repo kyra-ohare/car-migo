@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.model.response;
+package com.unosquare.carmigo.dto.response;
 
 import java.time.Instant;
 import lombok.Getter;

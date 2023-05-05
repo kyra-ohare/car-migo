@@ -2,7 +2,7 @@ package com.unosquare.carmigo.service;
 
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.model.response.PassengerResponse;
+import com.unosquare.carmigo.dto.response.PassengerResponse;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;

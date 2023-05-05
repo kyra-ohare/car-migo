@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.service;
 
-import com.unosquare.carmigo.model.request.AuthenticationRequest;
-import com.unosquare.carmigo.model.response.AuthenticationResponse;
+import com.unosquare.carmigo.dto.request.AuthenticationRequest;
+import com.unosquare.carmigo.dto.response.AuthenticationResponse;
 import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.JwtTokenService;
 import lombok.RequiredArgsConstructor;

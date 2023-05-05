@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.model.request;
+package com.unosquare.carmigo.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

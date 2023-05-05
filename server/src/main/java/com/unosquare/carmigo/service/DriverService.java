@@ -2,8 +2,8 @@ package com.unosquare.carmigo.service;
 
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.model.request.DriverRequest;
-import com.unosquare.carmigo.model.response.DriverResponse;
+import com.unosquare.carmigo.dto.request.DriverRequest;
+import com.unosquare.carmigo.dto.response.DriverResponse;
 import com.unosquare.carmigo.repository.DriverRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;

@@ -3,11 +3,11 @@ package com.unosquare.carmigo.controller;
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.model.request.DistanceRequest;
-import com.unosquare.carmigo.model.request.JourneyRequest;
-import com.unosquare.carmigo.model.request.SearchJourneysRequest;
-import com.unosquare.carmigo.model.response.DistanceResponse;
-import com.unosquare.carmigo.model.response.JourneyResponse;
+import com.unosquare.carmigo.dto.request.DistanceRequest;
+import com.unosquare.carmigo.dto.request.JourneyRequest;
+import com.unosquare.carmigo.dto.request.SearchJourneysRequest;
+import com.unosquare.carmigo.dto.response.DistanceResponse;
+import com.unosquare.carmigo.dto.response.JourneyResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.JourneyService;
 import io.swagger.v3.oas.annotations.tags.Tag;

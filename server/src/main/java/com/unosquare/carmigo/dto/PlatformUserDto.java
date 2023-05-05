@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.dto;
 
+import com.unosquare.carmigo.dto.response.UserAccessStatusResponse;
 import java.time.Instant;
 import lombok.Data;
 
@@ -22,5 +23,5 @@ public class PlatformUserDto {
 
   private String phoneNumber;
 
-  private GrabUserAccessStatusDTO userAccessStatus;
+  private UserAccessStatusResponse userAccessStatus;
 }

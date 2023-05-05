@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.dto;
+package com.unosquare.carmigo.dto.request;
 
 import lombok.Data;
 

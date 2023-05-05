@@ -2,7 +2,7 @@ package com.unosquare.carmigo.controller;
 
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
-import com.unosquare.carmigo.model.response.PassengerResponse;
+import com.unosquare.carmigo.dto.response.PassengerResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PassengerService;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -2,8 +2,8 @@ package com.unosquare.carmigo.controller;
 
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
-import com.unosquare.carmigo.model.request.DriverRequest;
-import com.unosquare.carmigo.model.response.DriverResponse;
+import com.unosquare.carmigo.dto.request.DriverRequest;
+import com.unosquare.carmigo.dto.response.DriverResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.DriverService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,7 +47,7 @@ public class DriverController {
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<DriverResponse> createDriver(
-    @Valid @RequestBody final com.unosquare.carmigo.model.request.DriverRequest driverRequest) {
+    @Valid @RequestBody final DriverRequest driverRequest) {
     final var response = driverService.createDriverById(getCurrentId(ALIAS_CURRENT_USER), driverRequest);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }

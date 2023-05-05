@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.model.request;
+package com.unosquare.carmigo.dto.request;
 
 import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MAX_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MIN_SIZE;

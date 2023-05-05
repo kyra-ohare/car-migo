@@ -3,8 +3,8 @@ package com.unosquare.carmigo.controller;
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.model.request.PlatformUserRequest;
-import com.unosquare.carmigo.model.response.PlatformUserResponse;
+import com.unosquare.carmigo.dto.request.PlatformUserRequest;
+import com.unosquare.carmigo.dto.response.PlatformUserResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;

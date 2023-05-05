@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.controller;
 
-import com.unosquare.carmigo.model.request.AuthenticationRequest;
-import com.unosquare.carmigo.model.response.AuthenticationResponse;
+import com.unosquare.carmigo.dto.request.AuthenticationRequest;
+import com.unosquare.carmigo.dto.response.AuthenticationResponse;
 import com.unosquare.carmigo.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
