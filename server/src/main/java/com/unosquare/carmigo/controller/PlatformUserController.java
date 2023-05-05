@@ -3,15 +3,13 @@ package com.unosquare.carmigo.controller;
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
-import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
+import com.unosquare.carmigo.model.request.PlatformUserRequest;
 import com.unosquare.carmigo.model.response.PlatformUserResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Platform User Controller")
 public class PlatformUserController {
 
-  private final ModelMapper modelMapper;
   private final PlatformUserService platformUserService;
   private final AppUser appUser;
 
@@ -45,66 +42,51 @@ public class PlatformUserController {
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile() {
-    return ResponseEntity.ok(getPlatformUser(ALIAS_CURRENT_USER));
+    final var response = platformUserService.getPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int userId) {
-    return ResponseEntity.ok(getPlatformUser(userId));
+    final var response = platformUserService.getPlatformUserById(getCurrentId(userId));
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PlatformUserResponse> createPlatformUser(
-      @Valid @RequestBody final com.unosquare.carmigo.model.request.PlatformUserRequest platformUserRequest) {
-    final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
-      platformUserRequest, CreatePlatformUserDTO.class);
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTO);
-    final PlatformUserResponse platformUserViewModel = modelMapper.map(
-        grabPlatformUserDTO, PlatformUserResponse.class);
-    return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
+      @Valid @RequestBody final PlatformUserRequest platformUserRequest) {
+    final var response = platformUserService.createPlatformUser(platformUserRequest);
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   @PatchMapping(consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<PlatformUserResponse> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
-    return new ResponseEntity<>(patchPlatformUser(ALIAS_CURRENT_USER, patch), HttpStatus.ACCEPTED);
+    final var response = platformUserService.patchPlatformUserById(getCurrentId(ALIAS_CURRENT_USER), patch);
+    return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
   @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PlatformUserResponse> patchPlatformUserById(
       @PathVariable final int userId, @RequestBody final JsonPatch patch) {
-    return new ResponseEntity<>(patchPlatformUser(userId, patch), HttpStatus.ACCEPTED);
+    final var response = platformUserService.patchPlatformUserById(getCurrentId(userId), patch);
+    return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
   @DeleteMapping
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentPlatformUser() {
-    deletePlatformUser(ALIAS_CURRENT_USER);
+    platformUserService.deletePlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
     return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping(value = "/{userId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> deletePlatformUserById(@PathVariable final int userId) {
-    deletePlatformUser(userId);
-    return ResponseEntity.noContent().build();
-  }
-
-  private PlatformUserResponse getPlatformUser(final int userId) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(getCurrentId(userId));
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserResponse.class);
-  }
-
-  private PlatformUserResponse patchPlatformUser(final int userId, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUserById(getCurrentId(userId),
-        patch);
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserResponse.class);
-  }
-
-  private void deletePlatformUser(final int userId) {
     platformUserService.deletePlatformUserById(getCurrentId(userId));
+    return ResponseEntity.noContent().build();
   }
 
   private int getCurrentId(final int userId) {

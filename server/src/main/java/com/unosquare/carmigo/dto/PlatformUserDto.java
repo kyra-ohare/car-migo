@@ -4,7 +4,11 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class CreatePlatformUserDTO {
+public class PlatformUserDto {
+
+  private int id;
+
+  private Instant createdDate;
 
   private String firstName;
 
@@ -17,4 +21,6 @@ public class CreatePlatformUserDTO {
   private String password;
 
   private String phoneNumber;
+
+  private GrabUserAccessStatusDTO userAccessStatus;
 }

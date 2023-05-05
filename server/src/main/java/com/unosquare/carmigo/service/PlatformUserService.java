@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
-import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
+import com.unosquare.carmigo.dto.PlatformUserDto;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.exception.PatchException;
+import com.unosquare.carmigo.model.request.PlatformUserRequest;
+import com.unosquare.carmigo.model.response.PlatformUserResponse;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -51,14 +52,14 @@ public class PlatformUserService {
     platformUserRepository.save(platformUserOptional.get());
   }
 
-  public GrabPlatformUserDTO getPlatformUserById(final int userId) {
-    return modelMapper.map(findPlatformUserById(userId), GrabPlatformUserDTO.class);
+  public PlatformUserResponse getPlatformUserById(final int userId) {
+    return modelMapper.map(findPlatformUserById(userId), PlatformUserResponse.class);
   }
 
-  public GrabPlatformUserDTO createPlatformUser(final CreatePlatformUserDTO createPlatformUserDTO) {
-    final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
+  public PlatformUserResponse createPlatformUser(final PlatformUserRequest platformUserRequest) {
+    final PlatformUser platformUser = modelMapper.map(platformUserRequest, PlatformUser.class);
     platformUser.setCreatedDate(Instant.now());
-    platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
+    platformUser.setPassword(bCryptPasswordEncoder.encode(platformUserRequest.getPassword()));
     platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, STAGED_USER_STATUS));
     final PlatformUser newPlatformUser;
     try {
@@ -66,19 +67,21 @@ public class PlatformUserService {
     } catch (final DataIntegrityViolationException ex) {
       throw new EntityExistsException("Email already in use");
     }
-    return modelMapper.map(newPlatformUser, GrabPlatformUserDTO.class);
+    return modelMapper.map(newPlatformUser, PlatformUserResponse.class);
   }
 
-  public GrabPlatformUserDTO patchPlatformUserById(final int userId, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
-        findPlatformUserById(userId), GrabPlatformUserDTO.class);
+  public PlatformUserResponse patchPlatformUserById(final int userId, final JsonPatch patch) {
+    final PlatformUserDto platformUserDto = modelMapper.map(
+    findPlatformUserById(userId), PlatformUserDto.class);
+    final PlatformUser savedPlatformUser;
     try {
-      final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
+      final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(platformUserDto, JsonNode.class));
       final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
-      return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
+      savedPlatformUser = platformUserRepository.save(patchedPlatformUser);
     } catch (final JsonPatchException | JsonProcessingException | DataIntegrityViolationException ex) {
       throw new PatchException(String.format("Error updating user - %s", ex.getMessage()));
     }
+    return modelMapper.map(savedPlatformUser, PlatformUserResponse.class);
   }
 
   public void deletePlatformUserById(final int userId) {
