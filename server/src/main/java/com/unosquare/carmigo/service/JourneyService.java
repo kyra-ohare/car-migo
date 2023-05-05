@@ -8,9 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.unosquare.carmigo.dto.CreateJourneyDTO;
-import com.unosquare.carmigo.dto.GrabDistanceDTO;
-import com.unosquare.carmigo.dto.GrabJourneyDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
@@ -18,8 +15,11 @@ import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.model.request.CalculateDistanceCriteriaRequest;
+import com.unosquare.carmigo.model.request.DistanceRequest;
+import com.unosquare.carmigo.model.request.JourneyRequest;
 import com.unosquare.carmigo.model.request.SearchJourneysRequest;
+import com.unosquare.carmigo.model.response.DistanceResponse;
+import com.unosquare.carmigo.model.response.JourneyResponse;
 import com.unosquare.carmigo.openfeign.DistanceApi;
 import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.openfeign.Geocode;
@@ -51,48 +51,48 @@ public class JourneyService {
   private final AppUser appUser;
   private final PassengerService passengerService;
 
-  public GrabJourneyDTO getJourneyById(final int journeyId) {
-    return modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
+  public JourneyResponse getJourneyById(final int journeyId) {
+    return modelMapper.map(findJourneyById(journeyId), JourneyResponse.class);
   }
 
-  public List<GrabJourneyDTO> searchJourneys(final SearchJourneysRequest searchJourneysRequest) {
+  public List<JourneyResponse> searchJourneys(final SearchJourneysRequest searchJourneysRequest) {
     final List<Journey> result = journeyRepository.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
-        searchJourneysRequest.getLocationIdFrom(), searchJourneysRequest.getLocationIdTo(),
-        searchJourneysRequest.getDateTimeFrom(), searchJourneysRequest.getDateTimeTo());
+      searchJourneysRequest.getLocationIdFrom(), searchJourneysRequest.getLocationIdTo(),
+      searchJourneysRequest.getDateTimeFrom(), searchJourneysRequest.getDateTimeTo());
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this route. " + searchJourneysRequest);
     }
     hidePassengerAndMaybeDriverFields(result, true);
-    return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByDriverId(final int driverId) {
+  public List<JourneyResponse> getJourneysByDriverId(final int driverId) {
     final List<Journey> result = journeyRepository.findJourneysByDriverId(driverId);
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this driver.");
     }
-    return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
   }
 
-  public List<GrabJourneyDTO> getJourneysByPassengersId(final int passengerId) {
+  public List<JourneyResponse> getJourneysByPassengersId(final int passengerId) {
     final List<Journey> result = journeyRepository.findJourneysByPassengersId(passengerId);
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this passenger.");
     }
     hidePassengerAndMaybeDriverFields(result, false);
-    return MapperUtils.mapList(result, GrabJourneyDTO.class, modelMapper);
+    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
   }
 
-  public GrabJourneyDTO createJourney(final int driverId, final CreateJourneyDTO createJourneyDTO) {
+  public JourneyResponse createJourney(final int driverId, final JourneyRequest journeyRequest) {
 //    TODO: Check if driver exists first
-    final Journey journey = modelMapper.map(createJourneyDTO, Journey.class);
+    final Journey journey = modelMapper.map(journeyRequest, Journey.class);
     journey.setCreatedDate(Instant.now());
-    journey.setLocationFrom(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdFrom()));
-    journey.setLocationTo(entityManager.getReference(Location.class, createJourneyDTO.getLocationIdTo()));
+    journey.setLocationFrom(entityManager.getReference(Location.class, journeyRequest.getLocationIdFrom()));
+    journey.setLocationTo(entityManager.getReference(Location.class, journeyRequest.getLocationIdTo()));
     journey.setDriver(entityManager.getReference(Driver.class, driverId));
     final Journey savedJourney = journeyRepository.save(journey);
     savedJourney.setDriver(null);
-    return modelMapper.map(savedJourney, GrabJourneyDTO.class);
+    return modelMapper.map(savedJourney, JourneyResponse.class);
   }
 
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
@@ -100,11 +100,11 @@ public class JourneyService {
     final Journey journey = findJourneyById(journeyId);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
-        p -> {
-          if (p.getId() == passengerId) {
-            throw new EntityExistsException("Passenger is in this journey already.");
-          }
-        });
+      p -> {
+        if (p.getId() == passengerId) {
+          throw new EntityExistsException("Passenger is in this journey already.");
+        }
+      });
     if (journey.getDriver().getId() == passengerId) {
       throw new IllegalStateException("Driver cannot be passenger.");
     }
@@ -114,13 +114,13 @@ public class JourneyService {
     journeyRepository.save(journey);
   }
 
-  public GrabJourneyDTO patchJourney(final int journeyId, final JsonPatch patch) {
-    final GrabJourneyDTO grabJourneyDTO = modelMapper.map(findJourneyById(journeyId), GrabJourneyDTO.class);
-    verifyUserAuthorization(grabJourneyDTO.getDriver().getId());
+  public JourneyResponse patchJourney(final int journeyId, final JsonPatch patch) {
+    final var response = modelMapper.map(findJourneyById(journeyId), JourneyResponse.class);
+    verifyUserAuthorization(response.getDriver().getId());
     try {
-      final JsonNode journeyNode = patch.apply(objectMapper.convertValue(grabJourneyDTO, JsonNode.class));
+      final JsonNode journeyNode = patch.apply(objectMapper.convertValue(response, JsonNode.class));
       final Journey patchedJourney = objectMapper.treeToValue(journeyNode, Journey.class);
-      return modelMapper.map(journeyRepository.save(patchedJourney), GrabJourneyDTO.class);
+      return modelMapper.map(journeyRepository.save(patchedJourney), JourneyResponse.class);
     } catch (final JsonPatchException | JsonProcessingException ex) {
       throw new PatchException(String.format("Error updating journey id %d - %s", journeyId, ex.getMessage()));
     }
@@ -145,15 +145,15 @@ public class JourneyService {
     throw new EntityNotFoundException("Passenger is not in this journey.");
   }
 
-  public GrabDistanceDTO calculateDistance(final CalculateDistanceCriteriaRequest calculateDistanceCriteriaRequest) {
-    final String request = prepareRequestToDistanceApi(calculateDistanceCriteriaRequest);
+  public DistanceResponse calculateDistance(final DistanceRequest distanceRequest) {
+    final String request = prepareRequestToDistanceApi(distanceRequest);
     final DistanceHolder distanceHolder = distanceApi.getDistance(request);
-    return convertDistanceHolderToGrabDistanceDto(distanceHolder);
+    return convertDistanceHolderDistanceResponse(distanceHolder);
   }
 
   private Journey findJourneyById(final int id) {
     return journeyRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
+      .orElseThrow(() -> new ResourceNotFoundException(String.format("Journey id %d not found.", id)));
   }
 
   private void verifyUserAuthorization(final int userId) {
@@ -171,37 +171,37 @@ public class JourneyService {
     }
   }
 
-  private String prepareRequestToDistanceApi(final CalculateDistanceCriteriaRequest criteria) {
+  private String prepareRequestToDistanceApi(final DistanceRequest criteria) {
     return "[{\"t\":\"" + criteria.getLocationFrom() + "," + criteria.getCountryFrom() + "\"},{\"t\":\""
-        + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
+      + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
   }
 
-  private GrabDistanceDTO convertDistanceHolderToGrabDistanceDto(final DistanceHolder distanceHolder) {
+  private DistanceResponse convertDistanceHolderDistanceResponse(final DistanceHolder distanceHolder) {
     if (distanceHolder.getPoints().size() > 1) {
-      final GrabDistanceDTO grabDistanceDTO = new GrabDistanceDTO();
-      grabDistanceDTO.setLocationFrom(convertToGrabDistanceDtoLocation(
-          distanceHolder.getPoints().get(0).getProperties().getGeocode()));
-      grabDistanceDTO.setLocationTo(convertToGrabDistanceDtoLocation(
-          distanceHolder.getPoints().get(1).getProperties().getGeocode()));
-      grabDistanceDTO.setDistance(convertToGrabDistanceDtoDistance(
-          distanceHolder.getSteps().get(0).getDistance().getGreatCircle()));
-      return grabDistanceDTO;
+      final DistanceResponse response = new DistanceResponse();
+      response.setLocationFrom(convertToDistanceResponseLocation(
+        distanceHolder.getPoints().get(0).getProperties().getGeocode()));
+      response.setLocationTo(convertToDistanceResponseLocation(
+        distanceHolder.getPoints().get(1).getProperties().getGeocode()));
+      response.setDistance(convertToDistanceResponseDistance(
+        distanceHolder.getSteps().get(0).getDistance().getGreatCircle()));
+      return response;
     }
     throw new NoResultException("DistanceHolder is empty.");
   }
 
-  private GrabDistanceDTO.Location convertToGrabDistanceDtoLocation(final Geocode geocode) {
-    final GrabDistanceDTO.Coordinate coordinates = new GrabDistanceDTO.Coordinate();
+  private DistanceResponse.Location convertToDistanceResponseLocation(final Geocode geocode) {
+    final DistanceResponse.Coordinate coordinates = new DistanceResponse.Coordinate();
     coordinates.setLatitude(geocode.getLatitude());
     coordinates.setLongitude(geocode.getLongitude());
-    final GrabDistanceDTO.Location location = new GrabDistanceDTO.Location();
+    final DistanceResponse.Location location = new DistanceResponse.Location();
     location.setLocation(geocode.getName());
     location.setCoordinates(coordinates);
     return location;
   }
 
-  private GrabDistanceDTO.Distance convertToGrabDistanceDtoDistance(final double km) {
-    final GrabDistanceDTO.Distance distance = new GrabDistanceDTO.Distance();
+  private DistanceResponse.Distance convertToDistanceResponseDistance(final double km) {
+    final DistanceResponse.Distance distance = new DistanceResponse.Distance();
     distance.setKm(Math.round(km * 10d) / 10d);
     distance.setMi(Math.round(convertKmToMi(km) * 10d) / 10d);
     return distance;
