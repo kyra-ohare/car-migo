@@ -21,6 +21,9 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.type.descriptor.jdbc.InstantAsTimestampJdbcType;
 
+/**
+ * Data Transfer Object representing the <b>platform_user</b> table of the database.
+ */
 @Entity
 @Getter
 @Setter

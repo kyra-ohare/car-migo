@@ -29,9 +29,8 @@
   </module>
   <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
   <module name="SuppressionFilter">
-    <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
-      default="checkstyle-suppressions.xml"/>
-    <property name="optional" value="true"/>
+    <property name="file" value="config/checkstyle/suppressions.xml"/>
+    <property name="optional" value="false"/>
   </module>
 
   <!-- Checks for whitespace                            -->
@@ -326,8 +325,7 @@
       <property name="scope" value="public"/>
       <property name="minLineCount" value="2"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
-                                   COMPACT_CTOR_DEF"/>
+      <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
     </module>
     <module name="MissingJavadocType"/>
     <module name="MethodName">

@@ -2,6 +2,9 @@ package com.unosquare.carmigo.exception;
 
 import java.io.Serial;
 
+/**
+ * Triggers when a search returns empty.
+ */
 public final class ResourceNotFoundException extends RuntimeException {
 
   @Serial

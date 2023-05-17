@@ -18,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Web security configuration.
+ */
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -26,6 +29,13 @@ public class WebSecurityConfiguration {
 
   private final JwtRequestFilter jwtRequestFilter;
 
+  /**
+   * Security layer filter which allows some endpoints depending on the authority.
+   * Endpoints not listed below are restricted by default.
+   * @param httpSecurity HTTP web based security.
+   * @return a {@link SecurityFilterChain} which is passed to next Spring filter.
+   * @throws Exception application halts if it does not go according to the plan.
+   */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable().authorizeHttpRequests()

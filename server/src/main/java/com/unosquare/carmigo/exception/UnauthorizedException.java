@@ -2,6 +2,9 @@ package com.unosquare.carmigo.exception;
 
 import java.io.Serial;
 
+/**
+ * Triggers when a user does not have permissions to perform an action.
+ */
 public class UnauthorizedException extends RuntimeException {
 
   @Serial

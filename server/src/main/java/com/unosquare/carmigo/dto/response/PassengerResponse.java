@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object from the Service back to Controller.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,7 +14,5 @@ public class PassengerResponse {
 
   private int id;
 
-//  TODO
-//  @JsonProperty("user")
   private PlatformUserResponse platformUser;
 }

@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Loads the current user information.
+ */
 @Service
 @AllArgsConstructor
 public class UserSecurityService implements UserDetailsService {
@@ -32,15 +35,14 @@ public class UserSecurityService implements UserDetailsService {
 
   /**
    * Returns the user along with their type of access which can be:<br><br>
-   *
    * * ACTIVE - user can use the application without restrictions.<br>
    * * ADMIN - user has admin privileges such as see other users' information.<br>
    * * LOCKED_OUT - use is locked out after 5 failed attempts.<br>
    * * STAGED - account has been created but no email verification yet.<br>
    * * SUSPENDED - user can see and update profile. User cannot create/apply for journeys, accept/reject passengers.
    *
-   * @param currentUser PlatformUser from the database
-   * @return the UserDetails
+   * @param currentUser PlatformUser from the database.
+   * @return the authenticated user's information.
    */
   private UserDetails getUserDetails(final PlatformUser currentUser) {
     return switch (UserStatus.valueOf(currentUser.getUserAccessStatus().getStatus())) {

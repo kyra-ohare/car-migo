@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Swagger OpenApi UI configuration.
+ */
 @Configuration
 public class OpenApiConfiguration {
 
@@ -20,8 +23,12 @@ public class OpenApiConfiguration {
   @Value("${springdoc.api.description}")
   private String description;
 
+  /**
+   * Creates a Swagger OpenApi UI.
+   * @return a Swagger {@link OpenAPI}.
+   */
   @Bean
-  public OpenAPI setUpOpenAPI() {
+  public OpenAPI setUpOpenApi() {
     return new OpenAPI()
         .info(info())
         .components(components())

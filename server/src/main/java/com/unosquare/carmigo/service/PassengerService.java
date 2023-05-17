@@ -1,8 +1,8 @@
 package com.unosquare.carmigo.service;
 
+import com.unosquare.carmigo.dto.response.PassengerResponse;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.dto.response.PassengerResponse;
 import com.unosquare.carmigo.repository.PassengerRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -12,6 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles requests regarding the {@link Passenger} entity.
+ */
 @Service
 @RequiredArgsConstructor
 public class PassengerService {
@@ -22,17 +25,27 @@ public class PassengerService {
   private final ModelMapper modelMapper;
   private final EntityManager entityManager;
 
+  /**
+   * Fetches a passenger.
+   * @param passengerId the passenger id to search for.
+   * @return a {@link PassengerResponse}.
+   */
   public PassengerResponse getPassengerById(final int passengerId) {
     return modelMapper.map(findPassengerById(passengerId), PassengerResponse.class);
   }
 
-  public PassengerResponse createPassengerById(final int passengerId) {
+  /**
+   * Creates a passenger.
+   * @param platformUserId the platform user id to create a passenger from.
+   * @return a {@link PassengerResponse}.
+   */
+  public PassengerResponse createPassengerById(final int platformUserId) {
     try {
-      findPassengerById(passengerId);
+      findPassengerById(platformUserId);
     } catch (final EntityNotFoundException ex) {
       final Passenger passenger = new Passenger();
-      passenger.setId(passengerId);
-      passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, passengerId));
+      passenger.setId(platformUserId);
+      passenger.setPlatformUser(entityManager.getReference(PlatformUser.class, platformUserId));
       final Passenger newPassenger;
       try {
         newPassenger = passengerRepository.save(passenger);
@@ -44,10 +57,19 @@ public class PassengerService {
     throw new EntityExistsException("Passenger already exists");
   }
 
+  /**
+   * Deletes a passenger. The platform user is not affected.
+   * @param passengerId the passenger id to be deleted.
+   */
   public void deletePassengerById(final int passengerId) {
     passengerRepository.deleteById(passengerId);
   }
 
+  /**
+   * Fetches a passenger from the database by their id.
+   * @param passengerId the passenger id to search for.
+   * @return a {@link Passenger} entity.
+   */
   public Passenger findPassengerById(final int passengerId) {
     return passengerRepository.findById(passengerId).orElseThrow(
         () -> new EntityNotFoundException(PASSENGER_NOT_FOUND));

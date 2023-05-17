@@ -2,6 +2,9 @@ package com.unosquare.carmigo.exception;
 
 import java.io.Serial;
 
+/**
+ * Triggers when there are issues creating a JWT token.
+ */
 public class ExpiredJwtException extends RuntimeException {
 
   @Serial

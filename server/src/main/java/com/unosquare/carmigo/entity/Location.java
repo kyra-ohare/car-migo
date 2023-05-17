@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object representing the <b>location</b> table of the database.
+ */
 @Entity
 @Getter
 @Setter

@@ -8,6 +8,9 @@ import com.google.common.base.CharMatcher;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+/**
+ * Sets out the rules of a valid password.
+ */
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
 
   private static final CharMatcher ALPHANUMERIC_RULE = CharMatcher.inRange('A', 'Z')

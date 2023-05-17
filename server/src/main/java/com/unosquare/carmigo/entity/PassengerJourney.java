@@ -18,6 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object representing the <b>passenger_journey</b> table of the database.
+ */
 @Entity
 @Getter
 @Setter

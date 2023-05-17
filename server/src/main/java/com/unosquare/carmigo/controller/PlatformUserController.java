@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles Platform User APIs.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
@@ -33,26 +36,11 @@ public class PlatformUserController {
   private final PlatformUserService platformUserService;
   private final AppUser appUser;
 
-  @PostMapping(value = "/confirm-email")
-  public ResponseEntity<?> confirmEmail(@RequestParam final String email) {
-    platformUserService.confirmEmail(email);
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile() {
-    final var response = platformUserService.getPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
-    return ResponseEntity.ok(response);
-  }
-
-  @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int userId) {
-    final var response = platformUserService.getPlatformUserById(getCurrentId(userId));
-    return ResponseEntity.ok(response);
-  }
-
+  /**
+   * Enables user to create an account. This new user's access status is set to STAGED.
+   * @param platformUserRequest the requirements as {@link PlatformUserRequest}.
+   * @return a {@link PlatformUserResponse}.
+   */
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PlatformUserResponse> createPlatformUser(
       @Valid @RequestBody final PlatformUserRequest platformUserRequest) {
@@ -60,6 +48,46 @@ public class PlatformUserController {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Enables user to confirm their email after creating an account.
+   * Upon confirmation, their access status is set to ACTIVE.
+   * @param email the email used to create an account.
+   * @return an empty body.
+   */
+  @PostMapping(value = "/confirm-email")
+  public ResponseEntity<?> confirmEmail(@RequestParam final String email) {
+    platformUserService.confirmEmail(email);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Enables logged-in users to see their profiles.
+   * @return a {@link PlatformUserResponse}.
+   */
+  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
+  public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile() {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in admin users to see other user's profiles.
+   * @param platformUserId the platform user's id.
+   * @return a {@link PlatformUserResponse}.
+   */
+  @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int platformUserId) {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(platformUserId));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in users to correct their profiles.
+   * @param patch a {@link JsonPatch}.
+   * @return a {@link PlatformUserResponse}.
+   */
   @PatchMapping(consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<PlatformUserResponse> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
@@ -67,14 +95,24 @@ public class PlatformUserController {
     return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
+  /**
+   * Enables admin logged-in users to correct other user's profiles.
+   * @param platformUserId the platform user's id.
+   * @param patch a {@link JsonPatch}.
+   * @return a {@link PlatformUserResponse}.
+   */
   @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PlatformUserResponse> patchPlatformUserById(
-      @PathVariable final int userId, @RequestBody final JsonPatch patch) {
-    final var response = platformUserService.patchPlatformUserById(getCurrentId(userId), patch);
+      @PathVariable final int platformUserId, @RequestBody final JsonPatch patch) {
+    final var response = platformUserService.patchPlatformUserById(getCurrentId(platformUserId), patch);
     return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
+  /**
+   * Delete logged-in user's profile.
+   * @return an empty body.
+   */
   @DeleteMapping
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentPlatformUser() {
@@ -82,10 +120,15 @@ public class PlatformUserController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Enables logged-in admin users to delete a user's profile.
+   * @param platformUserId the platform user's id.
+   * @return an empty body.
+   */
   @DeleteMapping(value = "/{userId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<?> deletePlatformUserById(@PathVariable final int userId) {
-    platformUserService.deletePlatformUserById(getCurrentId(userId));
+  public ResponseEntity<?> deletePlatformUserById(@PathVariable final int platformUserId) {
+    platformUserService.deletePlatformUserById(getCurrentId(platformUserId));
     return ResponseEntity.noContent().build();
   }
 

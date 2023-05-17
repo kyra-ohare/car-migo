@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles Heartbeat API.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +24,11 @@ public class HeartbeatController {
 
   private final UserAccessStatusRepository userAccessStatusRepository;
 
+  /**
+   * Verifies if services this application is depended on are up and running.<br>
+   * Expect 200 OK otherwise 500 Internal Server Error.
+   * @return JSON listing the services.
+   */
   @GetMapping
   public ResponseEntity<Map<String, Boolean>> heartbeat() {
     final var response = new HashMap<String, Boolean>();

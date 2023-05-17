@@ -2,6 +2,9 @@ package com.unosquare.carmigo.dto.response;
 
 import lombok.Data;
 
+/**
+ * Data Transfer Object from the Service back to Controller.
+ */
 @Data
 public class DistanceResponse {
 
@@ -11,6 +14,9 @@ public class DistanceResponse {
 
   private Distance distance;
 
+  /**
+   * Location of a {@link DistanceResponse}.
+   */
   @Data
   public static class Location {
 
@@ -19,6 +25,9 @@ public class DistanceResponse {
     private Coordinate coordinates;
   }
 
+  /**
+   * Coordination of a {@link Location}.
+   */
   @Data
   public static class Coordinate {
 
@@ -27,6 +36,9 @@ public class DistanceResponse {
     private double longitude;
   }
 
+  /**
+   * Types of distance of a {@link DistanceResponse}.
+   */
   @Data
   public static class Distance {
 

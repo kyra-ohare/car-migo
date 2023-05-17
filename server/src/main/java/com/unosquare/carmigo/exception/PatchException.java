@@ -2,6 +2,9 @@ package com.unosquare.carmigo.exception;
 
 import java.io.Serial;
 
+/**
+ * Triggers when there are issues updating an entity.
+ */
 public final class PatchException extends RuntimeException {
 
   @Serial

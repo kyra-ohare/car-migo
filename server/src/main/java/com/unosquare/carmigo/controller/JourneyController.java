@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles Journey APIs.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/journeys")
@@ -36,6 +39,11 @@ public class JourneyController {
   private final JourneyService journeyService;
   private final AppUser appUser;
 
+  /**
+   * Enables logged-in admin users to search for a specific journey.
+   * @param journeyId the journey's id.
+   * @return a {@link JourneyResponse}.
+   */
   @GetMapping(value = "/{journeyId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<JourneyResponse> getJourneyById(@PathVariable final int journeyId) {
@@ -43,13 +51,22 @@ public class JourneyController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables users to search for journeys. No need of authentication.
+   * @param searchJourneysRequest  the search criteria as {@link SearchJourneysRequest}.
+   * @return a List of {@link JourneyResponse}.
+   */
   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<JourneyResponse>> searchJourneys(
-    @Valid final SearchJourneysRequest searchJourneysRequest) {
+      @Valid final SearchJourneysRequest searchJourneysRequest) {
     final List<JourneyResponse> responses = journeyService.searchJourneys(searchJourneysRequest);
     return ResponseEntity.ok(responses);
   }
 
+  /**
+   * Enables logged-in user, as a driver, to search their journeys.
+   * @return a List of {@link JourneyResponse}.
+   */
   @GetMapping(value = "/drivers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<List<JourneyResponse>> getJourneysByCurrentDriver() {
@@ -57,6 +74,11 @@ public class JourneyController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in admin users to search for journeys of a driver.
+   * @param driverId the driver's id.
+   * @return a List of {@link JourneyResponse}.
+   */
   @GetMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<List<JourneyResponse>> getJourneysByDriverId(@PathVariable final int driverId) {
@@ -64,6 +86,10 @@ public class JourneyController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in user, as a passenger, to search their journeys.
+   * @return a List of {@link JourneyResponse}.
+   */
   @GetMapping(value = "/passengers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<List<JourneyResponse>> getJourneysByCurrentPassenger() {
@@ -71,6 +97,11 @@ public class JourneyController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in admin users to search for journeys of a passenger.
+   * @param passengerId the passenger's id.
+   * @return a List of {@link JourneyResponse}.
+   */
   @GetMapping(value = "/passengers/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<List<JourneyResponse>> getJourneysByPassengerId(@PathVariable final int passengerId) {
@@ -78,22 +109,38 @@ public class JourneyController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in user, as a driver, to create a journey.
+   * @param journeyRequest the requirements as {@link JourneyRequest}.
+   * @return a {@link JourneyResponse}.
+   */
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<JourneyResponse> createJourney(
-    @Valid @RequestBody final JourneyRequest journeyRequest) {
+      @Valid @RequestBody final JourneyRequest journeyRequest) {
     final var response = journeyService.createJourney(getCurrentUserId(ALIAS_CURRENT_USER), journeyRequest);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Enables logged-in admin users to create a journey for a driver.
+   * @param driverId the driver id to create a journey for.
+   * @param journeyRequest the requirements as {@link JourneyRequest}.
+   * @return a {@link JourneyResponse}.
+   */
   @PostMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<JourneyResponse> createJourneyByDriverId(
-    @PathVariable final int driverId, @Valid @RequestBody final JourneyRequest journeyRequest) {
+      @PathVariable final int driverId, @Valid @RequestBody final JourneyRequest journeyRequest) {
     final var response = journeyService.createJourney(getCurrentUserId(driverId), journeyRequest);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Enables logged-in user, as a passenger, to be a passenger of this journey.
+   * @param journeyId the journey id to add this passenger.
+   * @return an empty body.
+   */
   @PostMapping(value = "/{journeyId}/add-passenger", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> addCurrentPassengerToJourney(@PathVariable final int journeyId) {
@@ -101,22 +148,39 @@ public class JourneyController {
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Enables logged-in admin users to add this passenger to this journey.
+   * @param journeyId the journey id to add this passenger.
+   * @param passengerId the passenger id to be added to this journey.
+   * @return an empty body.
+   */
   @PostMapping(value = "/{journeyId}/add-passenger/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> addPassengerToThisJourney(
-    @PathVariable final int journeyId, @PathVariable final int passengerId) {
+      @PathVariable final int journeyId, @PathVariable final int passengerId) {
     journeyService.addPassengerToJourney(journeyId, passengerId);
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Enables logged-in admin users or the driver who owns this journey to make correction.
+   * @param journeyId the journey id to be corrected.
+   * @param patch a {@link JsonPatch}.
+   * @return a {@link JourneyResponse}.
+   */
   @PatchMapping(value = "/{journeyId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<JourneyResponse> patchJourney(
-    @PathVariable final int journeyId, @Valid @RequestBody final JsonPatch patch) {
+      @PathVariable final int journeyId, @Valid @RequestBody final JsonPatch patch) {
     final var response = journeyService.patchJourney(journeyId, patch);
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in admin users or the driver who owns this journey to delete.
+   * @param journeyId the journey id to be deleted.
+   * @return an empty body.
+   */
   @DeleteMapping(value = "/{journeyId}")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteJourney(@PathVariable final int journeyId) {
@@ -124,6 +188,11 @@ public class JourneyController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Enables a user, as a passenger, to no longer be part of the journey.
+   * @param journeyId the journey id to remove a passenger.
+   * @return an empty body.
+   */
   @DeleteMapping(value = "{journeyId}/remove-passenger")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> removeCurrentPassengerFromJourney(@PathVariable final int journeyId) {
@@ -131,17 +200,28 @@ public class JourneyController {
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Enables logged-in admin users to remove a passenger from a journey.
+   * @param journeyId the journey id to remove a passenger.
+   * @param passengerId the passenger id to be removed from a journey.
+   * @return an empty body.
+   */
   @DeleteMapping(value = "{journeyId}/remove-passenger/{passengerId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> removePassengerFromThisJourney(@PathVariable final int journeyId,
-    @PathVariable final int passengerId) {
+      @PathVariable final int passengerId) {
     journeyService.removePassengerFromJourney(journeyId, passengerId);
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Enables users to search for the distance of two points. No need of authentication.
+   * @param distanceRequest the search criteria as {@link DistanceRequest}.
+   * @return a {@link DistanceResponse}.
+   */
   @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<DistanceResponse> calculateDistance(@Valid final DistanceRequest criteria) {
-    final var response = journeyService.calculateDistance(criteria);
+  public ResponseEntity<DistanceResponse> calculateDistance(@Valid final DistanceRequest distanceRequest) {
+    final var response = journeyService.calculateDistance(distanceRequest);
     return ResponseEntity.ok(response);
   }
 

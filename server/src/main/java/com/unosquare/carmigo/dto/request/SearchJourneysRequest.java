@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Positive;
 import java.time.Instant;
 import lombok.Data;
 
+/**
+ * Data Transfer Object received by the Controller to the Service.
+ * Represents the search criteria to query journeys.
+ */
 @Data
 public class SearchJourneysRequest {
 

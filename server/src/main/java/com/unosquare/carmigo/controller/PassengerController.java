@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles Passenger APIs.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/passengers")
@@ -27,6 +30,10 @@ public class PassengerController {
   private final PassengerService passengerService;
   private final AppUser appUser;
 
+  /**
+   * Enables logged-in users to see their profiles.
+   * @return a {@link PassengerResponse}.
+   */
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
   public ResponseEntity<PassengerResponse> getCurrentPassengerProfile() {
@@ -34,6 +41,11 @@ public class PassengerController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in admin users to see other user's profiles.
+   * @param passengerId the passenger's id.
+   * @return a {@link PassengerResponse}.
+   */
   @GetMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable final int passengerId) {
@@ -41,6 +53,10 @@ public class PassengerController {
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Enables logged-in user to have a passenger's profile.
+   * @return a {@link PassengerResponse}.
+   */
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<PassengerResponse> createPassenger() {
@@ -48,6 +64,11 @@ public class PassengerController {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Enables logged-in admin users to create a passenger's profile for another user.
+   * @param passengerId the user to become a passenger.
+   * @return a {@link PassengerResponse}.
+   */
   @PostMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PassengerResponse> createPassengerById(@PathVariable final int passengerId) {
@@ -55,6 +76,10 @@ public class PassengerController {
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
+  /**
+   * Delete logged-in user's passenger's profile.
+   * @return an empty body.
+   */
   @DeleteMapping
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentPassenger() {
@@ -62,6 +87,11 @@ public class PassengerController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Enables logged-in admin users to delete a passenger's profile.
+   * @param passengerId the user to become a passenger.
+   * @return an empty body.
+   */
   @DeleteMapping(value = "/{passengerId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> deletePassengerById(@PathVariable final int passengerId) {

@@ -1,9 +1,9 @@
 package com.unosquare.carmigo.service;
 
-import com.unosquare.carmigo.entity.Driver;
-import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.dto.request.DriverRequest;
 import com.unosquare.carmigo.dto.response.DriverResponse;
+import com.unosquare.carmigo.entity.Driver;
+import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.DriverRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -13,6 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles requests regarding the {@link Driver} entity.
+ */
 @Service
 @RequiredArgsConstructor
 public class DriverService {
@@ -23,17 +26,28 @@ public class DriverService {
   private final ModelMapper modelMapper;
   private final EntityManager entityManager;
 
+  /**
+   * Fetches a driver.
+   * @param driverId the driver id to search for.
+   * @return a {@link DriverResponse}.
+   */
   public DriverResponse getDriverById(final int driverId) {
     return modelMapper.map(findDriverById(driverId), DriverResponse.class);
   }
 
-  public DriverResponse createDriverById(final int driverId, final DriverRequest driverRequest) {
+  /**
+   * Creates a driver.
+   * @param platformUserId the platform user id to create a driver from.
+   * @param driverRequest the requirements as {@link DriverRequest}.
+   * @return a {@link DriverResponse}.
+   */
+  public DriverResponse createDriverById(final int platformUserId, final DriverRequest driverRequest) {
     try {
-      findDriverById(driverId);
+      findDriverById(platformUserId);
     } catch (final EntityNotFoundException ex) {
       final Driver driver = modelMapper.map(driverRequest, Driver.class);
-      driver.setId(driverId);
-      driver.setPlatformUser(entityManager.getReference(PlatformUser.class, driverId));
+      driver.setId(platformUserId);
+      driver.setPlatformUser(entityManager.getReference(PlatformUser.class, platformUserId));
       final Driver newDriver;
       try {
         newDriver = driverRepository.save(driver);
@@ -45,6 +59,10 @@ public class DriverService {
     throw new EntityExistsException("Driver already exists");
   }
 
+  /**
+   * Deletes a driver. The platform user is not affected.
+   * @param driverId the driver id to be deleted.
+   */
   public void deleteDriverById(final int driverId) {
     driverRepository.deleteById(driverId);
   }
@@ -53,4 +71,5 @@ public class DriverService {
     return driverRepository.findById(driverId).orElseThrow(
       () -> new EntityNotFoundException(DRIVER_NOT_FOUND));
   }
+
 }

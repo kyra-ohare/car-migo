@@ -16,6 +16,10 @@ import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import lombok.Data;
 
+/**
+ * Data Transfer Object received by the Controller to the Service.
+ * Represents the requirements to create a platform user.
+ */
 @Data
 public class PlatformUserRequest {
 

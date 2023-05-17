@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The geocode of a point with its latitude and longitude.
+ */
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)

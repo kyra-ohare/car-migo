@@ -103,9 +103,9 @@ public class JourneyServiceTest {
   @Test
   public void get_Journey_By_Id_Throws_ResourceNotFoundException() {
     when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
-    assertThrows(ResourceNotFoundException.class,
+    assertThrows(EntityNotFoundException.class,
         () -> journeyService.getJourneyById(anyInt()),
-        "ResourceNotFoundException is expected.");
+        "EntityNotFoundException is expected.");
     verify(journeyRepositoryMock).findById(anyInt());
   }
 

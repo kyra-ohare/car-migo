@@ -1,5 +1,8 @@
 package com.unosquare.carmigo.constant;
 
+/**
+ * Constants used throughout the application.
+ */
 public final class AppConstants {
 
   private AppConstants() {}

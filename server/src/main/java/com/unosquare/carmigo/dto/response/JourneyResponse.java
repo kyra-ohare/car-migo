@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object from the Service back to Controller.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
