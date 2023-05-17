@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
+
 import com.unosquare.carmigo.dto.response.PassengerResponse;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PassengerService {
 
-  private static final String PASSENGER_NOT_FOUND = "Passenger not found";
+  protected static final String PASSENGER_NOT_FOUND = "Passenger not found";
 
   private final PassengerRepository passengerRepository;
   private final ModelMapper modelMapper;
@@ -33,7 +35,7 @@ public class PassengerService {
    */
   public PassengerResponse createPassengerById(final int platformUserId) {
     try {
-      findPassengerById(platformUserId);
+      findEntityById(platformUserId, passengerRepository, PASSENGER_NOT_FOUND);
     } catch (final EntityNotFoundException ex) {
       final Passenger passenger = new Passenger();
       passenger.setId(platformUserId);
@@ -56,7 +58,8 @@ public class PassengerService {
    * @return a {@link PassengerResponse}.
    */
   public PassengerResponse getPassengerById(final int passengerId) {
-    return modelMapper.map(findPassengerById(passengerId), PassengerResponse.class);
+    final var passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
+    return modelMapper.map(passenger, PassengerResponse.class);
   }
 
   /**
@@ -66,16 +69,5 @@ public class PassengerService {
    */
   public void deletePassengerById(final int passengerId) {
     passengerRepository.deleteById(passengerId);
-  }
-
-  /**
-   * Fetches a passenger from the database by their id.
-   *
-   * @param passengerId the passenger id to search for.
-   * @return a {@link Passenger} entity.
-   */
-  public Passenger findPassengerById(final int passengerId) {
-    return passengerRepository.findById(passengerId).orElseThrow(
-        () -> new EntityNotFoundException(PASSENGER_NOT_FOUND));
   }
 }

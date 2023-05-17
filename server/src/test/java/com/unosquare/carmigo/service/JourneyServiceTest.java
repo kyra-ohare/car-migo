@@ -18,20 +18,21 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.request.DistanceRequest;
+import com.unosquare.carmigo.dto.request.JourneyRequest;
+import com.unosquare.carmigo.dto.request.SearchJourneysRequest;
+import com.unosquare.carmigo.dto.response.JourneyResponse;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.exception.UnauthorizedException;
-import com.unosquare.carmigo.dto.request.DistanceRequest;
-import com.unosquare.carmigo.dto.request.JourneyRequest;
-import com.unosquare.carmigo.dto.request.SearchJourneysRequest;
-import com.unosquare.carmigo.dto.response.JourneyResponse;
 import com.unosquare.carmigo.openfeign.DistanceApi;
 import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.security.AppUser.CurrentAppUser;
 import com.unosquare.carmigo.util.MapperUtils;
@@ -58,6 +59,7 @@ public class JourneyServiceTest {
       ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyValid.json");
 
   @Mock private JourneyRepository journeyRepositoryMock;
+  @Mock private PassengerRepository passengerRepository;
   @Mock private PassengerJourneyRepository passengerJourneyRepositoryMock;
   @Mock private ModelMapper modelMapperMock;
   @Mock private ObjectMapper objectMapperMock;
@@ -194,13 +196,12 @@ public class JourneyServiceTest {
   @Test
   public void add_Passenger_To_Journey_Returns_JourneyResponse() {
     when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
-    when(passengerServiceMock.findPassengerById(anyInt())).thenReturn(passengerFixture);
+    when(passengerRepository.findById(anyInt())).thenReturn(Optional.ofNullable(passengerFixture));
     passengerFixtureList.add(passengerFixture);
     journeyFixture.setPassengers(passengerFixtureList);
     when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);
     journeyService.addPassengerToJourney(1, 2);
     verify(journeyRepositoryMock).findById(anyInt());
-    verify(passengerServiceMock).findPassengerById(anyInt());
     verify(journeyRepositoryMock).save(any(Journey.class));
   }
 
@@ -213,7 +214,6 @@ public class JourneyServiceTest {
         () -> journeyService.addPassengerToJourney(journeyFixture.getId(), passengerId),
         "EntityExistsException is expected.");
     verify(journeyRepositoryMock).findById(anyInt());
-    verify(passengerServiceMock, times(0)).findPassengerById(anyInt());
     verify(journeyRepositoryMock, times(0)).save(any(Journey.class));
   }
 
@@ -226,7 +226,6 @@ public class JourneyServiceTest {
         () -> journeyService.addPassengerToJourney(journeyFixture.getId(), 1),
         "IllegalStateException is expected.");
     verify(journeyRepositoryMock).findById(anyInt());
-    verify(passengerServiceMock, times(0)).findPassengerById(anyInt());
     verify(journeyRepositoryMock, times(0)).save(any(Journey.class));
   }
 

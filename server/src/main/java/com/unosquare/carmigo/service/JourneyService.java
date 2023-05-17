@@ -2,6 +2,8 @@ package com.unosquare.carmigo.service;
 
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.security.UserStatus.ADMIN;
+import static com.unosquare.carmigo.service.PassengerService.PASSENGER_NOT_FOUND;
+import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +27,7 @@ import com.unosquare.carmigo.openfeign.DistanceHolder;
 import com.unosquare.carmigo.openfeign.Geocode;
 import com.unosquare.carmigo.repository.JourneyRepository;
 import com.unosquare.carmigo.repository.PassengerJourneyRepository;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.util.MapperUtils;
 import jakarta.persistence.EntityExistsException;
@@ -45,14 +48,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JourneyService {
 
+  private static final String JOURNEY_NOT_FOUND = "Journey not found";
+
   private final JourneyRepository journeyRepository;
+  private final PassengerRepository passengerRepository;
   private final PassengerJourneyRepository passengerJourneyRepository;
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
   private final DistanceApi distanceApi;
   private final AppUser appUser;
-  private final PassengerService passengerService;
 
   /**
    * Fetches a journey.
@@ -61,7 +66,8 @@ public class JourneyService {
    * @return a {@link JourneyResponse}.
    */
   public JourneyResponse getJourneyById(final int journeyId) {
-    return modelMapper.map(findJourneyById(journeyId), JourneyResponse.class);
+    final var journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
+    return modelMapper.map(journey, JourneyResponse.class);
   }
 
   /**
@@ -137,7 +143,7 @@ public class JourneyService {
    */
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
     //    TODO: Check if passenger exists first
-    final Journey journey = findJourneyById(journeyId);
+    final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
         p -> {
@@ -148,7 +154,7 @@ public class JourneyService {
     if (journey.getDriver().getId() == passengerId) {
       throw new IllegalStateException("Driver cannot be passenger.");
     }
-    final Passenger passenger = passengerService.findPassengerById(passengerId);
+    final Passenger passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
     passengers.add(passenger);
     journey.setPassengers(passengers);
     journeyRepository.save(journey);
@@ -179,7 +185,8 @@ public class JourneyService {
    * @return a {@link JourneyResponse}.
    */
   public JourneyResponse patchJourney(final int journeyId, final JsonPatch patch) {
-    final var response = modelMapper.map(findJourneyById(journeyId), JourneyResponse.class);
+    final var journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
+    final var response = modelMapper.map(journey, JourneyResponse.class);
     verifyUserAuthorization(response.getDriver().getId());
     try {
       final JsonNode journeyNode = patch.apply(objectMapper.convertValue(response, JsonNode.class));
@@ -196,7 +203,7 @@ public class JourneyService {
    * @param journeyId the journey id to be deleted.
    */
   public void deleteJourneyById(final int journeyId) {
-    final Journey journey = findJourneyById(journeyId);
+    final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     verifyUserAuthorization(journey.getDriver().getId());
     journeyRepository.deleteById(journeyId);
   }
@@ -209,7 +216,7 @@ public class JourneyService {
    */
   @Transactional
   public void removePassengerFromJourney(final int journeyId, final int passengerId) {
-    final Journey journey = findJourneyById(journeyId);
+    final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     for (Passenger p : passengers) {
       if (p.getId() == passengerId) {
@@ -230,11 +237,6 @@ public class JourneyService {
     final String request = prepareRequestToDistanceApi(distanceRequest);
     final DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderDistanceResponse(distanceHolder);
-  }
-
-  private Journey findJourneyById(final int id) {
-    return journeyRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Journey id %d not found.".formatted(id)));
   }
 
   private void verifyUserAuthorization(final int userId) {

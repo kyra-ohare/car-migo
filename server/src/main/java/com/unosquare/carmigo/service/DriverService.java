@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
+
 import com.unosquare.carmigo.dto.request.DriverRequest;
 import com.unosquare.carmigo.dto.response.DriverResponse;
 import com.unosquare.carmigo.entity.Driver;
@@ -35,7 +37,7 @@ public class DriverService {
    */
   public DriverResponse createDriverById(final int platformUserId, final DriverRequest driverRequest) {
     try {
-      findDriverById(platformUserId);
+      findEntityById(platformUserId, driverRepository, DRIVER_NOT_FOUND);
     } catch (final EntityNotFoundException ex) {
       final Driver driver = modelMapper.map(driverRequest, Driver.class);
       driver.setId(platformUserId);
@@ -58,7 +60,7 @@ public class DriverService {
    * @return a {@link DriverResponse}.
    */
   public DriverResponse getDriverById(final int driverId) {
-    return modelMapper.map(findDriverById(driverId), DriverResponse.class);
+    return modelMapper.map(findEntityById(driverId, driverRepository, DRIVER_NOT_FOUND), DriverResponse.class);
   }
 
   /**
@@ -69,10 +71,4 @@ public class DriverService {
   public void deleteDriverById(final int driverId) {
     driverRepository.deleteById(driverId);
   }
-
-  private Driver findDriverById(final int driverId) {
-    return driverRepository.findById(driverId).orElseThrow(
-      () -> new EntityNotFoundException(DRIVER_NOT_FOUND));
-  }
-
 }

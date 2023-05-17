@@ -1,6 +1,7 @@
 package com.unosquare.carmigo.service;
 
 import static com.unosquare.carmigo.security.UserStatus.ACTIVE;
+import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -88,7 +89,8 @@ public class PlatformUserService {
    * @return a {@link PlatformUserResponse}.
    */
   public PlatformUserResponse getPlatformUserById(final int platformUserId) {
-    return modelMapper.map(findPlatformUserById(platformUserId), PlatformUserResponse.class);
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    return modelMapper.map(platformUser, PlatformUserResponse.class);
   }
 
   /**
@@ -117,8 +119,8 @@ public class PlatformUserService {
    */
   public PlatformUserResponse patchPlatformUserById(final int platformUserId, final JsonPatch patch) {
     // TODO: remove PlatformUserDto, try to use entityManger.getReference()
-    final PlatformUserDto platformUserDto = modelMapper.map(
-        findPlatformUserById(platformUserId), PlatformUserDto.class);
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    final PlatformUserDto platformUserDto = modelMapper.map(platformUser, PlatformUserDto.class);
     final PlatformUser savedPlatformUser;
     try {
       final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(platformUserDto, JsonNode.class));
@@ -140,10 +142,5 @@ public class PlatformUserService {
    */
   public void deletePlatformUserById(final int platformUserId) {
     platformUserRepository.deleteById(platformUserId);
-  }
-
-  private PlatformUser findPlatformUserById(final int platformUserId) {
-    return platformUserRepository.findById(platformUserId).orElseThrow(
-        () -> new EntityNotFoundException(USER_NOT_FOUND));
   }
 }
