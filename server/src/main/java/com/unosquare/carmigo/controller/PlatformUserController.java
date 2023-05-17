@@ -80,7 +80,7 @@ public class PlatformUserController {
    * @param platformUserId the platform user's id.
    * @return Response body as {@link PlatformUserResponse}.
    */
-  @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{platformUserId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int platformUserId) {
     final var response = platformUserService.getPlatformUserById(getCurrentId(platformUserId));
@@ -107,7 +107,7 @@ public class PlatformUserController {
    * @param patch          Request body as {@link JsonPatch}.
    * @return Response body as {@link PlatformUserResponse}.
    */
-  @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
+  @PatchMapping(value = "/{platformUserId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<PlatformUserResponse> patchPlatformUserById(
       @PathVariable final int platformUserId, @RequestBody final JsonPatch patch) {
@@ -133,7 +133,7 @@ public class PlatformUserController {
    * @param platformUserId the platform user's id.
    * @return an empty body.
    */
-  @DeleteMapping(value = "/{userId}")
+  @DeleteMapping(value = "/{platformUserId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> deletePlatformUserById(@PathVariable final int platformUserId) {
     platformUserService.deletePlatformUserById(getCurrentId(platformUserId));
