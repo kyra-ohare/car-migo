@@ -11,8 +11,9 @@ public class ExceptionBuilder {
 
   /**
    * Builds an error response.
+   *
    * @param httpStatus the error {@link HttpStatus}.
-   * @param message what happened.
+   * @param message    what happened.
    * @return a {@link ResponseEntity}.
    */
   public static ResponseEntity<ErrorResponse> buildErrorResponseRepresentation(

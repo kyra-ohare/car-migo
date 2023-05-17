@@ -21,6 +21,7 @@ public class AppUser {
 
   /**
    * Returns the current logged-in user.
+   *
    * @return the logged-in user wrapped in {@link CurrentAppUser}.
    */
   @Bean
