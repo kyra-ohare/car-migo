@@ -19,6 +19,7 @@ public class MapperConfiguration {
 
   /**
    * ModelMapper configuration.
+   *
    * @return {@link ModelMapper}
    */
   @Bean
@@ -34,6 +35,7 @@ public class MapperConfiguration {
 
   /**
    * ObjectMapper configuration.
+   *
    * @return {@link ObjectMapper}
    */
   @Bean

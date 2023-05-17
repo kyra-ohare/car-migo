@@ -32,6 +32,7 @@ public class WebSecurityConfiguration {
   /**
    * Security layer filter which allows some endpoints depending on the authority.
    * Endpoints not listed below are restricted by default.
+   *
    * @param httpSecurity HTTP web based security.
    * @return a {@link SecurityFilterChain} which is passed to next Spring filter.
    * @throws Exception application halts if it does not go according to the plan.

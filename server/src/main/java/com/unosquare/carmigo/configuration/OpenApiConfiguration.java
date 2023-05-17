@@ -25,6 +25,7 @@ public class OpenApiConfiguration {
 
   /**
    * Creates a Swagger OpenApi UI.
+   *
    * @return a Swagger {@link OpenAPI}.
    */
   @Bean

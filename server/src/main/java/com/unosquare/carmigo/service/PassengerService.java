@@ -26,17 +26,9 @@ public class PassengerService {
   private final EntityManager entityManager;
 
   /**
-   * Fetches a passenger.
-   * @param passengerId the passenger id to search for.
-   * @return a {@link PassengerResponse}.
-   */
-  public PassengerResponse getPassengerById(final int passengerId) {
-    return modelMapper.map(findPassengerById(passengerId), PassengerResponse.class);
-  }
-
-  /**
    * Creates a passenger.
-   * @param platformUserId the platform user id to create a passenger from.
+   *
+   * @param platformUserId the platform user id to create a passenger.
    * @return a {@link PassengerResponse}.
    */
   public PassengerResponse createPassengerById(final int platformUserId) {
@@ -58,7 +50,18 @@ public class PassengerService {
   }
 
   /**
+   * Fetches a passenger.
+   *
+   * @param passengerId the passenger id to search for.
+   * @return a {@link PassengerResponse}.
+   */
+  public PassengerResponse getPassengerById(final int passengerId) {
+    return modelMapper.map(findPassengerById(passengerId), PassengerResponse.class);
+  }
+
+  /**
    * Deletes a passenger. The platform user is not affected.
+   *
    * @param passengerId the passenger id to be deleted.
    */
   public void deletePassengerById(final int passengerId) {
@@ -67,6 +70,7 @@ public class PassengerService {
 
   /**
    * Fetches a passenger from the database by their id.
+   *
    * @param passengerId the passenger id to search for.
    * @return a {@link Passenger} entity.
    */

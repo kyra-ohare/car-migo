@@ -41,8 +41,9 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to search for a specific journey.
+   *
    * @param journeyId the journey's id.
-   * @return a {@link JourneyResponse}.
+   * @return Response body as {@link JourneyResponse}.
    */
   @GetMapping(value = "/{journeyId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -53,8 +54,9 @@ public class JourneyController {
 
   /**
    * Enables users to search for journeys. No need of authentication.
-   * @param searchJourneysRequest  the search criteria as {@link SearchJourneysRequest}.
-   * @return a List of {@link JourneyResponse}.
+   *
+   * @param searchJourneysRequest Request body as {@link SearchJourneysRequest}.
+   * @return Response body as List of {@link JourneyResponse}.
    */
   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<JourneyResponse>> searchJourneys(
@@ -64,8 +66,9 @@ public class JourneyController {
   }
 
   /**
-   * Enables logged-in user, as a driver, to search their journeys.
-   * @return a List of {@link JourneyResponse}.
+   * Enables logged-in user, as a driver, to search for their journeys.
+   *
+   * @return Response body as List of {@link JourneyResponse}.
    */
   @GetMapping(value = "/drivers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
@@ -76,8 +79,9 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to search for journeys of a driver.
+   *
    * @param driverId the driver's id.
-   * @return a List of {@link JourneyResponse}.
+   * @return Response body as List of {@link JourneyResponse}.
    */
   @GetMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -88,7 +92,8 @@ public class JourneyController {
 
   /**
    * Enables logged-in user, as a passenger, to search their journeys.
-   * @return a List of {@link JourneyResponse}.
+   *
+   * @return Response body as List of {@link JourneyResponse}.
    */
   @GetMapping(value = "/passengers/my-journeys", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
@@ -99,8 +104,9 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to search for journeys of a passenger.
+   *
    * @param passengerId the passenger's id.
-   * @return a List of {@link JourneyResponse}.
+   * @return Response body as List of {@link JourneyResponse}.
    */
   @GetMapping(value = "/passengers/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -111,8 +117,9 @@ public class JourneyController {
 
   /**
    * Enables logged-in user, as a driver, to create a journey.
-   * @param journeyRequest the requirements as {@link JourneyRequest}.
-   * @return a {@link JourneyResponse}.
+   *
+   * @param journeyRequest Request body as {@link JourneyRequest}.
+   * @return Response body as {@link JourneyResponse}.
    */
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
@@ -124,9 +131,10 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to create a journey for a driver.
-   * @param driverId the driver id to create a journey for.
-   * @param journeyRequest the requirements as {@link JourneyRequest}.
-   * @return a {@link JourneyResponse}.
+   *
+   * @param driverId       the driver id to create a journey for.
+   * @param journeyRequest Request body as {@link JourneyRequest}.
+   * @return Response body as {@link JourneyResponse}.
    */
   @PostMapping(value = "/drivers/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -138,6 +146,7 @@ public class JourneyController {
 
   /**
    * Enables logged-in user, as a passenger, to be a passenger of this journey.
+   *
    * @param journeyId the journey id to add this passenger.
    * @return an empty body.
    */
@@ -150,7 +159,8 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to add this passenger to this journey.
-   * @param journeyId the journey id to add this passenger.
+   *
+   * @param journeyId   the journey id to add this passenger.
    * @param passengerId the passenger id to be added to this journey.
    * @return an empty body.
    */
@@ -164,9 +174,10 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users or the driver who owns this journey to make correction.
+   *
    * @param journeyId the journey id to be corrected.
-   * @param patch a {@link JsonPatch}.
-   * @return a {@link JourneyResponse}.
+   * @param patch     Request body as {@link JsonPatch}.
+   * @return Response body as {@link JourneyResponse}.
    */
   @PatchMapping(value = "/{journeyId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
@@ -178,6 +189,7 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users or the driver who owns this journey to delete.
+   *
    * @param journeyId the journey id to be deleted.
    * @return an empty body.
    */
@@ -189,7 +201,8 @@ public class JourneyController {
   }
 
   /**
-   * Enables a user, as a passenger, to no longer be part of the journey.
+   * Enables a user, as a passenger, to no longer be part of this journey.
+   *
    * @param journeyId the journey id to remove a passenger.
    * @return an empty body.
    */
@@ -202,7 +215,8 @@ public class JourneyController {
 
   /**
    * Enables logged-in admin users to remove a passenger from a journey.
-   * @param journeyId the journey id to remove a passenger.
+   *
+   * @param journeyId   the journey id to remove a passenger.
    * @param passengerId the passenger id to be removed from a journey.
    * @return an empty body.
    */
@@ -216,8 +230,9 @@ public class JourneyController {
 
   /**
    * Enables users to search for the distance of two points. No need of authentication.
+   *
    * @param distanceRequest the search criteria as {@link DistanceRequest}.
-   * @return a {@link DistanceResponse}.
+   * @return Response body as {@link DistanceResponse}.
    */
   @GetMapping(value = "/calculateDistance", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<DistanceResponse> calculateDistance(@Valid final DistanceRequest distanceRequest) {

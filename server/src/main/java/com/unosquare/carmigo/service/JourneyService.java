@@ -56,6 +56,7 @@ public class JourneyService {
 
   /**
    * Fetches a journey.
+   *
    * @param journeyId the journey id to search for.
    * @return a {@link JourneyResponse}.
    */
@@ -65,6 +66,7 @@ public class JourneyService {
 
   /**
    * Searches for journeys.
+   *
    * @param searchJourneysRequest the search criteria as {@link SearchJourneysRequest}.
    * @return a List of {@link JourneyResponse}.
    */
@@ -81,8 +83,9 @@ public class JourneyService {
 
   /**
    * Fetches journeys of a driver.
+   *
    * @param driverId the driver id to fetch their journeys.
-   * @return  a List of {@link JourneyResponse}.
+   * @return a List of {@link JourneyResponse}.
    */
   public List<JourneyResponse> getJourneysByDriverId(final int driverId) {
     final List<Journey> result = journeyRepository.findJourneysByDriverId(driverId);
@@ -94,8 +97,9 @@ public class JourneyService {
 
   /**
    * Fetches journeys of a passenger.
+   *
    * @param passengerId the passenger id to fetch their journeys.
-   * @return  a List of {@link JourneyResponse}.
+   * @return a List of {@link JourneyResponse}.
    */
   public List<JourneyResponse> getJourneysByPassengersId(final int passengerId) {
     final List<Journey> result = journeyRepository.findJourneysByPassengersId(passengerId);
@@ -108,7 +112,8 @@ public class JourneyService {
 
   /**
    * Only drivers can create journeys.
-   * @param driverId the driver id to create a journey for.
+   *
+   * @param driverId       the driver id to create a journey for.
    * @param journeyRequest the requirements as {@link JourneyRequest}.
    * @return a {@link JourneyResponse}.
    */
@@ -126,7 +131,8 @@ public class JourneyService {
 
   /**
    * Enables the user to be a passenger of a journey.
-   * @param journeyId the journey id to add this passenger.
+   *
+   * @param journeyId   the journey id to add this passenger.
    * @param passengerId the passenger id.
    */
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
@@ -167,8 +173,9 @@ public class JourneyService {
    *     }
    *   ]
    * </pre>
+   *
    * @param journeyId the journey id to be updated.
-   * @param patch a {@link JsonPatch}.
+   * @param patch     a {@link JsonPatch}.
    * @return a {@link JourneyResponse}.
    */
   public JourneyResponse patchJourney(final int journeyId, final JsonPatch patch) {
@@ -185,6 +192,7 @@ public class JourneyService {
 
   /**
    * Deletes a journey.
+   *
    * @param journeyId the journey id to be deleted.
    */
   public void deleteJourneyById(final int journeyId) {
@@ -195,7 +203,8 @@ public class JourneyService {
 
   /**
    * Enables the user to no longer be a passenger of a journey.
-   * @param journeyId the journey id to remove this passenger.
+   *
+   * @param journeyId   the journey id to remove this passenger.
    * @param passengerId the passenger id.
    */
   @Transactional
@@ -213,6 +222,7 @@ public class JourneyService {
 
   /**
    * Searches for the distance between two locations.
+   *
    * @param distanceRequest the search criteria as {@link DistanceRequest}.
    * @return a {@link DistanceResponse}.
    */
@@ -224,7 +234,7 @@ public class JourneyService {
 
   private Journey findJourneyById(final int id) {
     return journeyRepository.findById(id)
-      .orElseThrow(() -> new EntityNotFoundException("Journey id %d not found.".formatted(id)));
+        .orElseThrow(() -> new EntityNotFoundException("Journey id %d not found.".formatted(id)));
   }
 
   private void verifyUserAuthorization(final int userId) {
@@ -244,7 +254,7 @@ public class JourneyService {
 
   private String prepareRequestToDistanceApi(final DistanceRequest criteria) {
     return "[{\"t\":\"" + criteria.getLocationFrom() + "," + criteria.getCountryFrom() + "\"},{\"t\":\""
-      + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
+        + criteria.getLocationTo() + "," + criteria.getCountryTo() + "\"}]";
   }
 
   private DistanceResponse convertDistanceHolderDistanceResponse(final DistanceHolder distanceHolder) {

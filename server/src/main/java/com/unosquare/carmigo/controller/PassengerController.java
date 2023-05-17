@@ -31,31 +31,9 @@ public class PassengerController {
   private final AppUser appUser;
 
   /**
-   * Enables logged-in users to see their profiles.
-   * @return a {@link PassengerResponse}.
-   */
-  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PassengerResponse> getCurrentPassengerProfile() {
-    final var response = passengerService.getPassengerById(getCurrentId(ALIAS_CURRENT_USER));
-    return ResponseEntity.ok(response);
-  }
-
-  /**
-   * Enables logged-in admin users to see other user's profiles.
-   * @param passengerId the passenger's id.
-   * @return a {@link PassengerResponse}.
-   */
-  @GetMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable final int passengerId) {
-    final var response = passengerService.getPassengerById(getCurrentId(passengerId));
-    return ResponseEntity.ok(response);
-  }
-
-  /**
-   * Enables logged-in user to have a passenger's profile.
-   * @return a {@link PassengerResponse}.
+   * Enables logged-in users to create a passenger's profile.
+   *
+   * @return Response body as {@link PassengerResponse}.
    */
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
@@ -66,8 +44,9 @@ public class PassengerController {
 
   /**
    * Enables logged-in admin users to create a passenger's profile for another user.
+   *
    * @param passengerId the user to become a passenger.
-   * @return a {@link PassengerResponse}.
+   * @return Response body as {@link PassengerResponse}.
    */
   @PostMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -77,7 +56,33 @@ public class PassengerController {
   }
 
   /**
-   * Delete logged-in user's passenger's profile.
+   * Enables logged-in users to see their passenger's profiles.
+   *
+   * @return Response body as {@link PassengerResponse}.
+   */
+  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
+  public ResponseEntity<PassengerResponse> getCurrentPassengerProfile() {
+    final var response = passengerService.getPassengerById(getCurrentId(ALIAS_CURRENT_USER));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in admin users to see other passenger's profiles.
+   *
+   * @param passengerId the passenger's id.
+   * @return Response body as {@link PassengerResponse}.
+   */
+  @GetMapping(value = "/{passengerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable final int passengerId) {
+    final var response = passengerService.getPassengerById(getCurrentId(passengerId));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in user's to delete their passenger's profile.
+   *
    * @return an empty body.
    */
   @DeleteMapping
@@ -89,6 +94,7 @@ public class PassengerController {
 
   /**
    * Enables logged-in admin users to delete a passenger's profile.
+   *
    * @param passengerId the user to become a passenger.
    * @return an empty body.
    */

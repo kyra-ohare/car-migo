@@ -21,6 +21,7 @@ public class OpenFeignDistanceConfiguration {
 
   /**
    * Intercepts a request to Distance to add some headers.
+   *
    * @return a {@link RequestInterceptor}.
    */
   @Bean

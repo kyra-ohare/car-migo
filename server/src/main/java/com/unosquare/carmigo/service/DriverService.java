@@ -27,18 +27,10 @@ public class DriverService {
   private final EntityManager entityManager;
 
   /**
-   * Fetches a driver.
-   * @param driverId the driver id to search for.
-   * @return a {@link DriverResponse}.
-   */
-  public DriverResponse getDriverById(final int driverId) {
-    return modelMapper.map(findDriverById(driverId), DriverResponse.class);
-  }
-
-  /**
    * Creates a driver.
-   * @param platformUserId the platform user id to create a driver from.
-   * @param driverRequest the requirements as {@link DriverRequest}.
+   *
+   * @param platformUserId the platform user id to create a driver.
+   * @param driverRequest  the requirements as {@link DriverRequest}.
    * @return a {@link DriverResponse}.
    */
   public DriverResponse createDriverById(final int platformUserId, final DriverRequest driverRequest) {
@@ -60,7 +52,18 @@ public class DriverService {
   }
 
   /**
+   * Fetches a driver.
+   *
+   * @param driverId the driver id to search for.
+   * @return a {@link DriverResponse}.
+   */
+  public DriverResponse getDriverById(final int driverId) {
+    return modelMapper.map(findDriverById(driverId), DriverResponse.class);
+  }
+
+  /**
    * Deletes a driver. The platform user is not affected.
+   *
    * @param driverId the driver id to be deleted.
    */
   public void deleteDriverById(final int driverId) {

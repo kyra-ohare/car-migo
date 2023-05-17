@@ -34,32 +34,10 @@ public class DriverController {
   private final AppUser appUser;
 
   /**
-   * Enables logged-in users to see their profiles.
-   * @return a {@link DriverResponse}.
-   */
-  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<DriverResponse> getCurrentDriverProfile() {
-    final var response = driverService.getDriverById(getCurrentId(ALIAS_CURRENT_USER));
-    return ResponseEntity.ok(response);
-  }
-
-  /**
-   * Enables logged-in admin users to see other user's profiles.
-   * @param driverId the driver's id.
-   * @return a {@link DriverResponse}.
-   */
-  @GetMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<DriverResponse> getDriverById(@PathVariable final int driverId) {
-    final var response = driverService.getDriverById(getCurrentId(driverId));
-    return ResponseEntity.ok(response);
-  }
-
-  /**
-   * Enables logged-in user to have a driver's profile.
+   * Enables logged-in users to create a driver's profile.
+   *
    * @param driverRequest Request body as {@link DriverRequest}.
-   * @return a {@link DriverResponse}.
+   * @return Response body as {@link DriverResponse}.
    */
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
@@ -71,9 +49,10 @@ public class DriverController {
 
   /**
    * Enables logged-in admin users to create a driver's profile for another user.
-   * @param driverId the user to become a driver.
+   *
+   * @param driverId      the user to become a driver.
    * @param driverRequest Request body as {@link DriverRequest}.
-   * @return a {@link DriverResponse}.
+   * @return Response body as {@link DriverResponse}.
    */
   @PostMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -84,7 +63,33 @@ public class DriverController {
   }
 
   /**
-   * Delete logged-in user's driver's profile.
+   * Enables logged-in users to see their driver's profiles.
+   *
+   * @return Response body as {@link DriverResponse}.
+   */
+  @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
+  public ResponseEntity<DriverResponse> getCurrentDriverProfile() {
+    final var response = driverService.getDriverById(getCurrentId(ALIAS_CURRENT_USER));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in admin users to see other driver's profiles.
+   *
+   * @param driverId the driver's id.
+   * @return Response body as {@link DriverResponse}.
+   */
+  @GetMapping(value = "/{driverId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<DriverResponse> getDriverById(@PathVariable final int driverId) {
+    final var response = driverService.getDriverById(getCurrentId(driverId));
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Enables logged-in user's to delete their driver's profile.
+   *
    * @return an empty body.
    */
   @DeleteMapping
@@ -96,6 +101,7 @@ public class DriverController {
 
   /**
    * Enables logged-in admin users to delete a driver's profile.
+   *
    * @param driverId the driver's id to be deleted.
    * @return an empty body.
    */

@@ -23,6 +23,7 @@ public class AuthenticationService {
 
   /**
    * Creates an authentication token.
+   *
    * @param authenticationRequest the requirements as {@link AuthenticationRequest}.
    * @return a {@link AuthenticationResponse}.
    */

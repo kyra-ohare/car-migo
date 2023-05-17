@@ -25,7 +25,7 @@ public class HeartbeatController {
   private final UserAccessStatusRepository userAccessStatusRepository;
 
   /**
-   * Verifies if services this application is depended on are up and running.<br>
+   * Verifies if services, this application is depended on, are up and running.<br>
    * Expect 200 OK otherwise 500 Internal Server Error.
    * @return JSON listing the services.
    */

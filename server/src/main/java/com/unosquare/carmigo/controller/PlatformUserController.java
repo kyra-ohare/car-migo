@@ -37,9 +37,10 @@ public class PlatformUserController {
   private final AppUser appUser;
 
   /**
-   * Enables user to create an account. This new user's access status is set to STAGED.
-   * @param platformUserRequest the requirements as {@link PlatformUserRequest}.
-   * @return a {@link PlatformUserResponse}.
+   * Enables a user to create an account. This new user's access status is set to STAGED.
+   *
+   * @param platformUserRequest Request body as {@link PlatformUserRequest}.
+   * @return Response body as {@link PlatformUserResponse}.
    */
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PlatformUserResponse> createPlatformUser(
@@ -51,6 +52,7 @@ public class PlatformUserController {
   /**
    * Enables user to confirm their email after creating an account.
    * Upon confirmation, their access status is set to ACTIVE.
+   *
    * @param email the email used to create an account.
    * @return an empty body.
    */
@@ -62,7 +64,8 @@ public class PlatformUserController {
 
   /**
    * Enables logged-in users to see their profiles.
-   * @return a {@link PlatformUserResponse}.
+   *
+   * @return Response body as {@link PlatformUserResponse}.
    */
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
@@ -73,8 +76,9 @@ public class PlatformUserController {
 
   /**
    * Enables logged-in admin users to see other user's profiles.
+   *
    * @param platformUserId the platform user's id.
-   * @return a {@link PlatformUserResponse}.
+   * @return Response body as {@link PlatformUserResponse}.
    */
   @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -85,8 +89,9 @@ public class PlatformUserController {
 
   /**
    * Enables logged-in users to correct their profiles.
-   * @param patch a {@link JsonPatch}.
-   * @return a {@link PlatformUserResponse}.
+   *
+   * @param patch Request body as {@link JsonPatch}.
+   * @return Response body as {@link PlatformUserResponse}.
    */
   @PatchMapping(consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
@@ -97,9 +102,10 @@ public class PlatformUserController {
 
   /**
    * Enables admin logged-in users to correct other user's profiles.
+   *
    * @param platformUserId the platform user's id.
-   * @param patch a {@link JsonPatch}.
-   * @return a {@link PlatformUserResponse}.
+   * @param patch          Request body as {@link JsonPatch}.
+   * @return Response body as {@link PlatformUserResponse}.
    */
   @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
@@ -110,7 +116,8 @@ public class PlatformUserController {
   }
 
   /**
-   * Delete logged-in user's profile.
+   * Enables logged-in user's to delete their profile.
+   *
    * @return an empty body.
    */
   @DeleteMapping
@@ -122,6 +129,7 @@ public class PlatformUserController {
 
   /**
    * Enables logged-in admin users to delete a user's profile.
+   *
    * @param platformUserId the platform user's id.
    * @return an empty body.
    */

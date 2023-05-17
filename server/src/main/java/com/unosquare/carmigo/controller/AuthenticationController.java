@@ -28,6 +28,7 @@ public class AuthenticationController {
 
   /**
    * Endpoint to generate JWT tokens.
+   *
    * @param authenticationRequest Request body as {@link  AuthenticationRequest}.
    * @return Response body as {@link AuthenticationResponse}.
    */

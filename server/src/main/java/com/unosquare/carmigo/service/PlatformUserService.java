@@ -44,6 +44,7 @@ public class PlatformUserService {
 
   /**
    * Creates a platform user. This new user's access status is set to STAGED.
+   *
    * @param platformUserRequest the requirements as {@link PlatformUserRequest}.
    * @return a {@link PlatformUserResponse}.
    */
@@ -62,7 +63,9 @@ public class PlatformUserService {
   }
 
   /**
-   * Allows a user to confirm their email enabling them to use more application features.
+   * Allows a user to confirm their email.
+   * Upon confirmation, their access status is set to ACTIVE which gives them more access.
+   *
    * @param email the user's email.
    */
   public void confirmEmail(final String email) {
@@ -80,6 +83,7 @@ public class PlatformUserService {
 
   /**
    * Fetches a platform user.
+   *
    * @param platformUserId the platform user id to search for.
    * @return a {@link PlatformUserResponse}.
    */
@@ -91,7 +95,7 @@ public class PlatformUserService {
    * Corrects platform user information.<br>
    * Pass an array of a {@link JsonPatch} body with the operation, the path and the value.<br>
    * Accepted operation values are “add”, "remove", "replace", "move", "copy" and "test".<br>
-   * Here is an example which updates a user's phone number and access status:<br>
+   * Here is an example which updates a user's phone number and their access status:<br>
    * <pre>
    *   [
    *     {
@@ -106,8 +110,9 @@ public class PlatformUserService {
    *     }
    *   ]
    * </pre>
+   *
    * @param platformUserId the platform user id to be updated.
-   * @param patch a {@link JsonPatch}.
+   * @param patch          a {@link JsonPatch}.
    * @return a {@link PlatformUserResponse}.
    */
   public PlatformUserResponse patchPlatformUserById(final int platformUserId, final JsonPatch patch) {
@@ -128,8 +133,9 @@ public class PlatformUserService {
   /**
    * Deletes a platform user.<br>
    * <strong>Warning:</strong> it will also delete (if any) the driver and/or the passenger associated.
-   * Example: Tom is a platform user who is also a driver as well as a passenger.
-   * When deleting Tom's platform user profile, his driver's and passenger's profiles will also be deleted.
+   * Example: Tom is a platform user who is also a driver as well as a passenger. When deleting Tom's platform user
+   * profile, his driver's and passenger's profiles will also be deleted.
+   *
    * @param platformUserId the platform user id to be deleted.
    */
   public void deletePlatformUserById(final int platformUserId) {
