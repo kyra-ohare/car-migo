@@ -34,7 +34,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn clean package --file server/pom.xml
+        run: cd ./server && ./mvnw clean package && cd ..
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest

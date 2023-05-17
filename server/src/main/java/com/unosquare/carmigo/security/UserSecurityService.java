@@ -43,7 +43,7 @@ public class UserSecurityService implements UserDetailsService {
    * * SUSPENDED - user can see and update profile. User cannot create/apply for journeys, accept/reject passengers.
    *
    * @param currentUser PlatformUser from the database.
-   * @return the authenticated user's information.
+   * @return the authenticated user's information as{@link UserDetails}.
    */
   private UserDetails getUserDetails(final PlatformUser currentUser) {
     return switch (UserStatus.valueOf(currentUser.getUserAccessStatus().getStatus())) {
