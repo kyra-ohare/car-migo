@@ -8,7 +8,10 @@ insert into platform_user(created_date, first_name, last_name, dob, email, passw
     values('2022-01-28', 'Jess', 'Brown', '1986-01-04', 'jess.brown@example.com', 'Pass1234!', '0283215978', 3);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2022-02-01', 'Tom', 'Thompson', '2000-09-30', 'tom.thompson@example.com', 'Pass1234!', '0286782453', 4);
-
+insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
+    values('2022-05-11', 'Jake', 'Sully', '2009-05-30', 'jake.sully@example.com', 'Pass1234!', '02865783249', 5);
+insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
+    values('2022-06-03', 'Kyra', 'OHare', '1986-01-04', 'kyra.ohare@example.com', 'Pass1234!', '02854723651', 6);
 
 insert into driver(license_number, platform_user_id)
     values('35789654', 1);
