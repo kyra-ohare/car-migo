@@ -3,7 +3,7 @@ package com.unosquare.carmigo.exception;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
- import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
- import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -54,6 +54,12 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
+  /**
+   * Handles exception thrown by {@link jakarta.validation.Valid} in controllers which parses error messages.
+   *
+   * @param methodArgumentNotValidException {@link MethodArgumentNotValidException}.
+   * @return Response body as {@link ErrorResponse}.
+   */
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public ResponseEntity<ErrorResponse> handleBeanValidationException(
       final MethodArgumentNotValidException methodArgumentNotValidException) {
