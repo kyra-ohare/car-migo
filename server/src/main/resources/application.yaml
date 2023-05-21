@@ -22,35 +22,12 @@ spring:
         composite-indicator:
           enabled: false
 
-logging:
-  level:
-    web: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "beans, health, info, metrics"
-  endpoint:
-    health:
-      show-details: always
-  health:
-    mail:
-      enabled: false
-
 server:
   port: 8086
 
-springdoc:
-  api:
-    description: RESTful API for CRUD operations on users (platform users, drivers and passengers) and journeys.
-    title: ${spring.application.name} API
-  show-actuator: true
-  swagger-ui:
-    displayOperationId: true
-    tagsSorter: alpha
-  use-fqn: true
-  writer-with-order-by-keys: true
+logging:
+  level:
+    web: INFO
 
 application:
   token:
@@ -64,6 +41,29 @@ open-feign:
     endpoint: https://distanceto.p.rapidapi.com/get
     host: distanceto.p.rapidapi.com
     key: ${CAR_MIGO_OPEN_FEIGN_DISTANCE_KEY:unknown_open_feign_distance_key}
+
+springdoc:
+  api:
+    description: RESTful API for CRUD operations on users (platform users, drivers and passengers) and journeys.
+    title: ${spring.application.name} API
+  show-actuator: true
+  swagger-ui:
+    displayOperationId: true
+    tagsSorter: alpha
+  use-fqn: true
+  writer-with-order-by-keys: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "beans, health, info, metrics"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
 
 ---
 spring:
@@ -93,3 +93,7 @@ spring:
     url: jdbc:postgresql://db:5432/carmigo
   devtools:
     add-properties: false
+
+springdoc:
+  swagger-ui:
+    enabled: false
