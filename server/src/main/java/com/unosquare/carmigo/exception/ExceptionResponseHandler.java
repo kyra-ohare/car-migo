@@ -1,9 +1,9 @@
 package com.unosquare.carmigo.exception;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import java.util.stream.Collectors;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * Handles exceptions triggered throughout the application.
+ */
 @ControllerAdvice
 public class ExceptionResponseHandler {
 
@@ -51,6 +54,12 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
+  /**
+   * Handles exception thrown by {@link jakarta.validation.Valid} in controllers which parses error messages.
+   *
+   * @param methodArgumentNotValidException {@link MethodArgumentNotValidException}.
+   * @return Response body as {@link ErrorResponse}.
+   */
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public ResponseEntity<ErrorResponse> handleBeanValidationException(
       final MethodArgumentNotValidException methodArgumentNotValidException) {

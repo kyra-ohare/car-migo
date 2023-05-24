@@ -1,13 +1,16 @@
-package com.unosquare.carmigo.model.response;
+package com.unosquare.carmigo.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object from the Service back to Controller.
+ */
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserAccessStatusViewModel {
+public class UserAccessStatusResponse {
 
   private int id;
 

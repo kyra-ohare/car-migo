@@ -7,6 +7,9 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+/**
+ * Gives specific characteristics which represents the authenticated user.
+ */
 @Getter
 @Setter
 public class CustomUserDetails extends User {

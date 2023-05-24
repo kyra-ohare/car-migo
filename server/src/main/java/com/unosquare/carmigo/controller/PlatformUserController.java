@@ -3,16 +3,13 @@ package com.unosquare.carmigo.controller;
 import static com.unosquare.carmigo.constant.AppConstants.ALIAS_CURRENT_USER;
 
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
-import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
-import com.unosquare.carmigo.model.request.CreatePlatformUserViewModel;
-import com.unosquare.carmigo.model.response.PlatformUserViewModel;
+import com.unosquare.carmigo.dto.request.PlatformUserRequest;
+import com.unosquare.carmigo.dto.response.PlatformUserResponse;
 import com.unosquare.carmigo.security.AppUser;
 import com.unosquare.carmigo.service.PlatformUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,85 +24,120 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles Platform User APIs.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
 @Tag(name = "Platform User Controller")
 public class PlatformUserController {
 
-  private final ModelMapper modelMapper;
   private final PlatformUserService platformUserService;
   private final AppUser appUser;
 
+  /**
+   * Enables a user to create an account. This new user's access status is set to STAGED.
+   *
+   * @param platformUserRequest Request body as {@link PlatformUserRequest}.
+   * @return Response body as {@link PlatformUserResponse}.
+   */
+  @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<PlatformUserResponse> createPlatformUser(
+      @Valid @RequestBody final PlatformUserRequest platformUserRequest) {
+    final var response = platformUserService.createPlatformUser(platformUserRequest);
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  /**
+   * Enables user to confirm their email after creating an account.
+   * Upon confirmation, their access status is set to ACTIVE.
+   *
+   * @param email the email used to create an account.
+   * @return an empty body.
+   */
   @PostMapping(value = "/confirm-email")
   public ResponseEntity<?> confirmEmail(@RequestParam final String email) {
     platformUserService.confirmEmail(email);
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Enables logged-in users to see their profiles.
+   *
+   * @return Response body as {@link PlatformUserResponse}.
+   */
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserViewModel> getCurrentPlatformUserProfile() {
-    return ResponseEntity.ok(getPlatformUser(ALIAS_CURRENT_USER));
+  public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile() {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
+    return ResponseEntity.ok(response);
   }
 
-  @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  /**
+   * Enables logged-in admin users to see other user's profiles.
+   *
+   * @param platformUserId the platform user's id.
+   * @return Response body as {@link PlatformUserResponse}.
+   */
+  @GetMapping(value = "/{platformUserId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserViewModel> getPlatformUserById(@PathVariable final int userId) {
-    return ResponseEntity.ok(getPlatformUser(userId));
+  public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int platformUserId) {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(platformUserId));
+    return ResponseEntity.ok(response);
   }
 
-  @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PlatformUserViewModel> createPlatformUser(
-      @Valid @RequestBody final CreatePlatformUserViewModel createPlatformUserViewModel) {
-    final CreatePlatformUserDTO createPlatformUserDTO = modelMapper.map(
-        createPlatformUserViewModel, CreatePlatformUserDTO.class);
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(createPlatformUserDTO);
-    final PlatformUserViewModel platformUserViewModel = modelMapper.map(
-        grabPlatformUserDTO, PlatformUserViewModel.class);
-    return new ResponseEntity<>(platformUserViewModel, HttpStatus.CREATED);
-  }
-
+  /**
+   * Enables logged-in users to correct their profiles.
+   *
+   * @param patch Request body as {@link JsonPatch}.
+   * @return Response body as {@link PlatformUserResponse}.
+   */
   @PatchMapping(consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserViewModel> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
-    return new ResponseEntity<>(patchPlatformUser(ALIAS_CURRENT_USER, patch), HttpStatus.ACCEPTED);
+  public ResponseEntity<PlatformUserResponse> patchCurrentPlatformUser(@RequestBody final JsonPatch patch) {
+    final var response = platformUserService.patchPlatformUserById(getCurrentId(ALIAS_CURRENT_USER), patch);
+    return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
-  @PatchMapping(value = "/{userId}", consumes = "application/json-patch+json")
+  /**
+   * Enables admin logged-in users to correct other user's profiles.
+   *
+   * @param platformUserId the platform user's id.
+   * @param patch          Request body as {@link JsonPatch}.
+   * @return Response body as {@link PlatformUserResponse}.
+   */
+  @PatchMapping(value = "/{platformUserId}", consumes = "application/json-patch+json")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserViewModel> patchPlatformUserById(
-      @PathVariable final int userId, @RequestBody final JsonPatch patch) {
-    return new ResponseEntity<>(patchPlatformUser(userId, patch), HttpStatus.ACCEPTED);
+  public ResponseEntity<PlatformUserResponse> patchPlatformUserById(
+      @PathVariable final int platformUserId, @RequestBody final JsonPatch patch) {
+    final var response = platformUserService.patchPlatformUserById(getCurrentId(platformUserId), patch);
+    return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
+  /**
+   * Enables logged-in user's to delete their profile.
+   *
+   * @return an empty body.
+   */
   @DeleteMapping
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> deleteCurrentPlatformUser() {
-    deletePlatformUser(ALIAS_CURRENT_USER);
+    platformUserService.deletePlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping(value = "/{userId}")
+  /**
+   * Enables logged-in admin users to delete a user's profile.
+   *
+   * @param platformUserId the platform user's id.
+   * @return an empty body.
+   */
+  @DeleteMapping(value = "/{platformUserId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<?> deletePlatformUserById(@PathVariable final int userId) {
-    deletePlatformUser(userId);
+  public ResponseEntity<?> deletePlatformUserById(@PathVariable final int platformUserId) {
+    platformUserService.deletePlatformUserById(getCurrentId(platformUserId));
     return ResponseEntity.noContent().build();
-  }
-
-  private PlatformUserViewModel getPlatformUser(final int userId) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(getCurrentId(userId));
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
-  }
-
-  private PlatformUserViewModel patchPlatformUser(final int userId, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUserById(getCurrentId(userId),
-        patch);
-    return modelMapper.map(grabPlatformUserDTO, PlatformUserViewModel.class);
-  }
-
-  private void deletePlatformUser(final int userId) {
-    platformUserService.deletePlatformUserById(getCurrentId(userId));
   }
 
   private int getCurrentId(final int userId) {

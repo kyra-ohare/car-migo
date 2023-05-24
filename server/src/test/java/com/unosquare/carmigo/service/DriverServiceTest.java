@@ -13,15 +13,15 @@ import static org.mockito.Mockito.when;
 import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
-import com.unosquare.carmigo.dto.CreateDriverDTO;
-import com.unosquare.carmigo.dto.GrabDriverDTO;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.PlatformUser;
+import com.unosquare.carmigo.dto.request.DriverRequest;
+import com.unosquare.carmigo.dto.response.DriverResponse;
 import com.unosquare.carmigo.repository.DriverRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +40,8 @@ public class DriverServiceTest {
 
   @Fixture private PlatformUser platformUserFixture;
   @Fixture private Driver driverFixture;
-  @Fixture private CreateDriverDTO createDriverDTOFixture;
-  @Fixture private GrabDriverDTO grabDriverDTOFixture;
+  @Fixture private DriverRequest driverRequestFixture;
+  @Fixture private DriverResponse driverResponseFixture;
 
   @BeforeEach
   public void setUp() {
@@ -51,14 +51,14 @@ public class DriverServiceTest {
   }
 
   @Test
-  public void get_Driver_By_Id_Returns_GrabDriverDTO() {
+  public void get_Driver_By_Id_Returns_DriverResponse() {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.of(driverFixture));
-    when(modelMapperMock.map(driverFixture, GrabDriverDTO.class)).thenReturn(grabDriverDTOFixture);
-    final GrabDriverDTO grabDriverDTO = driverService.getDriverById(1);
+    when(modelMapperMock.map(driverFixture, DriverResponse.class)).thenReturn(driverResponseFixture);
+    final var response = driverService.getDriverById(1);
 
-    assertThat(grabDriverDTO.getId()).isEqualTo(grabDriverDTOFixture.getId());
-    assertThat(grabDriverDTO.getLicenseNumber()).isEqualTo(grabDriverDTOFixture.getLicenseNumber());
-    assertThat(grabDriverDTO.getPlatformUser()).isEqualTo(grabDriverDTOFixture.getPlatformUser());
+    assertThat(response.getId()).isEqualTo(driverResponseFixture.getId());
+    assertThat(response.getLicenseNumber()).isEqualTo(driverResponseFixture.getLicenseNumber());
+    assertThat(response.getPlatformUser()).isEqualTo(driverResponseFixture.getPlatformUser());
     verify(driverRepositoryMock).findById(anyInt());
   }
 
@@ -66,32 +66,32 @@ public class DriverServiceTest {
   public void get_Driver_By_Id_Throws_EntityNotFoundException() {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
     assertThrows(EntityNotFoundException.class,
-        () -> driverService.getDriverById(anyInt()),
-        "EntityNotFoundException is expected.");
+      () -> driverService.getDriverById(anyInt()),
+      "EntityNotFoundException is expected.");
     verify(driverRepositoryMock).findById(anyInt());
   }
 
   @Test
-  public void create_Driver_Returns_GrabDriverDTO() {
-    when(modelMapperMock.map(createDriverDTOFixture, Driver.class)).thenReturn(driverFixture);
+  public void create_Driver_Returns_DriverResponse() {
+    when(modelMapperMock.map(driverRequestFixture, Driver.class)).thenReturn(driverFixture);
     when(entityManagerMock.getReference(eq(PlatformUser.class), anyInt())).thenReturn(platformUserFixture);
     when(driverRepositoryMock.save(driverFixture)).thenReturn(driverFixture);
-    when(modelMapperMock.map(driverFixture, GrabDriverDTO.class)).thenReturn(grabDriverDTOFixture);
-    final GrabDriverDTO grabDriverDTO = driverService.createDriverById(1, createDriverDTOFixture);
+    when(modelMapperMock.map(driverFixture, DriverResponse.class)).thenReturn(driverResponseFixture);
+    final var response = driverService.createDriverById(1, driverRequestFixture);
 
-    assertThat(grabDriverDTO.getLicenseNumber()).isEqualTo(grabDriverDTOFixture.getLicenseNumber());
-    assertThat(grabDriverDTO.getPlatformUser()).isEqualTo(grabDriverDTOFixture.getPlatformUser());
+    assertThat(response.getLicenseNumber()).isEqualTo(driverResponseFixture.getLicenseNumber());
+    assertThat(response.getPlatformUser()).isEqualTo(driverResponseFixture.getPlatformUser());
     verify(driverRepositoryMock).save(any(Driver.class));
   }
 
   @Test
   public void create_Driver_Throws_EntityNotFoundException() {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
-    when(modelMapperMock.map(createDriverDTOFixture, Driver.class)).thenReturn(driverFixture);
+    when(modelMapperMock.map(driverRequestFixture, Driver.class)).thenReturn(driverFixture);
     doThrow(EntityNotFoundException.class).when(driverRepositoryMock).save(driverFixture);
     assertThrows(EntityNotFoundException.class,
-        () -> driverService.createDriverById(anyInt(), createDriverDTOFixture),
-        "EntityNotFoundException is expected.");
+      () -> driverService.createDriverById(anyInt(), driverRequestFixture),
+      "EntityNotFoundException is expected.");
     verify(driverRepositoryMock).save(any(Driver.class));
   }
 
@@ -99,23 +99,14 @@ public class DriverServiceTest {
   public void create_Driver_Throws_EntityExistsException() {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.of(driverFixture));
     assertThrows(EntityExistsException.class,
-        () -> driverService.createDriverById(anyInt(), createDriverDTOFixture),
-        "EntityExistsException is expected");
+      () -> driverService.createDriverById(anyInt(), driverRequestFixture),
+      "EntityExistsException is expected");
     verify(driverRepositoryMock, times(0)).save(any(Driver.class));
   }
 
   @Test
   public void delete_Driver_By_Id_Returns_Void() {
     driverService.deleteDriverById(anyInt());
-    verify(driverRepositoryMock).deleteById(anyInt());
-  }
-
-  @Test
-  public void delete_Driver_By_Id_EntityNotFoundException() {
-    doThrow(EntityNotFoundException.class).when(driverRepositoryMock).deleteById(anyInt());
-    assertThrows(EntityNotFoundException.class,
-        () -> driverService.deleteDriverById(anyInt()),
-        "EntityNotFoundException is expected");
     verify(driverRepositoryMock).deleteById(anyInt());
   }
 }

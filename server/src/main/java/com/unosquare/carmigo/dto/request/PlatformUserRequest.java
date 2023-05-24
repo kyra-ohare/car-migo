@@ -1,4 +1,4 @@
-package com.unosquare.carmigo.model.request;
+package com.unosquare.carmigo.dto.request;
 
 import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MAX_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.EMAIL_MIN_SIZE;
@@ -7,17 +7,21 @@ import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MAX_SIZE;
 import static com.unosquare.carmigo.constant.AppConstants.PASSWORD_MIN_SIZE;
 
 import com.unosquare.carmigo.annotation.ValidPassword;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * Data Transfer Object received by the Controller to the Service.
+ * Represents the requirements to create a platform user.
+ */
 @Data
-public class CreatePlatformUserViewModel {
+public class PlatformUserRequest {
 
   @NotEmpty
   @Size(min = 1, max = 255)

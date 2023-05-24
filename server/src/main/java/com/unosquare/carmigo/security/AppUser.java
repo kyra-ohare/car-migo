@@ -13,16 +13,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.annotation.RequestScope;
 
+/**
+ * Represents a logged-in user.
+ */
 @Configuration
 public class AppUser {
 
+  /**
+   * Returns the current logged-in user.
+   *
+   * @return the logged-in user wrapped in {@link CurrentAppUser}.
+   */
   @Bean
   @RequestScope
   public CurrentAppUser get() {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication.getPrincipal() instanceof CustomUserDetails) {
-      final CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+    if (authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
       return CurrentAppUser.builder()
           .id(customUserDetails.getId())
           .username(customUserDetails.getUsername())
@@ -32,20 +39,23 @@ public class AppUser {
     throw new UnauthorizedException(NOT_PERMITTED);
   }
 
+  /**
+   * The current logged-in user.
+   */
   @Getter
   @Builder
   public static class CurrentAppUser {
 
     private int id;
     private String username;
-    private String userAccessStatus;
+    private UserStatus userAccessStatus;
   }
 
-  private String getUserAccessStatus(final CustomUserDetails currentAppUser) {
+  private UserStatus getUserAccessStatus(final CustomUserDetails currentAppUser) {
     final ArrayList<GrantedAuthority> authorities = new ArrayList<>(currentAppUser.getAuthorities());
     if (authorities.get(0).getAuthority() == null) {
       throw new UnauthorizedException(NOT_PERMITTED);
     }
-    return authorities.get(0).getAuthority();
+    return UserStatus.valueOf(authorities.get(0).getAuthority());
   }
 }

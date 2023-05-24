@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles JWT tokens by generating, validating and extracting data.
+ */
 @Service
 public class JwtTokenService {
 

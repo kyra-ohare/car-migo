@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
-import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
-import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
+import com.unosquare.carmigo.dto.request.AuthenticationRequest;
+import com.unosquare.carmigo.dto.response.AuthenticationResponse;
 import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.JwtTokenService;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ public class AuthenticationServiceTest {
   @Mock private JwtTokenService jwtTokenServiceMock;
   @InjectMocks private AuthenticationService authenticationService;
 
-  @Fixture private CreateAuthenticationDTO createAuthenticationDTOFixture;
-  @Fixture private GrabAuthenticationDTO grabAuthenticationDTOFixture;
+  @Fixture private AuthenticationRequest authenticationRequestFixture;
+  @Fixture private AuthenticationResponse authenticationResponseFixture;
 
   @BeforeEach
   public void setUp() {
@@ -45,17 +45,17 @@ public class AuthenticationServiceTest {
   }
 
   @Test
-  public void create_Authentication_Token_Returns_GrabAuthenticationDTO() {
+  public void create_Authentication_Token_Returns_AuthenticationResponse() {
     final UserDetails spyUserDetails = spy(new User("foo", "foo", new ArrayList<>()));
     when(authenticationManagerMock.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(any());
-    when(userSecurityServiceMock.loadUserByUsername(createAuthenticationDTOFixture.getEmail())).thenReturn(
-        spyUserDetails);
+    when(userSecurityServiceMock.loadUserByUsername(authenticationRequestFixture.getEmail()))
+      .thenReturn(spyUserDetails);
     when(jwtTokenServiceMock.generateToken(spyUserDetails)).thenReturn(anyString());
-    final GrabAuthenticationDTO grabAuthenticationDTO = authenticationService.createAuthenticationToken(
-        createAuthenticationDTOFixture);
-    grabAuthenticationDTO.setJwt(grabAuthenticationDTOFixture.getJwt());
+    final AuthenticationResponse authenticationResponse = authenticationService.createAuthenticationToken(
+      authenticationRequestFixture);
+    authenticationResponse.setJwt(this.authenticationResponseFixture.getJwt());
 
-    assertThat(grabAuthenticationDTO.getJwt()).isEqualTo(grabAuthenticationDTOFixture.getJwt());
+    assertThat(authenticationResponse.getJwt()).isEqualTo(this.authenticationResponseFixture.getJwt());
     verify(authenticationManagerMock).authenticate(any(UsernamePasswordAuthenticationToken.class));
     verify(userSecurityServiceMock).loadUserByUsername(anyString());
     verify(jwtTokenServiceMock).generateToken(any(UserDetails.class));

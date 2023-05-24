@@ -18,18 +18,19 @@ import com.flextrade.jfixture.FixtureAnnotations;
 import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
-import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
+import com.unosquare.carmigo.dto.PlatformUserDto;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
+import com.unosquare.carmigo.dto.request.PlatformUserRequest;
+import com.unosquare.carmigo.dto.response.PlatformUserResponse;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.Optional;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,8 +54,9 @@ public class PlatformUserServiceTest {
   @InjectMocks private PlatformUserService platformUserService;
 
   @Fixture private PlatformUser platformUserFixture;
-  @Fixture private CreatePlatformUserDTO createPlatformUserDTOFixture;
-  @Fixture private GrabPlatformUserDTO grabPlatformUserDTOFixture;
+  @Fixture private PlatformUserDto platformUserDtoFixture;
+  @Fixture private PlatformUserRequest platformUserRequestFixture;
+  @Fixture private PlatformUserResponse platformUserResponseFixture;
 
   @BeforeEach
   public void setUp() {
@@ -93,18 +95,18 @@ public class PlatformUserServiceTest {
   }
 
   @Test
-  public void get_PlatformUser_By_Id_Returns_GrabPlatformUserDTO() {
+  public void get_PlatformUser_By_Id_Returns_PlatformUserResponse() {
     when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
-    when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.getPlatformUserById(anyInt());
+    when(modelMapperMock.map(platformUserFixture,  PlatformUserResponse.class)).thenReturn(platformUserResponseFixture);
+    final var response = platformUserService.getPlatformUserById(anyInt());
 
-    assertThat(grabPlatformUserDTO.getId()).isEqualTo(grabPlatformUserDTOFixture.getId());
-    assertThat(grabPlatformUserDTO.getCreatedDate()).isEqualTo(grabPlatformUserDTOFixture.getCreatedDate());
-    assertThat(grabPlatformUserDTO.getDob()).isEqualTo(grabPlatformUserDTOFixture.getDob());
-    assertThat(grabPlatformUserDTO.getEmail()).isEqualTo(grabPlatformUserDTOFixture.getEmail());
-    assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
-    assertThat(grabPlatformUserDTO.getLastName()).isEqualTo(grabPlatformUserDTOFixture.getLastName());
-    assertThat(grabPlatformUserDTO.getPhoneNumber()).isEqualTo(grabPlatformUserDTOFixture.getPhoneNumber());
+    assertThat(response.getId()).isEqualTo(platformUserResponseFixture.getId());
+    assertThat(response.getCreatedDate()).isEqualTo(platformUserResponseFixture.getCreatedDate());
+    assertThat(response.getDob()).isEqualTo(platformUserResponseFixture.getDob());
+    assertThat(response.getEmail()).isEqualTo(platformUserResponseFixture.getEmail());
+    assertThat(response.getFirstName()).isEqualTo(platformUserResponseFixture.getFirstName());
+    assertThat(response.getLastName()).isEqualTo(platformUserResponseFixture.getLastName());
+    assertThat(response.getPhoneNumber()).isEqualTo(platformUserResponseFixture.getPhoneNumber());
     verify(platformUserRepositoryMock).findById(anyInt());
   }
 
@@ -118,54 +120,52 @@ public class PlatformUserServiceTest {
   }
 
   @Test
-  public void create_PlatformUser_Returns_GrabPlatformUserDTO() {
+  public void create_PlatformUser_Returns_PlatformUserResponse() {
     final PlatformUser spyPlatformUser = spy(new PlatformUser());
-    when(modelMapperMock.map(createPlatformUserDTOFixture, PlatformUser.class)).thenReturn(spyPlatformUser);
+      spyPlatformUser.setCreatedDate(any(Instant.class));
+      spyPlatformUser.setFirstName(anyString());
+      spyPlatformUser.setLastName(anyString());
+      spyPlatformUser.setEmail(anyString());
+      spyPlatformUser.setPassword(bCryptPasswordEncoderMock.encode(anyString()));
+      spyPlatformUser.setUserAccessStatus(entityManagerMock.getReference(eq(UserAccessStatus.class), anyInt()));
+    when(modelMapperMock.map(platformUserRequestFixture, PlatformUser.class)).thenReturn(spyPlatformUser);
     when(platformUserRepositoryMock.save(spyPlatformUser)).thenReturn(platformUserFixture);
-    when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
-    spyPlatformUser.setCreatedDate(any(Instant.class));
-    spyPlatformUser.setFirstName(anyString());
-    spyPlatformUser.setLastName(anyString());
-    spyPlatformUser.setEmail(anyString());
-    spyPlatformUser.setPassword(bCryptPasswordEncoderMock.encode(anyString()));
-    spyPlatformUser.setUserAccessStatus(entityManagerMock.getReference(eq(UserAccessStatus.class), anyInt()));
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.createPlatformUser(
-        createPlatformUserDTOFixture);
+    when(modelMapperMock.map(platformUserFixture, PlatformUserResponse.class)).thenReturn(platformUserResponseFixture);
+    final var response = platformUserService.createPlatformUser(platformUserRequestFixture);
 
-    assertThat(grabPlatformUserDTO.getCreatedDate()).isEqualTo(grabPlatformUserDTOFixture.getCreatedDate());
-    assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
-    assertThat(grabPlatformUserDTO.getLastName()).isEqualTo(grabPlatformUserDTOFixture.getLastName());
-    assertThat(grabPlatformUserDTO.getEmail()).isEqualTo(grabPlatformUserDTOFixture.getEmail());
+    assertThat(response.getCreatedDate()).isEqualTo(platformUserResponseFixture.getCreatedDate());
+    assertThat(response.getFirstName()).isEqualTo(platformUserResponseFixture.getFirstName());
+    assertThat(response.getLastName()).isEqualTo(platformUserResponseFixture.getLastName());
+    assertThat(response.getEmail()).isEqualTo(platformUserResponseFixture.getEmail());
     verify(platformUserRepositoryMock).save(any(PlatformUser.class));
   }
 
   @Test
   public void create_PlatformUser_Throws_EntityExistsException() {
-    when(modelMapperMock.map(createPlatformUserDTOFixture, PlatformUser.class)).thenReturn(platformUserFixture);
+    when(modelMapperMock.map(platformUserRequestFixture, PlatformUser.class)).thenReturn(platformUserFixture);
     doThrow(EntityExistsException.class).when(platformUserRepositoryMock).save(platformUserFixture);
     assertThrows(EntityExistsException.class,
-        () -> platformUserService.createPlatformUser(createPlatformUserDTOFixture),
+        () -> platformUserService.createPlatformUser(platformUserRequestFixture),
         "EntityExistsException is expected.");
     verify(platformUserRepositoryMock).save(any(PlatformUser.class));
   }
 
   @Test
-  public void patch_PlatformUser_Returns_GrabPlatformUserDTO() throws Exception {
+  public void patch_PlatformUser_Returns_PlatformUserResponse() throws Exception {
     when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
-    when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
+    when(modelMapperMock.map(platformUserFixture, PlatformUserDto.class)).thenReturn(platformUserDtoFixture);
     final JsonPatch patch = PatchUtility.jsonPatch(PATCH_PLATFORM_USER_VALID_JSON);
     final JsonNode platformUserNode = PatchUtility.jsonNode(platformUserFixture, patch);
-    when(objectMapperMock.convertValue(grabPlatformUserDTOFixture, JsonNode.class)).thenReturn(platformUserNode);
+    when(objectMapperMock.convertValue(platformUserDtoFixture, JsonNode.class)).thenReturn(platformUserNode);
     when(objectMapperMock.treeToValue(platformUserNode, PlatformUser.class)).thenReturn(platformUserFixture);
     when(platformUserRepositoryMock.save(platformUserFixture)).thenReturn(platformUserFixture);
-    when(modelMapperMock.map(platformUserFixture, GrabPlatformUserDTO.class)).thenReturn(grabPlatformUserDTOFixture);
-    final GrabPlatformUserDTO grabPlatformUserDTO = platformUserService.patchPlatformUserById(
-        platformUserFixture.getId(), patch);
+    when(modelMapperMock.map(platformUserFixture, PlatformUserResponse.class)).thenReturn(platformUserResponseFixture);
+    final var response = platformUserService.patchPlatformUserById(platformUserFixture.getId(), patch);
 
-    assertThat(grabPlatformUserDTO.getFirstName()).isEqualTo(grabPlatformUserDTOFixture.getFirstName());
-    assertThat(grabPlatformUserDTO.getLastName()).isEqualTo(grabPlatformUserDTOFixture.getLastName());
-    assertThat(grabPlatformUserDTO.getDob()).isEqualTo(grabPlatformUserDTOFixture.getDob());
-    assertThat(grabPlatformUserDTO.getCreatedDate()).isEqualTo(grabPlatformUserDTOFixture.getCreatedDate());
+    assertThat(response.getFirstName()).isEqualTo(platformUserResponseFixture.getFirstName());
+    assertThat(response.getLastName()).isEqualTo(platformUserResponseFixture.getLastName());
+    assertThat(response.getDob()).isEqualTo(platformUserResponseFixture.getDob());
+    assertThat(response.getCreatedDate()).isEqualTo(platformUserResponseFixture.getCreatedDate());
     verify(platformUserRepositoryMock).findById(anyInt());
     verify(platformUserRepositoryMock).save(any(PlatformUser.class));
   }
@@ -173,15 +173,6 @@ public class PlatformUserServiceTest {
   @Test
   public void delete_PlatformUser_Returns_Void() {
     platformUserService.deletePlatformUserById(anyInt());
-    verify(platformUserRepositoryMock).deleteById(anyInt());
-  }
-
-  @Test
-  public void delete_PlatformUser_Returns_EntityNotFoundException() {
-    doThrow(EntityNotFoundException.class).when(platformUserRepositoryMock).deleteById(anyInt());
-    assertThrows(EntityNotFoundException.class,
-        () -> platformUserService.deletePlatformUserById(anyInt()),
-        "EntityNotFoundException is expected");
     verify(platformUserRepositoryMock).deleteById(anyInt());
   }
 }

@@ -11,9 +11,9 @@ import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.util.ControllerUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,6 @@ public class PlatformUserControllerTest {
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
 
     controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("", status().isNotFound());
     recreateEntities(ACTIVE_USER);
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
@@ -142,22 +141,16 @@ public class PlatformUserControllerTest {
     controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
 
     controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("", status().isNotFound());
     recreateEntities(ADMIN_USER);
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
     recreateEntities(STAGED_USER);
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
     recreateEntities(ACTIVE_USER);
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
     recreateEntities(SUSPENDED_USER);
     controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
     recreateEntities(LOCKED_OUT_USER);
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
     recreateEntities(ADMIN_USER);
   }
 

@@ -1,7 +1,7 @@
 package com.unosquare.carmigo.service;
 
-import com.unosquare.carmigo.dto.CreateAuthenticationDTO;
-import com.unosquare.carmigo.dto.GrabAuthenticationDTO;
+import com.unosquare.carmigo.dto.request.AuthenticationRequest;
+import com.unosquare.carmigo.dto.response.AuthenticationResponse;
 import com.unosquare.carmigo.security.UserSecurityService;
 import com.unosquare.carmigo.util.JwtTokenService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles authentication requests.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -18,13 +21,19 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final JwtTokenService jwtTokenService;
 
-  public GrabAuthenticationDTO createAuthenticationToken(final CreateAuthenticationDTO createAuthenticationDTO) {
+  /**
+   * Creates an authentication token.
+   *
+   * @param authenticationRequest the requirements as {@link AuthenticationRequest}.
+   * @return a {@link AuthenticationResponse}.
+   */
+  public AuthenticationResponse createAuthenticationToken(final AuthenticationRequest authenticationRequest) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-        createAuthenticationDTO.getEmail(), createAuthenticationDTO.getPassword()));
-    final UserDetails userDetails = userSecurityService.loadUserByUsername(createAuthenticationDTO.getEmail());
+        authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+    final UserDetails userDetails = userSecurityService.loadUserByUsername(authenticationRequest.getEmail());
     final String jwt = jwtTokenService.generateToken(userDetails);
-    final GrabAuthenticationDTO grabAuthenticationDTO = new GrabAuthenticationDTO();
-    grabAuthenticationDTO.setJwt(jwt);
-    return grabAuthenticationDTO;
+    final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+    authenticationResponse.setJwt(jwt);
+    return authenticationResponse;
   }
 }

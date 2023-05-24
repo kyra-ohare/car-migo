@@ -1,30 +1,34 @@
 package com.unosquare.carmigo.service;
 
-import static com.unosquare.carmigo.constant.AppConstants.ACTIVE;
+import static com.unosquare.carmigo.security.UserStatus.ACTIVE;
+import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.unosquare.carmigo.dto.CreatePlatformUserDTO;
-import com.unosquare.carmigo.dto.GrabPlatformUserDTO;
+import com.unosquare.carmigo.dto.PlatformUserDto;
+import com.unosquare.carmigo.dto.request.PlatformUserRequest;
+import com.unosquare.carmigo.dto.response.PlatformUserResponse;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.Optional;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles requests regarding the {@link PlatformUser} entity.
+ */
 @Service
 @RequiredArgsConstructor
 public class PlatformUserService {
@@ -39,27 +43,16 @@ public class PlatformUserService {
   private final EntityManager entityManager;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  public void confirmEmail(final String email) {
-    final Optional<PlatformUser> platformUserOptional = platformUserRepository.findPlatformUserByEmail(email);
-    if (platformUserOptional.isEmpty()) {
-      throw new EntityNotFoundException(USER_NOT_FOUND);
-    }
-    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE)) {
-      throw new IllegalStateException("User is already active");
-    }
-    platformUserOptional.get()
-        .setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, ACTIVE_USER_STATUS));
-    platformUserRepository.save(platformUserOptional.get());
-  }
-
-  public GrabPlatformUserDTO getPlatformUserById(final int userId) {
-    return modelMapper.map(findPlatformUserById(userId), GrabPlatformUserDTO.class);
-  }
-
-  public GrabPlatformUserDTO createPlatformUser(final CreatePlatformUserDTO createPlatformUserDTO) {
-    final PlatformUser platformUser = modelMapper.map(createPlatformUserDTO, PlatformUser.class);
+  /**
+   * Creates a platform user. This new user's access status is set to STAGED.
+   *
+   * @param platformUserRequest the requirements as {@link PlatformUserRequest}.
+   * @return a {@link PlatformUserResponse}.
+   */
+  public PlatformUserResponse createPlatformUser(final PlatformUserRequest platformUserRequest) {
+    final PlatformUser platformUser = modelMapper.map(platformUserRequest, PlatformUser.class);
     platformUser.setCreatedDate(Instant.now());
-    platformUser.setPassword(bCryptPasswordEncoder.encode(createPlatformUserDTO.getPassword()));
+    platformUser.setPassword(bCryptPasswordEncoder.encode(platformUserRequest.getPassword()));
     platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, STAGED_USER_STATUS));
     final PlatformUser newPlatformUser;
     try {
@@ -67,31 +60,87 @@ public class PlatformUserService {
     } catch (final DataIntegrityViolationException ex) {
       throw new EntityExistsException("Email already in use");
     }
-    return modelMapper.map(newPlatformUser, GrabPlatformUserDTO.class);
+    return modelMapper.map(newPlatformUser, PlatformUserResponse.class);
   }
 
-  public GrabPlatformUserDTO patchPlatformUserById(final int userId, final JsonPatch patch) {
-    final GrabPlatformUserDTO grabPlatformUserDTO = modelMapper.map(
-        findPlatformUserById(userId), GrabPlatformUserDTO.class);
-    try {
-      final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(grabPlatformUserDTO, JsonNode.class));
-      final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
-      return modelMapper.map(platformUserRepository.save(patchedPlatformUser), GrabPlatformUserDTO.class);
-    } catch (final JsonPatchException | JsonProcessingException | DataIntegrityViolationException ex) {
-      throw new PatchException(String.format("Error updating user - %s", ex.getMessage()));
-    }
-  }
-
-  public void deletePlatformUserById(final int userId) {
-    try {
-      platformUserRepository.deleteById(userId);
-    } catch (final EmptyResultDataAccessException ex) {
+  /**
+   * Allows a user to confirm their email.
+   * Upon confirmation, their access status is set to ACTIVE which gives them more access.
+   *
+   * @param email the user's email.
+   */
+  public void confirmEmail(final String email) {
+    final Optional<PlatformUser> platformUserOptional = platformUserRepository.findPlatformUserByEmail(email);
+    if (platformUserOptional.isEmpty()) {
       throw new EntityNotFoundException(USER_NOT_FOUND);
     }
+    if (platformUserOptional.get().getUserAccessStatus().getStatus().equals(ACTIVE.name())) {
+      throw new IllegalStateException("User is already active");
+    }
+    platformUserOptional.get()
+        .setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, ACTIVE_USER_STATUS));
+    platformUserRepository.save(platformUserOptional.get());
   }
 
-  private PlatformUser findPlatformUserById(final int userId) {
-    return platformUserRepository.findById(userId).orElseThrow(
-        () -> new EntityNotFoundException(USER_NOT_FOUND));
+  /**
+   * Fetches a platform user.
+   *
+   * @param platformUserId the platform user id to search for.
+   * @return a {@link PlatformUserResponse}.
+   */
+  public PlatformUserResponse getPlatformUserById(final int platformUserId) {
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    return modelMapper.map(platformUser, PlatformUserResponse.class);
+  }
+
+  /**
+   * Corrects platform user information.<br>
+   * Pass an array of a {@link JsonPatch} body with the operation, the path and the value.<br>
+   * Accepted operation values are “add”, "remove", "replace", "move", "copy" and "test".<br>
+   * Here is an example which updates a user's phone number and their access status:<br>
+   * <pre>
+   *   [
+   *     {
+   *       "op": "replace",
+   *       "path": "/phoneNumber",
+   *       "value": "02875935862"
+   *     },
+   *     {
+   *       "op": "replace",
+   *       "path": "/userAccessStatus/id",
+   *       "value": "5"
+   *     }
+   *   ]
+   * </pre>
+   *
+   * @param platformUserId the platform user id to be updated.
+   * @param patch          a {@link JsonPatch}.
+   * @return a {@link PlatformUserResponse}.
+   */
+  public PlatformUserResponse patchPlatformUserById(final int platformUserId, final JsonPatch patch) {
+    // TODO: remove PlatformUserDto, try to use entityManger.getReference()
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    final PlatformUserDto platformUserDto = modelMapper.map(platformUser, PlatformUserDto.class);
+    final PlatformUser savedPlatformUser;
+    try {
+      final JsonNode platformUserNode = patch.apply(objectMapper.convertValue(platformUserDto, JsonNode.class));
+      final PlatformUser patchedPlatformUser = objectMapper.treeToValue(platformUserNode, PlatformUser.class);
+      savedPlatformUser = platformUserRepository.save(patchedPlatformUser);
+    } catch (final JsonPatchException | JsonProcessingException | DataIntegrityViolationException ex) {
+      throw new PatchException("Error updating user - %s".formatted(ex.getMessage()));
+    }
+    return modelMapper.map(savedPlatformUser, PlatformUserResponse.class);
+  }
+
+  /**
+   * Deletes a platform user.<br>
+   * <strong>Warning:</strong> it will also delete (if any) the driver and/or the passenger associated.
+   * Example: Tom is a platform user who is also a driver as well as a passenger. When deleting Tom's platform user
+   * profile, his driver's and passenger's profiles will also be deleted.
+   *
+   * @param platformUserId the platform user id to be deleted.
+   */
+  public void deletePlatformUserById(final int platformUserId) {
+    platformUserRepository.deleteById(platformUserId);
   }
 }

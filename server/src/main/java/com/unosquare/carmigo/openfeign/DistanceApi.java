@@ -5,6 +5,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * Calls <a href="https://www.distance.to/">Distance</a> API.
+ */
 @FeignClient(value = "distance",
     url = "${open-feign.distance.endpoint}",
     configuration = OpenFeignDistanceConfiguration.class,

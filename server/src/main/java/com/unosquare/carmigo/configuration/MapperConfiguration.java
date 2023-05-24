@@ -11,9 +11,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+/**
+ * ModelMapper and ObjectMapper configurations.
+ */
 @Configuration
 public class MapperConfiguration {
 
+  /**
+   * ModelMapper configuration.
+   *
+   * @return {@link ModelMapper}
+   */
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
   public ModelMapper modelMapper() {
@@ -25,6 +33,11 @@ public class MapperConfiguration {
     return mapper;
   }
 
+  /**
+   * ObjectMapper configuration.
+   *
+   * @return {@link ObjectMapper}
+   */
   @Bean
   @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
   public ObjectMapper objectMapper() {

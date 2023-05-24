@@ -1,14 +1,17 @@
-package com.unosquare.carmigo.model.response;
+package com.unosquare.carmigo.dto.response;
 
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object from the Service back to Controller.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlatformUserViewModel {
+public class PlatformUserResponse {
 
   private int id;
 
@@ -24,5 +27,5 @@ public class PlatformUserViewModel {
 
   private String phoneNumber;
 
-  private UserAccessStatusViewModel userAccessStatus;
+  private UserAccessStatusResponse userAccessStatus;
 }

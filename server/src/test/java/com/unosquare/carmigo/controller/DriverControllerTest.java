@@ -7,8 +7,8 @@ import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.util.ControllerUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
-import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,6 @@ public class DriverControllerTest {
     controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
     controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("", status().isNotFound());
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
     controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
 
@@ -118,16 +117,11 @@ public class DriverControllerTest {
     controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
 
     controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("", status().isNotFound());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNotFound());
+    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
     controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNotFound());
     controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNotFound());
     controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNotFound());
     controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNotFound());
 
     controllerUtility.makePostRequest("/create", POST_DRIVER_VALID_JSON, status().isCreated());
     controllerUtility.makePostRequest("/create", POST_DRIVER_VALID_JSON, status().isConflict());
