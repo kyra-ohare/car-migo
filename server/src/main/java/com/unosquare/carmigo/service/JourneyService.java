@@ -142,7 +142,8 @@ public class JourneyService {
    * @param passengerId the passenger id.
    */
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
-    //    TODO: Check if passenger exists first
+    // TODO: Check if passenger exists first
+    // TODO: passengers are being added in respective of maxPassengers.
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
