@@ -61,8 +61,8 @@ public class JourneyController {
   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<JourneyResponse>> searchJourneys(
       @Valid final SearchJourneysRequest searchJourneysRequest) {
-    final List<JourneyResponse> responses = journeyService.searchJourneys(searchJourneysRequest);
-    return ResponseEntity.ok(responses);
+    final var response = journeyService.searchJourneys(searchJourneysRequest);
+    return ResponseEntity.ok(response);
   }
 
   /**
@@ -184,7 +184,7 @@ public class JourneyController {
   public ResponseEntity<JourneyResponse> patchJourney(
       @PathVariable final int journeyId, @Valid @RequestBody final JsonPatch patch) {
     final var response = journeyService.patchJourney(journeyId, patch);
-    return ResponseEntity.ok(response);
+    return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
   }
 
   /**
@@ -210,7 +210,7 @@ public class JourneyController {
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('ADMIN')")
   public ResponseEntity<?> removeCurrentPassengerFromJourney(@PathVariable final int journeyId) {
     journeyService.removePassengerFromJourney(journeyId, appUser.get().getId());
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   /**

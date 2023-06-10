@@ -1,253 +1,286 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.ResourceUtility.convertObjectToJsonBytes;
+import static com.unosquare.carmigo.util.ResourceUtility.getObjectResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.unosquare.carmigo.entity.Driver;
-import com.unosquare.carmigo.entity.Passenger;
-import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.entity.UserAccessStatus;
-import com.unosquare.carmigo.repository.DriverRepository;
-import com.unosquare.carmigo.repository.PassengerRepository;
-import com.unosquare.carmigo.repository.PlatformUserRepository;
-import com.unosquare.carmigo.util.ControllerUtility;
-import com.unosquare.carmigo.util.ResourceUtility;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import java.time.Instant;
+import com.flextrade.jfixture.FixtureAnnotations;
+import com.flextrade.jfixture.JFixture;
+import com.flextrade.jfixture.annotations.Fixture;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.unosquare.carmigo.dto.request.PlatformUserRequest;
+import com.unosquare.carmigo.dto.response.PlatformUserResponse;
+import com.unosquare.carmigo.security.AppUser;
+import com.unosquare.carmigo.service.PlatformUserService;
+import com.unosquare.carmigo.util.AuthenticationBeansTestCase;
+import jakarta.persistence.EntityExistsException;
+import java.util.LinkedHashMap;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("h2")
+@WebMvcTest(controllers = PlatformUserController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(AuthenticationBeansTestCase.class)
 public class PlatformUserControllerTest {
 
   private static final String API_LEADING = "/v1/users";
-  private static final String POST_PLATFORM_USER_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostPlatformUserValid.json");
-  private static final String POST_PLATFORM_USER_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostPlatformUserInvalid.json");
-  private static final String PATCH_PLATFORM_USER_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PatchPlatformUserValid.json");
-  private static final String PATCH_PLATFORM_USER_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PatchPlatformUserInvalid.json");
-  private static final String STAGED_USER = "staged@example.com";
-  private static int STAGED_USER_ID = 1;
-  private static final String ACTIVE_USER = "active@example.com";
-  private static int ACTIVE_USER_ID = 2;
-  private static final String SUSPENDED_USER = "suspended@example.com";
-  private static int SUSPENDED_USER_ID = 3;
-  private static final String LOCKED_OUT_USER = "locked_out@example.com";
-  private static int LOCKED_OUT_USER_ID = 4;
-  private static final String ADMIN_USER = "admin@example.com";
-  private static int ADMIN_USER_ID = 5;
+  private static final String ERROR_MSG = "%s do not match";
 
   @Autowired private MockMvc mockMvc;
-  @Autowired private PlatformUserRepository platformUserRepository;
-  @Autowired private DriverRepository driverRepository;
-  @Autowired private PassengerRepository passengerRepository;
-  @Autowired private EntityManager entityManager;
-
-  private ControllerUtility controllerUtility;
+  @MockBean private PlatformUserService platformUserServiceMock;
+  @MockBean private AppUser appUserMock;
+  @Fixture private AppUser.CurrentAppUser currentAppUserFixture;
+  @Fixture private PlatformUserRequest platformUserRequestFixture;
+  @Fixture private PlatformUserResponse platformUserResponseFixture;
 
   @BeforeEach
   public void setUp() {
-    controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
+    final JFixture jFixture = new JFixture();
+    jFixture.customise().circularDependencyBehaviour().omitSpecimen();
+    FixtureAnnotations.initFixtures(this, jFixture);
+
+    platformUserRequestFixture.setEmail("test@example.com");
+    platformUserRequestFixture.setPassword("Pass1234!");
+    when(appUserMock.get()).thenReturn(currentAppUserFixture);
   }
 
+  @SneakyThrows
   @Test
-  @WithAnonymousUser
-  public void testEndpointsWithAnonymousUser() throws Exception {
-    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isCreated());
-    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_VALID_JSON, status().isConflict());
-    controllerUtility.makePostRequest("/create", POST_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePostRequest("/confirm-email", "", status().isBadRequest());
-    controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "", status().isNotFound());
-    controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "staged@example.com", status().isOk());
-    controllerUtility.makePostRequestWithOneParam(
-        "/confirm-email", "email", "staged@example.com", status().isConflict());
-    controllerUtility.makePostRequestWithOneParam(
-        "/confirm-email", "email", "fake-staged@example.com", status().isNotFound());
-    controllerUtility.makePostRequestWithOneParam(
-        "/confirm-email", "email", "active@example.com", status().isConflict());
-    testUnauthorizedUsersUltra(status().isForbidden());
+  void createPlatformUserTest() {
+    when(platformUserServiceMock.createPlatformUser(any(PlatformUserRequest.class)))
+        .thenReturn(platformUserResponseFixture);
+    final var response = mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(convertObjectToJsonBytes(platformUserRequestFixture)))
+        .andExpect(status().isCreated()).andReturn();
+
+    callAssertions(response);
+    verify(platformUserServiceMock).createPlatformUser(any(PlatformUserRequest.class));
   }
 
+  @SneakyThrows
   @Test
-  @WithMockUser(STAGED_USER)
-  public void testEndpointsWithStagedUser() throws Exception {
-    testUnauthorizedUsersUltra(status().isBadRequest());
+  void createPlatformUserAgainTest() {
+    doThrow(EntityExistsException.class).when(platformUserServiceMock)
+        .createPlatformUser(any(PlatformUserRequest.class));
+    mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(convertObjectToJsonBytes(platformUserRequestFixture)))
+        .andExpect(status().isConflict()).andReturn();
+
+    verify(platformUserServiceMock).createPlatformUser(any(PlatformUserRequest.class));
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(ACTIVE_USER)
-  public void testEndpointsWithActiveUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
+  void createPlatformUserWithBadEmailTest() {
+    platformUserRequestFixture.setEmail("bad email");
+    doThrow(EntityExistsException.class).when(platformUserServiceMock)
+        .createPlatformUser(any(PlatformUserRequest.class));
+    final var response = mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(convertObjectToJsonBytes(platformUserRequestFixture)))
+        .andExpect(status().isBadRequest()).andReturn();
 
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-
-    controllerUtility.makeDeleteRequest("", status().isNoContent());
-    recreateEntities(ACTIVE_USER);
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
+    final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
+    assertEquals(content.get("message"), "Argument not valid: email must be a well-formed email address");
+    verify(platformUserServiceMock, times(0)).createPlatformUser(any(PlatformUserRequest.class));
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(SUSPENDED_USER)
-  public void testEndpointsWithSuspendedUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    testUnauthorizedUsers(status().isBadRequest());
+  void createPlatformUserWithBadPasswordTest() {
+    platformUserRequestFixture.setPassword("bad password");
+    doThrow(EntityExistsException.class).when(platformUserServiceMock)
+        .createPlatformUser(any(PlatformUserRequest.class));
+    final var response = mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(convertObjectToJsonBytes(platformUserRequestFixture)))
+        .andExpect(status().isBadRequest()).andReturn();
+
+    final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
+    assertEquals(content.get("message"), "Argument not valid: password Password must contain between 8 and 20 "
+        + "characters and at least 2 of the following: Alphanumeric characters, one special character ( @#$%^&+=!? ), "
+        + "one capital letter.");
+    verify(platformUserServiceMock, times(0)).createPlatformUser(any(PlatformUserRequest.class));
   }
 
+  @SneakyThrows
   @Test
-  @WithMockUser(LOCKED_OUT_USER)
-  public void testEndpointsWithLockedOutUser() throws Exception {
-    testUnauthorizedUsersUltra(status().isBadRequest());
+  void confirmEmailTest() {
+    doNothing().when(platformUserServiceMock).confirmEmail(anyString());
+    mockMvc.perform(post(API_LEADING + "/confirm-email")
+            .param("email", "my.test@example.com"))
+        .andExpect(status().isOk()).andReturn();
+
+    verify(platformUserServiceMock).confirmEmail(anyString());
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(ADMIN_USER)
-  public void testEndpointsWithAdminUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
+  void confirmEmailAgainTest() {
+    doThrow(IllegalStateException.class).when(platformUserServiceMock).confirmEmail(anyString());
+    mockMvc.perform(post(API_LEADING + "/confirm-email")
+            .param("email", "my.test@example.com"))
+        .andExpect(status().isConflict()).andReturn();
 
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePatchRequest("/" + SUSPENDED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("/" + LOCKED_OUT_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isAccepted());
-    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, status().isBadRequest());
-
-    controllerUtility.makeDeleteRequest("", status().isNoContent());
-    recreateEntities(ADMIN_USER);
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
-    recreateEntities(STAGED_USER);
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
-    recreateEntities(ACTIVE_USER);
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
-    recreateEntities(SUSPENDED_USER);
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
-    recreateEntities(LOCKED_OUT_USER);
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
-    recreateEntities(ADMIN_USER);
+    verify(platformUserServiceMock).confirmEmail(anyString());
   }
 
-  private void testUnauthorizedUsersUltra(final ResultMatcher expectation) throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isForbidden());
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    testUnauthorizedUsers(expectation);
+  @SneakyThrows
+  @Test
+  void getCurrentPlatformUserProfileTest() {
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    final var response = mockMvc.perform(get(API_LEADING + "/profile")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk()).andReturn();
+
+    callAssertions(response);
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
-  private void testUnauthorizedUsers(final ResultMatcher expectation) throws Exception {
-    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
+  @SneakyThrows
+  @Test
+  void getPlatformUserByIdTest() {
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    final var response = mockMvc.perform(get(API_LEADING + "/1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk()).andReturn();
 
-    controllerUtility.makePatchRequest("", PATCH_PLATFORM_USER_INVALID_JSON, expectation);
-    controllerUtility.makePatchRequest("/" + STAGED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePatchRequest("/" + ACTIVE_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
-    controllerUtility.makePatchRequest("/" + SUSPENDED_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePatchRequest("/" + LOCKED_OUT_USER_ID, PATCH_PLATFORM_USER_VALID_JSON,
-        status().isForbidden());
-    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_VALID_JSON, status().isForbidden());
-    controllerUtility.makePatchRequest("/" + ADMIN_USER_ID, PATCH_PLATFORM_USER_INVALID_JSON, expectation);
-
-    controllerUtility.makeDeleteRequest("", status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
+    callAssertions(response);
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
-  private void recreateEntities(final String email) {
-    final PlatformUser platformUser;
-    switch (email) {
-      case "staged@example.com":
-        platformUser = recreatePlatformUser(1, email);
-        recreateDriver(platformUser);
-        recreatePassenger(platformUser);
-        STAGED_USER_ID = platformUser.getId();
-        break;
-      case "active@example.com":
-        platformUser = recreatePlatformUser(2, email);
-        recreateDriver(platformUser);
-        recreatePassenger(platformUser);
-        ACTIVE_USER_ID = platformUser.getId();
-        break;
-      case "suspended@example.com":
-        platformUser = recreatePlatformUser(3, email);
-        recreateDriver(platformUser);
-        recreatePassenger(platformUser);
-        SUSPENDED_USER_ID = platformUser.getId();
-        break;
-      case "locked_out@example.com":
-        platformUser = recreatePlatformUser(4, email);
-        recreateDriver(platformUser);
-        recreatePassenger(platformUser);
-        LOCKED_OUT_USER_ID = platformUser.getId();
-        break;
-      case "admin@example.com":
-        platformUser = recreatePlatformUser(5, email);
-        recreateDriver(platformUser);
-        recreatePassenger(platformUser);
-        ADMIN_USER_ID = platformUser.getId();
-        break;
-      default:
-        throw new EntityNotFoundException(String.format("Not possible to create entity for %s", email));
-    }
+  @SneakyThrows
+  @Test
+  void patchCurrentPlatformUserTest() {
+    when(platformUserServiceMock.patchPlatformUserById(anyInt(), any(JsonPatch.class)))
+        .thenReturn(platformUserResponseFixture);
+    final var response = mockMvc.perform(patch(API_LEADING)
+            .contentType("application/json-patch+json")
+            .content(patchValidPlatformUser()))
+        .andExpect(status().isAccepted()).andReturn();
+
+    callAssertions(response);
+    verify(platformUserServiceMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
-  private PlatformUser recreatePlatformUser(final int userAccessStatusId, final String email) {
-    final PlatformUser platformUser = new PlatformUser();
-    platformUser.setCreatedDate(Instant.now());
-    platformUser.setFirstName("Foo");
-    platformUser.setLastName("Foo");
-    platformUser.setDob(Instant.now());
-    platformUser.setEmail(email);
-    platformUser.setPassword("foo");
-    platformUser.setPhoneNumber("foo");
-    platformUser.setUserAccessStatus(entityManager.getReference(UserAccessStatus.class, userAccessStatusId));
-    return platformUserRepository.save(platformUser);
+  @SneakyThrows
+  @Test
+  void patchPlatformUserByIdTest() {
+    when(platformUserServiceMock.patchPlatformUserById(anyInt(), any(JsonPatch.class))).thenReturn(
+        platformUserResponseFixture);
+    final var response = mockMvc.perform(patch(API_LEADING + "/1")
+            .contentType("application/json-patch+json")
+            .content(patchValidPlatformUser()))
+        .andExpect(status().isAccepted()).andReturn();
+
+    callAssertions(response);
+    verify(platformUserServiceMock).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
-  private void recreateDriver(final PlatformUser platformUser) {
-    final Driver driver = new Driver();
-    driver.setId(platformUser.getId());
-    driver.setLicenseNumber("11111");
-    driver.setPlatformUser(platformUser);
-    driverRepository.save(driver);
+  @SneakyThrows
+  @Test
+  void patchInvalidPlatformUserTest() {
+    mockMvc.perform(patch(API_LEADING)
+            .contentType("application/json-patch+json")
+            .content(patchInvalidPlatformUser()))
+        .andExpect(status().isBadRequest()).andReturn();
+
+    verify(platformUserServiceMock, times(0)).patchPlatformUserById(anyInt(), any(JsonPatch.class));
   }
 
-  private void recreatePassenger(final PlatformUser platformUser) {
-    final Passenger passenger = new Passenger();
-    passenger.setId(platformUser.getId());
-    passenger.setPlatformUser(platformUser);
-    passengerRepository.save(passenger);
+  @SneakyThrows
+  @Test
+  void deleteCurrentPlatformUserTest() {
+    doNothing().when(platformUserServiceMock).deletePlatformUserById(anyInt());
+    mockMvc.perform(delete(API_LEADING))
+        .andExpect(status().isNoContent()).andReturn();
+
+    verify(platformUserServiceMock).deletePlatformUserById(anyInt());
+  }
+
+  @SneakyThrows
+  @Test
+  void deletePlatformUserByIdTest() {
+    doNothing().when(platformUserServiceMock).deletePlatformUserById(anyInt());
+    mockMvc.perform(delete(API_LEADING + "/1")).andExpect(status().isNoContent()).andReturn();
+
+    verify(platformUserServiceMock).deletePlatformUserById(anyInt());
+  }
+
+  @SneakyThrows
+  @SuppressWarnings("unchecked cast")
+  private void callAssertions(final MvcResult response) {
+    final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
+    assertEquals(content.get("id"), platformUserResponseFixture.getId(), ERROR_MSG.formatted("Platform user ids"));
+    assertEquals(content.get("createdDate"), platformUserResponseFixture.getCreatedDate().toString(),
+        ERROR_MSG.formatted("Created dates"));
+    assertEquals(content.get("firstName"), platformUserResponseFixture.getFirstName(),
+        ERROR_MSG.formatted("First Names"));
+    assertEquals(content.get("lastName"), platformUserResponseFixture.getLastName(), ERROR_MSG.formatted("Last names"));
+    assertEquals(content.get("dob"), platformUserResponseFixture.getDob().toString(),
+        ERROR_MSG.formatted("Last names"));
+    assertEquals(content.get("email"), platformUserResponseFixture.getEmail(), ERROR_MSG.formatted("Dobs"));
+    assertEquals(content.get("phoneNumber"), platformUserResponseFixture.getPhoneNumber(),
+        ERROR_MSG.formatted("Phone Numbers"));
+
+    final LinkedHashMap<String, Object> userAccessStatusResponse =
+        (LinkedHashMap<String, Object>) content.get("userAccessStatus");
+    assertEquals(userAccessStatusResponse.get("id"), platformUserResponseFixture.getUserAccessStatus().getId(),
+        ERROR_MSG.formatted("User access status ids"));
+    assertEquals(userAccessStatusResponse.get("status"), platformUserResponseFixture.getUserAccessStatus().getStatus(),
+        ERROR_MSG.formatted("User access statuses"));
+  }
+
+  private String patchValidPlatformUser() {
+    return """
+        [
+            {
+                "op": "replace",
+                "path": "/phoneNumber",
+                "value": "02865482233"
+            },
+            {
+                "op": "replace",
+                "path": "/userAccessStatus/id",
+                "value": "2"
+            }
+        ]
+        """;
+  }
+
+  private String patchInvalidPlatformUser() {
+    return """
+        [
+           {
+             "op": "dummy",
+             "path": "/email",
+             "value": "patched@example.com"
+           }
+         ]
+        """;
   }
 }

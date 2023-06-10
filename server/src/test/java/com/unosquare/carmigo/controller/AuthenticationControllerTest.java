@@ -1,50 +1,60 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.ResourceUtility.convertObjectToJsonBytes;
+import static com.unosquare.carmigo.util.ResourceUtility.getObjectResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.flextrade.jfixture.FixtureAnnotations;
+import com.flextrade.jfixture.JFixture;
+import com.flextrade.jfixture.annotations.Fixture;
+import com.unosquare.carmigo.dto.request.AuthenticationRequest;
+import com.unosquare.carmigo.dto.response.AuthenticationResponse;
 import com.unosquare.carmigo.service.AuthenticationService;
-import com.unosquare.carmigo.util.ControllerUtility;
-import com.unosquare.carmigo.util.ResourceUtility;
+import com.unosquare.carmigo.util.AuthenticationBeansTestCase;
+import java.util.LinkedHashMap;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = AuthenticationController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(AuthenticationBeansTestCase.class)
 public class AuthenticationControllerTest {
 
-  private static final String API_LEADING = "/v1/";
-  private static final String POST_AUTHENTICATION_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostAuthenticationValid.json");
-  private static final String POST_AUTHENTICATION_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostAuthenticationInvalid.json");
-
-  @Mock private AuthenticationService authenticationServiceMock;
-
-  private ControllerUtility controllerUtility;
+  @Autowired private MockMvc mockMvc;
+  @MockBean private AuthenticationService authenticationServiceMock;
+  @Fixture private AuthenticationRequest authenticationRequestFixture;
+  @Fixture private AuthenticationResponse authenticationResponseFixture;
 
   @BeforeEach
   public void setUp() {
-    final var mockMvc = MockMvcBuilders.standaloneSetup(
-      new AuthenticationController(authenticationServiceMock)).build();
-
-    controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
+    final JFixture jFixture = new JFixture();
+    jFixture.customise().circularDependencyBehaviour().omitSpecimen();
+    FixtureAnnotations.initFixtures(this, jFixture);
   }
 
+  @SneakyThrows
   @Test
-  public void post_Create_Authentication_Token_Returns_HttpStatus_Created() throws Exception {
-    controllerUtility.makePostRequest("login", POST_AUTHENTICATION_VALID_JSON, status().isCreated());
-    verify(authenticationServiceMock).createAuthenticationToken(any());
-  }
+  void createAuthenticationTokenTest() {
+    when(authenticationServiceMock.createAuthenticationToken(any(AuthenticationRequest.class))).thenReturn(
+        authenticationResponseFixture);
+    final var response = mockMvc.perform(post("/v1/login").contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(convertObjectToJsonBytes(authenticationRequestFixture))).andExpect(status().isCreated()).andReturn();
 
-  @Test
-  public void post_Create_Authentication_Token_Returns_HttpStatus_BadRequest() throws Exception {
-    controllerUtility.makePostRequest("login", POST_AUTHENTICATION_INVALID_JSON, status().isBadRequest());
-    verify(authenticationServiceMock, times(0)).createAuthenticationToken(any());
+    final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
+    assertEquals(content.get("jwt"), authenticationResponseFixture.getJwt(), "JWTs do not match");
+    verify(authenticationServiceMock).createAuthenticationToken(any(AuthenticationRequest.class));
   }
 }

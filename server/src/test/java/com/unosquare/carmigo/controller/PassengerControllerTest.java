@@ -1,169 +1,169 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.ResourceUtility.getObjectResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.unosquare.carmigo.entity.Passenger;
-import com.unosquare.carmigo.entity.PlatformUser;
-import com.unosquare.carmigo.repository.PassengerRepository;
-import com.unosquare.carmigo.util.ControllerUtility;
-import jakarta.persistence.EntityNotFoundException;
-import java.util.Optional;
+import com.flextrade.jfixture.FixtureAnnotations;
+import com.flextrade.jfixture.JFixture;
+import com.flextrade.jfixture.annotations.Fixture;
+import com.unosquare.carmigo.dto.response.PassengerResponse;
+import com.unosquare.carmigo.security.AppUser;
+import com.unosquare.carmigo.service.PassengerService;
+import com.unosquare.carmigo.util.AuthenticationBeansTestCase;
+import jakarta.persistence.EntityExistsException;
+import java.util.LinkedHashMap;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("h2")
+@WebMvcTest(controllers = PassengerController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(AuthenticationBeansTestCase.class)
 public class PassengerControllerTest {
 
   private static final String API_LEADING = "/v1/passengers";
-  private static final String STAGED_USER = "staged@example.com";
-  private static int STAGED_USER_ID = 0;
-  private static final String ACTIVE_USER = "active@example.com";
-  private static int ACTIVE_USER_ID = 0;
-  private static final String SUSPENDED_USER = "suspended@example.com";
-  private static int SUSPENDED_USER_ID = 0;
-  private static final String LOCKED_OUT_USER = "locked_out@example.com";
-  private static int LOCKED_OUT_USER_ID = 0;
-  private static final String ADMIN_USER = "admin@example.com";
-  private static int ADMIN_USER_ID = 0;
+  private static final String ERROR_MSG = "%s do not match";
 
-  private ControllerUtility controllerUtility;
   @Autowired private MockMvc mockMvc;
-  @Autowired private PassengerRepository passengerRepository;
+  @MockBean private PassengerService passengerServiceMock;
+  @MockBean private AppUser appUserMock;
+  @Fixture private AppUser.CurrentAppUser currentAppUserFixture;
+  @Fixture private PassengerResponse passengerResponseFixture;
 
   @BeforeEach
   public void setUp() {
-    controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
+    final JFixture jFixture = new JFixture();
+    jFixture.customise().circularDependencyBehaviour().omitSpecimen();
+    FixtureAnnotations.initFixtures(this, jFixture);
 
-    STAGED_USER_ID = reassignEntityId(STAGED_USER);
-    ACTIVE_USER_ID = reassignEntityId(ACTIVE_USER);
-    SUSPENDED_USER_ID = reassignEntityId(SUSPENDED_USER);
-    LOCKED_OUT_USER_ID = reassignEntityId(LOCKED_OUT_USER);
-    ADMIN_USER_ID = reassignEntityId(ADMIN_USER);
+    when(appUserMock.get()).thenReturn(currentAppUserFixture);
   }
 
+  @SneakyThrows
   @Test
-  @WithAnonymousUser
-  public void testEndpointsWithAnonymousUser() throws Exception {
-    testUnauthorizedUsers();
+  void createPassengerTest() {
+    when(passengerServiceMock.createPassengerById(anyInt())).thenReturn(passengerResponseFixture);
+    final var response = mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isCreated()).andReturn();
+
+    callAssertions(response);
+    verify(passengerServiceMock).createPassengerById(anyInt());
   }
 
+  @SneakyThrows
   @Test
-  @WithMockUser(STAGED_USER)
-  public void testEndpointsWithStagedUser() throws Exception {
-    testUnauthorizedUsers();
+  void createPassengerAgainTest() {
+    doThrow(EntityExistsException.class).when(passengerServiceMock).createPassengerById(anyInt());
+    mockMvc.perform(post(API_LEADING + "/create")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isConflict()).andReturn();
+
+    verify(passengerServiceMock).createPassengerById(anyInt());
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(ACTIVE_USER)
-  public void testEndpointsWithActiveUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
+  void createPassengerByIdTest() {
+    when(passengerServiceMock.createPassengerById(anyInt())).thenReturn(passengerResponseFixture);
+    final var response = mockMvc.perform(post(API_LEADING + "/1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isCreated()).andReturn();
 
-    controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
-
-    controllerUtility.makePostRequest("/create", "", status().isCreated());
-    controllerUtility.makePostRequest("/create", "", status().isConflict());
-    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
+    callAssertions(response);
+    verify(passengerServiceMock).createPassengerById(anyInt());
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(SUSPENDED_USER)
-  public void testEndpointsWithSuspendedUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    testUnauthorizedUsers();
+  void createPassengerByIdAgainTest() {
+    doThrow(EntityExistsException.class).when(passengerServiceMock).createPassengerById(anyInt());
+    mockMvc.perform(post(API_LEADING + "/1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isConflict()).andReturn();
+
+    verify(passengerServiceMock).createPassengerById(anyInt());
   }
 
+  @SneakyThrows
   @Test
-  @WithMockUser(LOCKED_OUT_USER)
-  public void testEndpointsWithLockedOutUser() throws Exception {
-    testUnauthorizedUsers();
+  void getCurrentPassengerProfileTest() {
+    when(passengerServiceMock.getPassengerById(anyInt())).thenReturn(passengerResponseFixture);
+    final var response = mockMvc.perform(get(API_LEADING + "/profile"))
+        .andExpect(status().isOk()).andReturn();
+
+    callAssertions(response);
+    verify(passengerServiceMock).getPassengerById(anyInt());
   }
 
+  @SneakyThrows
   @Test
-  @WithUserDetails(ADMIN_USER)
-  public void testEndpointsWithAdminUser() throws Exception {
-    controllerUtility.makeGetRequest("/profile", status().isOk());
-    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isOk());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isOk());
+  void getPassengerByIdTest() {
+    when(passengerServiceMock.getPassengerById(anyInt())).thenReturn(passengerResponseFixture);
+    final var response = mockMvc.perform(get(API_LEADING + "/1"))
+        .andExpect(status().isOk()).andReturn();
 
-    controllerUtility.makeDeleteRequest("", status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isNoContent());
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isNoContent());
-
-    controllerUtility.makePostRequest("/create", "", status().isCreated());
-    controllerUtility.makePostRequest("/create", "", status().isConflict());
-    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isCreated());
-    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isConflict());
-    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isCreated());
-    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isConflict());
-    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isCreated());
-    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isConflict());
-    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isCreated());
-    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isConflict());
-    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isConflict());
+    callAssertions(response);
+    verify(passengerServiceMock).getPassengerById(anyInt());
   }
 
-  private void testUnauthorizedUsers() throws Exception {
-    controllerUtility.makeGetRequest("/" + STAGED_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
-    controllerUtility.makeGetRequest("/" + ADMIN_USER_ID, status().isForbidden());
+  @SneakyThrows
+  @Test
+  void deleteCurrentPassengerTest() {
+    doNothing().when(passengerServiceMock).deletePassengerById(anyInt());
+    mockMvc.perform(delete(API_LEADING + "/1"))
+        .andExpect(status().isNoContent()).andReturn();
 
-    controllerUtility.makePostRequest("/create", "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + STAGED_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + ACTIVE_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + SUSPENDED_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + LOCKED_OUT_USER_ID, "", status().isForbidden());
-    controllerUtility.makePostRequest("/" + ADMIN_USER_ID, "", status().isForbidden());
-
-    controllerUtility.makeDeleteRequest("", status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + STAGED_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ACTIVE_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + SUSPENDED_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + LOCKED_OUT_USER_ID, status().isForbidden());
-    controllerUtility.makeDeleteRequest("/" + ADMIN_USER_ID, status().isForbidden());
+    verify(passengerServiceMock).deletePassengerById(anyInt());
   }
 
-  private int reassignEntityId(final String email) {
-    final PlatformUser platformUser = new PlatformUser();
-    platformUser.setEmail(email);
-    final Passenger passenger = new Passenger();
-    passenger.setPlatformUser(platformUser);
+  @SneakyThrows
+  @SuppressWarnings("unchecked cast")
+  private void callAssertions(final MvcResult response) {
+    final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
+    assertEquals(content.get("id"), passengerResponseFixture.getId(), ERROR_MSG.formatted("Passenger ids"));
 
-    ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
-        .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
-        .withIgnorePaths("id");
+    final LinkedHashMap<String, Object> platformUserResponse =
+        (LinkedHashMap<String, Object>) content.get("platformUser");
+    assertEquals(platformUserResponse.get("id"), passengerResponseFixture.getPlatformUser().getId(),
+        ERROR_MSG.formatted("Platform User Ids"));
+    assertEquals(platformUserResponse.get("createdDate"),
+        passengerResponseFixture.getPlatformUser().getCreatedDate().toString(), ERROR_MSG.formatted("Created dates"));
+    assertEquals(platformUserResponse.get("firstName"), passengerResponseFixture.getPlatformUser().getFirstName(),
+        ERROR_MSG.formatted("First Names"));
+    assertEquals(platformUserResponse.get("lastName"), passengerResponseFixture.getPlatformUser().getLastName(),
+        ERROR_MSG.formatted("Last names"));
+    assertEquals(platformUserResponse.get("dob"), passengerResponseFixture.getPlatformUser().getDob().toString(),
+        ERROR_MSG.formatted("Last names"));
+    assertEquals(platformUserResponse.get("email"), passengerResponseFixture.getPlatformUser().getEmail(),
+        ERROR_MSG.formatted("Dobs"));
+    assertEquals(platformUserResponse.get("phoneNumber"), passengerResponseFixture.getPlatformUser().getPhoneNumber(),
+        ERROR_MSG.formatted("Phone Numbers"));
 
-    Optional<Passenger> result = passengerRepository.findOne(Example.of(passenger, exampleMatcher));
-
-    if (result.isEmpty()) {
-      throw new EntityNotFoundException();
-    }
-    return result.get().getId();
+    final LinkedHashMap<String, Object> userAccessStatusResponse =
+        (LinkedHashMap<String, Object>) platformUserResponse.get("userAccessStatus");
+    assertEquals(userAccessStatusResponse.get("id"),
+        passengerResponseFixture.getPlatformUser().getUserAccessStatus().getId(),
+        ERROR_MSG.formatted("User access status ids"));
+    assertEquals(userAccessStatusResponse.get("status"),
+        passengerResponseFixture.getPlatformUser().getUserAccessStatus().getStatus(),
+        ERROR_MSG.formatted("User access statuses"));
   }
 }
