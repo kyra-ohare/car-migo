@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationControllerIntegrationTest {
+public class AuthenticationControllerIT {
 
   private static final String API_LEADING = "/v1/";
   private static final String POST_AUTHENTICATION_VALID_JSON =

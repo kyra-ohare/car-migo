@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-public class JourneyControllerIntegrationTest {
+public class JourneyControllerIT {
 
   private static final String API_LEADING = "/v1/journeys";
   private static final String POST_JOURNEY_VALID_JSON =

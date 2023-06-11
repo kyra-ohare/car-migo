@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-public class PassengerControllerIntegrationTest {
+public class PassengerControllerIT {
 
   private static final String API_LEADING = "/v1/passengers";
   private static final String STAGED_USER = "staged@example.com";

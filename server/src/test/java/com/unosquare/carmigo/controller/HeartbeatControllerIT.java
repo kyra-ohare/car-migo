@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class HeartbeatControllerIntegrationTest {
+public class HeartbeatControllerIT {
 
   private static final String ENDPOINT = "/v1/heartbeat";
 

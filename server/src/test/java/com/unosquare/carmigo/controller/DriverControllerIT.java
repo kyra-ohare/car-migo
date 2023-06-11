@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-public class DriverControllerIntegrationTest {
+public class DriverControllerIT {
 
   private static final String API_LEADING = "/v1/drivers";
   private static final String POST_DRIVER_VALID_JSON =

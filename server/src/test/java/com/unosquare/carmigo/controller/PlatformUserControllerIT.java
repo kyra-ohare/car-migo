@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
-public class PlatformUserControllerIntegrationTest {
+public class PlatformUserControllerIT {
 
   private static final String API_LEADING = "/v1/users";
   private static final String POST_PLATFORM_USER_VALID_JSON =
