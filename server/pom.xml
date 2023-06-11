@@ -11,15 +11,20 @@
   </parent>
 
   <groupId>com.unosquare.carmigo</groupId>
-  <artifactId>car-migo</artifactId>
+  <artifactId>car-migo-aggregator</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-  <name>Car-Migo</name>
+  <name>Car-Migo Aggregator</name>
   <description>A car sharing application</description>
 
   <properties>
     <java.version>17</java.version>
   </properties>
+
+  <modules>
+    <module>car-migo</module>
+  </modules>
 
   <dependencies>
     <dependency>
@@ -144,92 +149,23 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${project.parent.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build-info</goal>
-            </goals>
-            <configuration>
-              <additionalProperties>
-                <encoding.source>UTF-8</encoding.source>
-                <encoding.reporting>UTF-8</encoding.reporting>
-                <java.source>${maven.compiler.source}</java.source>
-                <java.target>${maven.compiler.target}</java.target>
-              </additionalProperties>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-            </exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>io.github.git-commit-id</groupId>
-        <artifactId>git-commit-id-maven-plugin</artifactId>
-        <version>5.0.0</version>
-        <executions>
-          <execution>
-            <id>get-the-git-infos</id>
-            <goals>
-              <goal>revision</goal>
-            </goals>
-            <phase>initialize</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <generateGitPropertiesFile>true</generateGitPropertiesFile>
-          <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-          <includeOnlyProperties>
-            <includeOnlyProperty>^git.branch$</includeOnlyProperty>
-            <includeOnlyProperty>^git.build.user.(name|email)$</includeOnlyProperty>
-            <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
-            <includeOnlyProperty>^git.commit.(id|time)$</includeOnlyProperty>
-            <includeOnlyProperty>^git.commit.message.full$</includeOnlyProperty>
-            <includeOnlyProperty>^git.commit.user.(name|email)$</includeOnlyProperty>
-            <includeOnlyProperty>^git.remote.origin.url$</includeOnlyProperty>
-          </includeOnlyProperties>
-          <commitIdGenerationMode>full</commitIdGenerationMode>
-          <verbose>true</verbose>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.2.2</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>10.10.0</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <consoleOutput>true</consoleOutput>
-          <linkXRef>false</linkXRef>
-          <includeResources>true</includeResources>
-          <violationSeverity>warning</violationSeverity>
-          <configLocation>config/checkstyle/checkstyle.xml</configLocation>
-        </configuration>
-        <executions>
-          <execution>
-            <id>validate</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>io.github.git-commit-id</groupId>
+          <artifactId>git-commit-id-maven-plugin</artifactId>
+          <version>5.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>
