@@ -19,6 +19,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.flextrade.jfixture</groupId>
+      <artifactId>jfixture</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.unosquare.carmigo</groupId>
       <artifactId>car-migo</artifactId>
     </dependency>

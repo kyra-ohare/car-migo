@@ -1,7 +1,0 @@
-[
-  {
-    "op": "dummy",
-    "path": "/email",
-    "value": "patched@example.com"
-  }
-]
