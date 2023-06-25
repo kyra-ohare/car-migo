@@ -1,5 +1,17 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.Constants.ACTIVE_USER;
+import static com.unosquare.carmigo.util.Constants.ACTIVE_USER_ID;
+import static com.unosquare.carmigo.util.Constants.ADMIN_USER;
+import static com.unosquare.carmigo.util.Constants.ADMIN_USER_ID;
+import static com.unosquare.carmigo.util.Constants.LOCKED_OUT_USER;
+import static com.unosquare.carmigo.util.Constants.LOCKED_OUT_USER_ID;
+import static com.unosquare.carmigo.util.Constants.POST_DRIVER_INVALID_JSON;
+import static com.unosquare.carmigo.util.Constants.POST_DRIVER_VALID_JSON;
+import static com.unosquare.carmigo.util.Constants.STAGED_USER;
+import static com.unosquare.carmigo.util.Constants.STAGED_USER_ID;
+import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER;
+import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.unosquare.carmigo.entity.Driver;
@@ -7,7 +19,6 @@ import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.DriverRepository;
 import com.unosquare.carmigo.service.DriverService;
 import com.unosquare.carmigo.util.ControllerUtility;
-import com.unosquare.carmigo.util.ResourceUtility;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,20 +42,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 public class DriverControllerIT {
 
   private static final String API_LEADING = "/v1/drivers";
-  private static final String POST_DRIVER_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostDriverValid.json");
-  private static final String POST_DRIVER_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostDriverInvalid.json");
-  private static final String STAGED_USER = "staged@example.com";
-  private static int STAGED_USER_ID = 0;
-  private static final String ACTIVE_USER = "active@example.com";
-  private static int ACTIVE_USER_ID = 0;
-  private static final String SUSPENDED_USER = "suspended@example.com";
-  private static int SUSPENDED_USER_ID = 0;
-  private static final String LOCKED_OUT_USER = "locked_out@example.com";
-  private static int LOCKED_OUT_USER_ID = 0;
-  private static final String ADMIN_USER = "admin@example.com";
-  private static int ADMIN_USER_ID = 0;
 
   private ControllerUtility controllerUtility;
   @Autowired private MockMvc mockMvc;
@@ -184,10 +181,6 @@ public class DriverControllerIT {
         .withIgnorePaths("id");
 
     Optional<Driver> result = driverRepository.findOne(Example.of(driver, exampleMatcher));
-
-    if (result.isEmpty()) {
-      throw new EntityNotFoundException();
-    }
-    return result.get().getId();
+    return result.orElseThrow(EntityNotFoundException::new).getId();
   }
 }

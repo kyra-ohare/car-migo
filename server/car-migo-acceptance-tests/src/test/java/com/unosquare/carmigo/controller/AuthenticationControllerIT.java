@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.Constants.POST_AUTHENTICATION_INVALID_JSON;
+import static com.unosquare.carmigo.util.Constants.POST_AUTHENTICATION_VALID_JSON;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -7,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.unosquare.carmigo.service.AuthenticationService;
 import com.unosquare.carmigo.util.ControllerUtility;
-import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class AuthenticationControllerIT {
 
   private static final String API_LEADING = "/v1/";
-  private static final String POST_AUTHENTICATION_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostAuthenticationValid.json");
-  private static final String POST_AUTHENTICATION_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostAuthenticationInvalid.json");
 
   @Mock private AuthenticationService authenticationServiceMock;
 

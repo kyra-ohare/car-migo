@@ -1,10 +1,18 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.util.Constants.ACTIVE_USER;
+import static com.unosquare.carmigo.util.Constants.ADMIN_USER;
+import static com.unosquare.carmigo.util.Constants.LOCKED_OUT_USER;
+import static com.unosquare.carmigo.util.Constants.PATCH_JOURNEY_INVALID_JSON;
+import static com.unosquare.carmigo.util.Constants.PATCH_JOURNEY_VALID_JSON;
+import static com.unosquare.carmigo.util.Constants.POST_JOURNEY_INVALID_JSON;
+import static com.unosquare.carmigo.util.Constants.POST_JOURNEY_VALID_JSON;
+import static com.unosquare.carmigo.util.Constants.STAGED_USER;
+import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.unosquare.carmigo.util.ControllerUtility;
-import com.unosquare.carmigo.util.ResourceUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +32,12 @@ import org.springframework.test.web.servlet.ResultMatcher;
 public class JourneyControllerIT {
 
   private static final String API_LEADING = "/v1/journeys";
-  private static final String POST_JOURNEY_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostJourneyValid.json");
-  private static final String POST_JOURNEY_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PostJourneyInvalid.json");
-  private static final String PATCH_JOURNEY_VALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyValid.json");
-  private static final String PATCH_JOURNEY_INVALID_JSON =
-      ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyInvalid.json");
-  private static final String STAGED_USER = "staged@example.com";
-  private static final String ACTIVE_USER = "active@example.com";
-  private static final String SUSPENDED_USER = "suspended@example.com";
-  private static final String LOCKED_OUT_USER = "locked_out@example.com";
-  private static final String ADMIN_USER = "admin@example.com";
 
   @Autowired private MockMvc mockMvc;
   private ControllerUtility controllerUtility;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     controllerUtility = new ControllerUtility(mockMvc, API_LEADING);
   }
 
@@ -77,8 +72,10 @@ public class JourneyControllerIT {
   @Test
   @WithAnonymousUser
   public void testCalculateDistanceWithAnonymousUser() throws Exception {
-// This is commented because it may incur costs with RapidApi
-// https://rapidapi.com/Distance.to/api/distance/pricing?utm_source=api-quota-85&utm_medium=email&utm_campaign=Distance
+  /*
+    This is commented because it may incur costs with RapidApi
+    https://rapidapi.com/Distance.to/api/distance/pricing?utm_source=api-quota-85&utm_medium=email&utm_campaign=Distance
+  */
 //    mockMvc.perform(get(API_LEADING + "/calculateDistance")
 //            .contentType(MediaType.APPLICATION_JSON_VALUE)
 //            .param("locationFrom", "Belfast")

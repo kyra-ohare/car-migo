@@ -53,6 +53,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
