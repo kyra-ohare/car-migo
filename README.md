@@ -51,8 +51,7 @@ From your Unix-based terminal, navigate to the root of this project and run:
 ```
 ./run-app.sh
 ```
-This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven
-pre-installed because this project ships a Maven Wrapper.
+This script will create a jar file from Maven package lifecycle using the embedded Maven Wrapper.
 
 The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application
 will be available at http://localhost:8086/.
