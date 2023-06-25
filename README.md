@@ -2,6 +2,24 @@
 
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
+## Technologies
+* Spring Boot 3
+* Java 17
+* Maven
+* Docker
+* Git Actions
+* Hibernate
+* PostgreSQL
+* H2 Database
+* pgAdmin
+* Flyway
+* JWT
+* BCrypt
+* Swagger
+* Actuator
+* Checkstyle
+* Git Commit Id
+
 ## What is the application?
 The application is quite straightway. It is a match-making system for drivers and passengers.
 You can either advertise rides or query them.
@@ -24,17 +42,16 @@ Moreover, there will be less traffic in our cities thus emergency vehicles will 
 less noise pollution, less road accidents, and you can make new friends to top it off.
 The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for fuel costs.
 
-## Requirements
+## How to run it?
+### Requirements
 - Java 17
 - Docker
 
-## How to run it?
 From your Unix-based terminal, navigate to the root of this project and run:
 ```
 ./run-app.sh
 ```
-This script will create a jar file from Maven package lifecycle. For convenience, there is no need to have Maven
-pre-installed because this project ships a Maven Wrapper.
+This script will create a jar file from Maven package lifecycle using the embedded Maven Wrapper.
 
 The script also builds a Docker image named `car-migo` and spins the necessary containers. Once finished, the application
 will be available at http://localhost:8086/.
@@ -67,15 +84,31 @@ Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo 
 ### restart.sh
 This script restarts the containers. You are also given the option to restart PostgreSQL and pgAdmin volumes.
 
-## CI/CD
-Git Actions is triggered everytime there is a new code push or a new pull request against the `main` branch.
+## Login
+Send a POST request to http://localhost:8086/v1/login with the following JSON body:
+```json
+{
+  "email": "jake.sully@example.com",
+  "password": "Pass1234!"
+}
+```
+Here is the cURL command:
+```
+curl -L 'http://localhost:8086/v1/login' \
+-H 'Content-Type: application/json' \
+--data-raw '{
+  "email": "jake.sully@example.com",
+  "password": "Pass1234!"
+}'
+```
+By the way, Jake Sully is our ADMIN. You can find more users to play with in [migrations/local-data-seed/V1000.1___local_data_seed.sql](./migrations/local-data-seed/V1000.1___local_data_seed.sql).
 
-The script will build the application and run tests using Apache Maven.
-It will also scan the code and produce a security report using CodeQL Analysis.
-
-Moreover, a Docker image is built and sent to [Docker Hub](#docker-hub) when the code is merged into the main branch.
-
-Git Actions is also scheduled to run once a week, every Monday at 7am UTC.
+### JWT
+The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a Bearer token. For example:
+```
+curl -L 'http://localhost:8086/v1/users/profile' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYWtlLnN1bGx5QGV4YW1wbGUuY29tIiwiZXhwIjoxNjg0Mzk3MzA3LCJpYXQiOjE2ODQzNjEzMDd9.NPQ0Fz_oHj88xQAN8G-MM0ehy9-EfBcYWg-PwDxKPwA'
+```
 
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
@@ -90,8 +123,16 @@ Open endpoints, i.e., no credentials needed:
 * http://localhost:8086/v1/journeys/calculateDistance
 * http://localhost:8086/v1/journeys/search
 
-## Docker Hub
-The latest car-migo image is available at https://hub.docker.com/r/kleydocker/car-migo
+## CI/CD
+Git Actions is triggered everytime there is a new code push or a new pull request against the `main` branch.
+
+The script will build the application and run tests using Apache Maven Wrapper.
+It will also scan the code and produce a security report using CodeQL Analysis.
+
+Git Actions is also scheduled to run once a week: every Monday at 7am UTC.
+
+Moreover, an image is built and sent to [Docker Hub](https://hub.docker.com/r/kleydocker/car-migo) repository when the code is merged into the main branch.
+It can be pulled by:
 ```
 docker pull kleydocker/car-migo
 ```

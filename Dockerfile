@@ -1,6 +1,6 @@
 FROM openjdk:17.0.2-jdk
 
-ARG JAR_FILE=server/target/*.jar
+ARG JAR_FILE=server/car-migo/target/*.jar
 
 COPY ${JAR_FILE} app.jar
 
