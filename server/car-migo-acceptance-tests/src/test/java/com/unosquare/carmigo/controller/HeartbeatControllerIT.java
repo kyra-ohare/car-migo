@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -28,12 +29,13 @@ public class HeartbeatControllerIT {
 
   private MockMvc mockMvc;
   @Mock private UserAccessStatusRepository userAccessStatusRepositoryMock;
+  @Mock private RedisTemplate<String, Object> redisTemplateMock;
   @Fixture private UserAccessStatus userAccessStatusFixture;
 
   @BeforeEach
   public void setUp() {
     mockMvc = MockMvcBuilders.standaloneSetup(
-        new HeartbeatController(userAccessStatusRepositoryMock))
+        new HeartbeatController(userAccessStatusRepositoryMock, redisTemplateMock))
       .build();
 
     final JFixture jFixture = new JFixture();

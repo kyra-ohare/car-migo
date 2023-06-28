@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = HeartbeatController.class)
@@ -35,6 +36,7 @@ public class HeartbeatControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @MockBean private UserAccessStatusRepository userAccessStatusRepositoryMock;
+  @MockBean private RedisTemplate<String, Object> redisTemplate;
   @Fixture private UserAccessStatus userAccessStatusFixture;
 
 
@@ -54,6 +56,7 @@ public class HeartbeatControllerTest {
 
     final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
     assertEquals(content.get("Is Database running?"), true);
+    assertEquals(content.get("Is Redis running?"), true);
     verify(userAccessStatusRepositoryMock).findById(anyInt());
   }
 

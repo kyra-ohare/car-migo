@@ -110,6 +110,11 @@ curl -L 'http://localhost:8086/v1/users/profile' \
 -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYWtlLnN1bGx5QGV4YW1wbGUuY29tIiwiZXhwIjoxNjg0Mzk3MzA3LCJpYXQiOjE2ODQzNjEzMDd9.NPQ0Fz_oHj88xQAN8G-MM0ehy9-EfBcYWg-PwDxKPwA'
 ```
 
+### Redis
+Lettuce was chosen as the Redis Java client because of its scalability and support for both synchronous and asynchronous communication.
+
+https://redis.com/blog/jedis-vs-lettuce-an-exploration/
+
 ## Swagger UI
 OpenApi 3.0 Specification is implemented. Here are the endpoints:
 * http://localhost:8086/swagger-ui/index.html

@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.type.descriptor.jdbc.InstantAsTimestampJdbcType;
+import org.springframework.data.redis.core.RedisHash;
 
 /**
  * Data Transfer Object representing the <b>platform_user</b> table of the database.
@@ -29,6 +30,7 @@ import org.hibernate.type.descriptor.jdbc.InstantAsTimestampJdbcType;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//@RedisHash
 @Table(name = "platform_user")
 public class PlatformUser implements Serializable {
 
