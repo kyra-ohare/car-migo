@@ -17,6 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * Web security configuration.
@@ -39,7 +42,8 @@ public class WebSecurityConfiguration {
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf().disable().authorizeHttpRequests()
+    httpSecurity.csrf().disable()
+        .authorizeHttpRequests()
            .requestMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
            .requestMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
            .requestMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
@@ -51,6 +55,7 @@ public class WebSecurityConfiguration {
            .requestMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()
            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
         .anyRequest().authenticated()
+        .and().cors()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -66,5 +71,19 @@ public class WebSecurityConfiguration {
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public CorsFilter corsFilter() {
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    final CorsConfiguration config = new CorsConfiguration();
+
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("http://localhost:5173");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("GET");
+    source.registerCorsConfiguration("/**", config);
+
+    return new CorsFilter(source);
   }
 }
