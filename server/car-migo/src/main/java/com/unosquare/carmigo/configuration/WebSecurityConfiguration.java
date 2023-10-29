@@ -41,7 +41,7 @@ public class WebSecurityConfiguration {
    * @throws Exception application halts if it does not go according to the plan.
    */
   @Bean
-  public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
+  protected SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable()
         .authorizeHttpRequests()
            .requestMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
@@ -63,18 +63,18 @@ public class WebSecurityConfiguration {
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
+  protected AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
       throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean
-  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+  protected BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public CorsFilter corsFilter() {
+  protected CorsFilter corsFilter() {
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     final CorsConfiguration config = new CorsConfiguration();
 
