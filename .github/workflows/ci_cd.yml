@@ -1,5 +1,5 @@
 # For further information about Maven workflows
-# https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
 # For further information about CodeQL workflows
 # Language support: https://git.io/codeql-language-support
@@ -11,9 +11,8 @@ name: Car-Migo builds with Maven, CodeQL and Docker
 on:
   push:
   pull_request:
-    branches:
-      - main
   schedule:
+#   runs every Monday at 7:00am
     - cron: '00 7 * * 1'
 
 env:
