@@ -11,9 +11,11 @@ name: Car-Migo builds with Maven, CodeQL and Docker
 on:
   push:
   pull_request:
+    branches:
+      - main
   schedule:
-#   runs every Monday at 7:00am
-    - cron: '00 7 * * 1'
+#   runs every first day of the month at 7:00am
+    - cron: '0 7 1 * *'
 
 env:
 # this is used by /journeys/calculateDistance endpoint
