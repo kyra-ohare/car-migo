@@ -309,7 +309,7 @@ public class JourneyControllerTest {
   @Test
   void calculateDistanceTest() {
     when(journeyServiceMock.calculateDistance(any(DistanceRequest.class))).thenReturn(distanceResponseFixture);
-    final var response = mockMvc.perform(get(API_LEADING + "/calculateDistance")
+    mockMvc.perform(get(API_LEADING + "/calculateDistance")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("locationFrom", "BT62-3JR")
             .param("countryFrom", "GBR")

@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.util;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -28,6 +30,7 @@ public class ControllerUtility {
   public void makePostRequest(final String apiTrailing, final String content, final ResultMatcher expectation)
       throws Exception {
     mockMvc.perform(post(apiLeading + apiTrailing)
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(content))
         .andExpect(expectation);
@@ -36,6 +39,7 @@ public class ControllerUtility {
   public void makePostRequestWithOneParam(final String apiTrailing, final String paramKey, final String paramValue,
       final ResultMatcher expectation) throws Exception {
     mockMvc.perform(post(apiLeading + apiTrailing)
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param(paramKey, paramValue))
         .andExpect(expectation);
@@ -44,13 +48,15 @@ public class ControllerUtility {
   public void makePatchRequest(final String apiTrailing, final String content, final ResultMatcher expectation)
       throws Exception {
     mockMvc.perform(patch(apiLeading + apiTrailing)
+            .with(csrf())
             .contentType("application/json-patch+json")
             .content(content))
         .andExpect(expectation);
   }
 
   public void makeDeleteRequest(final String apiTrailing, final ResultMatcher expectation) throws Exception {
-    mockMvc.perform(delete(apiLeading + apiTrailing))
+    mockMvc.perform(delete(apiLeading + apiTrailing)
+            .with(csrf()))
         .andExpect(expectation);
   }
 }

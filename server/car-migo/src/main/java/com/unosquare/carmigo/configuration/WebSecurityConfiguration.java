@@ -17,6 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Web security configuration.
@@ -38,33 +41,50 @@ public class WebSecurityConfiguration {
    * @throws Exception application halts if it does not go according to the plan.
    */
   @Bean
-  public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf().disable().authorizeHttpRequests()
-           .requestMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
-           .requestMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
-           .requestMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
-           .requestMatchers(HttpMethod.POST, "/v1/login").permitAll()
-           .requestMatchers(HttpMethod.GET, "/v1/journeys/calculateDistance").permitAll()
-           .requestMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
-           .requestMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN.name(), DEV.name())
-           .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-           .requestMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()
-           .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
-        .anyRequest().authenticated()
-        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-    return httpSecurity.build();
+  protected SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+        .authorizeHttpRequests(
+            authorize -> authorize
+                .requestMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/journeys/calculateDistance").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/journeys/search").permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/**").hasAnyAuthority(ADMIN.name(), DEV.name())
+                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v3/api-docs**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                .anyRequest().authenticated()
+        )
+        .cors(cors -> cors.configurationSource(corsFilter()))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
+  protected AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
       throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean
-  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+  protected BCryptPasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  protected CorsConfigurationSource corsFilter() {
+    final CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("http://localhost:5173");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("GET");
+
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+
+    return source;
   }
 }
