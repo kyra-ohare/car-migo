@@ -10,6 +10,8 @@ name: Car-Migo builds with Maven, CodeQL and Docker
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
