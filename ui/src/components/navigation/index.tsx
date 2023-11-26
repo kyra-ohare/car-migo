@@ -1,23 +1,26 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import LogoDevIcon from "@mui/icons-material/LogoDev";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import Car from "../../assets/car.png";
+import LogoDevIcon from "@mui/icons-material/LogoDev";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const pages = [
   { label: "Home", path: "/home" },
   { label: "Profile", path: "/profile" },
+  { label: "Test", path: "/my_test" },
 ];
 
 const settings = ["Profile", "Your Journeys", "Logout"];
@@ -52,7 +55,18 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
       <AppBar>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <LogoDevIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+            <Box
+              component="img"
+              sx={{
+                height: 60,
+                width: 100,
+                maxHeight: { xs: 60, md: 60 },
+                maxWidth: { xs: 100, md: 100 },
+                marginRight: "10px",
+              }}
+              alt="car-migo"
+              src={Car}
+            />
             <Typography
               variant="h6"
               noWrap
@@ -68,7 +82,7 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
                 textDecoration: "none",
               }}
             >
-              LOGO
+              Car-Migo
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
