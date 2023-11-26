@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Grid } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";

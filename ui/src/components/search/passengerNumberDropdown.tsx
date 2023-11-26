@@ -1,7 +1,5 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { Autocomplete, TextField, InputAdornment } from "@mui/material";
-import { numbers } from "../../constants/numbers";
-import PersonIcon from "@mui/icons-material/Person";
+import { Dispatch, SetStateAction } from "react";
+import { TextField } from "@mui/material";
 import { IDropdownOptions } from ".";
 
 interface IPassengerNumberDropdown {

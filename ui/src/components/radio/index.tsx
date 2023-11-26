@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormControl,
   FormControlLabel,
@@ -13,8 +12,6 @@ import {
   tooltipClasses,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import { addPositionPropertiesToSections } from "@mui/x-date-pickers/internals";
-import { Directions } from "@mui/icons-material";
 
 const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} placement="right" />

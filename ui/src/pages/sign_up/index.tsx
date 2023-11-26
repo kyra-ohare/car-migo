@@ -16,7 +16,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   BasicDatePicker,
   Footer,
-  YesNoRadioButtonsGroup,
 } from "../../components";
 import { createUser } from "../../hooks/useCreateUser";
 import { useState } from "react";

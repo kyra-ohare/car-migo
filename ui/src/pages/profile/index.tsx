@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
 import useGetProfile from "../../hooks/useGetPlatformUser";
 import { Loader } from "../../components";
@@ -17,7 +17,8 @@ const Profile = () => {
   useEffect(() => {
     // useEffect keeps an eye on data changes.
     if (status === "success") {
-      setFirstName(data.firstName);
+      const {firstName} = data;
+      setFirstName(firstName);
       setFirstName(data.firstName);
       setLastName(data.lastName);
       setDob(data.dob);

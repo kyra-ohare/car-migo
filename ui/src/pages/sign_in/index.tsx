@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Avatar,
