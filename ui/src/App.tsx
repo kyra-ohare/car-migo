@@ -5,30 +5,46 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { setBearerToken } from "./integration/instance";
 import NavBar from "./components/navigation";
-import Homepage from "./pages/home";
-import Profile from "./pages/profile";
-import SignIn from "./pages/sign_in";
-import SignUp from "./pages/sign_up";
-import MyTest from "./pages/my_test";
+import navigation from "./constants/navigation";
+import {
+  ConfirmEmail,
+  Homepage,
+  ForgotPassword,
+  Playground,
+  Profile,
+  SignIn,
+  SignUp,
+} from "./pages";
 
 function App() {
   useEffect(() => {
     // useEffect keeps an eye on data changes.
     setBearerToken(
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ5LmdyZWVuQGV4YW1wbGUuY29tIiwiZXhwIjoxNzAwOTk3MDI2LCJpYXQiOjE3MDA5NjEwMjZ9.3zyC8oI_Zt4cc6nFzdX0iQsyK1-f-VCVhpvAgcT1AyM"
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteS50ZXN0QGV4YW1wbGUuY29tIiwiZXhwIjoxNzAxNjM5MzYxLCJpYXQiOjE3MDE2MDMzNjF9.LejsdpPOQZNih4JmYRh1nLumVi-jmyy0xzpdspiiNVA"
     );
   }, []); // passing an empty array because I want it to render only once.
 
   const AuthenticatedRoutes = () => {
     return (
       <Routes>
-        <Route path="/home" element={<Homepage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/my_test" element={<MyTest />} />
+        <Route
+          path={navigation.CONFIRM_EMAIL_PAGE}
+          element={<ConfirmEmail />}
+        />
+        <Route path={navigation.HOME_PAGE} element={<Homepage />} />
+        <Route path={navigation.PROFILE_PAGE} element={<Profile />} />
+        <Route path={navigation.SIGN_IN_PAGE} element={<SignIn />} />
+        <Route path={navigation.SIGN_UP_PAGE} element={<SignUp />} />
+        <Route path={navigation.PLAYGROUND} element={<Playground />} />
+        <Route
+          path={navigation.FORGOT_PASSWORD_PAGE}
+          element={<ForgotPassword />}
+        />
         {/* star in Route path below is the default behaviour */}
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route
+          path="*"
+          element={<Navigate to={navigation.HOME_PAGE} replace />}
+        />
       </Routes>
     );
   };

@@ -12,19 +12,19 @@ import {
   WelcomeMessage,
   WelcomeMessageContainer,
 } from "./styled";
+import navigation from "../../constants/navigation";
 
 const Homepage = () => {
   const { data } = useGetHeartbeat();
-  console.log("expect the json obj from server");
   console.log(data);
 
   const navigate = useNavigate();
   const goToSignUp = () => {
-    navigate("/sign-up");
+    navigate(navigation.SIGN_UP_PAGE);
   };
 
   const goToSignIn = () => {
-    navigate("/sign-in");
+    navigate(navigation.SIGN_IN_PAGE);
   };
 
   return (

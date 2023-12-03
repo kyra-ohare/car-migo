@@ -1,41 +1,37 @@
-import * as React from "react";
+import { Fragment } from "react";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { CustomButton } from "..";
 
 export default function DialogBox(props: any) {
-  const [open, setOpen] = React.useState(false);
-
   const handleClose = () => {
-    setOpen(false);
-    props.dialogState(open);
+    props.state(false);
+    props.redirect();
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Dialog
         open={props.open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {props.dialogTitle}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description" color="black">
-          {props.dialogText}
+            {props.text}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>OK</Button>
+          <CustomButton label="OK" onClick={handleClose} />
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </Fragment>
   );
 }

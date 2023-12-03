@@ -1,39 +1,30 @@
-import * as React from "react";
+import { SetStateAction, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createUser } from "../../hooks/usePlatformUser";
+import navigation from "../../constants/navigation";
+import { processUserErrorMsgs } from "../../utils/processUserErrorMsgs";
 import {
   Avatar,
   Box,
-  Button,
   CssBaseline,
   Container,
   Grid,
   Link,
-  TextField,
   Typography,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { LockOutlined } from "@mui/icons-material";
 import {
   BasicDatePicker,
   Footer,
+  CustomButton,
+  CustomTextField,
+  CustomAlert,
 } from "../../components";
-import { createUser } from "../../hooks/useCreateUser";
-import { useState } from "react";
+import http_status from "../../constants/http_status";
 
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
-const SignUp = () => {
-  const mutateUser = useMutation({
-    mutationFn: createUser,
-    onSuccess: (data) => {
-      console.log("Success!", data);
-    },
-    onError: (error) => {
-      console.log(error.response?.data);
-    },
-  });
-
+export default function SignUp() {
   const dateToday = new Date();
 
   const [firstName, setFirstName] = useState("");
@@ -43,24 +34,86 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isFirstNameError, setIsFirstNameError] = useState<boolean>(false);
+  const [helperFirstNameText, setHelperFirstNameText] = useState("");
+  const [isLastNameError, setIsLastNameError] = useState<boolean>(false);
+  const [helperLastNameText, setHelperLastNameText] = useState("");
+  const [isPhoneNumberError, setIsPhoneNumberError] = useState<boolean>(false);
+  const [helperPhoneNumberText, setHelperPhoneNumberText] = useState("");
+  const [isEmailError, setIsEmailError] = useState<boolean>(false);
+  const [helperEmailText, setHelperEmailText] = useState("");
+  const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
+  const [helperPasswordText, setHelperPasswordText] = useState("");
+  // const [isConfirmedPasswordError, setIsConfirmedPasswordError] = useState<boolean>(false);
+  // const [helperConfirmedPasswordText, setHelperConfirmedPasswordText] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const navigate = useNavigate();
+
+  const mutateUser = useMutation({
+    mutationFn: createUser,
+    onSuccess: (data) => {
+      console.log("Success!", data);
+      navigate(navigation.HOME_PAGE);
+    },
+    onError: (error) => {
+      const errorMsg = error.response?.data.message;
+      const { firstName, lastName, phoneNumber, email, password } =
+        processUserErrorMsgs(errorMsg);
+
+      if (firstName) {
+        setIsFirstNameError(true);
+        setHelperFirstNameText(firstName);
+      }
+      if (lastName) {
+        setIsLastNameError(true);
+        setHelperLastNameText(lastName);
+      }
+      if (phoneNumber) {
+        setIsPhoneNumberError(true);
+        setHelperPhoneNumberText(phoneNumber);
+      }
+      if (email) {
+        setIsEmailError(true);
+        setHelperEmailText(email);
+      }
+      if (password) {
+        setIsPasswordError(true);
+        setHelperPasswordText(password);
+      }
+      const errorStatus = error.response?.data.status;
+      if (errorStatus === http_status.CONFLICT) {
+        setSnackbarMessage("Oh no! " + errorMsg);
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
+    },
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("firstName", firstName);
-    console.log("lastName", lastName);
-    console.log("dob", dob.toISOString());
-    console.log("phoneNumber", phoneNumber);
-    console.log("email", email);
-    console.log("password", password);
-    console.log("confirmPassword", confirmPassword);
+    // if( password !== confirmPassword) {
+    //   setIsConfirmedPasswordError(true);
+    //   setHelperConfirmedPasswordText("Oh dear! Passwords don't match");
+    // }
+    // console.log("firstName", firstName);
+    // console.log("lastName", lastName);
+    // console.log("dob", dob.toISOString());
+    // console.log("phoneNumber", phoneNumber);
+    // console.log("email", email);
+    // console.log("password", password);
+    // console.log("confirmPassword", confirmPassword);
 
     mutateUser.mutate({
-      // firstName: "My",
-      // lastName: "Test",
-      // dob: "1960-02-26T00:00:00Z",
-      // email: "my.test@example2.com",
-      // password: "Pass1234!",
-      // phoneNumber: "028657345912",
+    //   firstName: "My",
+    //   lastName: "Test",
+    //   dob: "1960-02-26T00:00:00Z",
+    //   phoneNumber: "028657345912",
+    //   email: "mary.green@example.com",
+    //   password: "Pass1234!",
+
       firstName: firstName,
       lastName: lastName,
       dob: dob,
@@ -70,6 +123,13 @@ const SignUp = () => {
     });
   };
 
+
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const defaultTheme = createTheme();
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -83,7 +143,7 @@ const SignUp = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <LockOutlined />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
@@ -96,32 +156,35 @@ const SignUp = () => {
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  id="firstName"
-                  name="firstName"
+                <ThisTextField
+                  id="sign-up-first-name"
                   label="First Name"
-                  autoFocus
+                  name="first-name"
                   required
-                  autoComplete="given-name"
-                  value={firstName}
-                  onChange={(event) => {
+                  autoComplete="first-name"
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setFirstName(event.target.value);
                   }}
+                  error={isFirstNameError}
+                  helperText={isFirstNameError ? helperFirstNameText : ""}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
+                <ThisTextField
+                  id="sign-up-last-name"
                   label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={lastName}
-                  onChange={(event) => {
+                  name="last-name"
+                  required
+                  autoComplete="last-name"
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setLastName(event.target.value);
                   }}
+                  error={isLastNameError}
+                  helperText={isLastNameError ? helperLastNameText : ""}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -137,108 +200,101 @@ const SignUp = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="phoneNumber"
+                <ThisTextField
+                  id="sign-up-phone-number"
                   label="Phone Number"
-                  name="phoneNumber"
-                  autoComplete="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(event) => {
+                  name="phone-number"
+                  required
+                  autoComplete="phone-number"
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setPhoneNumber(event.target.value);
                   }}
+                  error={isPhoneNumberError}
+                  helperText={isPhoneNumberError ? helperPhoneNumberText : ""}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
+                <ThisTextField
+                  id="sign-up-email-address"
                   label="Email Address"
-                  name="email"
+                  name="email-address"
+                  required
                   autoComplete="email"
-                  value={email}
-                  onChange={(event) => {
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setEmail(event.target.value);
                   }}
+                  error={isEmailError}
+                  helperText={isEmailError ? helperEmailText : ""}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
+                <ThisTextField
+                  id="sign-up-password"
                   label="Password"
+                  name="password"
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(event) => {
+                  autoComplete="password"
+                  required
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setPassword(event.target.value);
                   }}
+                  error={isPasswordError}
+                  helperText={isPasswordError ? helperPasswordText : ""}
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
+                <ThisTextField
+                  id="sign-up-confirm-password"
                   label="Confirm Password"
+                  name="confirm-password"
                   type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(event) => {
+                  autoComplete="password"
+                  required
+                  onChange={(event: {
+                    target: { value: SetStateAction<string> };
+                  }) => {
                     setConfirmPassword(event.target.value);
                   }}
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <YesNoRadioButtonsGroup
-                  label="Do you want to be a passenger?"
-                  tooltip="As a passenger, you can book journeys."
-                  value={isPassenger}
-                  onChange={(event: {
-                    target: { value: React.SetStateAction<string> };
-                  }) => {
-                    setIsPassenger(event.target.value);
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <YesNoRadioButtonsGroup
-                  label="Do you want to be a driver?"
-                  tooltip="As a driver, you can create journeys."
-                  value={isDriver}
-                  onChange={(event: {
-                    target: { value: React.SetStateAction<string> };
-                  }) => {
-                    setIsDriver(event.target.value);
-                  }}
-                />
-              </Grid> */}
             </Grid>
-            <Button
-              type="submit"
+            <CustomButton
               fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+              type="submit"
+              label="Sign Up"
+              sx={{ mt: 5, mb: 2 }}
+            />
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/sign-in" variant="body2">
+                <Link href={navigation.SIGN_IN_PAGE} variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+        <CustomAlert
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          message={snackbarMessage}
+        />
         <Footer />
       </Container>
     </ThemeProvider>
   );
-};
+}
 
-export default SignUp;
+function ThisTextField(props: any) {
+  return (
+    <>
+      <CustomTextField sx={{ mt: 1 }} {...props} />
+    </>
+  );
+}

@@ -16,11 +16,13 @@ import {
 import Car from "../../assets/car.png";
 import LogoDevIcon from "@mui/icons-material/LogoDev";
 import MenuIcon from "@mui/icons-material/Menu";
+import navigation from "../../constants/navigation";
 
 const pages = [
-  { label: "Home", path: "/home" },
-  { label: "Profile", path: "/profile" },
-  { label: "Test", path: "/my_test" },
+  { label: "Home", path: navigation.HOME_PAGE },
+  { label: "Profile", path: navigation.PROFILE_PAGE },
+  { label: "Confirm email", path: navigation.CONFIRM_EMAIL_PAGE },
+  { label: "Playground", path: navigation.PLAYGROUND },
 ];
 
 const settings = ["Profile", "Your Journeys", "Logout"];

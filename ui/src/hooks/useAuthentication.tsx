@@ -5,9 +5,9 @@ interface IAuthenticationRequest {
   password: string;
 }
 
-const authenticationRequest = async (request: IAuthenticationRequest) => {
+const authenticate = async (request: IAuthenticationRequest) => {
   const response = await axiosInstanceNoAuth.post("/v1/login", request);
   return response.data;
 };
 
-export default authenticationRequest;
+export default authenticate;

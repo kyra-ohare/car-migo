@@ -1,66 +1,99 @@
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import {
   Avatar,
   Box,
-  Button,
   CssBaseline,
   Container,
   Grid,
   Link,
-  TextField,
   Typography,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { DialogBox, Footer } from "../../components";
-import { useState } from "react";
-import authenticationRequest from "../../hooks/useSignIn";
+import {
+  Footer,
+  CustomButton,
+  CustomTextField,
+  DialogBox,
+  CustomAlert,
+} from "../../components";
+import { SetStateAction, useState } from "react";
+import authenticate from "../../hooks/useAuthentication";
+import navigation from "../../constants/navigation";
+import { processUserErrorMsgs } from "../../utils/processUserErrorMsgs";
+import http_status from "../../constants/http_status";
 
-// TODO: I can sign in but i can't send JWT to axios
-
-const SignIn = () => {
+// TODO: I can sign in but i can't send JWT to axios. I tried useEffect below but it didn't work.
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [openDialog, setOpenDialog] = useState<Boolean>(false);
-  const [dialogText, setDialogText] = useState("");
-  const dialogState = (data: React.SetStateAction<Boolean>) => {
-    setOpenDialog(data);
-  };
+  const [isEmailError, setIsEmailError] = useState<boolean>(false);
+  const [helperEmailText, setHelperEmailText] = useState("");
+  const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
+  const [helperPasswordText, setHelperPasswordText] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const mutateUser = useMutation({
-    mutationFn: authenticationRequest,
+  // let jwt = "";
+
+  const navigate = useNavigate();
+  const mutateAuthenticateUser = useMutation({
+    mutationFn: authenticate,
     onSuccess: (data) => {
       console.log("Success!", data.jwt);
+      // jwt = data.jwt;
+      navigate(navigation.HOME_PAGE);
     },
     onError: (error) => {
+      // console.log(error);
       const errorMsg = error.response?.data.message;
-      setOpenDialog(true);
-      setDialogText(errorMsg);
+      const { email, password } = processUserErrorMsgs(errorMsg);
+
+      if (email) {
+        setIsEmailError(true);
+        setHelperEmailText(email);
+      }
+      if (password) {
+        setIsPasswordError(true);
+        setHelperPasswordText(password);
+      }
+
+      const errorStatus = error.response?.data.status;
+      if (errorStatus === http_status.FORBIDDEN) {
+        setSnackbarMessage("Oh no! " + errorMsg);
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
     },
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    mutateUser.mutate({
+    // setHelperEmailText("");
+    // setHelperPasswordText("");
+    console.log("Email", email);
+    mutateAuthenticateUser.mutate({
       email: email,
       password: password,
     });
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  // useEffect(() => {
+  //   // useEffect keeps an eye on data changes.
+  //   setBearerToken(jwt);
+  //   console.log("setBearerToken", jwt);
+  // }, [jwt]); // passing an empty array because I want it to render only once.
+
   // TODO remove, this demo shouldn't need to reset the theme.
   const defaultTheme = createTheme();
-  if (openDialog) {
-    return (
-      <DialogBox
-        open={openDialog}
-        dialogState={dialogState}
-        dialogTitle="Whoops!"
-        dialogText={dialogText}
-      />
-    );
-  }
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -85,64 +118,68 @@ const SignIn = () => {
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
+            <CustomTextField
+              id="sign-in-with-email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(event) => {
+              required
+              onChange={(event: {
+                target: { value: SetStateAction<string> };
+              }) => {
                 setEmail(event.target.value);
               }}
+              error={isEmailError}
+              helperText={isEmailError ? helperEmailText : ""}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
+            <CustomTextField
+              id="sign-in-with-password"
               label="Password"
-              type="password"
-              id="password"
+              name="password"
               autoComplete="current-password"
-              value={password}
-              onChange={(event) => {
+              type="password"
+              required
+              onChange={(event: {
+                target: { value: SetStateAction<string> };
+              }) => {
                 setPassword(event.target.value);
               }}
+              error={isPasswordError}
+              helperText={isPasswordError ? helperPasswordText : ""}
             />
             <FormControlLabel
+              sx={{ mt: 2 }}
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
-              type="submit"
+            <CustomButton
               fullWidth
-              variant="contained"
+              type="submit"
+              label="Sign In"
               sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
+            />
             <Grid container>
-              <Grid item xs>
-                <Link href="/" variant="body2">
+              <Grid item xs sx={{ ml: -9 }}>
+                <Link href={navigation.FORGOT_PASSWORD_PAGE} variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/sign-up" variant="body2">
+                <Link href={navigation.SIGN_UP_PAGE} variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
+        <CustomAlert
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          message={snackbarMessage}
+        />
         <Footer />
       </Container>
     </ThemeProvider>
   );
-};
-
-export default SignIn;
+}

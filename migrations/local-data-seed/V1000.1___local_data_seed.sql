@@ -1,7 +1,7 @@
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2021-12-24', 'John', 'Smith', '1970-02-23', 'john.smith@example.com', 'Pass1234!', '0287513626', 1);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
-    values('2022-01-04', 'Mary', 'Green', '1990-06-06', 'mary.green@example.com', 'Pass1234!', '0286579635', 2);
+    values('2022-01-04', 'Mary', 'Green', '1990-06-30', 'mary.green@example.com', 'Pass1234!', '0286579635', 2);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2022-01-05', 'Paul', 'Gibson', '1995-07-08', 'paul.gibson@example.com', 'Pass1234!', '0286547891', 2);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)

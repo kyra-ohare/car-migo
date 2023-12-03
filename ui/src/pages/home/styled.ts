@@ -16,7 +16,7 @@ export const WelcomeContainer = styled.div`
 
 export const WelcomeMessage = styled.h1`
   font-family: Arial, sans-serif;
-  font-size: 4vw;
+  // font-size: 4vw;
   font-style: normal;
 //   color: #ffffff;
 `;
@@ -38,7 +38,7 @@ export const CatchyMessageContainer = styled.div`
 
 export const CatchyMessage = styled.h2`
   font-family: Arial, sans-serif;
-  font-size: 2vw;
+  // font-size: 2vw;
   font-style: normal;
 //   color: #ffffff;
 `;

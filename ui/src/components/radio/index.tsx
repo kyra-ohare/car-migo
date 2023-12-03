@@ -62,3 +62,29 @@ export default function YesNoRadioButtonsGroup(props: any) {
     </FormControl>
   );
 }
+
+// Example of how this is called
+              {/* <Grid item xs={12}>
+                <YesNoRadioButtonsGroup
+                  label="Do you want to be a passenger?"
+                  tooltip="As a passenger, you can book journeys."
+                  value={isPassenger}
+                  onChange={(event: {
+                    target: { value: React.SetStateAction<string> };
+                  }) => {
+                    setIsPassenger(event.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <YesNoRadioButtonsGroup
+                  label="Do you want to be a driver?"
+                  tooltip="As a driver, you can create journeys."
+                  value={isDriver}
+                  onChange={(event: {
+                    target: { value: React.SetStateAction<string> };
+                  }) => {
+                    setIsDriver(event.target.value);
+                  }}
+                />
+              </Grid> */}
