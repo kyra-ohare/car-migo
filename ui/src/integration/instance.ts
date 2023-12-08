@@ -1,6 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
-
 export const axiosInstanceNoAuth = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:8086",
 });

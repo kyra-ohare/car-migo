@@ -1,10 +1,9 @@
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createUser } from "../../hooks/usePlatformUser";
 import navigation from "../../constants/navigation";
-import { processUserErrorMsgs } from "../../utils/processUserErrorMsgs";
 import {
   Avatar,
   Box,
@@ -20,110 +19,114 @@ import {
   Footer,
   CustomButton,
   CustomTextField,
+  DialogBox,
   CustomAlert,
 } from "../../components";
+import { useFormik } from "formik";
+import * as Yup from "yup"; // Yup is a schema builder for runtime value parsing and validation
+import dayjs from "dayjs";
+import validation from "../../constants/validation";
 import http_status from "../../constants/http_status";
 
-export default function SignUp() {
-  const dateToday = new Date();
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string().required("First name must not be empty."),
+  lastName: Yup.string().required("Last name must not be empty."),
+  // dob: Yup.date().required("Date of birth must not be empty."), // todo
+  phoneNumber: Yup.string().required("Phone number must not be empty."),
+  email: Yup.string()
+    .email("Invalid email format.")
+    .min(validation.EMAIL_MIN_SIZE)
+    .max(validation.EMAIL_MAX_SIZE)
+    .required("Email must not be empty."),
+  password: Yup.string()
+    .matches(validation.PASSWORD_RULE, validation.VALID_PASSWORD_MESSAGE)
+    .required("Password must not be empty."),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match.")
+    .required("Confirm your password."),
+});
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState<Date>(dateToday);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isFirstNameError, setIsFirstNameError] = useState<boolean>(false);
-  const [helperFirstNameText, setHelperFirstNameText] = useState("");
-  const [isLastNameError, setIsLastNameError] = useState<boolean>(false);
-  const [helperLastNameText, setHelperLastNameText] = useState("");
-  const [isPhoneNumberError, setIsPhoneNumberError] = useState<boolean>(false);
-  const [helperPhoneNumberText, setHelperPhoneNumberText] = useState("");
-  const [isEmailError, setIsEmailError] = useState<boolean>(false);
-  const [helperEmailText, setHelperEmailText] = useState("");
-  const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
-  const [helperPasswordText, setHelperPasswordText] = useState("");
-  // const [isConfirmedPasswordError, setIsConfirmedPasswordError] = useState<boolean>(false);
-  // const [helperConfirmedPasswordText, setHelperConfirmedPasswordText] = useState("");
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  dob: null,
+  email: "",
+  phoneNumber: "",
+  password: "",
+  confirmPassword: "",
+};
+
+export default function SignUp() {
+  const dateToday = dayjs();
+
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const navigate = useNavigate();
+  // useFormik is a hook for building forms
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
+  });
 
   const mutateUser = useMutation({
     mutationFn: createUser,
     onSuccess: (data) => {
-      console.log("Success!", data);
-      navigate(navigation.HOME_PAGE);
+      setOpenDialog(true);
     },
     onError: (error) => {
-      const errorMsg = error.response?.data.message;
-      const { firstName, lastName, phoneNumber, email, password } =
-        processUserErrorMsgs(errorMsg);
-
-      if (firstName) {
-        setIsFirstNameError(true);
-        setHelperFirstNameText(firstName);
-      }
-      if (lastName) {
-        setIsLastNameError(true);
-        setHelperLastNameText(lastName);
-      }
-      if (phoneNumber) {
-        setIsPhoneNumberError(true);
-        setHelperPhoneNumberText(phoneNumber);
-      }
-      if (email) {
-        setIsEmailError(true);
-        setHelperEmailText(email);
-      }
-      if (password) {
-        setIsPasswordError(true);
-        setHelperPasswordText(password);
-      }
-      const errorStatus = error.response?.data.status;
-      if (errorStatus === http_status.CONFLICT) {
-        setSnackbarMessage("Oh no! " + errorMsg);
-        setSnackbarSeverity("error");
+      const data = error.response?.data;
+      if (data.status === http_status.CONFLICT) {
+        setSnackbarMessage("Oh no! " + data.message);
         setOpenSnackbar(true);
       }
     },
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // if( password !== confirmPassword) {
-    //   setIsConfirmedPasswordError(true);
-    //   setHelperConfirmedPasswordText("Oh dear! Passwords don't match");
-    // }
-    // console.log("firstName", firstName);
-    // console.log("lastName", lastName);
-    // console.log("dob", dob.toISOString());
-    // console.log("phoneNumber", phoneNumber);
-    // console.log("email", email);
-    // console.log("password", password);
-    // console.log("confirmPassword", confirmPassword);
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleFormSubmit = (values: any) => {
     mutateUser.mutate({
-    //   firstName: "My",
-    //   lastName: "Test",
-    //   dob: "1960-02-26T00:00:00Z",
-    //   phoneNumber: "028657345912",
-    //   email: "mary.green@example.com",
-    //   password: "Pass1234!",
+      // firstName: "My",
+      // lastName: "Test",
+      dob: "1960-02-26T00:00:00Z",
+      // phoneNumber: "028657345912",
+      // email: "my.test@example.com",
+      // password: "Pass1234!",
 
-      firstName: firstName,
-      lastName: lastName,
-      dob: dob,
-      phoneNumber: phoneNumber,
-      email: email,
-      password: password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      // dob: values.dob,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      password: values.password,
     });
   };
 
+  const dialogState = (data: React.SetStateAction<boolean>) => {
+    setOpenDialog(data);
+  };
 
+  const navigate = useNavigate();
+
+  const dialogRedirect = () => {
+    navigate(navigation.CONFIRM_EMAIL_PAGE);
+  };
+
+  if (openDialog) {
+    return (
+      <DialogBox
+        open={openDialog}
+        state={dialogState}
+        title="Account created"
+        text="You should receive an email to confirm it but, in the meantime, just confirm it here 😊"
+        redirect={dialogRedirect}
+      />
+    );
+  }
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -151,7 +154,7 @@ export default function SignUp() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -159,76 +162,76 @@ export default function SignUp() {
                 <ThisTextField
                   id="sign-up-first-name"
                   label="First Name"
-                  name="first-name"
+                  name="firstName"
                   required
                   autoComplete="first-name"
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setFirstName(event.target.value);
-                  }}
-                  error={isFirstNameError}
-                  helperText={isFirstNameError ? helperFirstNameText : ""}
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.firstName && Boolean(formik.errors.firstName)
+                  }
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ThisTextField
                   id="sign-up-last-name"
                   label="Last Name"
-                  name="last-name"
+                  name="lastName"
                   required
                   autoComplete="last-name"
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setLastName(event.target.value);
-                  }}
-                  error={isLastNameError}
-                  helperText={isLastNameError ? helperLastNameText : ""}
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.lastName && Boolean(formik.errors.lastName)
+                  }
+                  helperText={formik.touched.lastName && formik.errors.lastName}
                 />
               </Grid>
               <Grid item xs={12}>
                 <BasicDatePicker
                   label="Date of Birth *"
-                  // defaultValue={dayjs("2022-04-17")}
-                  // value="boo"
+                  name="dob"
                   views={["day", "month", "year"]}
-                  // value={dob}
-                  onChange={(newValue: React.SetStateAction<Date>) =>
-                    setDob(newValue)
+                  value={formik.values.dob || null}
+                  onChange={(value: unknown) =>
+                    formik.setFieldValue("dob", value, true)
                   }
+                  error={formik.touched.dob && Boolean(formik.errors.dob)}
+                  helperText={formik.touched.dob && formik.errors.dob}
                 />
               </Grid>
               <Grid item xs={12}>
                 <ThisTextField
                   id="sign-up-phone-number"
                   label="Phone Number"
-                  name="phone-number"
+                  name="phoneNumber"
                   required
                   autoComplete="phone-number"
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setPhoneNumber(event.target.value);
-                  }}
-                  error={isPhoneNumberError}
-                  helperText={isPhoneNumberError ? helperPhoneNumberText : ""}
+                  value={formik.values.phoneNumber}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.phoneNumber &&
+                    Boolean(formik.errors.phoneNumber)
+                  }
+                  helperText={
+                    formik.touched.phoneNumber && formik.errors.phoneNumber
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
                 <ThisTextField
                   id="sign-up-email-address"
                   label="Email Address"
-                  name="email-address"
+                  name="email"
                   required
                   autoComplete="email"
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setEmail(event.target.value);
-                  }}
-                  error={isEmailError}
-                  helperText={isEmailError ? helperEmailText : ""}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -239,28 +242,32 @@ export default function SignUp() {
                   type="password"
                   autoComplete="password"
                   required
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setPassword(event.target.value);
-                  }}
-                  error={isPasswordError}
-                  helperText={isPasswordError ? helperPasswordText : ""}
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
+                  helperText={formik.touched.password && formik.errors.password}
                 />
               </Grid>
               <Grid item xs={12}>
                 <ThisTextField
                   id="sign-up-confirm-password"
                   label="Confirm Password"
-                  name="confirm-password"
+                  name="confirmPassword"
                   type="password"
                   autoComplete="password"
                   required
-                  onChange={(event: {
-                    target: { value: SetStateAction<string> };
-                  }) => {
-                    setConfirmPassword(event.target.value);
-                  }}
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.confirmPassword &&
+                    Boolean(formik.errors.confirmPassword)
+                  }
+                  helperText={
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword
+                  }
                 />
               </Grid>
             </Grid>
@@ -282,7 +289,7 @@ export default function SignUp() {
         <CustomAlert
           open={openSnackbar}
           onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
+          severity="info"
           message={snackbarMessage}
         />
         <Footer />

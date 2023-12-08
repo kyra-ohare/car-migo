@@ -1,45 +1,62 @@
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment } from "@mui/material";
 import { CatchyMessage, WelcomeMessage } from "../home/styled";
 import { EmailRounded } from "@mui/icons-material";
 import { confirmUserEmail } from "../../hooks/usePlatformUser";
 import { useMutation } from "@tanstack/react-query";
-import { DialogBox, CustomButton, CustomTextField } from "../../components";
+import { DialogBox, CustomButton, CustomTextField, CustomAlert } from "../../components";
 import navigation from "../../constants/navigation";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().required("Email must not be empty."),
+});
+
+const initialValues = {
+  email: "",
+};
 
 export default function ConfirmEmail() {
-  const [email, setEmail] = useState("");
-  const [isError, setIsError] = useState<boolean>(false);
-  const [helperText, setHelperText] = useState("");
-  const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
+  });
 
   const mutateConfirmEmail = useMutation({
     mutationFn: confirmUserEmail,
     onSuccess: (data) => {
-      console.log("Email confirmed!", data);
       setOpenDialog(true);
     },
     onError: (error) => {
       const errorMsg = error.response?.data.message;
-      setIsError(true);
       if (errorMsg === "User is already active") {
-        setHelperText("Yayyy! You have already confirmed your email.");
+        setSnackbarMessage("Yayyy! You have already confirmed your email.");
       } else {
-        setHelperText(errorMsg);
+        setSnackbarMessage(errorMsg);
       }
+      setOpenSnackbar(true);
     },
   });
 
-  const handleSubmit = () => {
-    mutateConfirmEmail.mutate(email);
-    console.log(email);
+  const handleFormSubmit = (values: any) => {
+    mutateConfirmEmail.mutate(values.email);
   };
 
   const dialogState = (data: React.SetStateAction<boolean>) => {
     setOpenDialog(data);
   };
+
+  const navigate = useNavigate();
 
   const dialogRedirect = () => {
     navigate(navigation.SIGN_IN_PAGE);
@@ -57,9 +74,14 @@ export default function ConfirmEmail() {
     );
   }
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <Box
       component="form"
+      onSubmit={formik.handleSubmit}
       sx={{
         "& .MuiTextField-root": { m: 1, width: "30vw" },
       }}
@@ -74,9 +96,8 @@ export default function ConfirmEmail() {
           label="Email Address"
           name="email"
           autoComplete="email"
-          onChange={(event: { target: { value: SetStateAction<string> } }) => {
-            setEmail(event.target.value);
-          }}
+          value={formik.values.email}
+          onChange={formik.handleChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -84,17 +105,19 @@ export default function ConfirmEmail() {
               </InputAdornment>
             ),
           }}
-          error={isError}
-          helperText={isError ? helperText : ""}
+          error={Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
       </div>
       <div>
-        <CustomButton
-          label="Confirm Email"
-          onClick={handleSubmit}
-          sx={{ mt: 3 }}
-        />
+        <CustomButton label="Confirm Email" type="submit" sx={{ mt: 3 }} />
       </div>
+      <CustomAlert
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          severity="success"
+          message={snackbarMessage}
+        />
     </Box>
   );
 }

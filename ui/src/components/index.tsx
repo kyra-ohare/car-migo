@@ -5,7 +5,6 @@ import DialogBox from "./dialog_box";
 import Footer from "./footer";
 import Loader from "./loader";
 import LocationDropdown from "./search/dropdown";
-import PassengerNumberDropdown from "./search/passengerNumberDropdown";
 import Search from "./search";
 import Text from "./text";
 import YesNoRadioButtonsGroup from "./radio";
@@ -26,7 +25,6 @@ export {
   CustomButton,
   CustomTextField,
   CustomTooltip,
-  PassengerNumberDropdown,
   Search,
   Text,
   YesNoRadioButtonsGroup,

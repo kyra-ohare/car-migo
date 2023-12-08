@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Button } from "@mui/material";
+import { SetStateAction, useState } from "react";
+import { InputAdornment } from "@mui/material";
+import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
 import { SearchContainer } from "./styled";
 import {
   BasicDateTimePicker,
+  CustomButton,
+  CustomTextField,
   LocationDropdown,
-  PassengerNumberDropdown,
 } from "../../components/index";
 
 export interface IDropdownOptions {
@@ -15,8 +17,7 @@ export interface IDropdownOptions {
 const Search = () => {
   const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>();
   const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>();
-  const [selectedNumPassengers, setSelectedNumPassengers] =
-    useState<IDropdownOptions>();
+  const [selectedNumPassengers, setSelectedNumPassengers] = useState("");
   const handleSearch = () => {
     console.log("selectedLeaving", selectedLeaving);
     console.log("selectedGoing", selectedGoing);
@@ -39,15 +40,27 @@ const Search = () => {
           setSelectedLocation={setSelectedGoing}
         />
         <BasicDateTimePicker />
-        <PassengerNumberDropdown
+        <CustomTextField
           id="number-of-passengers"
           label="Number of Passengers"
-          selectedPassengerNumber={selectedNumPassengers}
-          setSelectedPassengerNumber={setSelectedNumPassengers}
+          name="number-of-passengers"
+          autoComplete="current-password"
+          required
+          type="number"
+          inputProps={{ min: 1 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <PersonAddAlt1RoundedIcon />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mt: "0px", width: "22ch" }}
+          onChange={(event: SetStateAction<string>) => {
+            setSelectedNumPassengers(event.target.value);
+          }}
         />
-        <Button variant="contained" onClick={handleSearch}>
-          Search
-        </Button>
+        <CustomButton label="Search" onClick={handleSearch} />
       </SearchContainer>
     </>
   );

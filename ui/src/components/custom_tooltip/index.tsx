@@ -33,11 +33,7 @@ export default function CustomTooltip(props: any) {
       title={
         <Fragment>
           <p>{props.text}</p>
-          <Link
-            component="button"
-            variant="caption"
-            onClick={handleClick}
-          >
+          <Link component="button" variant="caption" onClick={handleClick}>
             {props.link}
           </Link>
         </Fragment>

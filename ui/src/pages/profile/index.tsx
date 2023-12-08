@@ -7,6 +7,7 @@ import {
   createTheme,
   ThemeProvider,
   Typography,
+  InputAdornment,
 } from "@mui/material";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +19,7 @@ import {
   CustomTooltip,
   CustomAlert,
 } from "../../components";
-import { CatchyMessage, WelcomeMessage } from "../home/styled";
+import { CatchyMessage } from "../home/styled";
 import { useNavigate } from "react-router-dom";
 import navigation from "../../constants/navigation";
 import { useGetProfile } from "../../hooks/usePlatformUser";
@@ -159,21 +160,17 @@ export default function Profile() {
   const PassengerGrid = () => {
     return isPassenger === true ? (
       <>
-        <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs>
-            <Grid container justifyContent="flex-end" bgcolor="red">
-              <Typography variant="body1">You are a passenger</Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs>
-            <Grid container justifyContent="flex-start" bgcolor="cyan">
+        <Grid item xs>
+          <Grid container justifyContent="center">
+            <Typography variant="body1">You are a passenger</Typography>
+            <InputAdornment position="start" sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
                 text="As a passenger, you can book journeys."
                 link="Click here if you don't want to be a passenger anymore."
                 behaviour={handlePassenger}
               />
-            </Grid>
+            </InputAdornment>
           </Grid>
         </Grid>
       </>
@@ -193,21 +190,17 @@ export default function Profile() {
   const DriverGrid = () => {
     return isDriver === true ? (
       <>
-        <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs bgcolor="pink">
-            <Grid container justifyContent="flex-end" bgcolor="red">
-              <Typography variant="body1">You are a driver</Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs>
-            <Grid container justifyContent="flex-start" bgcolor="cyan">
+        <Grid item xs>
+          <Grid container justifyContent="center">
+            <Typography variant="body1">You are a driver</Typography>
+            <InputAdornment position="start" sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
                 text="As a driver, you can create journeys."
                 link="Click here if you don't want to be a driver anymore."
                 behaviour={handleDriver}
               />
-            </Grid>
+            </InputAdornment>
           </Grid>
         </Grid>
       </>
@@ -241,11 +234,7 @@ export default function Profile() {
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          component="form"
-          noValidate
-          sx={{ mt: 3 }}
-        >
+        <Box component="form" noValidate sx={{ mt: 3 }}>
           <CatchyMessage>About you</CatchyMessage>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -270,11 +259,7 @@ export default function Profile() {
               />
             </Grid>
             <Grid item xs={12}>
-              <ThisTextField
-                id="read-only-email"
-                label="Email"
-                value={email}
-              />
+              <ThisTextField id="read-only-email" label="Email" value={email} />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField

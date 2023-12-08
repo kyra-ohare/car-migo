@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -17,68 +18,57 @@ import {
   Footer,
   CustomButton,
   CustomTextField,
-  DialogBox,
   CustomAlert,
 } from "../../components";
-import { SetStateAction, useState } from "react";
 import authenticate from "../../hooks/useAuthentication";
 import navigation from "../../constants/navigation";
-import { processUserErrorMsgs } from "../../utils/processUserErrorMsgs";
+import tokenStore from "../../utils/tokensStore";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import http_status from "../../constants/http_status";
 
-// TODO: I can sign in but i can't send JWT to axios. I tried useEffect below but it didn't work.
+const validationSchema = Yup.object().shape({
+  email: Yup.string().required("Email must not be empty."),
+  password: Yup.string().required("Password must not be empty."),
+});
+
+const initialValues = {
+  email: "",
+  password: "",
+};
+
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isEmailError, setIsEmailError] = useState<boolean>(false);
-  const [helperEmailText, setHelperEmailText] = useState("");
-  const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
-  const [helperPasswordText, setHelperPasswordText] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const { setBearer } = tokenStore();
 
-  // let jwt = "";
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
+  });
 
   const navigate = useNavigate();
   const mutateAuthenticateUser = useMutation({
     mutationFn: authenticate,
     onSuccess: (data) => {
-      console.log("Success!", data.jwt);
-      // jwt = data.jwt;
+      setBearer(data.jwt);
       navigate(navigation.HOME_PAGE);
     },
     onError: (error) => {
-      // console.log(error);
-      const errorMsg = error.response?.data.message;
-      const { email, password } = processUserErrorMsgs(errorMsg);
-
-      if (email) {
-        setIsEmailError(true);
-        setHelperEmailText(email);
-      }
-      if (password) {
-        setIsPasswordError(true);
-        setHelperPasswordText(password);
-      }
-
-      const errorStatus = error.response?.data.status;
-      if (errorStatus === http_status.FORBIDDEN) {
-        setSnackbarMessage("Oh no! " + errorMsg);
-        setSnackbarSeverity("error");
+      if (error.response?.data.status === http_status.FORBIDDEN) {
+        setSnackbarMessage("Oh no! " + error.response?.data.message);
         setOpenSnackbar(true);
       }
     },
   });
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // setHelperEmailText("");
-    // setHelperPasswordText("");
-    console.log("Email", email);
+  const handleFormSubmit = (values: any) => {
     mutateAuthenticateUser.mutate({
-      email: email,
-      password: password,
+      email: values.email,
+      password: values.password,
     });
   };
 
@@ -86,13 +76,6 @@ export default function SignIn() {
     setOpenSnackbar(false);
   };
 
-  // useEffect(() => {
-  //   // useEffect keeps an eye on data changes.
-  //   setBearerToken(jwt);
-  //   console.log("setBearerToken", jwt);
-  // }, [jwt]); // passing an empty array because I want it to render only once.
-
-  // TODO remove, this demo shouldn't need to reset the theme.
   const defaultTheme = createTheme();
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -115,7 +98,7 @@ export default function SignIn() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             sx={{ mt: 1 }}
           >
             <CustomTextField
@@ -124,13 +107,10 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               required
-              onChange={(event: {
-                target: { value: SetStateAction<string> };
-              }) => {
-                setEmail(event.target.value);
-              }}
-              error={isEmailError}
-              helperText={isEmailError ? helperEmailText : ""}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
             />
             <CustomTextField
               id="sign-in-with-password"
@@ -139,13 +119,10 @@ export default function SignIn() {
               autoComplete="current-password"
               type="password"
               required
-              onChange={(event: {
-                target: { value: SetStateAction<string> };
-              }) => {
-                setPassword(event.target.value);
-              }}
-              error={isPasswordError}
-              helperText={isPasswordError ? helperPasswordText : ""}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
             <FormControlLabel
               sx={{ mt: 2 }}
@@ -175,7 +152,7 @@ export default function SignIn() {
         <CustomAlert
           open={openSnackbar}
           onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
+          severity="error"
           message={snackbarMessage}
         />
         <Footer />

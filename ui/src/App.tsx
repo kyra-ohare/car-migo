@@ -15,14 +15,21 @@ import {
   SignIn,
   SignUp,
 } from "./pages";
+import tokenStore from "./utils/tokensStore";
 
 function App() {
+  const { bearer } = tokenStore();
+
   useEffect(() => {
     // useEffect keeps an eye on data changes.
+    if (bearer) {
+      setBearerToken(bearer);
+    }
     setBearerToken(
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteS50ZXN0QGV4YW1wbGUuY29tIiwiZXhwIjoxNzAxNjM5MzYxLCJpYXQiOjE3MDE2MDMzNjF9.LejsdpPOQZNih4JmYRh1nLumVi-jmyy0xzpdspiiNVA"
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteS50ZXN0QGV4YW1wbGUuY29tNyIsImV4cCI6MTcwMjExNDE1NCwiaWF0IjoxNzAyMDc4MTU0fQ.D1mB9IhwzsMRTvKqN7rk6hPyzA2gP5wMyvd8eHNnGJw"
     );
-  }, []); // passing an empty array because I want it to render only once.
+    console.log("token from App.tsx", bearer);
+  }, [bearer]); // passing an empty array because I want it to render only once.
 
   const AuthenticatedRoutes = () => {
     return (
