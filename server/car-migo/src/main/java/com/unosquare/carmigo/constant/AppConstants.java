@@ -13,8 +13,8 @@ public final class AppConstants {
   public static final String SPECIAL_CHARACTERS = "@#$%^&+=!?";
   public static final int PASSWORD_MIN_SIZE = 8;
   public static final int PASSWORD_MAX_SIZE = 65;
-  public static final String VALID_PASSWORD_MESSAGE = "must be between " + PASSWORD_MIN_SIZE + " and " +
-      PASSWORD_MAX_SIZE + " characters and at least 2 of the following: alphanumeric characters and/or one special"
+  public static final String VALID_PASSWORD_MESSAGE = "must be between " + PASSWORD_MIN_SIZE + " and "
+      + PASSWORD_MAX_SIZE + " characters and at least 2 of the following: alphanumeric characters and/or one special"
       + "character ( " + SPECIAL_CHARACTERS + " ) and/or one capital letter";
 
   public static final int ALIAS_CURRENT_USER = 0;

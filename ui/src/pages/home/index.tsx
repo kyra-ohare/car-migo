@@ -16,7 +16,7 @@ import navigation from "../../constants/navigation";
 
 const Homepage = () => {
   const { data } = useGetHeartbeat();
-  console.log(data);
+  // console.log(data);
 
   const navigate = useNavigate();
   const goToSignUp = () => {
@@ -85,18 +85,18 @@ const Homepage = () => {
         imageAlt="Information"
         title="What is it?"
         text={
-          <div>
+          <>
             It is a match-making system for drivers and passengers. You can
             either advertise rides or query them.
             <br />
-            Drivers can create rides (a journey and a timeframe) while
+            Drivers can create rides (a JourneyCard and a timeframe) while
             passengers can book them.
             <br />
             When inside the car share, you can enjoy the ride and make new
             friends.
             <br />
             Come onboard and eperience this new lifestyle.
-          </div>
+          </>
         }
       />
       <ActionAreaCard
@@ -106,7 +106,7 @@ const Homepage = () => {
         imageAlt="Information"
         title="Why?"
         text={
-          <div>
+          <>
             It is great for the environment once there will be less CO
             <sub>2</sub> released into the atmosphere.
             <br />
@@ -117,7 +117,7 @@ const Homepage = () => {
             <br />
             The application is not about profiting but about car sharing so the
             passengers can pay the driver a fair amount for fuel costs.
-          </div>
+          </>
         }
       />
       <Footer />

@@ -26,7 +26,7 @@ function App() {
       setBearerToken(bearer);
     }
     setBearerToken(
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteS50ZXN0QGV4YW1wbGUuY29tNyIsImV4cCI6MTcwMjExNDE1NCwiaWF0IjoxNzAyMDc4MTU0fQ.D1mB9IhwzsMRTvKqN7rk6hPyzA2gP5wMyvd8eHNnGJw"
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ5LmdyZWVuQGV4YW1wbGUuY29tIiwiZXhwIjoxNzAyMjQwNjAyLCJpYXQiOjE3MDIyMDQ2MDJ9.9ul-tjmXKKRJnmUsIUe6gcc5guuVH0LJRLSjb8MLkyo"
     );
     console.log("token from App.tsx", bearer);
   }, [bearer]); // passing an empty array because I want it to render only once.
