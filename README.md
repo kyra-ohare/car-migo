@@ -3,7 +3,7 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
-* Spring Boot 3
+* Spring Boot 3.2
 * Java 17
 * Maven
 * Docker
@@ -44,7 +44,6 @@ The application is not about profiting but about car sharing so the passengers c
 
 ## How to run it?
 ### Requirements
-- Java 17
 - Docker
 
 From your Unix-based terminal, navigate to the root of this project and run:
@@ -94,7 +93,7 @@ Send a POST request to http://localhost:8086/v1/login with the following JSON bo
 ```
 Here is the cURL command:
 ```
-curl -L 'http://localhost:8086/v1/login' \
+curl -iL 'http://localhost:8086/v1/login' \
 -H 'Content-Type: application/json' \
 --data-raw '{
   "email": "jake.sully@example.com",
@@ -107,7 +106,7 @@ By the way, Jake Sully is our ADMIN. You can find more users to play with in [mi
 The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a Bearer token. For example:
 ```
 curl -L 'http://localhost:8086/v1/users/profile' \
--H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYWtlLnN1bGx5QGV4YW1wbGUuY29tIiwiZXhwIjoxNjg0Mzk3MzA3LCJpYXQiOjE2ODQzNjEzMDd9.NPQ0Fz_oHj88xQAN8G-MM0ehy9-EfBcYWg-PwDxKPwA'
+-H 'Authorization: Bearer {paste-token-here}'
 ```
 
 ## Swagger UI

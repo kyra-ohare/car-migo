@@ -27,5 +27,9 @@ public class PlatformUserResponse {
 
   private String phoneNumber;
 
+  private boolean isPassenger;
+
+  private boolean isDriver;
+
   private UserAccessStatusResponse userAccessStatus;
 }

@@ -19,10 +19,14 @@ import com.flextrade.jfixture.JFixture;
 import com.flextrade.jfixture.annotations.Fixture;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.unosquare.carmigo.dto.PlatformUserDto;
+import com.unosquare.carmigo.entity.Driver;
+import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.dto.request.PlatformUserRequest;
 import com.unosquare.carmigo.dto.response.PlatformUserResponse;
+import com.unosquare.carmigo.repository.DriverRepository;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import com.unosquare.carmigo.util.PatchUtility;
 import com.unosquare.carmigo.util.ResourceUtility;
@@ -47,6 +51,8 @@ public class PlatformUserServiceTest {
       ResourceUtility.generateStringFromResource("jsonAssets/PatchPlatformUserValid.json");
 
   @Mock private PlatformUserRepository platformUserRepositoryMock;
+  @Mock private DriverRepository driverRepositoryMock;
+  @Mock private PassengerRepository passengerRepositoryMock;
   @Mock private ModelMapper modelMapperMock;
   @Mock private ObjectMapper objectMapperMock;
   @Mock private EntityManager entityManagerMock;
@@ -54,6 +60,8 @@ public class PlatformUserServiceTest {
   @InjectMocks private PlatformUserService platformUserService;
 
   @Fixture private PlatformUser platformUserFixture;
+  @Fixture private Driver driverFixture;
+  @Fixture private Passenger passengerFixture;
   @Fixture private PlatformUserDto platformUserDtoFixture;
   @Fixture private PlatformUserRequest platformUserRequestFixture;
   @Fixture private PlatformUserResponse platformUserResponseFixture;
@@ -97,6 +105,8 @@ public class PlatformUserServiceTest {
   @Test
   public void get_PlatformUser_By_Id_Returns_PlatformUserResponse() {
     when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.of(platformUserFixture));
+    when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.of(driverFixture));
+    when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.of(passengerFixture));
     when(modelMapperMock.map(platformUserFixture,  PlatformUserResponse.class)).thenReturn(platformUserResponseFixture);
     final var response = platformUserService.getPlatformUserById(anyInt());
 

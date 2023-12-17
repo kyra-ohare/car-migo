@@ -27,6 +27,8 @@ public class JourneyResponse {
 
   private int maxPassengers;
 
+  private int availability;
+
   private Instant dateTime;
 
   private DriverResponse driver;
