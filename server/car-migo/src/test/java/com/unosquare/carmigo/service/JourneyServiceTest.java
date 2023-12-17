@@ -49,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
@@ -59,18 +61,18 @@ public class JourneyServiceTest {
       ResourceUtility.generateStringFromResource("jsonAssets/PatchJourneyValid.json");
 
   @Mock private JourneyRepository journeyRepositoryMock;
-  @Mock private PassengerRepository passengerRepository;
+  @Mock private PassengerRepository passengerRepositoryMock;
   @Mock private PassengerJourneyRepository passengerJourneyRepositoryMock;
   @Mock private ModelMapper modelMapperMock;
   @Mock private ObjectMapper objectMapperMock;
   @Mock private EntityManager entityManagerMock;
   @Mock private DistanceApi distanceApiMock;
   @Mock private AppUser appUserMock;
-  @Mock private PassengerService passengerServiceMock;
   @InjectMocks private JourneyService journeyService;
 
   @Fixture private Journey journeyFixture;
   @Fixture private JourneyResponse journeyResponseFixture;
+  @Fixture private List<JourneyResponse> journeyResponseFixtureList;
   @Fixture private JourneyRequest JourneyRequestFixture;
   @Fixture private List<Journey> journeyFixtureList;
   @Fixture private SearchJourneysRequest searchJourneysRequestFixture;
@@ -115,11 +117,15 @@ public class JourneyServiceTest {
   public void search_Journeys_Returns_List_of_JourneyResponse() {
     when(journeyRepositoryMock.findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
         anyInt(), anyInt(), any(Instant.class), any(Instant.class))).thenReturn(journeyFixtureList);
-    final List<JourneyResponse> grabJourneyDTOList = MapperUtils.mapList(journeyFixtureList, JourneyResponse.class,
-        modelMapperMock);
-    final List<JourneyResponse> journeyList = journeyService.searchJourneys(searchJourneysRequestFixture);
 
-    assertThat(journeyList.size()).isEqualTo(grabJourneyDTOList.size());
+    try (MockedStatic<MapperUtils> utils = Mockito.mockStatic(MapperUtils.class)) {
+      utils.when(() -> MapperUtils.mapList(journeyFixtureList, JourneyResponse.class, modelMapperMock))
+          .thenReturn(journeyResponseFixtureList);
+
+      final List<JourneyResponse> journeyList = journeyService.searchJourneys(searchJourneysRequestFixture);
+      assertThat(journeyList.size()).isEqualTo(journeyResponseFixtureList.size());
+    }
+
     verify(journeyRepositoryMock).findJourneysByLocationFromIdAndLocationToIdAndDateTimeBetween(
         anyInt(), anyInt(), any(Instant.class), any(Instant.class));
   }
@@ -158,9 +164,14 @@ public class JourneyServiceTest {
   @Test
   public void get_Journeys_By_Passengers_Id_Returns_List_Of_JourneyResponse() {
     when(journeyRepositoryMock.findJourneysByPassengersId(anyInt())).thenReturn(journeyFixtureList);
-    final var response = journeyService.getJourneysByPassengersId(anyInt());
 
-    assertThat(response.size()).isEqualTo(journeyFixtureList.size());
+    try (MockedStatic<MapperUtils> utils = Mockito.mockStatic(MapperUtils.class)) {
+      utils.when(() -> MapperUtils.mapList(journeyFixtureList, JourneyResponse.class, modelMapperMock))
+          .thenReturn(journeyResponseFixtureList);
+
+      final var response = journeyService.getJourneysByPassengersId(anyInt());
+      assertThat(response.size()).isEqualTo(journeyFixtureList.size());
+    }
     verify(journeyRepositoryMock).findJourneysByPassengersId(anyInt());
   }
 
@@ -196,7 +207,7 @@ public class JourneyServiceTest {
   @Test
   public void add_Passenger_To_Journey_Returns_JourneyResponse() {
     when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
-    when(passengerRepository.findById(anyInt())).thenReturn(Optional.ofNullable(passengerFixture));
+    when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.ofNullable(passengerFixture));
     passengerFixtureList.add(passengerFixture);
     journeyFixture.setPassengers(passengerFixtureList);
     when(journeyRepositoryMock.save(journeyFixture)).thenReturn(journeyFixture);

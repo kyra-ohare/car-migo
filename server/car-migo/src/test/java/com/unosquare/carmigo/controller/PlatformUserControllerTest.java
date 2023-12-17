@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.controller;
 
+import static com.unosquare.carmigo.constant.AppConstants.VALID_PASSWORD_MESSAGE;
 import static com.unosquare.carmigo.util.ResourceUtility.convertObjectToJsonBytes;
 import static com.unosquare.carmigo.util.ResourceUtility.getObjectResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -121,9 +122,7 @@ public class PlatformUserControllerTest {
         .andExpect(status().isBadRequest()).andReturn();
 
     final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
-    assertEquals(content.get("message"), "Argument not valid: password Password must contain between 8 and 20 "
-        + "characters and at least 2 of the following: Alphanumeric characters, one special character ( @#$%^&+=!? ), "
-        + "one capital letter.");
+    assertEquals(content.get("message"), "Argument not valid: password " + VALID_PASSWORD_MESSAGE);
     verify(platformUserServiceMock, times(0)).createPlatformUser(any(PlatformUserRequest.class));
   }
 
@@ -246,6 +245,8 @@ public class PlatformUserControllerTest {
     assertEquals(content.get("email"), platformUserResponseFixture.getEmail(), ERROR_MSG.formatted("Dobs"));
     assertEquals(content.get("phoneNumber"), platformUserResponseFixture.getPhoneNumber(),
         ERROR_MSG.formatted("Phone Numbers"));
+    assertEquals(content.get("driver"), platformUserResponseFixture.isDriver(), ERROR_MSG.formatted("Drivers"));
+    assertEquals(content.get("passenger"), platformUserResponseFixture.isPassenger(), ERROR_MSG.formatted("Passengers"));
 
     final LinkedHashMap<String, Object> userAccessStatusResponse =
         (LinkedHashMap<String, Object>) content.get("userAccessStatus");
