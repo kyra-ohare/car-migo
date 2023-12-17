@@ -4,6 +4,9 @@ import com.unosquare.carmigo.exception.ExpiredJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -44,8 +47,13 @@ public class JwtTokenService {
         .setSubject(subject)
         .setIssuedAt(now)
         .setExpiration(inSuchHours)
-        .signWith(SignatureAlgorithm.HS256, key)
+        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
+  }
+
+  private Key getSigningKey() {
+    byte[] keyBytes = Decoders.BASE64.decode(key);
+    return Keys.hmacShaKeyFor(keyBytes);
   }
 
   public String extractUsername(final String token) {

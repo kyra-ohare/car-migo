@@ -83,8 +83,13 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this route. " + searchJourneysRequest);
     }
-    hidePassengerAndMaybeDriverFields(result, true);
-    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    final var journeys = MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    for (JourneyResponse j : journeys) {
+      int availability = j.getMaxPassengers() - j.getPassengers().size();
+      j.setAvailability(availability);
+    }
+    hidePassengerAndMaybeDriverFields(journeys, true);
+    return journeys;
   }
 
   /**
@@ -112,8 +117,9 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this passenger.");
     }
-    hidePassengerAndMaybeDriverFields(result, false);
-    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    final var journeys = MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    hidePassengerAndMaybeDriverFields(journeys, false);
+    return journeys;
   }
 
   /**
@@ -246,8 +252,8 @@ public class JourneyService {
     }
   }
 
-  private void hidePassengerAndMaybeDriverFields(final List<Journey> journeys, final boolean hideDriver) {
-    for (final Journey j : journeys) {
+  private void hidePassengerAndMaybeDriverFields(final List<JourneyResponse> journeys, final boolean hideDriver) {
+    for (final JourneyResponse j : journeys) {
       j.setPassengers(null);
       if (hideDriver) {
         j.setDriver(null);

@@ -30,7 +30,7 @@ public class UserSecurityService implements UserDetailsService {
     if (currentUser.isPresent()) {
       return getUserDetails(currentUser.get());
     }
-    throw new UnauthorizedException(String.format("Incorrect email (%s) and/or password", email));
+    throw new UnauthorizedException("Incorrect email (%s) and/or password.".formatted(email));
   }
 
   /**

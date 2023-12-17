@@ -14,6 +14,8 @@ import com.unosquare.carmigo.dto.response.PlatformUserResponse;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.entity.UserAccessStatus;
 import com.unosquare.carmigo.exception.PatchException;
+import com.unosquare.carmigo.repository.DriverRepository;
+import com.unosquare.carmigo.repository.PassengerRepository;
 import com.unosquare.carmigo.repository.PlatformUserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -38,6 +40,8 @@ public class PlatformUserService {
   private static final String USER_NOT_FOUND = "User not found";
 
   private final PlatformUserRepository platformUserRepository;
+  private final DriverRepository driverRepository;
+  private final PassengerRepository passengerRepository;
   private final ModelMapper modelMapper;
   private final ObjectMapper objectMapper;
   private final EntityManager entityManager;
@@ -58,7 +62,7 @@ public class PlatformUserService {
     try {
       newPlatformUser = platformUserRepository.save(platformUser);
     } catch (final DataIntegrityViolationException ex) {
-      throw new EntityExistsException("Email already in use");
+      throw new EntityExistsException("Email already in use.");
     }
     return modelMapper.map(newPlatformUser, PlatformUserResponse.class);
   }
@@ -90,7 +94,20 @@ public class PlatformUserService {
    */
   public PlatformUserResponse getPlatformUserById(final int platformUserId) {
     final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
-    return modelMapper.map(platformUser, PlatformUserResponse.class);
+    final var response = modelMapper.map(platformUser, PlatformUserResponse.class);
+    try {
+      findEntityById(platformUserId, driverRepository, "");
+      response.setDriver(true);
+    } catch (EntityNotFoundException ex) {
+      response.setDriver(false);
+    }
+    try {
+      findEntityById(platformUserId, passengerRepository, "");
+      response.setPassenger(true);
+    } catch (EntityNotFoundException ex) {
+      response.setPassenger(false);
+    }
+    return response;
   }
 
   /**
