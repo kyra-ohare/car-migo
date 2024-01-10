@@ -5,7 +5,7 @@ interface ITokensStore {
   setBearer: (bearer: string) => void;
 }
 
-const tokenStore = create<ITokensStore>((set) => ({
+const bearerStore = create<ITokensStore>((set) => ({
   bearer: "",
   setBearer: (bearerToken: string) =>
     set(() => ({
@@ -13,4 +13,4 @@ const tokenStore = create<ITokensStore>((set) => ({
     })),
 }));
 
-export default tokenStore;
+export default bearerStore;

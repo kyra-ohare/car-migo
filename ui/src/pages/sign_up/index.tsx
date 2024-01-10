@@ -103,6 +103,8 @@ export default function SignUp() {
       phoneNumber: values.phoneNumber,
       email: values.email,
       password: values.password,
+      passenger: false,
+      driver: false,
     });
   };
 

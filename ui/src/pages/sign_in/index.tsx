@@ -22,10 +22,11 @@ import {
 } from "../../components";
 import authenticate from "../../hooks/useAuthentication";
 import navigation from "../../constants/navigation";
-import tokenStore from "../../utils/tokensStore";
+import tokenStore from "../../utils/bearerStore";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import http_status from "../../constants/http_status";
+import useTokens from "../../utils/tokenStore";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Email must not be empty."),
@@ -42,6 +43,8 @@ export default function SignIn() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { setBearer } = tokenStore();
 
+  const { checkIfValidToken } = useTokens();
+
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
@@ -56,6 +59,7 @@ export default function SignIn() {
     mutationFn: authenticate,
     onSuccess: (data) => {
       setBearer(data.jwt);
+      checkIfValidToken({ accessToken: data.jwt, refreshToken: data.jwt });
       navigate(navigation.HOME_PAGE);
     },
     onError: (error) => {

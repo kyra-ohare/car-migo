@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import {
   Alert,
   AlertTitle,
@@ -16,57 +16,45 @@ import {
   BasicDateTimePicker,
   CustomButton,
   CustomTextField,
+  Loader,
   // Journey,
   LocationDropdown,
 } from "../../components/index";
 import { IJourney } from "../journey";
 import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
+import { useJourneySearchQuery } from "../../hooks/useJourney";
+import http_status from "../../constants/http_status";
+import { locations } from "../../constants/location";
 
 export interface IDropdownOptions {
   value: number;
   label: string;
 }
 
-const result: IJourney[] = [
-  {
-    id: 5,
-    departure: "Newry",
-    destination: "Rostrevor",
-    maxPassengers: 3,
-    availability: 2,
-    date: "2022-12-02",
-    time: "08:15",
-  },
-  {
-    id: 6,
-    departure: "Newry",
-    destination: "Rostrevor",
-    maxPassengers: 3,
-    availability: 3,
-    date: "2022-12-03",
-    time: "08:00",
-  },
-];
-
 export default function Search() {
-  const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>();
-  const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>();
+  const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>(locations[0]);
+  const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>(locations[0]);
   const [selectedNumPassengers, setSelectedNumPassengers] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [journeys, setJourneys] = useState<IJourney[]>([]);
-  const [showAlert, setShowAlert] = useState(true);
+  const [journeys, setJourneys] = useState<any[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const { status, data, error, isLoading, refetch } = useJourneySearchQuery();
+
+  useEffect(() => {
+    if (status === "success" && data) {
+      setJourneys(data);
+    }
+    if (status === "error") {
+      setShowAlert(true);
+    }
+  }, [status, data, error, showResults]);
 
   const handleSearch = () => {
+    console.log("selectedLeaving", selectedLeaving);
+    console.log("selectedNumPassengers", selectedNumPassengers);
+    refetch();
     setShowResults(true);
-
-    if (result.length === 0) {
-      setShowAlert(true);
-    } else {
-      console.log("selectedLeaving", selectedLeaving);
-      console.log("selectedGoing", selectedGoing);
-      console.log("selectedNumPassengers", selectedNumPassengers);
-      setJourneys(result);
-    }
   };
 
   const resultState = (data: React.SetStateAction<boolean>) => {
@@ -97,7 +85,6 @@ export default function Search() {
           id="number-of-passengers"
           label="Number of Passengers"
           name="number-of-passengers"
-          autoComplete="current-password"
           required
           type="number"
           inputProps={{ min: 1 }}
@@ -113,14 +100,20 @@ export default function Search() {
             setSelectedNumPassengers(event.target.value);
           }}
         />
-        <CustomButton label="Search" onClick={handleSearch} />
+        <>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <CustomButton label="Search" onClick={handleSearch} />
+          )}
+        </>
       </SearchContainer>
       {showResults && journeys ? (
         journeys[0] ? (
           <Journey
             results={journeys}
-            departure={journeys[0].departure}
-            destination={journeys[0].destination}
+            departure={journeys[0].locationFrom.description}
+            destination={journeys[0].locationTo.description}
             state={resultState}
           />
         ) : (
@@ -133,7 +126,7 @@ export default function Search() {
                   alignItems: "center",
                 }}
               >
-                <Alert severity="error" variant="filled">
+                <Alert severity="warning" variant="filled">
                   <AlertTitle>
                     <b>Oh no!</b>
                   </AlertTitle>
@@ -165,7 +158,7 @@ const Journey = (props: any) => {
           {props.destination}
         </b>
       </Typography>
-      {props.results.map((data: IJourney) => (
+      {props.results.map((data: any) => (
         <MyCard key={data.id} data={data} />
       ))}
       <Box display="flex" justifyContent="flex-end">
@@ -188,27 +181,28 @@ const StyledCard = styled(Card)`
 `;
 
 function MyCard(props: any) {
-  const {
-    id,
-    departure,
-    destination,
-    maxPassengers,
-    availability,
-    date,
-    time,
-  } = props.data;
+  // const {
+  //   id,
+  //   departure,
+  //   destination,
+  //   maxPassengers,
+  //   availability,
+  //   date,
+  //   time,
+  // } = props.data;
+  const data = props.data;
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
       <StyledCard raised={true}>
         <CardContent>
           <Typography variant="body1">
-            <b>When?</b> {date}
+            <b>When?</b> {data.createdDate}
           </Typography>
           <Typography variant="body1">
-            <b>What time?</b> {time}
+            <b>What time?</b> {data.createdDate}
           </Typography>
           <Typography variant="body1">
-            <b>Availability:</b> {availability}
+            <b>Availability:</b> {data.maxPassengers}
           </Typography>
         </CardContent>
         <CardActions style={{ display: "flex", justifyContent: "flex-end" }}>

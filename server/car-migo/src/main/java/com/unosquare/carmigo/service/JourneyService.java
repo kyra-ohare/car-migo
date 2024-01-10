@@ -126,7 +126,7 @@ public class JourneyService {
    * Only drivers can create journeys.
    *
    * @param driverId       the driver id to create a journey for.
-   * @param journeyRequest the requirements as {@link JourneyRequest}.AppConstants.java
+   * @param journeyRequest the requirements as {@link JourneyRequest}
    * @return a {@link JourneyResponse}.
    */
   public JourneyResponse createJourney(final int driverId, final JourneyRequest journeyRequest) {

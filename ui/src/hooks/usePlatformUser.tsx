@@ -4,20 +4,22 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 const endpoint = "/v1/users";
 
-export const useGetProfile = (): UseQueryResult<AxiosResponse<any>> =>
+interface ICreateUser {
+  firstName: string;
+  lastName: string;
+  dob: string;
+  phoneNumber: string;
+  email: string;
+  password: string | undefined;
+  passenger: boolean;
+  driver: boolean;
+}
+
+export const useGetProfile = (): UseQueryResult<ICreateUser> =>
   useQuery({
     queryKey: ["useGetProfile"],
     queryFn: async () => (await axiosInstance.get(endpoint + "/profile")).data,
   });
-
-interface ICreateUser {
-  firstName: string;
-  lastName: string;
-  dob: Date;
-  phoneNumber: string;
-  email: string;
-  password: string | undefined;
-}
 
 export const createUser = async (user: ICreateUser) => {
   const response = await axiosInstanceNoAuth.post(endpoint + "/create", user);

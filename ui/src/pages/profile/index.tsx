@@ -30,7 +30,7 @@ import { createDriver, deleteDriver } from "../../hooks/useDriver";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState<Date>();
+  const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isPassenger, setIsPassenger] = useState<boolean>(false);
@@ -39,14 +39,12 @@ export default function Profile() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const { status, data } = useGetProfile();
+  const { isSuccess, data } = useGetProfile();
 
   useEffect(() => {
     // useEffect keeps an eye on data changes.
     console.log(data);
-    if (status === "success") {
-      const { firstName } = data;
-      setFirstName(firstName);
+    if (isSuccess && data) {
       setFirstName(data.firstName);
       setLastName(data.lastName);
       setDob(parseDob(data.dob));
@@ -55,9 +53,9 @@ export default function Profile() {
       setIsDriver(data.driver);
       setIsPassenger(data.passenger);
     }
-  }, [status, data]); // passing an empty array because I want it to render only once.
+  }, [isSuccess, data]); // passing an empty array because I want it to render only once.
 
-  const parseDob = (dob) => {
+  const parseDob = (dob: string) => {
     const findT = dob.indexOf("T");
     const arrayDate = dob.substring(0, findT).split("-");
     return arrayDate[2] + "/" + arrayDate[1] + "/" + arrayDate[0];
@@ -228,7 +226,7 @@ export default function Profile() {
   }
 
   const defaultTheme = createTheme();
-  return status !== "success" ? (
+  return !isSuccess ? (
     <Loader />
   ) : (
     <ThemeProvider theme={defaultTheme}>
