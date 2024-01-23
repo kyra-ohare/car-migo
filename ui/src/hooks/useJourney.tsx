@@ -4,25 +4,34 @@ import { axiosInstance, axiosInstanceNoAuth } from "../integration/instance";
 
 const endpoint = "/v1/journeys";
 
-export interface IJourney {
-  // id: number;
+export interface IJourneyResponse {
+  id: number;
   departure: number;
-  // destination: string;
-  // maxPassengers: number;
-  // availability: number;
-  // date: string;
-  // time: string;
+  destination: string;
+  maxPassengers: number;
+  availability: number;
+  date: string;
+  time: string;
 }
 
-export const useJourneySearchQuery = (): UseQueryResult<IJourney> =>
+export interface IJourneyParameters {
+  locationIdFrom: number;
+  locationIdTo: number;
+  dateTimeFrom: string;
+  dateTimeTo: string;
+}
+
+export const useJourneySearchQuery = (
+  params: IJourneyParameters
+): UseQueryResult<IJourneyResponse> =>
   useQuery({
     queryKey: ["getJourneySearch"],
     queryFn: async () =>
       (
         await axiosInstanceNoAuth.get(endpoint + "/search", {
           params: {
-            locationIdFrom: 5,
-            locationIdTo: 1,
+            locationIdFrom: params.locationIdFrom,
+            locationIdTo: params.locationIdTo,
             dateTimeFrom: "2021-11-30T09:00:00Z",
             dateTimeTo: "2023-12-01T09:00:00Z",
           },
@@ -33,9 +42,8 @@ export const useJourneySearchQuery = (): UseQueryResult<IJourney> =>
     enabled: false,
   });
 
-
-  // export const useGetProfile = (): UseQueryResult<ICreateUser> =>
-  // useQuery({
-  //   queryKey: ["useGetProfile"],
-  //   queryFn: async () => (await axiosInstance.get(endpoint + "/profile")).data,
-  // });
+// export const useGetProfile = (): UseQueryResult<ICreateUser> =>
+// useQuery({
+//   queryKey: ["useGetProfile"],
+//   queryFn: async () => (await axiosInstance.get(endpoint + "/profile")).data,
+// });

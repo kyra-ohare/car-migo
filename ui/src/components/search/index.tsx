@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   AlertTitle,
@@ -6,24 +6,19 @@ import {
   Card,
   CardActions,
   CardContent,
-  InputAdornment,
   Typography,
   styled,
 } from "@mui/material";
-import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
 import { SearchContainer } from "./styled";
 import {
   BasicDateTimePicker,
   CustomButton,
-  CustomTextField,
   Loader,
   // Journey,
   LocationDropdown,
 } from "../../components/index";
-import { IJourney } from "../journey";
 import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
 import { useJourneySearchQuery } from "../../hooks/useJourney";
-import http_status from "../../constants/http_status";
 import { locations } from "../../constants/location";
 
 export interface IDropdownOptions {
@@ -32,33 +27,73 @@ export interface IDropdownOptions {
 }
 
 export default function Search() {
-  const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>(locations[0]);
-  const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>(locations[0]);
-  const [selectedNumPassengers, setSelectedNumPassengers] = useState("");
+  const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>(
+    locations[0]
+  );
+  const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>(
+    locations[0]
+  );
+  const [journeys, setJourneys] = useState<any[]>();
   const [showResults, setShowResults] = useState(false);
-  const [journeys, setJourneys] = useState<any[]>([]);
   const [showAlert, setShowAlert] = useState(false);
-
-  const { status, data, error, isLoading, refetch } = useJourneySearchQuery();
+  const [searchParams, setSearchParams] = useState({
+    locationIdFrom: 0,
+    locationIdTo: 0,
+    dateTimeFrom: "",
+    dateTimeTo: "",
+  });
+  const { status, data, error, isSuccess, isLoading, refetch } =
+    useJourneySearchQuery(searchParams);
 
   useEffect(() => {
-    if (status === "success" && data) {
+    console.log("status", status);
+    if (isSuccess && data) {
       setJourneys(data);
+      // setShowResults(true);
     }
-    if (status === "error") {
+    if (error) {
       setShowAlert(true);
+      setShowResults(false);
     }
-  }, [status, data, error, showResults]);
+    if (isLoading) {
+      console.log("loading");
+    }
+  }, [status, data, error, isSuccess, isLoading, searchParams]);
+
+  useEffect(() => {
+    if (selectedLeaving.value && selectedGoing.value) {
+      // 0 also returns false.
+      console.log(
+        "selectedLeaving.value",
+        selectedLeaving.value,
+        "selectedGoing.value",
+        selectedGoing.value
+      );
+      console.log("calling server");
+      refetch();
+      setShowResults(true);
+      setShowAlert(false);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    console.log("showAlert", showAlert, "showResult", showResults, "journeys", journeys);
+  }, [showAlert, showResults, journeys]);
 
   const handleSearch = () => {
-    console.log("selectedLeaving", selectedLeaving);
-    console.log("selectedNumPassengers", selectedNumPassengers);
-    refetch();
-    setShowResults(true);
+    setJourneys(undefined);
+    setShowResults(false);
+    setShowAlert(false);
+    setSearchParams((prevSearchParams) => ({
+      ...prevSearchParams,
+      locationIdFrom: selectedLeaving.value,
+      locationIdTo: selectedGoing.value,
+    }));
   };
 
-  const resultState = (data: React.SetStateAction<boolean>) => {
-    setShowResults(data);
+  const resultState = (state: boolean) => {
+    setShowResults(state);
+    setJourneys(undefined);
   };
 
   const handleCloseAlert = () => {
@@ -81,25 +116,7 @@ export default function Search() {
           setSelectedLocation={setSelectedGoing}
         />
         <BasicDateTimePicker />
-        <CustomTextField
-          id="number-of-passengers"
-          label="Number of Passengers"
-          name="number-of-passengers"
-          required
-          type="number"
-          inputProps={{ min: 1 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PersonAddAlt1RoundedIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ mt: "0px", width: "22ch" }}
-          onChange={(event: SetStateAction<string>) => {
-            setSelectedNumPassengers(event.target.value);
-          }}
-        />
+        <BasicDateTimePicker />
         <>
           {isLoading ? (
             <Loader />
@@ -108,37 +125,30 @@ export default function Search() {
           )}
         </>
       </SearchContainer>
-      {showResults && journeys ? (
-        journeys[0] ? (
-          <Journey
-            results={journeys}
-            departure={journeys[0].locationFrom.description}
-            destination={journeys[0].locationTo.description}
-            state={resultState}
-          />
-        ) : (
-          <>
-            {showAlert && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Alert severity="warning" variant="filled">
-                  <AlertTitle>
-                    <b>Oh no!</b>
-                  </AlertTitle>
-                  <b>No rides for selected locations or dates. </b>
-                  <CustomButton label="Close" onClick={handleCloseAlert} />
-                </Alert>
-              </Box>
-            )}
-          </>
-        )
-      ) : (
-        <></>
+      {showResults && journeys && journeys[0] && (
+        <Journey
+          results={journeys}
+          departure={journeys[0].locationFrom.description}
+          destination={journeys[0].locationTo.description}
+          state={resultState}
+        />
+      )}
+      {showAlert && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Alert severity="warning" variant="filled">
+            <AlertTitle>
+              <b>Oh no!</b>
+            </AlertTitle>
+            <b>No rides for selected locations or dates. </b>
+            <CustomButton label="Close" onClick={handleCloseAlert} />
+          </Alert>
+        </Box>
       )}
     </>
   );

@@ -17,6 +17,9 @@ import Car from "../../assets/car.png";
 import LogoDevIcon from "@mui/icons-material/LogoDev";
 import MenuIcon from "@mui/icons-material/Menu";
 import navigation from "../../constants/navigation";
+import useTokens from "../../utils/tokenStore";
+import { useAuthStore } from "../../utils/authStore";
+import constants from "../../constants/app_constants";
 
 const pages = [
   { label: "Home", path: navigation.HOME_PAGE },
@@ -25,12 +28,15 @@ const pages = [
   { label: "Playground", path: navigation.PLAYGROUND },
 ];
 
-const settings = ["Profile", "Your Journeys", "Logout"];
+const settings = [constants.profile, constants.your_journeys, constants.logout];
 
 const NavBar = ({ children }: { children: React.ReactNode }) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const { clearLocalStorageTokens } = useTokens();
   const navigate = useNavigate();
+  const { isAuthorized } = useAuthStore();
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -48,8 +54,21 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const navigateTo = (path: string) => {
+    navigate(path);
+  };
+
+  const handleCloseUserMenu = (page: string) => {
     setAnchorElUser(null);
+    if (page === constants.profile) {
+      console.log("this Profile");
+      // this is not working
+      navigateTo(navigation.PROFILE_PAGE);
+    }
+    if (page === constants.logout) {
+      clearLocalStorageTokens();
+      // window.location.reload(); // it not redirecting to log in page, uncomment this.
+    }
   };
 
   return (
@@ -156,35 +175,42 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
               ))}
             </Box>
 
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            {isAuthorized === true && (
+              <>
+                <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt="Remy Sharp" />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: "45px" }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    {settings.map((setting) => (
+                      <MenuItem
+                        key={setting}
+                        onClick={() => handleCloseUserMenu(setting)}
+                      >
+                        <Typography textAlign="center">{setting}</Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              </>
+            )}
           </Toolbar>
         </Container>
       </AppBar>

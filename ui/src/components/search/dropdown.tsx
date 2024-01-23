@@ -3,13 +3,13 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { locations } from "../../constants/location";
 import { IDropdownOptions } from ".";
-import { Paper, styled } from "@mui/material";
+import { styled } from "@mui/material";
 
 interface ILocationDropdown {
   id: string;
   label: string;
   selectedLocation: IDropdownOptions | undefined;
-  setSelectedLocation: Dispatch<SetStateAction<IDropdownOptions | undefined>>;
+  setSelectedLocation: IDropdownOptions;
 }
 
 const FloatingAutocomplete = styled(Autocomplete)`
@@ -31,7 +31,8 @@ export default function LocationDropdown(props: ILocationDropdown) {
       id={props.id}
       value={props.selectedLocation}
       onChange={(_event, value) => {
-        props.setSelectedLocation(value!);
+        props.setSelectedLocation(value);
+        // console.log("dropdown value", value, "_event", _event,);
       }}
       options={locations}
       sx={{ width: 300, mr: 0.5 }}

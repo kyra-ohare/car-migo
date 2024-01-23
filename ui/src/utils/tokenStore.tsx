@@ -2,6 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import { axiosInstance, setBearerToken } from "../integration/instance";
 import { useAuthStore } from "./authStore";
 import { useNavigate } from "react-router-dom";
+import constants from "../constants/app_constants";
+import navigation from "../constants/navigation";
 
 interface IAccessToken {
   iat: number;
@@ -28,13 +30,14 @@ const useTokens = (): IUseTokens => {
     const nowDate = new Date();
 
     if (accessTokenDate > nowDate) {
-        // localStorage is a React built-in function
-      localStorage.setItem("accessToken", tokens.accessToken);
-      localStorage.setItem("refreshToken", tokens.refreshToken);
+      // localStorage is a React built-in function
+      localStorage.setItem(constants.accessToken, tokens.accessToken);
+      localStorage.setItem(constants.refreshToken, tokens.refreshToken);
 
       setBearerToken(tokens.accessToken);
       setIsAuthorized(true);
     }
+    // car-migo doesn't have refresh token yet
     if (accessTokenDate < nowDate && refreshTokenDate > nowDate) {
       const config = {
         headers: { Authorization: `Bearer ${tokens.refreshToken}` },
@@ -42,8 +45,8 @@ const useTokens = (): IUseTokens => {
 
       const resp = await axiosInstance.get("/api/authenticate/refresh", config);
 
-      localStorage.setItem("accessToken", resp.data.accessToken);
-      localStorage.setItem("refreshToken", resp.data.refreshToken);
+      localStorage.setItem(constants.accessToken, resp.data.accessToken);
+      localStorage.setItem(constants.refreshToken, resp.data.refreshToken);
       setIsAuthorized(true);
 
       navigate(0);
@@ -54,8 +57,8 @@ const useTokens = (): IUseTokens => {
   };
 
   const checkLocalStorageTokens = () => {
-    const localStorageAccess = localStorage.getItem("accessToken");
-    const localStorageRefresh = localStorage.getItem("refreshToken");
+    const localStorageAccess = localStorage.getItem(constants.accessToken);
+    const localStorageRefresh = localStorage.getItem(constants.refreshToken);
     if (localStorageAccess || localStorageRefresh) {
       checkIfValidToken({
         accessToken: localStorageAccess,
@@ -67,10 +70,10 @@ const useTokens = (): IUseTokens => {
   };
 
   const clearLocalStorageTokens = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem(constants.accessToken);
+    localStorage.removeItem(constants.refreshToken);
     setIsAuthorized(false);
-    navigate("/login");
+    navigate(navigation.SIGN_IN_PAGE);
   };
 
   return {

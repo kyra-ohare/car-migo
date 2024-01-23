@@ -13,10 +13,10 @@ import {
   WelcomeMessageContainer,
 } from "./styled";
 import navigation from "../../constants/navigation";
+import { useAuthStore } from "../../utils/authStore";
 
 const Homepage = () => {
-  const { data } = useGetHeartbeat();
-  // console.log(data);
+  const { isAuthorized } = useAuthStore();
 
   const navigate = useNavigate();
   const goToSignUp = () => {
@@ -34,6 +34,8 @@ const Homepage = () => {
           <WelcomeMessageContainer>
             <WelcomeMessage>Welcome to Car-Migo</WelcomeMessage>
           </WelcomeMessageContainer>
+          { isAuthorized === false &&
+          <>
           <TopRightButtonsContainer>
             <Button variant="contained" onClick={goToSignUp}>
               Sign up
@@ -42,6 +44,8 @@ const Homepage = () => {
               Sign in
             </Button>
           </TopRightButtonsContainer>
+          </>
+          }
         </WelcomeContainer>
         <Grid container>
           <Grid
