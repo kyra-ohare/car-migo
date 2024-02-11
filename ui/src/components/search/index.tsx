@@ -13,83 +13,74 @@ import { SearchContainer } from "./styled";
 import {
   BasicDateTimePicker,
   CustomButton,
-  Loader,
-  // Journey,
+  Journey,
   LocationDropdown,
 } from "../../components/index";
 import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
 import { useJourneySearchQuery } from "../../hooks/useJourney";
-import { locations } from "../../constants/location";
+import { useMutation } from "@tanstack/react-query";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import AlertSpan from "../alert_span";
 
-export interface IDropdownOptions {
-  value: number;
-  label: string;
-}
+const validationSchema = Yup.object().shape({
+  locationIdFrom: Yup.string().required("coming from..."),
+  locationIdTo: Yup.string().required("heading to..."),
+});
+
+const initialValues = {
+  locationIdFrom: "",
+  locationIdTo: "",
+  dateTimeFrom: "",
+  dateTimeTo: "",
+};
 
 export default function Search() {
-  const [selectedLeaving, setSelectedLeaving] = useState<IDropdownOptions>(
-    locations[0]
-  );
-  const [selectedGoing, setSelectedGoing] = useState<IDropdownOptions>(
-    locations[0]
-  );
+  const [selectedLeaving, setSelectedLeaving] = useState("");
+  const [selectedGoing, setSelectedGoing] = useState("");
   const [journeys, setJourneys] = useState<any[]>();
   const [showResults, setShowResults] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [searchParams, setSearchParams] = useState({
-    locationIdFrom: 0,
-    locationIdTo: 0,
-    dateTimeFrom: "",
-    dateTimeTo: "",
+  const [searchParams, setSearchParams] = useState(initialValues);
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    // validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
   });
-  const { status, data, error, isSuccess, isLoading, refetch } =
-    useJourneySearchQuery(searchParams);
 
-  useEffect(() => {
-    console.log("status", status);
-    if (isSuccess && data) {
-      setJourneys(data);
-      // setShowResults(true);
-    }
-    if (error) {
-      setShowAlert(true);
-      setShowResults(false);
-    }
-    if (isLoading) {
-      console.log("loading");
-    }
-  }, [status, data, error, isSuccess, isLoading, searchParams]);
-
-  useEffect(() => {
-    if (selectedLeaving.value && selectedGoing.value) {
-      // 0 also returns false.
-      console.log(
-        "selectedLeaving.value",
-        selectedLeaving.value,
-        "selectedGoing.value",
-        selectedGoing.value
-      );
-      console.log("calling server");
-      refetch();
-      setShowResults(true);
-      setShowAlert(false);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    console.log("showAlert", showAlert, "showResult", showResults, "journeys", journeys);
-  }, [showAlert, showResults, journeys]);
-
-  const handleSearch = () => {
-    setJourneys(undefined);
-    setShowResults(false);
-    setShowAlert(false);
+  const handleFormSubmit = (values: any) => {
+    // console.log("useFormik values", values);
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
       locationIdFrom: selectedLeaving.value,
       locationIdTo: selectedGoing.value,
+      // locationIdTo: values.locationIdTo,
     }));
   };
+
+  const mutateSearchJourneys = useMutation({
+    mutationFn: useJourneySearchQuery,
+    onSuccess: (data) => {
+      setShowAlert(false);
+      setJourneys(data);
+      setShowResults(true);
+    },
+    onError: () => {
+      setShowResults(false);
+      setShowAlert(true);
+    },
+  });
+
+  useEffect(() => {
+    if (searchParams.locationIdTo) {
+      mutateSearchJourneys.mutate(searchParams);
+    }
+    // console.log("searchParams", searchParams);
+  }, [searchParams]);
 
   const resultState = (state: boolean) => {
     setShowResults(state);
@@ -101,29 +92,35 @@ export default function Search() {
   };
 
   return (
-    <>
+    <Box component="form" noValidate onSubmit={formik.handleSubmit}>
       <SearchContainer>
         <LocationDropdown
           id="leaving-from-dropdown"
           label="Leaving From"
           selectedLocation={selectedLeaving}
           setSelectedLocation={setSelectedLeaving}
+          // error={Boolean(formik.errors.locationIdFrom)}
+          // helperText={
+          //   formik.touched.locationIdFrom && formik.errors.locationIdFrom
+          // }
         />
         <LocationDropdown
           id="going-to-dropdown"
           label="Going to"
+          name="locationIdTo"
           selectedLocation={selectedGoing}
           setSelectedLocation={setSelectedGoing}
+          // value={formik.values.locationIdTo}
+          // onChange={formik.handleChange}
+          // onChange={(value: unknown) => formik.setFieldValue("locationIdTo", value, true)}
+          // setSelectedLocation={formik.setFieldValue("locationIdTo", "boo", true)}
+          // setSelectedLocation={formik.handleChange}
+          formikErrors={formik.errors.locationIdTo}
+          formikTouched={formik.touched.locationIdTo}
         />
         <BasicDateTimePicker />
         <BasicDateTimePicker />
-        <>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <CustomButton label="Search" onClick={handleSearch} />
-          )}
-        </>
+        <CustomButton type="submit" label="Search" />
       </SearchContainer>
       {showResults && journeys && journeys[0] && (
         <Journey
@@ -134,91 +131,13 @@ export default function Search() {
         />
       )}
       {showAlert && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Alert severity="warning" variant="filled">
-            <AlertTitle>
-              <b>Oh no!</b>
-            </AlertTitle>
-            <b>No rides for selected locations or dates. </b>
-            <CustomButton label="Close" onClick={handleCloseAlert} />
-          </Alert>
-        </Box>
+        <AlertSpan severity="warning"
+        variant="filled"
+        title="Oh no!"
+        text="No rides for selected locations or dates. "
+        state={handleCloseAlert}
+        />
       )}
-    </>
-  );
-}
-
-const Journey = (props: any) => {
-  const handleCloseResults = () => {
-    props.state(false);
-  };
-
-  return (
-    <Box sx={{ backgroundColor: "#f0f0f0", padding: 5 }}>
-      <Typography variant="h6" sx={{ mb: "15px", display: "inline-flex" }}>
-        <b>
-          {props.departure}
-          <ArrowForwardOutlined />
-          {props.destination}
-        </b>
-      </Typography>
-      {props.results.map((data: any) => (
-        <MyCard key={data.id} data={data} />
-      ))}
-      <Box display="flex" justifyContent="flex-end">
-        <CustomButton label="Close results" onClick={handleCloseResults} />
-      </Box>
-    </Box>
-  );
-};
-
-const StyledCard = styled(Card)`
-  box-shadow: 05px 6px 5px rgba(0, 0, 0, 0.2); /* Customize the shadow */
-  padding: 5px; /* Add padding around the card */
-  transition: transform 0.2s ease-in-out; /* Add a smooth transition */
-  margin-bottom: 15px;
-  width: 50%;
-
-  &:hover {
-    transform: translateY(-5px); /* Apply a slight lift on hover */
-  }
-`;
-
-function MyCard(props: any) {
-  // const {
-  //   id,
-  //   departure,
-  //   destination,
-  //   maxPassengers,
-  //   availability,
-  //   date,
-  //   time,
-  // } = props.data;
-  const data = props.data;
-  return (
-    <Box display="flex" justifyContent="center" alignItems="center">
-      <StyledCard raised={true}>
-        <CardContent>
-          <Typography variant="body1">
-            <b>When?</b> {data.createdDate}
-          </Typography>
-          <Typography variant="body1">
-            <b>What time?</b> {data.createdDate}
-          </Typography>
-          <Typography variant="body1">
-            <b>Availability:</b> {data.maxPassengers}
-          </Typography>
-        </CardContent>
-        <CardActions style={{ display: "flex", justifyContent: "flex-end" }}>
-          <CustomButton label="Book now" />
-        </CardActions>
-      </StyledCard>
     </Box>
   );
 }

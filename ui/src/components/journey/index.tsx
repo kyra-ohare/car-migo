@@ -1,92 +1,63 @@
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-  Box,
-} from "@mui/material";
-import { styled } from "@mui/system";
+import { Typography, Box } from "@mui/material";
+import { CustomButton, JourneyCard } from "..";
+import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
 
-export interface IJourney {
-  id: number;
-  departure: string;
-  destination: string;
-  maxPassengers: number;
-  availability: number;
-  date: string;
-  time: string;
-}
-
-const StyledCard = styled(Card)`
-  box-shadow: 05px 6px 5px rgba(0, 0, 0, 0.2); /* Customize the shadow */
-  padding: 16px; /* Add padding around the card */
-`;
-
-export default function Journey(data: IJourney) {
-  const [journeys, setJourneys] = useState<IJourney[]>([]);
-
-  const result: IJourney[] = [
-    {
-      id: 5,
-      departure: "Newry",
-      destination: "Rostrevor",
-      maxPassengers: 3,
-      date: "2022-12-02",
-      time: "08:15",
-    },
-    {
-      id: 6,
-      departure: "Newry",
-      destination: "Rostrevor",
-      maxPassengers: 3,
-      date: "2022-12-03",
-      time: "08:00",
-    },
-  ];
-
-  const handleResult = () => {
-    setJourneys(result);
+export default function Journey(props: any) {
+  const handleCloseResults = () => {
+    props.state(false);
   };
 
   return (
-    <Box onSubmit={handleResult}>
-      <Typography variant="h6" gutterBottom>
-        {data.departure} to {data.destination}
+    <Box sx={{ backgroundColor: "#f0f0f0", padding: 5 }}>
+      <Typography variant="h6" sx={{ mb: "15px", display: "inline-flex" }}>
+        <b>
+          {props.departure}
+          <ArrowForwardOutlined />
+          {props.destination}
+        </b>
       </Typography>
-      {/* <MyCard {...data} /> */}
-      {journeys.map((data, index) => (
-        <MyCard
-          key={index}
-          id={data.id}
-          departure={data.departure}
-          destination={data.destination}
-          maxPassengers={data.maxPassengers}
-          date={data.date}
-          time={data.time}
-        />
+      {props.results.map((data: any) => (
+        <JourneyCard key={data.id} data={data} />
       ))}
+      <Box display="flex" justifyContent="flex-end">
+        <CustomButton label="Close results" onClick={handleCloseResults} />
+      </Box>
     </Box>
   );
 }
 
-function MyCard(data: IJourney) {
-  return (
-    <StyledCard>
-      <Card raised={true}>
-        <CardContent>
-          <Typography variant="body2">When? {data.date}</Typography>
-          <Typography variant="body2">What time? {data.time}</Typography>
-          {/* Add more data details as needed*/}
-        </CardContent>
-        <CardActions>
-          <Button size="small" color="primary">
-            Book Now
-          </Button>
-          {/* Add more action buttons if required */}
-        </CardActions>
-      </Card>
-    </StyledCard>
-  );
-}
+// const StyledCard = styled(Card)`
+//   box-shadow: 05px 6px 5px rgba(0, 0, 0, 0.2); /* Customize the shadow */
+//   padding: 5px; /* Add padding around the card */
+//   transition: transform 0.2s ease-in-out; /* Add a smooth transition */
+//   margin-bottom: 15px;
+//   width: 50%;
+
+//   &:hover {
+//     transform: translateY(-5px); /* Apply a slight lift on hover */
+//   }
+// `;
+
+// function JourneyCard(props: any) {
+//   const data = props.data;
+//   return (
+//     <Box display="flex" justifyContent="center" alignItems="center">
+//       <StyledCard raised={true}>
+//         <CardContent>
+//           <Typography variant="body1">
+//             <b>When?</b> {data.createdDate}
+//           </Typography>
+//           <Typography variant="body1">
+//             <b>What time?</b> {data.createdDate}
+//           </Typography>
+//           <Typography variant="body1">
+//             <b>Availability:</b> {data.maxPassengers}
+//           </Typography>
+//         </CardContent>
+//         <CardActions style={{ display: "flex", justifyContent: "flex-end" }}>
+//           <CustomButton label="Book now" />
+//         </CardActions>
+//       </StyledCard>
+//     </Box>
+//   );
+// }

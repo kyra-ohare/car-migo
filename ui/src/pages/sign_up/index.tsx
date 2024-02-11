@@ -20,7 +20,7 @@ import {
   CustomButton,
   CustomTextField,
   DialogBox,
-  CustomAlert,
+  AlertPopUp,
 } from "../../components";
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Yup is a schema builder for runtime value parsing and validation
@@ -288,7 +288,7 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <CustomAlert
+        <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
           severity="info"

@@ -1,16 +1,8 @@
-import { Dispatch, SetStateAction, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { locations } from "../../constants/location";
-import { IDropdownOptions } from ".";
 import { styled } from "@mui/material";
-
-interface ILocationDropdown {
-  id: string;
-  label: string;
-  selectedLocation: IDropdownOptions | undefined;
-  setSelectedLocation: IDropdownOptions;
-}
+import { useFormikContext } from 'formik';
 
 const FloatingAutocomplete = styled(Autocomplete)`
   label.Mui-focused {
@@ -24,7 +16,10 @@ const FloatingAutocomplete = styled(Autocomplete)`
 }
 `;
 
-export default function LocationDropdown(props: ILocationDropdown) {
+export default function LocationDropdown(props: any) {
+  // const context = useFormikContext<any>();
+  // console.log("LocationDropdown", "props", props);
+
   return (
     <FloatingAutocomplete
       disablePortal
@@ -32,11 +27,23 @@ export default function LocationDropdown(props: ILocationDropdown) {
       value={props.selectedLocation}
       onChange={(_event, value) => {
         props.setSelectedLocation(value);
-        // console.log("dropdown value", value, "_event", _event,);
       }}
+      // value={props.value}
+      // onChange={props.onChange}
       options={locations}
       sx={{ width: 300, mr: 0.5 }}
-      renderInput={(params) => <TextField {...params} label={props.label} />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={props.label}
+          // required
+          name={props.name}
+          // value={context.values.locationIdTo}
+          // onChange={context.handleChange}
+          // error={Boolean(props.formikErrors)}
+          // helperText={props.formikTouched && props.formikErrors}
+        />
+      )}
     />
   );
 }

@@ -5,7 +5,7 @@ import { CatchyMessage, WelcomeMessage } from "../home/styled";
 import { EmailRounded } from "@mui/icons-material";
 import { confirmUserEmail } from "../../hooks/usePlatformUser";
 import { useMutation } from "@tanstack/react-query";
-import { DialogBox, CustomButton, CustomTextField, CustomAlert } from "../../components";
+import { DialogBox, CustomButton, CustomTextField, AlertPopUp } from "../../components";
 import navigation from "../../constants/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -112,7 +112,7 @@ export default function ConfirmEmail() {
       <div>
         <CustomButton label="Confirm Email" type="submit" sx={{ mt: 3 }} />
       </div>
-      <CustomAlert
+      <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
           severity="success"

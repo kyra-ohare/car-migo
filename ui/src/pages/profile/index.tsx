@@ -17,7 +17,7 @@ import {
   CustomButton,
   CustomTextField,
   CustomTooltip,
-  CustomAlert,
+  AlertPopUp,
 } from "../../components";
 import { CatchyMessage } from "../home/styled";
 import { useNavigate } from "react-router-dom";
@@ -291,7 +291,7 @@ export default function Profile() {
             </Grid>
           </Grid>
         </Box>
-        <CustomAlert
+        <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}

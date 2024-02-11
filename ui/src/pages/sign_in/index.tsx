@@ -18,7 +18,7 @@ import {
   Footer,
   CustomButton,
   CustomTextField,
-  CustomAlert,
+  AlertPopUp,
 } from "../../components";
 import authenticate from "../../hooks/useAuthentication";
 import navigation from "../../constants/navigation";
@@ -153,7 +153,7 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <CustomAlert
+        <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
           severity="error"
