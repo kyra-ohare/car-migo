@@ -18,18 +18,18 @@ const FloatingAutocomplete = styled(Autocomplete)`
 
 export default function LocationDropdown(props: any) {
   // const context = useFormikContext<any>();
-  // console.log("LocationDropdown", "props", props);
+  console.log("LocationDropdown", "props", props);
 
   return (
     <FloatingAutocomplete
       disablePortal
       id={props.id}
-      value={props.selectedLocation}
-      onChange={(_event, value) => {
-        props.setSelectedLocation(value);
-      }}
-      // value={props.value}
-      // onChange={props.onChange}
+      // value={props.selectedLocation}
+      // onChange={(_event, value) => {
+      //   props.setSelectedLocation(value);
+      // }}
+      value={props.value}
+      onChange={props.onChange}
       options={locations}
       sx={{ width: 300, mr: 0.5 }}
       renderInput={(params) => (
@@ -40,8 +40,8 @@ export default function LocationDropdown(props: any) {
           name={props.name}
           // value={context.values.locationIdTo}
           // onChange={context.handleChange}
-          // error={Boolean(props.formikErrors)}
-          // helperText={props.formikTouched && props.formikErrors}
+          error={props.formikTouched && Boolean(props.formikErrors)}
+          helperText={props.formikTouched && props.formikErrors}
         />
       )}
     />

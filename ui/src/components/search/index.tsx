@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { SearchContainer } from "./styled";
 import {
   BasicDateTimePicker,
@@ -16,10 +7,9 @@ import {
   Journey,
   LocationDropdown,
 } from "../../components/index";
-import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
 import { useJourneySearchQuery } from "../../hooks/useJourney";
 import { useMutation } from "@tanstack/react-query";
-import { useFormik } from "formik";
+import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import AlertSpan from "../alert_span";
 
@@ -43,22 +33,22 @@ export default function Search() {
   const [showAlert, setShowAlert] = useState(false);
   const [searchParams, setSearchParams] = useState(initialValues);
 
-  const formik = useFormik({
-    initialValues: initialValues,
-    // validationSchema: validationSchema,
-    onSubmit: (values) => {
-      handleFormSubmit(values);
-    },
-    enableReinitialize: true,
-  });
+  // const formik = useFormik({
+  //   initialValues: initialValues,
+  //   validationSchema: validationSchema,
+  //   onSubmit: (values) => {
+  //     handleFormSubmit(values);
+  //   },
+  //   // enableReinitialize: true,
+  // });
 
   const handleFormSubmit = (values: any) => {
     // console.log("useFormik values", values);
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
       locationIdFrom: selectedLeaving.value,
-      locationIdTo: selectedGoing.value,
-      // locationIdTo: values.locationIdTo,
+      // locationIdTo: selectedGoing.value,
+      locationIdTo: values.locationIdTo,
     }));
   };
 
@@ -90,7 +80,14 @@ export default function Search() {
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
-
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    // enableReinitialize: true,
+  });
   return (
     <Box component="form" noValidate onSubmit={formik.handleSubmit}>
       <SearchContainer>
@@ -110,9 +107,11 @@ export default function Search() {
           name="locationIdTo"
           selectedLocation={selectedGoing}
           setSelectedLocation={setSelectedGoing}
-          // value={formik.values.locationIdTo}
-          // onChange={formik.handleChange}
-          // onChange={(value: unknown) => formik.setFieldValue("locationIdTo", value, true)}
+          value={formik.values.locationIdTo}
+          onChange={formik.handleChange}
+          // onChange={(value: unknown) =>
+          //   formik.setFieldValue("locationIdTo", value, true)
+          // }
           // setSelectedLocation={formik.setFieldValue("locationIdTo", "boo", true)}
           // setSelectedLocation={formik.handleChange}
           formikErrors={formik.errors.locationIdTo}
@@ -131,11 +130,12 @@ export default function Search() {
         />
       )}
       {showAlert && (
-        <AlertSpan severity="warning"
-        variant="filled"
-        title="Oh no!"
-        text="No rides for selected locations or dates. "
-        state={handleCloseAlert}
+        <AlertSpan
+          severity="warning"
+          variant="filled"
+          title="Oh no!"
+          text="No rides for selected locations or dates. "
+          state={handleCloseAlert}
         />
       )}
     </Box>
