@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Grid } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import { useGetHeartbeat } from "../../hooks/useGetHeartbeat";
 import { ActionAreaCard, Footer, Search } from "../../components/index";
 import Car from "../../assets/car.png";
 import {
@@ -34,18 +33,18 @@ const Homepage = () => {
           <WelcomeMessageContainer>
             <WelcomeMessage>Welcome to Car-Migo</WelcomeMessage>
           </WelcomeMessageContainer>
-          { isAuthorized === false &&
-          <>
-          <TopRightButtonsContainer>
-            <Button variant="contained" onClick={goToSignUp}>
-              Sign up
-            </Button>
-            <Button variant="contained" onClick={goToSignIn}>
-              Sign in
-            </Button>
-          </TopRightButtonsContainer>
-          </>
-          }
+          {isAuthorized === false && (
+            <>
+              <TopRightButtonsContainer>
+                <Button variant="contained" onClick={goToSignUp}>
+                  Sign up
+                </Button>
+                <Button variant="contained" onClick={goToSignIn}>
+                  Sign in
+                </Button>
+              </TopRightButtonsContainer>
+            </>
+          )}
         </WelcomeContainer>
         <Grid container>
           <Grid
