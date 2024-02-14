@@ -25,8 +25,8 @@ export const useJourneySearchQuery = async (params: IJourneyRequest) => {
     params: {
       locationIdFrom: params.locationIdFrom,
       locationIdTo: params.locationIdTo,
-      dateTimeFrom: "2021-11-30T09:00:00Z",
-      dateTimeTo: "2023-12-01T09:00:00Z",
+      dateTimeFrom: params.dateTimeFrom,
+      dateTimeTo: params.dateTimeTo,
     },
   });
   return response.data;

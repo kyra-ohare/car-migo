@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { SearchContainer } from "./styled";
@@ -9,21 +10,18 @@ import {
 } from "../../components/index";
 import { useJourneySearchQuery } from "../../hooks/useJourney";
 import { useMutation } from "@tanstack/react-query";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import AlertSpan from "../alert_span";
+import { ISearchFormValues } from "../../interfaces";
+import { initialSearchValues } from "../../constants";
 
 const validationSchema = Yup.object().shape({
   locationIdFrom: Yup.string().required("coming from..."),
   locationIdTo: Yup.string().required("heading to..."),
+  dateTimeFrom: Yup.string().required("date from required..."),
+  dateTimeTo: Yup.string().required("date to required..."),
 });
-
-const initialValues = {
-  locationIdFrom: "",
-  locationIdTo: "",
-  dateTimeFrom: "",
-  dateTimeTo: "",
-};
 
 export default function Search() {
   const [selectedLeaving, setSelectedLeaving] = useState("");
@@ -31,23 +29,14 @@ export default function Search() {
   const [journeys, setJourneys] = useState<any[]>();
   const [showResults, setShowResults] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [searchParams, setSearchParams] = useState(initialValues);
+  const [searchParams, setSearchParams] = useState(initialSearchValues);
 
-  // const formik = useFormik({
-  //   initialValues: initialValues,
-  //   validationSchema: validationSchema,
-  //   onSubmit: (values) => {
-  //     handleFormSubmit(values);
-  //   },
-  //   // enableReinitialize: true,
-  // });
-
-  const handleFormSubmit = (values: any) => {
-    // console.log("useFormik values", values);
+  const handleFormSubmit = (values: ISearchFormValues) => {
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
-      locationIdFrom: selectedLeaving.value,
-      // locationIdTo: selectedGoing.value,
+      locationIdFrom: values.locationIdFrom,
+      dateTimeFrom: values.dateTimeFrom,
+      dateTimeTo: values.dateTimeTo,
       locationIdTo: values.locationIdTo,
     }));
   };
@@ -65,13 +54,6 @@ export default function Search() {
     },
   });
 
-  useEffect(() => {
-    if (searchParams.locationIdTo) {
-      mutateSearchJourneys.mutate(searchParams);
-    }
-    // console.log("searchParams", searchParams);
-  }, [searchParams]);
-
   const resultState = (state: boolean) => {
     setShowResults(state);
     setJourneys(undefined);
@@ -81,25 +63,32 @@ export default function Search() {
     setShowAlert(false);
   };
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: initialSearchValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
       handleFormSubmit(values);
     },
-    // enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (searchParams.locationIdTo) {
+      mutateSearchJourneys.mutate(searchParams);
+    }
+  }, [searchParams]);
+
   return (
     <Box component="form" noValidate onSubmit={formik.handleSubmit}>
       <SearchContainer>
         <LocationDropdown
           id="leaving-from-dropdown"
           label="Leaving From"
+          name="locationIdFrom"
           selectedLocation={selectedLeaving}
           setSelectedLocation={setSelectedLeaving}
-          // error={Boolean(formik.errors.locationIdFrom)}
-          // helperText={
-          //   formik.touched.locationIdFrom && formik.errors.locationIdFrom
-          // }
+          onChange={formik.setFieldValue}
+          value={formik.values.locationIdFrom}
+          formikErrors={formik.errors.locationIdFrom}
+          formikTouched={formik.touched.locationIdFrom}
         />
         <LocationDropdown
           id="going-to-dropdown"
@@ -108,17 +97,27 @@ export default function Search() {
           selectedLocation={selectedGoing}
           setSelectedLocation={setSelectedGoing}
           value={formik.values.locationIdTo}
-          onChange={formik.handleChange}
-          // onChange={(value: unknown) =>
-          //   formik.setFieldValue("locationIdTo", value, true)
-          // }
-          // setSelectedLocation={formik.setFieldValue("locationIdTo", "boo", true)}
-          // setSelectedLocation={formik.handleChange}
+          onChange={formik.setFieldValue}
           formikErrors={formik.errors.locationIdTo}
           formikTouched={formik.touched.locationIdTo}
         />
-        <BasicDateTimePicker />
-        <BasicDateTimePicker />
+
+        <BasicDateTimePicker
+          name="dateTimeFrom"
+          value={formik.values.dateTimeFrom}
+          onChange={formik.setFieldValue}
+          label="Earliest Date/Time"
+          formikErrors={formik.errors.dateTimeFrom}
+          formikTouched={formik.touched.dateTimeFrom}
+        />
+        <BasicDateTimePicker
+          name="dateTimeTo"
+          value={formik.values.dateTimeTo}
+          label="Latest Date/Time"
+          onChange={formik.setFieldValue}
+          formikErrors={formik.errors.dateTimeTo}
+          formikTouched={formik.touched.dateTimeTo}
+        />
         <CustomButton type="submit" label="Search" />
       </SearchContainer>
       {showResults && journeys && journeys[0] && (
