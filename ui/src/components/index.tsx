@@ -2,7 +2,7 @@ import ActionAreaCard from './card';
 import AlertPopUp from './alert_pop_up';
 import AlertSpan from './alert_span';
 import BasicDatePicker from './calendar';
-import BasicDateTimePicker from './calendarTime';
+import BasicDateTimePicker from './calendar_time';
 import CustomButton from './custom_button';
 import CustomTextField from './custom_text_field';
 import CustomTooltip from './custom_tooltip';
