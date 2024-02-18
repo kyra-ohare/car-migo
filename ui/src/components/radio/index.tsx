@@ -6,23 +6,9 @@ import {
   IconButton,
   Radio,
   RadioGroup,
-  Tooltip,
-  TooltipProps,
-  styled,
-  tooltipClasses,
 } from '@mui/material';
 import { Info } from '@mui/icons-material';
-
-const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} placement='right' />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
+import { BootstrapTooltip } from './styled';
 
 export default function YesNoRadioButtonsGroup(props: any) {
   return (

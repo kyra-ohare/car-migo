@@ -1,18 +1,6 @@
-import { Box, Card, CardActions, CardContent, Typography } from '@mui/material';
-import styled from 'styled-components';
+import { Box, CardActions, CardContent, Typography } from '@mui/material';
 import { CustomButton } from '..';
-
-const StyledCard = styled(Card)`
-  box-shadow: 05px 6px 5px rgba(0, 0, 0, 0.2);
-  padding: 5px;
-  transition: transform 0.2s ease-in-out;
-  margin-bottom: 15px;
-  width: 50%;
-
-  &:hover {
-    transform: translateY(-5px);
-  }
-`;
+import { StyledCard } from './styled';
 
 export default function JourneyCard(props: any) {
   const data = props.data;

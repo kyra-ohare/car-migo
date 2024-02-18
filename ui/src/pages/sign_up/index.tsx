@@ -18,7 +18,6 @@ import {
   BasicDatePicker,
   Footer,
   CustomButton,
-  CustomTextField,
   DialogBox,
   AlertPopUp,
 } from '../../components';
@@ -26,6 +25,7 @@ import navigation from '../../constants/navigation';
 import validation from '../../constants/validation';
 import http_status from '../../constants/http_status';
 import { createUser } from '../../hooks/usePlatformUser';
+import { ThisTextField } from './this_text_field';
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required('First name must not be empty.'),
@@ -293,13 +293,5 @@ export default function SignUp() {
         <Footer />
       </Container>
     </ThemeProvider>
-  );
-}
-
-function ThisTextField(props: any) {
-  return (
-    <>
-      <CustomTextField sx={{ mt: 1 }} {...props} />
-    </>
   );
 }
