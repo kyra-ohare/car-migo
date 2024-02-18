@@ -1,31 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import { SearchContainer } from "./styled";
+import { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { SearchContainer } from './styled';
 import {
   BasicDateTimePicker,
   CustomButton,
   Journey,
   LocationDropdown,
-} from "../../components/index";
-import { useJourneySearchQuery } from "../../hooks/useJourney";
-import { useMutation } from "@tanstack/react-query";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import AlertSpan from "../alert_span";
-import { ISearchFormValues } from "../../interfaces";
-import { initialSearchValues } from "../../constants";
+} from '../../components/index';
+import AlertSpan from '../alert_span';
+import { useJourneySearchQuery } from '../../hooks/useJourney';
+import { ISearchFormValues } from '../../interfaces';
+import { initialSearchValues } from '../../constants';
 
 const validationSchema = Yup.object().shape({
-  locationIdFrom: Yup.string().required("coming from..."),
-  locationIdTo: Yup.string().required("heading to..."),
-  dateTimeFrom: Yup.string().required("date from required..."),
-  dateTimeTo: Yup.string().required("date to required..."),
+  locationIdFrom: Yup.string().required('coming from...'),
+  locationIdTo: Yup.string().required('heading to...'),
+  dateTimeFrom: Yup.string().required('date from required...'),
+  dateTimeTo: Yup.string().required('date to required...'),
 });
 
 export default function Search() {
-  const [selectedLeaving, setSelectedLeaving] = useState("");
-  const [selectedGoing, setSelectedGoing] = useState("");
+  const [selectedLeaving, setSelectedLeaving] = useState('');
+  const [selectedGoing, setSelectedGoing] = useState('');
   const [journeys, setJourneys] = useState<any[]>();
   const [showResults, setShowResults] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -77,12 +77,12 @@ export default function Search() {
   }, [searchParams]);
 
   return (
-    <Box component="form" noValidate onSubmit={formik.handleSubmit}>
+    <Box component='form' noValidate onSubmit={formik.handleSubmit}>
       <SearchContainer>
         <LocationDropdown
-          id="leaving-from-dropdown"
-          label="Leaving From"
-          name="locationIdFrom"
+          id='leaving-from-dropdown'
+          label='Leaving From'
+          name='locationIdFrom'
           selectedLocation={selectedLeaving}
           setSelectedLocation={setSelectedLeaving}
           onChange={formik.setFieldValue}
@@ -91,9 +91,9 @@ export default function Search() {
           formikTouched={formik.touched.locationIdFrom}
         />
         <LocationDropdown
-          id="going-to-dropdown"
-          label="Going to"
-          name="locationIdTo"
+          id='going-to-dropdown'
+          label='Going to'
+          name='locationIdTo'
           selectedLocation={selectedGoing}
           setSelectedLocation={setSelectedGoing}
           value={formik.values.locationIdTo}
@@ -103,22 +103,22 @@ export default function Search() {
         />
 
         <BasicDateTimePicker
-          name="dateTimeFrom"
+          name='dateTimeFrom'
           value={formik.values.dateTimeFrom}
           onChange={formik.setFieldValue}
-          label="Earliest Date/Time"
+          label='Earliest Date/Time'
           formikErrors={formik.errors.dateTimeFrom}
           formikTouched={formik.touched.dateTimeFrom}
         />
         <BasicDateTimePicker
-          name="dateTimeTo"
+          name='dateTimeTo'
           value={formik.values.dateTimeTo}
-          label="Latest Date/Time"
+          label='Latest Date/Time'
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.dateTimeTo}
           formikTouched={formik.touched.dateTimeTo}
         />
-        <CustomButton type="submit" label="Search" />
+        <CustomButton type='submit' label='Search' />
       </SearchContainer>
       {showResults && journeys && journeys[0] && (
         <Journey
@@ -130,10 +130,10 @@ export default function Search() {
       )}
       {showAlert && (
         <AlertSpan
-          severity="warning"
-          variant="filled"
-          title="Oh no!"
-          text="No rides for selected locations or dates. "
+          severity='warning'
+          variant='filled'
+          title='Oh no!'
+          text='No rides for selected locations or dates. '
           state={handleCloseAlert}
         />
       )}

@@ -1,18 +1,18 @@
-import { axiosInstance } from "../integration/instance";
+import { axiosInstance } from '../integration/instance';
 
-const endpoint = "/v1/drivers";
+const endpoint = '/v1/drivers';
 
 interface ICreateDriver {
   licenseNumber: string;
 }
 
 export const getDriver = async () => {
-  const response = await axiosInstance.get(endpoint + "/profile");
+  const response = await axiosInstance.get(endpoint + '/profile');
   return response.data;
 };
 
 export const createDriver = async (driver: ICreateDriver) => {
-  const response = await axiosInstance.post(endpoint + "/create", driver);
+  const response = await axiosInstance.post(endpoint + '/create', driver);
   return response.data;
 };
 
@@ -27,16 +27,16 @@ interface IDriverId {
 }
 
 export const getDriverById = async (id: IDriverId) => {
-  const response = await axiosInstance.get(endpoint + "/profile/" + id);
+  const response = await axiosInstance.get(endpoint + '/profile/' + id);
   return response.data;
 };
 
 export const createDriverById = async (id: IDriverId) => {
-  const response = await axiosInstance.post(endpoint + "/create", id);
+  const response = await axiosInstance.post(endpoint + '/create', id);
   return response.data;
 };
 
 export const deleteDriverById = async (id: IDriverId) => {
-  const response = await axiosInstance.delete(endpoint + "/profile/" + id);
+  const response = await axiosInstance.delete(endpoint + '/profile/' + id);
   return response.data;
 };

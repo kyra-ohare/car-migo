@@ -1,7 +1,7 @@
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { axiosInstance, axiosInstanceNoAuth } from "../integration/instance";
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+import { axiosInstanceNoAuth } from '../integration/instance';
 
-const endpoint = "/v1/journeys";
+const endpoint = '/v1/journeys';
 
 export interface IJourneyRequest {
   locationIdFrom: string;
@@ -21,7 +21,7 @@ export interface IJourneyResponse {
 }
 
 export const useJourneySearchQuery = async (params: IJourneyRequest) => {
-  const response = await axiosInstanceNoAuth.get(endpoint + "/search", {
+  const response = await axiosInstanceNoAuth.get(endpoint + '/search', {
     params: {
       locationIdFrom: params.locationIdFrom,
       locationIdTo: params.locationIdTo,
@@ -36,15 +36,15 @@ export const useJourneySearchQuery2 = (
   params: IJourneyRequest
 ): UseQueryResult<IJourneyResponse> =>
   useQuery({
-    queryKey: ["getJourneySearch"],
+    queryKey: ['getJourneySearch'],
     queryFn: async () =>
       (
-        await axiosInstanceNoAuth.get(endpoint + "/search", {
+        await axiosInstanceNoAuth.get(endpoint + '/search', {
           params: {
             locationIdFrom: params.locationIdFrom,
             locationIdTo: params.locationIdTo,
-            dateTimeFrom: "2021-11-30T09:00:00Z",
-            dateTimeTo: "2023-12-01T09:00:00Z",
+            dateTimeFrom: '2021-11-30T09:00:00Z',
+            dateTimeTo: '2023-12-01T09:00:00Z',
           },
         })
       ).data,

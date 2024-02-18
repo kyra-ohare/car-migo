@@ -1,1 +1,1 @@
-export type { ISearchFormValues } from "./Search";
+export type { ISearchFormValues } from './Search';

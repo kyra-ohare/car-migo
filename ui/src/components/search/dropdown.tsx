@@ -1,6 +1,6 @@
-import TextField from "@mui/material/TextField";
-import { locations } from "../../constants/location";
-import { FloatingAutocomplete } from "./styled";
+import { TextField } from '@mui/material';
+import { locations } from '../../constants/location';
+import { FloatingAutocomplete } from './styled';
 
 export default function LocationDropdown(props: any) {
   return (
@@ -13,7 +13,7 @@ export default function LocationDropdown(props: any) {
         value: { value: any }
       ) => option?.value === value?.value}
       onChange={(_event, value) =>
-        props.onChange(props.name, value?.value || "")
+        props.onChange(props.name, value?.value || '')
       }
       options={locations}
       sx={{ width: 300, mr: 0.5 }}
@@ -29,5 +29,3 @@ export default function LocationDropdown(props: any) {
     />
   );
 }
-
-// the exclamation at the end of an expression means the expression will only get executed if the value is NOT null.

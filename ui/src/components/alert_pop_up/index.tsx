@@ -1,4 +1,4 @@
-import { Snackbar, Alert } from "@mui/material";
+import { Alert, Snackbar } from '@mui/material';
 
 export default function AlertPopUp(props: any) {
   return (
@@ -6,7 +6,7 @@ export default function AlertPopUp(props: any) {
       <Alert
         onClose={props.onClose}
         severity={props.severity}
-        sx={{ width: "100%" }}
+        sx={{ width: '100' }}
       >
         {props.message}
       </Alert>

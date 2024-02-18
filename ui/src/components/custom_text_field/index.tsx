@@ -1,4 +1,4 @@
-import { TextField, styled } from "@mui/material";
+import { TextField, styled } from '@mui/material';
 
 const FloatingTextField = styled(TextField)`
   label.Mui-focused {
@@ -13,7 +13,5 @@ const FloatingTextField = styled(TextField)`
 `;
 
 export default function CustomTextField(props: any) {
-  return (
-    <FloatingTextField fullWidth sx={{ mt: "20px" }} {...props} />
-  );
+  return <FloatingTextField fullWidth sx={{ mt: '20px' }} {...props} />;
 }

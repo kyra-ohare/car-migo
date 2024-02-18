@@ -8,9 +8,9 @@ export default {
   PASSWORD_MAX_SIZE: thisPasswordMaxSize,
   PASSWORD_RULE: /^(?=.*[A-Z])(?=.*[a-z0-9@#$%^&+=!?]).{8,65}$/,
   VALID_PASSWORD_MESSAGE:
-    "Password must be between " +
+    'Password must be between ' +
     thisPasswordMinSize +
-    " and " +
+    ' and ' +
     thisPasswordMaxSize +
-    " characters and at least 2 of the following: alphanumeric characters and/or one special character ( @#$%^&+=!? ) and/or one capital letter.",
+    ' characters and at least 2 of the following: alphanumeric characters and/or one special character ( @#$%^&+=!? ) and/or one capital letter.',
 };

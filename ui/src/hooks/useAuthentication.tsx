@@ -1,4 +1,4 @@
-import { axiosInstanceNoAuth } from "../integration/instance";
+import { axiosInstanceNoAuth } from '../integration/instance';
 
 interface IAuthenticationRequest {
   email: string;
@@ -6,7 +6,7 @@ interface IAuthenticationRequest {
 }
 
 const authenticate = async (request: IAuthenticationRequest) => {
-  const response = await axiosInstanceNoAuth.post("/v1/login", request);
+  const response = await axiosInstanceNoAuth.post('/v1/login', request);
   return response.data;
 };
 

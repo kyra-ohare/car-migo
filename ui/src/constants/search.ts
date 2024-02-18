@@ -1,6 +1,6 @@
 export const initialSearchValues = {
-  locationIdFrom: "",
-  locationIdTo: "",
-  dateTimeFrom: "",
-  dateTimeTo: "",
+  locationIdFrom: '',
+  locationIdTo: '',
+  dateTimeFrom: '',
+  dateTimeTo: '',
 };

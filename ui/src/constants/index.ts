@@ -1,1 +1,1 @@
-export { initialSearchValues } from "./search";
+export { initialSearchValues } from './search';
