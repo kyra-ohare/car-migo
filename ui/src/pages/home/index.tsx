@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import { Box, Button, Grid } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
-import { ActionAreaCard, Footer, Search } from "../../components/index";
-import Car from "../../assets/car.png";
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Grid } from '@mui/material';
+import { Info } from '@mui/icons-material';
 import {
   CatchyMessage,
   TopRightButtonsContainer,
@@ -10,11 +8,13 @@ import {
   WelcomeContainer,
   WelcomeMessage,
   WelcomeMessageContainer,
-} from "./styled";
-import navigation from "../../constants/navigation";
-import { useAuthStore } from "../../utils/authStore";
+} from './styled';
+import Car from '../../assets/car.png';
+import navigation from '../../constants/navigation';
+import { ActionAreaCard, Footer, Search } from '../../components/index';
+import { useAuthStore } from '../../utils/authStore';
 
-const Homepage = () => {
+export default function Homepage() {
   const { isAuthorized } = useAuthStore();
 
   const navigate = useNavigate();
@@ -36,10 +36,10 @@ const Homepage = () => {
           {isAuthorized === false && (
             <>
               <TopRightButtonsContainer>
-                <Button variant="contained" onClick={goToSignUp}>
+                <Button variant='contained' onClick={goToSignUp}>
                   Sign up
                 </Button>
-                <Button variant="contained" onClick={goToSignIn}>
+                <Button variant='contained' onClick={goToSignIn}>
                   Sign in
                 </Button>
               </TopRightButtonsContainer>
@@ -51,9 +51,9 @@ const Homepage = () => {
             item
             xs={8}
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <CatchyMessage>
@@ -63,18 +63,18 @@ const Homepage = () => {
           </Grid>
           <Grid item xs={4}>
             <Box
-              component="img"
+              component='img'
               sx={{
-                display: "inline-block",
-                float: "inline-end",
+                display: 'inline-block',
+                float: 'inline-end',
                 height: 240,
                 width: 400,
                 maxHeight: { xs: 240, md: 240 },
                 maxWidth: { xs: 400, md: 400 },
-                margin: "10px",
-                verticalAlign: "middle",
+                margin: '10px',
+                verticalAlign: 'middle',
               }}
-              alt="car-migo"
+              alt='car-migo'
               src={Car}
             />
           </Grid>
@@ -82,11 +82,11 @@ const Homepage = () => {
         <Search />
       </UpperHalfContainer>
       <ActionAreaCard
-        id="boo"
-        label="boo"
-        icon={<InfoIcon style={{ width: 60, height: 60 }} />}
-        imageAlt="Information"
-        title="What is it?"
+        id='boo'
+        label='boo'
+        icon={<Info style={{ width: 60, height: 60 }} />}
+        imageAlt='Information'
+        title='What is it?'
         text={
           <>
             It is a match-making system for drivers and passengers. You can
@@ -103,11 +103,11 @@ const Homepage = () => {
         }
       />
       <ActionAreaCard
-        id="boo"
-        label="boo"
-        icon={<InfoIcon style={{ width: 60, height: 60 }} />}
-        imageAlt="Information"
-        title="Why?"
+        id='boo'
+        label='boo'
+        icon={<Info style={{ width: 60, height: 60 }} />}
+        imageAlt='Information'
+        title='Why?'
         text={
           <>
             It is great for the environment once there will be less CO
@@ -126,6 +126,4 @@ const Homepage = () => {
       <Footer />
     </>
   );
-};
-
-export default Homepage;
+}

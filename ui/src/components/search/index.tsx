@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { Box } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { SearchContainer } from './styled';
 import {
+  AlertSpan,
   BasicDateTimePicker,
   CustomButton,
   Journey,
   LocationDropdown,
 } from '../../components/index';
-import AlertSpan from '../alert_span';
-import { useJourneySearchQuery } from '../../hooks/useJourney';
-import { ISearchFormValues } from '../../interfaces';
+import { SearchContainer } from './styled';
 import { initialSearchValues } from '../../constants';
+import { ISearchFormValues } from '../../interfaces';
+import { useJourneySearchQuery } from '../../hooks/useJourney';
 
 const validationSchema = Yup.object().shape({
   locationIdFrom: Yup.string().required('coming from...'),

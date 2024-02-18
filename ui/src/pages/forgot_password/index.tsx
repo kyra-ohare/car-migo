@@ -1,4 +1,4 @@
-import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
+import { BuildRounded } from '@mui/icons-material';
 
 export default function ForgotPassword() {
   return (
@@ -6,7 +6,7 @@ export default function ForgotPassword() {
       <h1>Forgot Password</h1>
       <br />
       <div>
-        <BuildRoundedIcon style={{ width: 60, height: 60 }} />
+        <BuildRounded style={{ width: 60, height: 60 }} />
       </div>
       <p>Under construction</p>
     </div>

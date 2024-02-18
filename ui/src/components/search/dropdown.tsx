@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
-import { locations } from '../../constants/location';
 import { FloatingAutocomplete } from './styled';
+import { locations } from '../../constants/location';
 
 export default function LocationDropdown(props: any) {
   return (

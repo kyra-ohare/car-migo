@@ -1,5 +1,6 @@
 import ActionAreaCard from './card';
 import AlertPopUp from './alert_pop_up';
+import AlertSpan from './alert_span';
 import BasicDatePicker from './calendar';
 import BasicDateTimePicker from './calendarTime';
 import CustomButton from './custom_button';
@@ -18,6 +19,7 @@ import YesNoRadioButtonsGroup from './radio';
 export {
   ActionAreaCard,
   AlertPopUp,
+  AlertSpan,
   BasicDatePicker,
   BasicDateTimePicker,
   CustomButton,

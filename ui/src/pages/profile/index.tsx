@@ -1,134 +1,97 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import {
   Box,
   Container,
+  createTheme,
   CssBaseline,
   Grid,
-  createTheme,
+  InputAdornment,
   ThemeProvider,
   Typography,
-  InputAdornment,
-} from "@mui/material";
-import InfoOutlined from "@mui/icons-material/InfoOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
+} from '@mui/material';
+import { InfoOutlined, Delete } from '@mui/icons-material';
 import {
-  Footer,
-  Loader,
+  AlertPopUp,
   CustomButton,
   CustomTextField,
   CustomTooltip,
-  AlertPopUp,
-} from "../../components";
-import { CatchyMessage } from "../home/styled";
-import { useNavigate } from "react-router-dom";
-import navigation from "../../constants/navigation";
-import { useGetProfile } from "../../hooks/usePlatformUser";
-import { useMutation } from "@tanstack/react-query";
-import { createPassenger, deletePassenger } from "../../hooks/usePassenger";
-import { createDriver, deleteDriver } from "../../hooks/useDriver";
+  Footer,
+  Loader,
+} from '../../components';
+import navigation from '../../constants/navigation';
+import { CatchyMessage } from '../home/styled';
+import { useGetProfile } from '../../hooks/usePlatformUser';
+import { createDriver, deleteDriver } from '../../hooks/useDriver';
+import { createPassenger, deletePassenger } from '../../hooks/usePassenger';
 
 export default function Profile() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [dob, setDob] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isPassenger, setIsPassenger] = useState<boolean>(false);
   const [isDriver, setIsDriver] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const { isSuccess, data } = useGetProfile();
 
-  useEffect(() => {
-    // useEffect keeps an eye on data changes.
-    console.log(data);
-    if (isSuccess && data) {
-      setFirstName(data.firstName);
-      setLastName(data.lastName);
-      setDob(parseDob(data.dob));
-      setEmail(data.email);
-      setPhoneNumber(data.phoneNumber);
-      setIsDriver(data.driver);
-      setIsPassenger(data.passenger);
-    }
-  }, [isSuccess, data]); // passing an empty array because I want it to render only once.
-
   const parseDob = (dob: string) => {
-    const findT = dob.indexOf("T");
-    const arrayDate = dob.substring(0, findT).split("-");
-    return arrayDate[2] + "/" + arrayDate[1] + "/" + arrayDate[0];
+    const findT = dob.indexOf('T');
+    const arrayDate = dob.substring(0, findT).split('-');
+    return arrayDate[2] + '/' + arrayDate[1] + '/' + arrayDate[0];
   };
 
   const navigate = useNavigate();
   const signOut = () => {
-    console.log("remove JWT from context");
     navigate(navigation.HOME_PAGE);
   };
 
   const deleteAccount = () => {
-    console.log("remove account");
     navigate(navigation.HOME_PAGE);
   };
 
   const mustateDeletePassenger = useMutation({
     mutationFn: deletePassenger,
-    onSuccess: (data) => {
-      console.log("Success!", data);
-    },
-    onError: (error) => {
-      console.error("Error deleting a passenger in Profile!", error);
-    },
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const mutateCreatePassenger = useMutation({
     mutationFn: createPassenger,
-    onSuccess: (data) => {
-      console.log("Success!", data);
-    },
-    onError: (error) => {
-      console.error("Error creating a passenger in Profile!", error);
-    },
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const handlePassenger = () => {
     if (isPassenger) {
-      console.error("boo");
       mustateDeletePassenger.mutate();
       setIsPassenger(false);
       setSnackbarMessage("Oh no! You're not a passenger anymore.");
-      setSnackbarSeverity("error");
+      setSnackbarSeverity('error');
       setOpenSnackbar(true);
     } else if (!isPassenger) {
       mutateCreatePassenger.mutate();
       setIsPassenger(true);
       setSnackbarMessage("Yabba dabba doo! You've just become a passenger.");
-      setSnackbarSeverity("success");
+      setSnackbarSeverity('success');
       setOpenSnackbar(true);
-    } else {
-      console.error("Error in Profile handlePassenger()");
     }
   };
 
   const mustateDeleteDriver = useMutation({
     mutationFn: deleteDriver,
-    onSuccess: (data) => {
-      console.log("Success!", data);
-    },
-    onError: (error) => {
-      console.error("Error deleting a driver in Profile!", error);
-    },
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const mutateCreateDriver = useMutation({
     mutationFn: createDriver,
-    onSuccess: (data) => {
-      console.log("Success!", data);
-    },
-    onError: (error) => {
-      console.error("Error creating a driver in Profile!", error);
-    },
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const handleDriver = () => {
@@ -136,18 +99,16 @@ export default function Profile() {
       mustateDeleteDriver.mutate();
       setIsDriver(false);
       setSnackbarMessage("Oh no! You're not a driver anymore.");
-      setSnackbarSeverity("error");
+      setSnackbarSeverity('error');
       setOpenSnackbar(true);
     } else if (!isDriver) {
       mutateCreateDriver.mutate({
-        licenseNumber: "11111",
+        licenseNumber: '11111',
       });
       setIsDriver(true);
       setSnackbarMessage("Yippee! You've just become a driver.");
-      setSnackbarSeverity("success");
+      setSnackbarSeverity('success');
       setOpenSnackbar(true);
-    } else {
-      console.error("Error in Profile handleDriver()");
     }
   };
 
@@ -159,12 +120,12 @@ export default function Profile() {
     return isPassenger === true ? (
       <>
         <Grid item xs>
-          <Grid container justifyContent="center">
-            <Typography variant="body1">You are a passenger</Typography>
-            <InputAdornment position="start" sx={{ mt: 1.5 }}>
+          <Grid container justifyContent='center'>
+            <Typography variant='body1'>You are a passenger</Typography>
+            <InputAdornment position='start' sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
-                text="As a passenger, you can book journeys."
+                text='As a passenger, you can book journeys.'
                 link="Click here if you don't want to be a passenger anymore."
                 behaviour={handlePassenger}
               />
@@ -176,7 +137,7 @@ export default function Profile() {
       <>
         <Grid item xs>
           <CustomButton
-            label="Become a Passenger"
+            label='Become a Passenger'
             sx={{ mt: 3 }}
             onClick={handlePassenger}
           />
@@ -189,12 +150,12 @@ export default function Profile() {
     return isDriver === true ? (
       <>
         <Grid item xs>
-          <Grid container justifyContent="center">
-            <Typography variant="body1">You are a driver</Typography>
-            <InputAdornment position="start" sx={{ mt: 1.5 }}>
+          <Grid container justifyContent='center'>
+            <Typography variant='body1'>You are a driver</Typography>
+            <InputAdornment position='start' sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
-                text="As a driver, you can create journeys."
+                text='As a driver, you can create journeys.'
                 link="Click here if you don't want to be a driver anymore."
                 behaviour={handleDriver}
               />
@@ -205,7 +166,7 @@ export default function Profile() {
     ) : (
       <>
         <Grid item xs>
-          <CustomButton label="Become a Driver" onClick={handleDriver} />
+          <CustomButton label='Become a Driver' onClick={handleDriver} />
         </Grid>
       </>
     );
@@ -226,43 +187,56 @@ export default function Profile() {
   }
 
   const defaultTheme = createTheme();
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setDob(parseDob(data.dob));
+      setEmail(data.email);
+      setPhoneNumber(data.phoneNumber);
+      setIsDriver(data.driver);
+      setIsPassenger(data.passenger);
+    }
+  }, [isSuccess, data]);
+
   return !isSuccess ? (
     <Loader />
   ) : (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
-        <Box component="form" noValidate sx={{ mt: 3 }}>
+        <Box component='form' noValidate sx={{ mt: 3 }}>
           <CatchyMessage>About you</CatchyMessage>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id="read-only-first-name"
-                label="First Name"
+                id='read-only-first-name'
+                label='First Name'
                 value={firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id="read-only-last-name"
-                label="Last Name"
+                id='read-only-last-name'
+                label='Last Name'
                 value={lastName}
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id="read-only-dob"
-                label="Date of Birth"
+                id='read-only-dob'
+                label='Date of Birth'
                 value={dob}
               />
             </Grid>
             <Grid item xs={12}>
-              <ThisTextField id="read-only-email" label="Email" value={email} />
+              <ThisTextField id='read-only-email' label='Email' value={email} />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id="read-only-phone-number"
-                label="Phone Number"
+                id='read-only-phone-number'
+                label='Phone Number'
                 value={phoneNumber}
               />
             </Grid>
@@ -274,18 +248,18 @@ export default function Profile() {
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type="submit"
-                label="Sign Out"
+                type='submit'
+                label='Sign Out'
                 sx={{ mt: 6, mb: 3 }}
                 onClick={signOut}
               />
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type="submit"
-                label="Delete my account"
-                color="error"
-                endIcon={<DeleteIcon />}
+                type='submit'
+                label='Delete my account'
+                color='error'
+                endIcon={<Delete />}
                 onClick={deleteAccount}
               />
             </Grid>

@@ -1,20 +1,16 @@
 import { Autocomplete, TextField } from '@mui/material';
-import React from 'react';
-// import { Controller } from 'react-hook-form';
 
 export default function Playground() {
   return (
     <Autocomplete
-    disablePortal
-    id="combo-box-demo"
-    options={top100Films}
-    sx={{ width: 300 }}
-    renderInput={(params) => <TextField {...params} label="Movie" />}
-    onChange={(event, value) => {
-      console.log(value?.label);
-    }}
-  />
-);
+      disablePortal
+      id='combo-box-demo'
+      options={top100Films}
+      sx={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label='Movie' />}
+      onChange={(_event, value) => {}}
+    />
+  );
 }
 
 const top100Films = [

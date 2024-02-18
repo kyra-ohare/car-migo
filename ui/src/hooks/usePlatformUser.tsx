@@ -1,5 +1,5 @@
-import { axiosInstance, axiosInstanceNoAuth } from '../integration/instance';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { axiosInstance, axiosInstanceNoAuth } from '../integration/instance';
 
 const endpoint = '/v1/users';
 

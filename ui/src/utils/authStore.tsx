@@ -1,4 +1,4 @@
-import { create } from "zustand"; // it'll be availabe across the board.
+import { create } from 'zustand';
 
 interface IAuthStore {
   isAuthorized: boolean | null;

@@ -1,16 +1,15 @@
-// import NavBar from "./components/navigation";
-import Homepage from "./home";
-import Profile from "./profile";
-import SignIn from "./sign_in";
-import SignUp from "./sign_up";
-import Playground from "./playground";
-import ForgotPassword from "./forgot_password";
-import ConfirmEmail from "./confirm_email";
+import ConfirmEmail from './confirm_email';
+import ForgotPassword from './forgot_password';
+import Homepage from './home';
+import Playground from './playground';
+import Profile from './profile';
+import SignIn from './sign_in';
+import SignUp from './sign_up';
 
 export {
   ConfirmEmail,
-  Homepage,
   ForgotPassword,
+  Homepage,
   Playground,
   Profile,
   SignIn,

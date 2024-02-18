@@ -13,13 +13,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { LogoDev } from '@mui/icons-material';
-import MenuIcon from '@mui/icons-material/Menu';
-import navigation from '../../constants/navigation';
-import useTokens from '../../utils/tokenStore';
-import { useAuthStore } from '../../utils/authStore';
-import constants from '../../constants/app_constants';
+import { LogoDev, Menu as MenuIcon } from '@mui/icons-material';
 import Car from '../../assets/car.png';
+import constants from '../../constants/app_constants';
+import navigation from '../../constants/navigation';
+import { useTokens } from '../../utils/tokenStore';
+import { useAuthStore } from '../../utils/authStore';
 
 const pages = [
   { label: 'Home', path: navigation.HOME_PAGE },
@@ -28,7 +27,7 @@ const pages = [
   { label: 'Playground', path: navigation.PLAYGROUND },
 ];
 
-const settings = [constants.profile, constants.your_journeys, constants.logout];
+const settings = [constants.profile, constants.yourJourneys, constants.logout];
 
 export default function NavBar({ children }: { children: React.ReactNode }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

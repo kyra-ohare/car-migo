@@ -1,27 +1,32 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, InputAdornment } from "@mui/material";
-import { CatchyMessage, WelcomeMessage } from "../home/styled";
-import { EmailRounded } from "@mui/icons-material";
-import { confirmUserEmail } from "../../hooks/usePlatformUser";
-import { useMutation } from "@tanstack/react-query";
-import { DialogBox, CustomButton, CustomTextField, AlertPopUp } from "../../components";
-import navigation from "../../constants/navigation";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { Box, InputAdornment } from '@mui/material';
+import { EmailRounded } from '@mui/icons-material';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import {
+  DialogBox,
+  CustomButton,
+  CustomTextField,
+  AlertPopUp,
+} from '../../components';
+import navigation from '../../constants/navigation';
+import { CatchyMessage, WelcomeMessage } from '../home/styled';
+import { confirmUserEmail } from '../../hooks/usePlatformUser';
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required("Email must not be empty."),
+  email: Yup.string().required('Email must not be empty.'),
 });
 
 const initialValues = {
-  email: "",
+  email: '',
 };
 
 export default function ConfirmEmail() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -34,13 +39,13 @@ export default function ConfirmEmail() {
 
   const mutateConfirmEmail = useMutation({
     mutationFn: confirmUserEmail,
-    onSuccess: (data) => {
+    onSuccess: () => {
       setOpenDialog(true);
     },
     onError: (error) => {
       const errorMsg = error.response?.data.message;
-      if (errorMsg === "User is already active") {
-        setSnackbarMessage("Yayyy! You have already confirmed your email.");
+      if (errorMsg === 'User is already active') {
+        setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else {
         setSnackbarMessage(errorMsg);
       }
@@ -67,7 +72,7 @@ export default function ConfirmEmail() {
       <DialogBox
         open={openDialog}
         state={dialogState}
-        title="Email confirmed"
+        title='Email confirmed'
         text="Let's sign in!"
         redirect={dialogRedirect}
       />
@@ -80,10 +85,10 @@ export default function ConfirmEmail() {
 
   return (
     <Box
-      component="form"
+      component='form'
       onSubmit={formik.handleSubmit}
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "30vw" },
+        '& .MuiTextField-root': { m: 1, width: '30vw' },
       }}
     >
       <WelcomeMessage>Confirm your email</WelcomeMessage>
@@ -92,15 +97,15 @@ export default function ConfirmEmail() {
       </CatchyMessage>
       <div>
         <CustomTextField
-          id="confirm-email-address"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
+          id='confirm-email-address'
+          label='Email Address'
+          name='email'
+          autoComplete='email'
           value={formik.values.email}
           onChange={formik.handleChange}
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
+              <InputAdornment position='start'>
                 <EmailRounded />
               </InputAdornment>
             ),
@@ -110,14 +115,14 @@ export default function ConfirmEmail() {
         />
       </div>
       <div>
-        <CustomButton label="Confirm Email" type="submit" sx={{ mt: 3 }} />
+        <CustomButton label='Confirm Email' type='submit' sx={{ mt: 3 }} />
       </div>
       <AlertPopUp
-          open={openSnackbar}
-          onClose={handleCloseSnackbar}
-          severity="success"
-          message={snackbarMessage}
-        />
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        severity='success'
+        message={snackbarMessage}
+      />
     </Box>
   );
 }

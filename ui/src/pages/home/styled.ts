@@ -1,12 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const UpperHalfContainer = styled.div`
-//   background-color: #000066;
-//   maxwidth: xl;
-//   display: flex;
-//   width: 100%
-//   margin: 0px
-//   padding: 0px
   justify-content: space-between;
 `;
 
@@ -16,9 +10,7 @@ export const WelcomeContainer = styled.div`
 
 export const WelcomeMessage = styled.h1`
   font-family: Arial, sans-serif;
-  // font-size: 4vw;
   font-style: normal;
-//   color: #ffffff;
 `;
 
 export const WelcomeMessageContainer = styled.div`
@@ -38,9 +30,7 @@ export const CatchyMessageContainer = styled.div`
 
 export const CatchyMessage = styled.h2`
   font-family: Arial, sans-serif;
-  // font-size: 2vw;
   font-style: normal;
-//   color: #ffffff;
 `;
 
 export const CarLogoContainer = styled.div`
@@ -50,8 +40,3 @@ export const CarLogoContainer = styled.div`
   maxWidth: { xs: 100, md: 100 };
   marginRight: "10px";
 `;
-
-//   display: flex;
-//   width: 80vw;
-//   justify-content: space-between;
-//   margin: 16px;

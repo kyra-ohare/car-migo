@@ -1,9 +1,9 @@
-import { jwtDecode } from "jwt-decode";
-import { axiosInstance, setBearerToken } from "../integration/instance";
-import { useAuthStore } from "./authStore";
-import { useNavigate } from "react-router-dom";
-import constants from "../constants/app_constants";
-import navigation from "../constants/navigation";
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { axiosInstance, setBearerToken } from '../integration/instance';
+import { useAuthStore } from './authStore';
+import constants from '../constants/app_constants';
+import navigation from '../constants/navigation';
 
 interface IAccessToken {
   iat: number;
@@ -17,7 +17,7 @@ interface IUseTokens {
   clearLocalStorageTokens: () => void;
 }
 
-const useTokens = (): IUseTokens => {
+export const useTokens = (): IUseTokens => {
   const { setIsAuthorized } = useAuthStore();
   const navigate = useNavigate();
 
@@ -30,20 +30,18 @@ const useTokens = (): IUseTokens => {
     const nowDate = new Date();
 
     if (accessTokenDate > nowDate) {
-      // localStorage is a React built-in function
       localStorage.setItem(constants.accessToken, tokens.accessToken);
       localStorage.setItem(constants.refreshToken, tokens.refreshToken);
 
       setBearerToken(tokens.accessToken);
       setIsAuthorized(true);
     }
-    // car-migo doesn't have refresh token yet
     if (accessTokenDate < nowDate && refreshTokenDate > nowDate) {
       const config = {
         headers: { Authorization: `Bearer ${tokens.refreshToken}` },
       };
 
-      const resp = await axiosInstance.get("/api/authenticate/refresh", config);
+      const resp = await axiosInstance.get('/api/authenticate/refresh', config);
 
       localStorage.setItem(constants.accessToken, resp.data.accessToken);
       localStorage.setItem(constants.refreshToken, resp.data.refreshToken);
@@ -83,4 +81,3 @@ const useTokens = (): IUseTokens => {
   };
 };
 
-export default useTokens;

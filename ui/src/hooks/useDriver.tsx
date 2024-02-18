@@ -21,22 +21,21 @@ export const deleteDriver = async () => {
   return response.data;
 };
 
-// These are Admin APIs
 interface IDriverId {
   id: number;
 }
 
-export const getDriverById = async (id: IDriverId) => {
+export const getAdminDriverById = async (id: IDriverId) => {
   const response = await axiosInstance.get(endpoint + '/profile/' + id);
   return response.data;
 };
 
-export const createDriverById = async (id: IDriverId) => {
+export const createAdminDriverById = async (id: IDriverId) => {
   const response = await axiosInstance.post(endpoint + '/create', id);
   return response.data;
 };
 
-export const deleteDriverById = async (id: IDriverId) => {
+export const deleteAdminDriverById = async (id: IDriverId) => {
   const response = await axiosInstance.delete(endpoint + '/profile/' + id);
   return response.data;
 };

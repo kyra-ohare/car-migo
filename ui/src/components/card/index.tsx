@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import React from 'react';
 import { Grid, Typography } from '@mui/material';
 
 interface ICard {
   id: string;
   label: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
   imageAlt: string;
   title: string;
-  text: ReactNode;
+  text: React.ReactNode;
 }
 
 export default function ActionAreaCard(props: ICard) {
