@@ -11,9 +11,9 @@ import {
   Journey,
   LocationDropdown,
 } from '../../components/index';
-import { SearchContainer } from './styled';
-import { initialSearchValues } from '../../constants';
-import { ISearchFormValues } from '../../interfaces';
+import { StyledSearchContainer } from './styled';
+import { initialSearchValues } from './initial_values';
+import { IJourneyEntity, ISearchFormValues } from '../../interfaces';
 import { useJourneySearchQuery } from '../../hooks/useJourney';
 
 const validationSchema = Yup.object().shape({
@@ -26,10 +26,19 @@ const validationSchema = Yup.object().shape({
 export default function Search() {
   const [selectedLeaving, setSelectedLeaving] = useState('');
   const [selectedGoing, setSelectedGoing] = useState('');
-  const [journeys, setJourneys] = useState<any[]>();
+  const [journeys, setJourneys] = useState<IJourneyEntity[]>();
   const [showResults, setShowResults] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [searchParams, setSearchParams] = useState(initialSearchValues);
+
+  const resultState = (state: boolean) => {
+    setShowResults(state);
+    setJourneys(undefined);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
 
   const handleFormSubmit = (values: ISearchFormValues) => {
     setSearchParams((prevSearchParams) => ({
@@ -40,6 +49,14 @@ export default function Search() {
       locationIdTo: values.locationIdTo,
     }));
   };
+
+  const formik = useFormik({
+    initialValues: initialSearchValues,
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+  });
 
   const mutateSearchJourneys = useMutation({
     mutationFn: useJourneySearchQuery,
@@ -54,22 +71,6 @@ export default function Search() {
     },
   });
 
-  const resultState = (state: boolean) => {
-    setShowResults(state);
-    setJourneys(undefined);
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
-  const formik = useFormik({
-    initialValues: initialSearchValues,
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      handleFormSubmit(values);
-    },
-  });
-
   useEffect(() => {
     if (searchParams.locationIdTo) {
       mutateSearchJourneys.mutate(searchParams);
@@ -78,7 +79,7 @@ export default function Search() {
 
   return (
     <Box component='form' noValidate onSubmit={formik.handleSubmit}>
-      <SearchContainer>
+      <StyledSearchContainer>
         <LocationDropdown
           id='leaving-from-dropdown'
           label='Leaving From'
@@ -101,7 +102,6 @@ export default function Search() {
           formikErrors={formik.errors.locationIdTo}
           formikTouched={formik.touched.locationIdTo}
         />
-
         <BasicDateTimePicker
           name='dateTimeFrom'
           value={formik.values.dateTimeFrom}
@@ -119,7 +119,7 @@ export default function Search() {
           formikTouched={formik.touched.dateTimeTo}
         />
         <CustomButton type='submit' label='Search' />
-      </SearchContainer>
+      </StyledSearchContainer>
       {showResults && journeys && journeys[0] && (
         <Journey
           results={journeys}

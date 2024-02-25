@@ -1,7 +1,8 @@
 import { Alert, AlertTitle, Box } from '@mui/material';
 import { CustomButton } from '..';
+import { IAlertSpanProps } from '../../interfaces';
 
-export default function AlertSpan(props: any) {
+export default function AlertSpan(props: IAlertSpanProps) {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}

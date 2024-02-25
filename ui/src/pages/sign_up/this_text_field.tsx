@@ -1,9 +1,10 @@
-import { CustomTextField } from "../../components";
+import { CustomTextField } from '../../components';
+import { ICustomTextFieldProps } from '../../interfaces';
 
-export function ThisTextField(props: any) {
-    return (
-      <>
-        <CustomTextField sx={{ mt: 1 }} {...props} />
-      </>
-    );
-  }
+export function ThisTextField(props: ICustomTextFieldProps) {
+  return (
+    <>
+      <CustomTextField sx={{ mt: 1 }} {...props} />
+    </>
+  );
+}

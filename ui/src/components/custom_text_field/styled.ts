@@ -1,6 +1,6 @@
 import { TextField, styled } from '@mui/material';
 
-export const FloatingTextField = styled(TextField)`
+export const StyledTextField = styled(TextField)`
   label.Mui-focused {
     color: #1976d2;
   }
@@ -9,5 +9,5 @@ export const FloatingTextField = styled(TextField)`
     border-radius: 8px;
     color: 'black',
     backgroundColor: 'white',
-}
+  }
 `;

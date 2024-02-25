@@ -8,9 +8,10 @@ import {
   RadioGroup,
 } from '@mui/material';
 import { Info } from '@mui/icons-material';
-import { BootstrapTooltip } from './styled';
+import { StyledTooltip } from './styled';
+import { IYesNoRadioButtonsGroupProps } from '../../interfaces';
 
-export default function YesNoRadioButtonsGroup(props: any) {
+export default function YesNoRadioButtonsGroup(props: IYesNoRadioButtonsGroupProps) {
   return (
     <FormControl>
       <Grid container spacing={1} sx={{ marginTop: '20px', display: 'flex' }}>
@@ -26,11 +27,11 @@ export default function YesNoRadioButtonsGroup(props: any) {
           </FormLabel>
         </Grid>
         <Grid>
-          <BootstrapTooltip title={props.tooltip}>
+          <StyledTooltip title={props.tooltip}>
             <IconButton>
               <Info />
             </IconButton>
-          </BootstrapTooltip>
+          </StyledTooltip>
         </Grid>
         <Grid>
           <RadioGroup

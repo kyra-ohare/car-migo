@@ -1,58 +1,52 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { axiosInstance, axiosInstanceNoAuth } from '../integration/instance';
+import {
+  IPlatformUserCreation,
+  IPlatformUserEmail,
+  IPlatformUserEntity,
+} from '../interfaces';
 
 const endpoint = '/v1/users';
 
-interface ICreateUser {
-  firstName: string;
-  lastName: string;
-  dob: string;
-  phoneNumber: string;
-  email: string;
-  password: string | undefined;
-  passenger: boolean;
-  driver: boolean;
-}
-
-export const useGetProfile = (): UseQueryResult<ICreateUser> =>
+export const useUserProfile = (): UseQueryResult<IPlatformUserEntity> =>
   useQuery({
     queryKey: ['useGetProfile'],
     queryFn: async () => (await axiosInstance.get(endpoint + '/profile')).data,
   });
 
-export const createUser = async (user: ICreateUser) => {
+export const useUserCreation = async (user: IPlatformUserCreation) => {
   const response = await axiosInstanceNoAuth.post(endpoint + '/create', user);
   return response.data;
 };
 
-export const confirmUserEmail = async (email: string) => {
+export const useEmailConfirmation = async (email: IPlatformUserEmail) => {
   const response = await axiosInstanceNoAuth.post(
     endpoint + '/confirm-email?email=' + email
   );
   return response.data;
 };
 
-export const patchUser = async (user: ICreateUser) => {
+export const useUserPatch = async (user: IPlatformUserEntity) => {
   const response = await axiosInstance.patch(endpoint, user);
   return response.data;
 };
 
-export const deleteUser = async () => {
+export const useUserDeletion = async () => {
   const response = await axiosInstance.delete(endpoint);
   return response.data;
 };
 
-export const getAdminUserProfileById = async (id: number) => {
+export const useAdminUserProfileById = async (id: number) => {
   const response = await axiosInstance.get(endpoint + '/' + id);
   return response.data;
 };
 
-export const patchAdminUserById = async (id: number) => {
+export const useAdminUserPatchById = async (id: number) => {
   const response = await axiosInstance.post(endpoint + '/' + id);
   return response.data;
 };
 
-export const deleteAdminUserById = async (id: number) => {
+export const useAdminUserDeletionById = async (id: number) => {
   const response = await axiosInstance.delete(endpoint + '/' + id);
   return response.data;
 };

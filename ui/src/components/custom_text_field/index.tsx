@@ -1,5 +1,6 @@
-import { FloatingTextField } from './styled';
+import { ICustomTextFieldProps } from '../../interfaces';
+import { StyledTextField } from './styled';
 
-export default function CustomTextField(props: any) {
-  return <FloatingTextField fullWidth sx={{ mt: '20px' }} {...props} />;
+export default function CustomTextField(props: ICustomTextFieldProps) {
+  return <StyledTextField fullWidth sx={{ mt: '20px' }} {...props} />;
 }

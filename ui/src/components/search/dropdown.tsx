@@ -1,10 +1,10 @@
 import { TextField } from '@mui/material';
-import { FloatingAutocomplete } from './styled';
+import { StyledAutocomplete } from './styled';
 import { locations } from '../../constants/location';
 
 export default function LocationDropdown(props: any) {
   return (
-    <FloatingAutocomplete
+    <StyledAutocomplete
       disablePortal
       id={props.id}
       value={props.value.value}

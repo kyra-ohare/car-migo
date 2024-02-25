@@ -1,7 +1,7 @@
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { styled } from '@mui/material';
 
-export const FloatingDateTimePicker = styled(DateTimePicker)`
+export const StyledDateTimePicker = styled(DateTimePicker)`
   label.Mui-focused {
     color: #1976d2;
   }

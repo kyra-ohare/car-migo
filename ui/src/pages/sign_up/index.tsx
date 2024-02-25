@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useFormik } from 'formik';
@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import * as Yup from 'yup';
 import {
   BasicDatePicker,
   Footer,
@@ -21,48 +20,35 @@ import {
   DialogBox,
   AlertPopUp,
 } from '../../components';
-import navigation from '../../constants/navigation';
-import validation from '../../constants/validation';
-import http_status from '../../constants/http_status';
-import { createUser } from '../../hooks/usePlatformUser';
 import { ThisTextField } from './this_text_field';
-
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required('First name must not be empty.'),
-  lastName: Yup.string().required('Last name must not be empty.'),
-  // dob: Yup.date().required("Date of birth must not be empty."), // todo
-  phoneNumber: Yup.string().required('Phone number must not be empty.'),
-  email: Yup.string()
-    .email('Invalid email format.')
-    .min(validation.EMAIL_MIN_SIZE)
-    .max(validation.EMAIL_MAX_SIZE)
-    .required('Email must not be empty.'),
-  password: Yup.string()
-    .matches(validation.PASSWORD_RULE, validation.VALID_PASSWORD_MESSAGE)
-    .required('Password must not be empty.'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords must match.')
-    .required('Confirm your password.'),
-});
-
-const initialValues = {
-  firstName: '',
-  lastName: '',
-  dob: null,
-  email: '',
-  phoneNumber: '',
-  password: '',
-  confirmPassword: '',
-};
+import { useUserCreation } from '../../hooks/usePlatformUser';
+import { httpStatus, navigation } from '../../constants';
+import { initialSignUpValues } from './initial_values';
+import { signUpValidationSchema } from './validation_schema';
+import { IPlatformUserCreation } from '../../interfaces';
 
 export default function SignUp() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const navigate = useNavigate();
+  const defaultTheme = createTheme();
+
+  const dialogState = (data: SetStateAction<boolean>) => {
+    setOpenDialog(data);
+  };
+
+  const dialogRedirect = () => {
+    navigate(navigation.CONFIRM_EMAIL_PAGE);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
+    initialValues: initialSignUpValues,
+    validationSchema: signUpValidationSchema,
     onSubmit: (values) => {
       handleFormSubmit(values);
     },
@@ -70,48 +56,31 @@ export default function SignUp() {
   });
 
   const mutateUser = useMutation({
-    mutationFn: createUser,
+    mutationFn: useUserCreation,
     onSuccess: () => {
       setOpenDialog(true);
     },
-    onError: (error) => {
-      const data = error.response?.data;
-      if (data.status === http_status.CONFLICT) {
-        setSnackbarMessage('Oh no! ' + data.message);
+    onError: (error: Error, variables: IPlatformUserCreation) => {
+      if (error.message.endsWith(httpStatus.CONFLICT)) {
+        setSnackbarMessage(
+          'Oh! We already have an account for ' + variables.email
+        );
         setOpenSnackbar(true);
       }
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFormSubmit = (values: any) => {
+  const handleFormSubmit = (values: IPlatformUserCreation) => {
     mutateUser.mutate({
-      // firstName: "My",
-      // lastName: "Test",
-      dob: '1960-02-26T00:00:00Z',
-      // phoneNumber: "028657345912",
-      // email: "my.test@example.com",
-      // password: "Pass1234!",
-
+      ...values,
       firstName: values.firstName,
       lastName: values.lastName,
-      // dob: values.dob,
-      phoneNumber: values.phoneNumber,
+      dob: values.dob,
       email: values.email,
       password: values.password,
-      passenger: false,
-      driver: false,
+      confirmPassword: values.confirmPassword,
+      phoneNumber: values.phoneNumber,
     });
-  };
-
-  const dialogState = (data: React.SetStateAction<boolean>) => {
-    setOpenDialog(data);
-  };
-
-  const navigate = useNavigate();
-
-  const dialogRedirect = () => {
-    navigate(navigation.CONFIRM_EMAIL_PAGE);
   };
 
   if (openDialog) {
@@ -126,11 +95,6 @@ export default function SignUp() {
     );
   }
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
-  const defaultTheme = createTheme();
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component='main' maxWidth='xs'>

@@ -7,8 +7,9 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { CustomButton } from '..';
+import { IDialogBoxProps } from '../../interfaces';
 
-export default function DialogBox(props: any) {
+export default function DialogBox(props: IDialogBoxProps) {
   const handleClose = () => {
     props.state(false);
     props.redirect();

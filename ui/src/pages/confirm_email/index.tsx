@@ -1,71 +1,73 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { Box, InputAdornment } from '@mui/material';
-import { EmailRounded } from '@mui/icons-material';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { AlertColor, Box, InputAdornment } from '@mui/material';
+import { EmailRounded } from '@mui/icons-material';
 import {
+  AlertPopUp,
   DialogBox,
   CustomButton,
   CustomTextField,
-  AlertPopUp,
 } from '../../components';
-import navigation from '../../constants/navigation';
 import { CatchyMessage, WelcomeMessage } from '../home/styled';
-import { confirmUserEmail } from '../../hooks/usePlatformUser';
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string().required('Email must not be empty.'),
-});
-
-const initialValues = {
-  email: '',
-};
+import { useEmailConfirmation } from '../../hooks/usePlatformUser';
+import { initialEmailValue } from './initial_values';
+import { confirmEmailValidationSchema } from './validation_schema';
+import { httpStatus, navigation, validation } from '../../constants';
+import { IPlatformUserEmail } from '../../interfaces';
 
 export default function ConfirmEmail() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      handleFormSubmit(values);
-    },
-    enableReinitialize: true,
-  });
-
-  const mutateConfirmEmail = useMutation({
-    mutationFn: confirmUserEmail,
-    onSuccess: () => {
-      setOpenDialog(true);
-    },
-    onError: (error) => {
-      const errorMsg = error.response?.data.message;
-      if (errorMsg === 'User is already active') {
-        setSnackbarMessage('Yayyy! You have already confirmed your email.');
-      } else {
-        setSnackbarMessage(errorMsg);
-      }
-      setOpenSnackbar(true);
-    },
-  });
-
-  const handleFormSubmit = (values: any) => {
-    mutateConfirmEmail.mutate(values.email);
-  };
-
-  const dialogState = (data: React.SetStateAction<boolean>) => {
-    setOpenDialog(data);
-  };
-
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<AlertColor>('success');
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const navigate = useNavigate();
 
   const dialogRedirect = () => {
     navigate(navigation.SIGN_IN_PAGE);
   };
+
+  const dialogState = (data: SetStateAction<boolean>) => {
+    setOpenDialog(data);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const mutateConfirmEmail = useMutation({
+    mutationFn: useEmailConfirmation,
+    onSuccess: () => {
+      setOpenDialog(true);
+    },
+    onError: (error: Error, variables: IPlatformUserEmail) => {
+      if (error.message.endsWith(httpStatus.CONFLICT)) {
+        setSnackbarMessage('Yayyy! You have already confirmed your email.');
+      } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
+        setSnackbarSeverity('error');
+        setSnackbarMessage("Mmmm! We can't find an account for " + variables);
+      } else {
+        setSnackbarSeverity('error');
+        setSnackbarMessage(validation.GENERIC_ERROR_MSG);
+      }
+      setOpenSnackbar(true);
+    },
+  });
+
+  const handleFormSubmit = (values: IPlatformUserEmail) => {
+    mutateConfirmEmail.mutate({ email: values.email });
+  };
+
+  const formik = useFormik({
+    initialValues: initialEmailValue,
+    validationSchema: confirmEmailValidationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
+  });
 
   if (openDialog) {
     return (
@@ -78,10 +80,6 @@ export default function ConfirmEmail() {
       />
     );
   }
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
 
   return (
     <Box
@@ -120,7 +118,7 @@ export default function ConfirmEmail() {
       <AlertPopUp
         open={openSnackbar}
         onClose={handleCloseSnackbar}
-        severity='success'
+        severity={snackbarSeverity}
         message={snackbarMessage}
       />
     </Box>

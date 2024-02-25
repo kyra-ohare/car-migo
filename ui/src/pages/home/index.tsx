@@ -9,15 +9,15 @@ import {
   WelcomeMessage,
   WelcomeMessageContainer,
 } from './styled';
+import { ActionAreaCard, Footer, Search } from '../../components';
 import Car from '../../assets/car.png';
-import navigation from '../../constants/navigation';
-import { ActionAreaCard, Footer, Search } from '../../components/index';
-import { useAuthStore } from '../../utils/authStore';
+import { useAuthStore } from '../../hooks/useAuthStore';
+import { navigation } from '../../constants';
 
 export default function Homepage() {
   const { isAuthorized } = useAuthStore();
-
   const navigate = useNavigate();
+
   const goToSignUp = () => {
     navigate(navigation.SIGN_UP_PAGE);
   };

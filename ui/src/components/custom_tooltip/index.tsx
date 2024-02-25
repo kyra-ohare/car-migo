@@ -1,14 +1,15 @@
 import { Fragment } from 'react';
 import { IconButton, Link } from '@mui/material';
-import { BootstrapTooltip } from './styled';
+import { StyledTooltip } from './styled';
+import { ICustomTooltipProps } from '../../interfaces';
 
-export default function CustomTooltip(props: any) {
+export default function CustomTooltip(props: ICustomTooltipProps) {
   const handleClick = () => {
     props.behaviour();
   };
 
   return (
-    <BootstrapTooltip
+    <StyledTooltip
       title={
         <Fragment>
           <p>{props.text}</p>
@@ -19,6 +20,6 @@ export default function CustomTooltip(props: any) {
       }
     >
       <IconButton>{props.icon}</IconButton>
-    </BootstrapTooltip>
+    </StyledTooltip>
   );
 }

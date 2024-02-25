@@ -1,11 +1,12 @@
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { FloatingDatePicker } from './styled';
+import { StyledDatePicker } from './styled';
+import { IBasicDatePickerProps } from '../../interfaces';
 
-export default function BasicDatePicker(props: any) {
+export default function BasicDatePicker(props: IBasicDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FloatingDatePicker {...props} />
+      <StyledDatePicker {...props} />
     </LocalizationProvider>
   );
 }

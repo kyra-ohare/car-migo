@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { useFormik } from 'formik';
 import {
   Avatar,
   Box,
@@ -14,73 +15,67 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LockOutlined } from '@mui/icons-material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import {
   Footer,
   CustomButton,
   CustomTextField,
   AlertPopUp,
 } from '../../components';
-import navigation from '../../constants/navigation';
-import http_status from '../../constants/http_status';
-import { authenticate } from '../../hooks/useAuthentication';
-import { bearerStore } from '../../utils/bearerStore';
-import { useTokens } from '../../utils/tokenStore';
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string().required('Email must not be empty.'),
-  password: Yup.string().required('Password must not be empty.'),
-});
-
-const initialValues = {
-  email: '',
-  password: '',
-};
+import { useAuthentication } from '../../hooks/useAuthentication';
+import { useBearerStore } from '../../hooks/useBearerStore';
+import { useTokens } from '../../hooks/useTokens';
+import { IAuthenticationRequest, IToken } from '../../interfaces';
+import { initialSignInValues } from './initial_values';
+import { signInValidationSchema } from './validation_schema';
+import { httpStatus, navigation, validation } from '../../constants';
 
 export default function SignIn() {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { setBearer } = bearerStore();
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const { setBearer } = useBearerStore();
   const { checkIfValidToken } = useTokens();
-
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      handleFormSubmit(values);
-    },
-    enableReinitialize: true,
-  });
-
   const navigate = useNavigate();
+  const defaultTheme = createTheme();
 
   const mutateAuthenticateUser = useMutation({
-    mutationFn: authenticate,
-    onSuccess: (data) => {
-      setBearer(data.jwt);
-      checkIfValidToken({ accessToken: data.jwt, refreshToken: data.jwt });
+    mutationFn: useAuthentication,
+    onSuccess: (data: IToken) => {
+      setBearer(data.accessToken);
+      checkIfValidToken({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      });
       navigate(navigation.HOME_PAGE);
     },
-    onError: (error) => {
-      if (error.response?.data.status === http_status.FORBIDDEN) {
-        setSnackbarMessage('Oh no! ' + error.response?.data.message);
-        setOpenSnackbar(true);
+    onError: (error: Error, variables: IAuthenticationRequest) => {
+      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+        setSnackbarMessage('Oh no! Bad credentials for ' + variables.email);
+      } else {
+        setSnackbarMessage(validation.GENERIC_ERROR_MSG);
       }
+      setOpenSnackbar(true);
     },
   });
-  const handleFormSubmit = (values: any) => {
+
+  const handleFormSubmit = (values: IAuthenticationRequest) => {
     mutateAuthenticateUser.mutate({
       email: values.email,
       password: values.password,
     });
   };
 
+  const formik = useFormik({
+    initialValues: initialSignInValues,
+    validationSchema: signInValidationSchema,
+    onSubmit: (values) => {
+      handleFormSubmit(values);
+    },
+    enableReinitialize: true,
+  });
+
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
-
-  const defaultTheme = createTheme();
 
   return (
     <ThemeProvider theme={defaultTheme}>

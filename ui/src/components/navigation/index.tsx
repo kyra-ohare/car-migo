@@ -15,19 +15,15 @@ import {
 } from '@mui/material';
 import { LogoDev, Menu as MenuIcon } from '@mui/icons-material';
 import Car from '../../assets/car.png';
-import constants from '../../constants/app_constants';
-import navigation from '../../constants/navigation';
-import { useTokens } from '../../utils/tokenStore';
-import { useAuthStore } from '../../utils/authStore';
+import { appConstants, navigation, pageMapper } from '../../constants';
+import { useTokens } from '../../hooks/useTokens';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
-const pages = [
-  { label: 'Home', path: navigation.HOME_PAGE },
-  { label: 'Profile', path: navigation.PROFILE_PAGE },
-  { label: 'Confirm email', path: navigation.CONFIRM_EMAIL_PAGE },
-  { label: 'Playground', path: navigation.PLAYGROUND },
+const settings = [
+  appConstants.profile,
+  appConstants.yourJourneys,
+  appConstants.logout,
 ];
-
-const settings = [constants.profile, constants.yourJourneys, constants.logout];
 
 export default function NavBar({ children }: { children: React.ReactNode }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -62,10 +58,10 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
 
   const handleCloseUserMenu = (page: string) => {
     setAnchorElUser(null);
-    if (page === constants.profile) {
+    if (page === appConstants.profile) {
       navigateTo(navigation.PROFILE_PAGE);
     }
-    if (page === constants.logout) {
+    if (page === appConstants.logout) {
       clearLocalStorageTokens();
     }
   };
@@ -134,7 +130,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                {pages.map((page) => (
+                {pageMapper.map((page) => (
                   <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                     <Link to={page.path!}>{page.label}</Link>
                   </MenuItem>
@@ -161,7 +157,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
               LOGO
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page) => (
+              {pageMapper.map((page) => (
                 <Button
                   key={page.label}
                   onClick={() => handleNav(page.path!)}

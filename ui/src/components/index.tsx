@@ -1,4 +1,8 @@
 import ActionAreaCard from './card';
+import {
+  AuthenticatedRoutes,
+  UnauthenticatedRoutes,
+} from './navigation/routes';
 import AlertPopUp from './alert_pop_up';
 import AlertSpan from './alert_span';
 import BasicDatePicker from './calendar';
@@ -9,14 +13,16 @@ import CustomTooltip from './custom_tooltip';
 import DialogBox from './dialog_box';
 import Footer from './footer';
 import Journey from './journey';
-import JourneyCard from './journey/journeycard';
+import JourneyCard from './journey/journey_card';
 import Loader from './loader';
 import LocationDropdown from './search/dropdown';
+import NavBar from './navigation';
 import Search from './search';
 import Text from './text';
 import YesNoRadioButtonsGroup from './radio';
 
 export {
+  AuthenticatedRoutes,
   ActionAreaCard,
   AlertPopUp,
   AlertSpan,
@@ -31,7 +37,9 @@ export {
   JourneyCard,
   Loader,
   LocationDropdown,
+  NavBar,
   Search,
   Text,
+  UnauthenticatedRoutes,
   YesNoRadioButtonsGroup,
 };

@@ -1,7 +1,4 @@
-interface ILocations {
-  label: string;
-  value: number;
-}
+import { ILocations } from '../interfaces';
 
 export const locations: ILocations[] = [
   { label: 'Rostrevor', value: 1 },

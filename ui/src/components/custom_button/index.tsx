@@ -1,9 +1,10 @@
-import { BootstrapButton } from './styled';
+import { ICustomButtonProps } from '../../interfaces';
+import { StyledButton } from './styled';
 
-export default function CustomButton(props: any) {
+export default function CustomButton(props: ICustomButtonProps) {
   return (
-    <BootstrapButton variant='contained' {...props}>
+    <StyledButton variant='contained' {...props}>
       {props.label}
-    </BootstrapButton>
+    </StyledButton>
   );
 }

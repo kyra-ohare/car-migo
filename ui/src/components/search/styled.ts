@@ -1,14 +1,14 @@
 import { Autocomplete } from '@mui/material';
 import styled from 'styled-components';
 
-export const SearchContainer = styled.div`
+export const StyledSearchContainer = styled.div`
   display: flex;
   width: 80vw;
   justify-content: space-between;
   margin: 16px;
 `;
 
-export const FloatingAutocomplete = styled(Autocomplete)`
+export const StyledAutocomplete = styled(Autocomplete)`
   label.Mui-focused {
     color: #1976d2;
   }

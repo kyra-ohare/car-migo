@@ -1,13 +1,14 @@
 import { Box, CardActions, CardContent, Typography } from '@mui/material';
 import { CustomButton } from '..';
-import { StyledCard } from './styled';
+import { StyledJourneyCard } from './styled';
+import { IJourneyCardProps } from '../../interfaces';
 
-export default function JourneyCard(props: any) {
+export default function JourneyCard(props: IJourneyCardProps) {
   const data = props.data;
 
   return (
     <Box display='flex' justifyContent='center' alignItems='center'>
-      <StyledCard raised={true}>
+      <StyledJourneyCard raised={true}>
         <CardContent>
           <Typography variant='body1'>
             <b>When?</b> {data.createdDate}
@@ -22,7 +23,7 @@ export default function JourneyCard(props: any) {
         <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <CustomButton label='Book now' />
         </CardActions>
-      </StyledCard>
+      </StyledJourneyCard>
     </Box>
   );
 }

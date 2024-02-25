@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import {
+  AlertColor,
   Box,
   Container,
   createTheme,
@@ -15,29 +16,35 @@ import { InfoOutlined, Delete } from '@mui/icons-material';
 import {
   AlertPopUp,
   CustomButton,
-  CustomTextField,
   CustomTooltip,
   Footer,
   Loader,
 } from '../../components';
-import navigation from '../../constants/navigation';
 import { CatchyMessage } from '../home/styled';
-import { useGetProfile } from '../../hooks/usePlatformUser';
-import { createDriver, deleteDriver } from '../../hooks/useDriver';
-import { createPassenger, deletePassenger } from '../../hooks/usePassenger';
+import { useUserProfile } from '../../hooks/usePlatformUser';
+import { useDriverCreation, useDriverDeletion } from '../../hooks/useDriver';
+import {
+  usePassengerCreation,
+  usePassengerDeletion,
+} from '../../hooks/usePassenger';
+import { navigation } from '../../constants';
+import { ThisTextField } from './this_text_field';
 
 export default function Profile() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dob, setDob] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [dob, setDob] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [isPassenger, setIsPassenger] = useState<boolean>(false);
   const [isDriver, setIsDriver] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const { isSuccess, data } = useGetProfile();
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<AlertColor>('success');
+  const { isSuccess, data } = useUserProfile();
+  const navigate = useNavigate();
+  const defaultTheme = createTheme();
 
   const parseDob = (dob: string) => {
     const findT = dob.indexOf('T');
@@ -45,7 +52,6 @@ export default function Profile() {
     return arrayDate[2] + '/' + arrayDate[1] + '/' + arrayDate[0];
   };
 
-  const navigate = useNavigate();
   const signOut = () => {
     navigate(navigation.HOME_PAGE);
   };
@@ -54,14 +60,18 @@ export default function Profile() {
     navigate(navigation.HOME_PAGE);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   const mustateDeletePassenger = useMutation({
-    mutationFn: deletePassenger,
+    mutationFn: usePassengerDeletion,
     onSuccess: () => {},
     onError: () => {},
   });
 
   const mutateCreatePassenger = useMutation({
-    mutationFn: createPassenger,
+    mutationFn: usePassengerCreation,
     onSuccess: () => {},
     onError: () => {},
   });
@@ -83,13 +93,13 @@ export default function Profile() {
   };
 
   const mustateDeleteDriver = useMutation({
-    mutationFn: deleteDriver,
+    mutationFn: useDriverDeletion,
     onSuccess: () => {},
     onError: () => {},
   });
 
   const mutateCreateDriver = useMutation({
-    mutationFn: createDriver,
+    mutationFn: useDriverCreation,
     onSuccess: () => {},
     onError: () => {},
   });
@@ -110,10 +120,6 @@ export default function Profile() {
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   const PassengerGrid = () => {
@@ -171,22 +177,6 @@ export default function Profile() {
       </>
     );
   };
-
-  function ThisTextField(props: any) {
-    return (
-      <>
-        <CustomTextField
-          {...props}
-          sx={{ mt: 2 }}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-      </>
-    );
-  }
-
-  const defaultTheme = createTheme();
 
   useEffect(() => {
     if (isSuccess && data) {

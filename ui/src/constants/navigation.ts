@@ -1,4 +1,4 @@
-export default {
+export const navigation = {
   CONFIRM_EMAIL_PAGE: '/confirm-email',
   FORGOT_PASSWORD_PAGE: '/forgot-password',
   HOME_PAGE: '/home',
@@ -7,3 +7,10 @@ export default {
   SIGN_UP_PAGE: '/sign-up',
   PLAYGROUND: '/playground',
 };
+
+export const pageMapper = [
+  { label: 'Home', path: navigation.HOME_PAGE },
+  { label: 'Profile', path: navigation.PROFILE_PAGE },
+  { label: 'Confirm email', path: navigation.CONFIRM_EMAIL_PAGE },
+  { label: 'Playground', path: navigation.PLAYGROUND },
+];

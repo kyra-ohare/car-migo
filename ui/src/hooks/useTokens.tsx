@@ -1,50 +1,38 @@
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { axiosInstance, setBearerToken } from '../integration/instance';
-import { useAuthStore } from './authStore';
-import constants from '../constants/app_constants';
-import navigation from '../constants/navigation';
-
-interface IAccessToken {
-  iat: number;
-  exp: number;
-  sub: number;
-}
-
-interface IUseTokens {
-  checkIfValidToken: (tokens: any) => Promise<void>;
-  checkLocalStorageTokens: () => void;
-  clearLocalStorageTokens: () => void;
-}
+import { appConstants, navigation } from '../constants';
+import { IAccessToken, IToken, IUseTokens } from '../interfaces';
+import { useAuthStore } from './useAuthStore';
 
 export const useTokens = (): IUseTokens => {
   const { setIsAuthorized } = useAuthStore();
   const navigate = useNavigate();
 
-  const checkIfValidToken = async (tokens: any) => {
-    const decodedAccess = jwtDecode<IAccessToken>(tokens.accessToken);
-    const decodedRefresh = jwtDecode<IAccessToken>(tokens.refreshToken);
+  const checkIfValidToken = async (token: IToken) => {
+    const decodedAccess = jwtDecode<IAccessToken>(token.accessToken);
+    const decodedRefresh = jwtDecode<IAccessToken>(token.refreshToken);
 
     const accessTokenDate = new Date(decodedAccess.exp * 1000);
     const refreshTokenDate = new Date(decodedRefresh.exp * 1000);
     const nowDate = new Date();
 
     if (accessTokenDate > nowDate) {
-      localStorage.setItem(constants.accessToken, tokens.accessToken);
-      localStorage.setItem(constants.refreshToken, tokens.refreshToken);
+      localStorage.setItem(appConstants.accessToken, token.accessToken);
+      localStorage.setItem(appConstants.refreshToken, token.refreshToken);
 
-      setBearerToken(tokens.accessToken);
+      setBearerToken(token.accessToken);
       setIsAuthorized(true);
     }
     if (accessTokenDate < nowDate && refreshTokenDate > nowDate) {
       const config = {
-        headers: { Authorization: `Bearer ${tokens.refreshToken}` },
+        headers: { Authorization: `Bearer ${token.refreshToken}` },
       };
 
       const resp = await axiosInstance.get('/api/authenticate/refresh', config);
 
-      localStorage.setItem(constants.accessToken, resp.data.accessToken);
-      localStorage.setItem(constants.refreshToken, resp.data.refreshToken);
+      localStorage.setItem(appConstants.accessToken, resp.data.accessToken);
+      localStorage.setItem(appConstants.refreshToken, resp.data.refreshToken);
       setIsAuthorized(true);
 
       navigate(0);
@@ -55,9 +43,11 @@ export const useTokens = (): IUseTokens => {
   };
 
   const checkLocalStorageTokens = () => {
-    const localStorageAccess = localStorage.getItem(constants.accessToken);
-    const localStorageRefresh = localStorage.getItem(constants.refreshToken);
-    if (localStorageAccess || localStorageRefresh) {
+    const localStorageAccess =
+      localStorage.getItem(appConstants.accessToken) || '';
+    const localStorageRefresh =
+      localStorage.getItem(appConstants.refreshToken) || '';
+    if (localStorageAccess.length !== 0 || localStorageRefresh.length !== 0) {
       checkIfValidToken({
         accessToken: localStorageAccess,
         refreshToken: localStorageRefresh,
@@ -68,8 +58,8 @@ export const useTokens = (): IUseTokens => {
   };
 
   const clearLocalStorageTokens = () => {
-    localStorage.removeItem(constants.accessToken);
-    localStorage.removeItem(constants.refreshToken);
+    localStorage.removeItem(appConstants.accessToken);
+    localStorage.removeItem(appConstants.refreshToken);
     setIsAuthorized(false);
     navigate(navigation.SIGN_IN_PAGE);
   };
@@ -80,4 +70,3 @@ export const useTokens = (): IUseTokens => {
     clearLocalStorageTokens,
   };
 };
-

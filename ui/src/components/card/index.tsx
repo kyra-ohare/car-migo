@@ -1,16 +1,7 @@
-import React from 'react';
 import { Grid, Typography } from '@mui/material';
+import { IActionAreaCardProps } from '../../interfaces/ActionAreaCard';
 
-interface ICard {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  imageAlt: string;
-  title: string;
-  text: React.ReactNode;
-}
-
-export default function ActionAreaCard(props: ICard) {
+export default function ActionAreaCard(props: IActionAreaCardProps) {
   return (
     <Grid container sx={{ marginTop: '20px', marginRight: '50px' }}>
       <Grid

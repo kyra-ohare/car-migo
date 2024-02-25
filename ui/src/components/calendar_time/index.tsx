@@ -1,14 +1,15 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { FloatingDateTimePicker } from './styled';
+import { StyledDateTimePicker } from './styled';
+import { IBasicDateTimePickerProps } from '../../interfaces';
 
-export default function BasicDateTimePicker(props: any) {
+export default function BasicDateTimePicker(props: IBasicDateTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FloatingDateTimePicker
+      <StyledDateTimePicker
         value={props.value ? dayjs(props.value) : null}
-        onChange={(value: any) =>
+        onChange={(value: string | number | Date | Dayjs | null | undefined) =>
           props.onChange(props.name, dayjs(value).toISOString() || '', true)
         }
         label={props.label}

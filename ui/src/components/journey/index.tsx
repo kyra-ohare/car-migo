@@ -1,8 +1,9 @@
 import { Box, Typography } from '@mui/material';
 import { ArrowForwardOutlined } from '@mui/icons-material';
 import { CustomButton, JourneyCard } from '..';
+import { IJourneyEntity, IJourneyProps } from '../../interfaces';
 
-export default function Journey(props: any) {
+export default function Journey(props: IJourneyProps) {
   const handleCloseResults = () => {
     props.state(false);
   };
@@ -16,7 +17,7 @@ export default function Journey(props: any) {
           {props.destination}
         </b>
       </Typography>
-      {props.results.map((data: any) => (
+      {props.results.map((data: IJourneyEntity) => (
         <JourneyCard key={data.id} data={data} />
       ))}
       <Box display='flex' justifyContent='flex-end'>

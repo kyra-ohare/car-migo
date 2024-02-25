@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export const BootstrapButton = styled(Button)({
+export const StyledButton = styled(Button)({
   boxShadow: '5px 6px 5px rgba(0, 0, 0, 0.2)',
   textTransform: 'none',
   fontSize: 16,
