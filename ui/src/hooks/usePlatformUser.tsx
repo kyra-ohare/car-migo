@@ -15,13 +15,14 @@ export const useUserProfile = (): UseQueryResult<IPlatformUserEntity> =>
   });
 
 export const useUserCreation = async (user: IPlatformUserCreation) => {
+  user.dob = '1990-06-30T00:00:00Z'; // TODO
   const response = await axiosInstanceNoAuth.post(endpoint + '/create', user);
   return response.data;
 };
 
-export const useEmailConfirmation = async (email: IPlatformUserEmail) => {
+export const useEmailConfirmation = async (params: IPlatformUserEmail) => {
   const response = await axiosInstanceNoAuth.post(
-    endpoint + '/confirm-email?email=' + email
+    endpoint + '/confirm-email?email=' + params.email
   );
   return response.data;
 };

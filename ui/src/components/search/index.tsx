@@ -103,17 +103,17 @@ export default function Search() {
           formikTouched={formik.touched.locationIdTo}
         />
         <BasicDateTimePicker
+          label='Earliest Date/Time'
           name='dateTimeFrom'
           value={formik.values.dateTimeFrom}
           onChange={formik.setFieldValue}
-          label='Earliest Date/Time'
           formikErrors={formik.errors.dateTimeFrom}
           formikTouched={formik.touched.dateTimeFrom}
         />
         <BasicDateTimePicker
+          label='Latest Date/Time'
           name='dateTimeTo'
           value={formik.values.dateTimeTo}
-          label='Latest Date/Time'
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.dateTimeTo}
           formikTouched={formik.touched.dateTimeTo}

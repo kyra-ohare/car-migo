@@ -25,7 +25,7 @@ export default function DialogBox(props: IDialogBoxProps) {
       >
         <DialogTitle id='alert-dialog-title'>{props.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description' color='black'>
+          <DialogContentText id='alert-dialog-description' color='#000000'>
             {props.text}
           </DialogContentText>
         </DialogContent>

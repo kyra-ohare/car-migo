@@ -1,13 +1,13 @@
 import {
   DateValidationError,
-  DateView,
   PickerChangeHandlerContext,
 } from '@mui/x-date-pickers';
 
 export interface IBasicDatePickerProps {
   label: string;
   name: string;
-  views: DateView[];
+  disableFuture?: boolean;
+  disablePast?: boolean;
   value: string | null;
   onChange(
     value: unknown,

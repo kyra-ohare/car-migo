@@ -125,7 +125,6 @@ export default function SignUp() {
                   id='sign-up-first-name'
                   label='First Name'
                   name='firstName'
-                  required
                   autoComplete='first-name'
                   value={formik.values.firstName}
                   onChange={formik.handleChange}
@@ -142,7 +141,6 @@ export default function SignUp() {
                   id='sign-up-last-name'
                   label='Last Name'
                   name='lastName'
-                  required
                   autoComplete='last-name'
                   value={formik.values.lastName}
                   onChange={formik.handleChange}
@@ -154,9 +152,9 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <BasicDatePicker
-                  label='Date of Birth *'
+                  label='Date of Birth'
                   name='dob'
-                  views={['day', 'month', 'year']}
+                  disableFuture
                   value={formik.values.dob || null}
                   onChange={(value: unknown) =>
                     formik.setFieldValue('dob', value, true)
@@ -170,7 +168,6 @@ export default function SignUp() {
                   id='sign-up-phone-number'
                   label='Phone Number'
                   name='phoneNumber'
-                  required
                   autoComplete='phone-number'
                   value={formik.values.phoneNumber}
                   onChange={formik.handleChange}
@@ -188,7 +185,6 @@ export default function SignUp() {
                   id='sign-up-email-address'
                   label='Email Address'
                   name='email'
-                  required
                   autoComplete='email'
                   value={formik.values.email}
                   onChange={formik.handleChange}
@@ -203,7 +199,6 @@ export default function SignUp() {
                   name='password'
                   type='password'
                   autoComplete='password'
-                  required
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   error={
@@ -219,7 +214,6 @@ export default function SignUp() {
                   name='confirmPassword'
                   type='password'
                   autoComplete='password'
-                  required
                   value={formik.values.confirmPassword}
                   onChange={formik.handleChange}
                   error={

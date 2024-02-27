@@ -47,7 +47,7 @@ export default function ConfirmEmail() {
         setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         setSnackbarSeverity('error');
-        setSnackbarMessage("Mmmm! We can't find an account for " + variables);
+        setSnackbarMessage("Mmmm! We can't find an account for " + variables.email);
       } else {
         setSnackbarSeverity('error');
         setSnackbarMessage(validation.GENERIC_ERROR_MSG);
@@ -63,7 +63,7 @@ export default function ConfirmEmail() {
   const formik = useFormik({
     initialValues: initialEmailValue,
     validationSchema: confirmEmailValidationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values: IPlatformUserEmail) => {
       handleFormSubmit(values);
     },
     enableReinitialize: true,

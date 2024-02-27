@@ -1,10 +1,12 @@
 import * as Yup from 'yup';
 import { validation } from '../../constants';
 
+// const minAge = dayjs().subtract(appConstants.minAge, 'year'); // TODO
+
 export const signUpValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First name must not be empty.'),
   lastName: Yup.string().required('Last name must not be empty.'),
-  // dob: Yup.date().required("Date of birth must not be empty."), // todo
+  // dob: Yup.date().min(minAge).required('Minimum age is ' + minAge), // TODO
   phoneNumber: Yup.string().required('Phone number must not be empty.'),
   email: Yup.string()
     .email(validation.INVALID_EMAIL)

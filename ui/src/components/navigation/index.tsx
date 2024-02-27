@@ -161,7 +161,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                 <Button
                   key={page.label}
                   onClick={() => handleNav(page.path!)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: '#ffffff', display: 'block' }}
                 >
                   {page.label}
                 </Button>

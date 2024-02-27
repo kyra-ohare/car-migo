@@ -19,7 +19,7 @@ export default function YesNoRadioButtonsGroup(props: IYesNoRadioButtonsGroupPro
           <FormLabel
             id='demo-controlled-radio-buttons-group'
             sx={{
-              color: 'black',
+              color: '#000000',
               display: 'flex',
             }}
           >

@@ -9,6 +9,8 @@ import {
   AuthenticatedRoutes,
   UnauthenticatedRoutes,
 } from './components';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export default function App() {
   const { isAuthorized } = useAuthStore();
@@ -20,13 +22,15 @@ export default function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavBar>
-        <CssBaseline />
-        {isAuthorized === true && AuthenticatedRoutes}
-        {isAuthorized === true ||
-          (isAuthorized === false && UnauthenticatedRoutes)}
-      </NavBar>
-    </QueryClientProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <QueryClientProvider client={queryClient}>
+        <NavBar>
+          <CssBaseline />
+          {isAuthorized === true && AuthenticatedRoutes}
+          {isAuthorized === true ||
+            (isAuthorized === false && UnauthenticatedRoutes)}
+        </NavBar>
+      </QueryClientProvider>
+    </LocalizationProvider>
   );
 }

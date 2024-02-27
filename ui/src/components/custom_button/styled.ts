@@ -8,7 +8,6 @@ export const StyledButton = styled(Button)({
   padding: '6px 12px',
   border: '1px solid',
   lineHeight: 1.5,
-  backgroundColor: '#00000',
   borderColor: '#808080',
   fontFamily: [
     '-apple-system',

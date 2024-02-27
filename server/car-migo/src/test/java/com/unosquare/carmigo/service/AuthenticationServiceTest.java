@@ -53,9 +53,11 @@ public class AuthenticationServiceTest {
     when(jwtTokenServiceMock.generateToken(spyUserDetails)).thenReturn(anyString());
     final AuthenticationResponse authenticationResponse = authenticationService.createAuthenticationToken(
       authenticationRequestFixture);
-    authenticationResponse.setJwt(this.authenticationResponseFixture.getJwt());
+    authenticationResponse.setAccessToken(this.authenticationResponseFixture.getAccessToken());
+    authenticationResponse.setRefreshToken(this.authenticationResponseFixture.getRefreshToken());
 
-    assertThat(authenticationResponse.getJwt()).isEqualTo(this.authenticationResponseFixture.getJwt());
+    assertThat(authenticationResponse.getAccessToken()).isEqualTo(this.authenticationResponseFixture.getAccessToken());
+    assertThat(authenticationResponse.getRefreshToken()).isEqualTo(this.authenticationResponseFixture.getRefreshToken());
     verify(authenticationManagerMock).authenticate(any(UsernamePasswordAuthenticationToken.class));
     verify(userSecurityServiceMock).loadUserByUsername(anyString());
     verify(jwtTokenServiceMock).generateToken(any(UserDetails.class));

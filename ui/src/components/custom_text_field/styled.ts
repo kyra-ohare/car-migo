@@ -7,7 +7,7 @@ export const StyledTextField = styled(TextField)`
   .MuiInputBase-root {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    color: 'black',
-    backgroundColor: 'white',
+    color: #000000,
+    backgroundColor: #ffffff,
   }
 `;
