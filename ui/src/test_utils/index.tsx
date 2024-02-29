@@ -14,37 +14,42 @@ import {
   ThemeProvider as MuiThemeProvider,
 } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { NavBar } from '../components';
 const queryClient = new QueryClient();
 
 const exampleTheme = createTheme();
 
 function render(
   ui: React.ReactElement<unknown>,
-  { ...options } = {}
+  { ...options } = {},
 ): RenderResult<Queries, HTMLElement> {
   const Wrapper: React.JSXElementConstructor<{
-    children: React.ReactElement;
+    children: React.ReactNode;
   }> = ({ children }) => (
     <Router>
-      <QueryClientProvider client={queryClient}>
-        <MuiThemeProvider theme={exampleTheme}>
-          <ThemeProvider theme={exampleTheme as unknown as DefaultTheme}>
-            <CssBaseline enableColorScheme>{children}</CssBaseline>
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </QueryClientProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <QueryClientProvider client={queryClient}>
+          <MuiThemeProvider theme={exampleTheme}>
+            <ThemeProvider theme={exampleTheme as unknown as DefaultTheme}>
+              <CssBaseline enableColorScheme>
+                <NavBar>{children}</NavBar>
+              </CssBaseline>
+            </ThemeProvider>
+          </MuiThemeProvider>
+        </QueryClientProvider>
+      </LocalizationProvider>
     </Router>
   );
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
   return rtlRender(ui, { wrapper: Wrapper, ...options });
 }
 
 // eslint-disable-next-line func-names
 export const buildAxiosResponse = function <T>(
   data: T,
-  status: number
+  status: number,
 ): AxiosResponse<T> {
   const axiosResponse: AxiosResponse<T> = {
     data,
