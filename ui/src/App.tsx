@@ -27,8 +27,7 @@ export default function App() {
         <NavBar>
           <CssBaseline />
           {isAuthorized === true && AuthenticatedRoutes}
-          {isAuthorized === true ||
-            (isAuthorized === false && UnauthenticatedRoutes)}
+          {isAuthorized === false && UnauthenticatedRoutes}
         </NavBar>
       </QueryClientProvider>
     </LocalizationProvider>

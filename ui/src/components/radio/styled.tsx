@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 export const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} placement='right' />
-))(({ theme }) => ({
+))(() => ({
   [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
+    color: '#000000',
   },
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: '#000000',
   },
 }));
