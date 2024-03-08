@@ -15,4 +15,8 @@ export interface IBasicDatePickerProps {
   ): void;
   error: boolean | undefined;
   helperText: string | boolean | undefined;
+  dataTestId: string;
 }
+
+
+

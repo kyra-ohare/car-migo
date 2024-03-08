@@ -146,6 +146,7 @@ export default function Profile() {
             label='Become a Passenger'
             sx={{ mt: 3 }}
             onClick={handlePassenger}
+            dataTestId='become-passenger'
           />
         </Grid>
       </>
@@ -172,7 +173,11 @@ export default function Profile() {
     ) : (
       <>
         <Grid item xs>
-          <CustomButton label='Become a Driver' onClick={handleDriver} />
+          <CustomButton
+            label='Become a Driver'
+            onClick={handleDriver}
+            dataTestId='become-driver'
+          />
         </Grid>
       </>
     );
@@ -204,6 +209,7 @@ export default function Profile() {
                 id='read-only-first-name'
                 label='First Name'
                 value={firstName}
+                dataTestId='read-only-first-name'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -211,6 +217,7 @@ export default function Profile() {
                 id='read-only-last-name'
                 label='Last Name'
                 value={lastName}
+                dataTestId='read-only-last-name'
               />
             </Grid>
             <Grid item xs={12}>
@@ -218,16 +225,23 @@ export default function Profile() {
                 id='read-only-dob'
                 label='Date of Birth'
                 value={dob}
+                dataTestId='read-only-dob'
               />
             </Grid>
             <Grid item xs={12}>
-              <ThisTextField id='read-only-email' label='Email' value={email} />
+              <ThisTextField
+                id='read-only-email'
+                label='Email'
+                value={email}
+                dataTestId='read-only-email'
+              />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
                 id='read-only-phone-number'
                 label='Phone Number'
                 value={phoneNumber}
+                dataTestId='read-only-phone-number'
               />
             </Grid>
             <Grid item xs={12}>
@@ -242,6 +256,7 @@ export default function Profile() {
                 label='Sign Out'
                 sx={{ mt: 6, mb: 3 }}
                 onClick={signOut}
+                dataTestId='submit-button'
               />
             </Grid>
             <Grid item xs={12}>
@@ -251,6 +266,7 @@ export default function Profile() {
                 color='error'
                 endIcon={<Delete />}
                 onClick={deleteAccount}
+                dataTestId='delete-account'
               />
             </Grid>
           </Grid>
@@ -260,6 +276,7 @@ export default function Profile() {
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}
           message={snackbarMessage}
+          dataTestId='alert-pop-up'
         />
         <Footer />
       </Container>

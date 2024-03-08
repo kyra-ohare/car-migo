@@ -7,4 +7,5 @@ export interface IActionAreaCardProps {
   imageAlt: string;
   title: string;
   text: ReactNode;
+  dataTestId: string;
 }

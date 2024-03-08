@@ -21,7 +21,11 @@ export default function Journey(props: IJourneyProps) {
         <JourneyCard key={data.id} data={data} />
       ))}
       <Box display='flex' justifyContent='flex-end'>
-        <CustomButton label='Close results' onClick={handleCloseResults} />
+        <CustomButton
+          label='Close results'
+          onClick={handleCloseResults}
+          dataTestId='close-button'
+        />
       </Box>
     </Box>
   );

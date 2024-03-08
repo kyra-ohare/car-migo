@@ -31,15 +31,25 @@ export default function Homepage() {
       <UpperHalfContainer>
         <WelcomeContainer>
           <WelcomeMessageContainer>
-            <WelcomeMessage>Welcome to Car-Migo</WelcomeMessage>
+            <WelcomeMessage data-testid='welcome-message'>
+              Welcome to Car-Migo
+            </WelcomeMessage>
           </WelcomeMessageContainer>
           {isAuthorized === false && (
             <>
               <TopRightButtonsContainer>
-                <Button variant='contained' onClick={goToSignUp}>
+                <Button
+                  variant='contained'
+                  onClick={goToSignUp}
+                  data-testid='sign-up-render'
+                >
                   Sign up
                 </Button>
-                <Button variant='contained' onClick={goToSignIn}>
+                <Button
+                  variant='contained'
+                  onClick={goToSignIn}
+                  data-testid='sign-in-render'
+                >
                   Sign in
                 </Button>
               </TopRightButtonsContainer>
@@ -56,7 +66,7 @@ export default function Homepage() {
               alignItems: 'center',
             }}
           >
-            <CatchyMessage>
+            <CatchyMessage data-testid='catchy-message'>
               The best way to get to places fast, at low cost and, most
               importantly, eco-friendly.
             </CatchyMessage>
@@ -82,8 +92,8 @@ export default function Homepage() {
         <Search />
       </UpperHalfContainer>
       <ActionAreaCard
-        id='boo'
-        label='boo'
+        id='what-is-it-card'
+        label='what-is-it-card'
         icon={<Info style={{ width: 60, height: 60 }} />}
         imageAlt='Information'
         title='What is it?'
@@ -101,10 +111,11 @@ export default function Homepage() {
             Come onboard and eperience this new lifestyle.
           </>
         }
+        dataTestId='what-is-it-card'
       />
       <ActionAreaCard
-        id='boo'
-        label='boo'
+        id='why-card'
+        label='why-card'
         icon={<Info style={{ width: 60, height: 60 }} />}
         imageAlt='Information'
         title='Why?'
@@ -122,6 +133,7 @@ export default function Homepage() {
             passengers can pay the driver a fair amount for fuel costs.
           </>
         }
+        dataTestId='why-card'
       />
       <Footer />
     </>

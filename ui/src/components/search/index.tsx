@@ -118,7 +118,7 @@ export default function Search() {
           formikErrors={formik.errors.dateTimeTo}
           formikTouched={formik.touched.dateTimeTo}
         />
-        <CustomButton type='submit' label='Search' />
+        <CustomButton type='submit' label='Search' dataTestId='submit-button' />
       </StyledSearchContainer>
       {showResults && journeys && journeys[0] && (
         <Journey

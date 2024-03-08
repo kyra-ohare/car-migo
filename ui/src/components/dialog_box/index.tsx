@@ -30,7 +30,11 @@ export default function DialogBox(props: IDialogBoxProps) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <CustomButton label='OK' onClick={handleClose} />
+          <CustomButton
+            label='OK'
+            onClick={handleClose}
+            dataTestId='ok-button'
+          />
         </DialogActions>
       </Dialog>
     </Fragment>

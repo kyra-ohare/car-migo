@@ -19,4 +19,5 @@ export interface ICustomButtonProps {
     ButtonPropsColorOverrides
   >;
   endIcon?: ReactNode;
+  dataTestId: string;
 }

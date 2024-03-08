@@ -23,11 +23,10 @@ const exampleTheme = createTheme();
 
 function render(
   ui: React.ReactElement<unknown>,
-  { ...options } = {},
+  { ...options } = {}
 ): RenderResult<Queries, HTMLElement> {
-  const Wrapper: React.JSXElementConstructor<{
-    children: React.ReactNode;
-  }> = ({ children }) => (
+  
+  const Wrapper: React.JSXElementConstructor<{ children: React.ReactNode; }> = ({ children }) => (
     <Router>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <QueryClientProvider client={queryClient}>
@@ -49,7 +48,7 @@ function render(
 // eslint-disable-next-line func-names
 export const buildAxiosResponse = function <T>(
   data: T,
-  status: number,
+  status: number
 ): AxiosResponse<T> {
   const axiosResponse: AxiosResponse<T> = {
     data,

@@ -5,4 +5,5 @@ export interface IAlertPopUpProps {
   onClose: () => void;
   severity: AlertColor;
   message: string;
+  dataTestId: string;
 }

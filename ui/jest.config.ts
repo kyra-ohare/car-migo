@@ -29,6 +29,7 @@ export default {
   },
   moduleNameMapper: {
     '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/test_utils/mocks.js',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   setupFilesAfterEnv: ['<rootDir>/test_utils/setup_tests.ts'],
   moduleFileExtensions: [

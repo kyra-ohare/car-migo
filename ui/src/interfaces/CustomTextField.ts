@@ -27,4 +27,5 @@ export interface ICustomTextFieldProps {
     | Partial<FilledInputProps>
     | Partial<OutlinedInputProps>
     | Partial<InputProps>;
+  dataTestId?: string;
 }

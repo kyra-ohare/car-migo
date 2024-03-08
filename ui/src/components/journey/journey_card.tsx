@@ -21,7 +21,7 @@ export default function JourneyCard(props: IJourneyCardProps) {
           </Typography>
         </CardContent>
         <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CustomButton label='Book now' />
+          <CustomButton label='Book now' dataTestId='book-button' />
         </CardActions>
       </StyledJourneyCard>
     </Box>
