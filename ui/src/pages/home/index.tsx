@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Grid } from '@mui/material';
-import { Info } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
+import { Box, Button, Grid } from "@mui/material";
+import { Info } from "@mui/icons-material";
 import {
   CatchyMessage,
   TopRightButtonsContainer,
@@ -8,11 +8,11 @@ import {
   WelcomeContainer,
   WelcomeMessage,
   WelcomeMessageContainer,
-} from './styled';
-import { ActionAreaCard, Footer, Search } from '../../components';
-import Car from '../../assets/car.png';
-import { useAuthStore } from '../../hooks/useAuthStore';
-import { navigation } from '../../constants';
+} from "./styled";
+import { ActionAreaCard, Footer, Search } from "../../components";
+import Car from "../../assets/car.png";
+import { useAuthStore } from "../../hooks/useAuthStore";
+import { navigation } from "../../constants";
 
 export default function Homepage() {
   const { isAuthorized } = useAuthStore();
@@ -31,7 +31,7 @@ export default function Homepage() {
       <UpperHalfContainer>
         <WelcomeContainer>
           <WelcomeMessageContainer>
-            <WelcomeMessage data-testid='welcome-message'>
+            <WelcomeMessage data-testid="welcome-message">
               Welcome to Car-Migo
             </WelcomeMessage>
           </WelcomeMessageContainer>
@@ -39,16 +39,16 @@ export default function Homepage() {
             <>
               <TopRightButtonsContainer>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   onClick={goToSignUp}
-                  data-testid='sign-up-render'
+                  data-testid="sign-up-render"
                 >
                   Sign up
                 </Button>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   onClick={goToSignIn}
-                  data-testid='sign-in-render'
+                  data-testid="sign-in-render"
                 >
                   Sign in
                 </Button>
@@ -61,30 +61,30 @@ export default function Homepage() {
             item
             xs={8}
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <CatchyMessage data-testid='catchy-message'>
+            <CatchyMessage data-testid="catchy-message">
               The best way to get to places fast, at low cost and, most
               importantly, eco-friendly.
             </CatchyMessage>
           </Grid>
           <Grid item xs={4}>
             <Box
-              component='img'
+              component="img"
               sx={{
-                display: 'inline-block',
-                float: 'inline-end',
+                display: "inline-block",
+                float: "inline-end",
                 height: 240,
                 width: 400,
                 maxHeight: { xs: 240, md: 240 },
                 maxWidth: { xs: 400, md: 400 },
-                margin: '10px',
-                verticalAlign: 'middle',
+                margin: "10px",
+                verticalAlign: "middle",
               }}
-              alt='car-migo'
+              alt="car-migo"
               src={Car}
             />
           </Grid>
@@ -92,11 +92,11 @@ export default function Homepage() {
         <Search />
       </UpperHalfContainer>
       <ActionAreaCard
-        id='what-is-it-card'
-        label='what-is-it-card'
+        id="what-is-it-card"
+        label="what-is-it-card"
         icon={<Info style={{ width: 60, height: 60 }} />}
-        imageAlt='Information'
-        title='What is it?'
+        imageAlt="Information"
+        title="What is it?"
         text={
           <>
             It is a match-making system for drivers and passengers. You can
@@ -111,14 +111,14 @@ export default function Homepage() {
             Come onboard and eperience this new lifestyle.
           </>
         }
-        dataTestId='what-is-it-card'
+        datatestid="what-is-it-card"
       />
       <ActionAreaCard
-        id='why-card'
-        label='why-card'
+        id="why-card"
+        label="why-card"
         icon={<Info style={{ width: 60, height: 60 }} />}
-        imageAlt='Information'
-        title='Why?'
+        imageAlt="Information"
+        title="Why?"
         text={
           <>
             It is great for the environment once there will be less CO
@@ -133,7 +133,7 @@ export default function Homepage() {
             passengers can pay the driver a fair amount for fuel costs.
           </>
         }
-        dataTestId='why-card'
+        datatestid="why-card"
       />
       <Footer />
     </>

@@ -20,8 +20,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false
   },
-  "include": ["src"],
+  "include": ["src", "jest.polyfills.js", "jest.polyfills copy.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
