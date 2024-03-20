@@ -1,9 +1,9 @@
-import { AlertColor } from '@mui/material';
+import { AlertColor } from "@mui/material";
 
 export interface IAlertPopUpProps {
   open: boolean;
   onClose: () => void;
   severity: AlertColor;
   message: string;
-  dataTestId: string;
+  datatestid: string;
 }
