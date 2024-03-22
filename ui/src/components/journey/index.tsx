@@ -1,7 +1,7 @@
-import { Box, Typography } from '@mui/material';
-import { ArrowForwardOutlined } from '@mui/icons-material';
-import { CustomButton, JourneyCard } from '..';
-import { IJourneyEntity, IJourneyProps } from '../../interfaces';
+import { Box, Typography } from "@mui/material";
+import { ArrowForwardOutlined } from "@mui/icons-material";
+import { CustomButton, JourneyCard } from "..";
+import { IJourneyEntity, IJourneyProps } from "../../interfaces";
 
 export default function Journey(props: IJourneyProps) {
   const handleCloseResults = () => {
@@ -9,8 +9,8 @@ export default function Journey(props: IJourneyProps) {
   };
 
   return (
-    <Box sx={{ backgroundColor: '#f0f0f0', padding: 5 }}>
-      <Typography variant='h6' sx={{ mb: '15px', display: 'inline-flex' }}>
+    <Box sx={{ backgroundColor: "#f0f0f0", padding: 5 }}>
+      <Typography variant="h6" sx={{ mb: "15px", display: "inline-flex" }}>
         <b>
           {props.departure}
           <ArrowForwardOutlined />
@@ -20,11 +20,11 @@ export default function Journey(props: IJourneyProps) {
       {props.results.map((data: IJourneyEntity) => (
         <JourneyCard key={data.id} data={data} />
       ))}
-      <Box display='flex' justifyContent='flex-end'>
+      <Box display="flex" justifyContent="flex-end">
         <CustomButton
-          label='Close results'
+          label="Close results"
           onClick={handleCloseResults}
-          dataTestId='close-button'
+          datatestid="close-button"
         />
       </Box>
     </Box>

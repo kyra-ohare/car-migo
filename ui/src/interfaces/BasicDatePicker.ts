@@ -1,7 +1,7 @@
 import {
   DateValidationError,
   PickerChangeHandlerContext,
-} from '@mui/x-date-pickers';
+} from "@mui/x-date-pickers";
 
 export interface IBasicDatePickerProps {
   label: string;
@@ -15,8 +15,5 @@ export interface IBasicDatePickerProps {
   ): void;
   error: boolean | undefined;
   helperText: string | boolean | undefined;
-  dataTestId: string;
+  datatestid: string;
 }
-
-
-

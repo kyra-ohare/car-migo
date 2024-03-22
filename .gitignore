@@ -1,6 +1,6 @@
 /server/target
 /server/.idea/
-
+ui/coverage/*
 # Logs
 logs
 *.log

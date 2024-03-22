@@ -1,13 +1,13 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material';
-import { CustomButton } from '..';
-import { IDialogBoxProps } from '../../interfaces';
+} from "@mui/material";
+import { CustomButton } from "..";
+import { IDialogBoxProps } from "../../interfaces";
 
 export default function DialogBox(props: IDialogBoxProps) {
   const handleClose = () => {
@@ -20,20 +20,20 @@ export default function DialogBox(props: IDialogBoxProps) {
       <Dialog
         open={props.open}
         onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id='alert-dialog-title'>{props.title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description' color='#000000'>
+          <DialogContentText id="alert-dialog-description" color="#000000">
             {props.text}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <CustomButton
-            label='OK'
+            label="OK"
             onClick={handleClose}
-            dataTestId='ok-button'
+            datatestid="ok-button"
           />
         </DialogActions>
       </Dialog>

@@ -1,9 +1,9 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent } from "react";
 import {
   FilledInputProps,
   OutlinedInputProps,
   InputProps,
-} from '@mui/material';
+} from "@mui/material";
 
 export interface ICustomTextFieldProps {
   id?: string;
@@ -27,5 +27,5 @@ export interface ICustomTextFieldProps {
     | Partial<FilledInputProps>
     | Partial<OutlinedInputProps>
     | Partial<InputProps>;
-  dataTestId?: string;
+  datatestid?: string;
 }

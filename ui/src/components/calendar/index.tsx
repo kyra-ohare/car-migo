@@ -1,12 +1,12 @@
-import { StyledDatePicker } from './styled';
-import { IBasicDatePickerProps } from '../../interfaces';
-import { appConstants } from '../../constants';
+import { StyledDatePicker } from "./styled";
+import { IBasicDatePickerProps } from "../../interfaces";
+import { appConstants } from "../../constants";
 
 export default function BasicDatePicker(props: IBasicDatePickerProps) {
   return (
     <StyledDatePicker
       format={appConstants.dateFormat}
-      data-testid={props.dataTestId}
+      data-testid={props.datatestid}
       {...props}
     />
   );
