@@ -6,4 +6,7 @@ export const handlers = [
   http.get(baseUrl + "/response", () => {
     return HttpResponse.json({});
   }),
+  http.get(baseUrl + "/confirm-email", () => {
+    return HttpResponse.json({});
+  }),
 ];
