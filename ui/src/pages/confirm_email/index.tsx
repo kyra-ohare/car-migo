@@ -1,28 +1,28 @@
-import { SetStateAction, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { useFormik } from "formik";
-import { AlertColor, Box, InputAdornment } from "@mui/material";
-import { EmailRounded } from "@mui/icons-material";
+import { SetStateAction, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { AlertColor, Box, InputAdornment } from '@mui/material';
+import { EmailRounded } from '@mui/icons-material';
 import {
   AlertPopUp,
   DialogBox,
   CustomButton,
   CustomTextField,
-} from "../../components";
-import { CatchyMessage, WelcomeMessage } from "../home/styled";
-import { useEmailConfirmation } from "../../hooks/usePlatformUser";
-import { initialEmailValue } from "./initial_values";
-import { confirmEmailValidationSchema } from "./validation_schema";
-import { httpStatus, navigation, validation } from "../../constants";
-import { IPlatformUserEmail } from "../../interfaces";
+} from '../../components';
+import { CatchyMessage, WelcomeMessage } from '../home/styled';
+import { useEmailConfirmation } from '../../hooks/usePlatformUser';
+import { initialEmailValue } from './initial_values';
+import { confirmEmailValidationSchema } from './validation_schema';
+import { httpStatus, navigation, validation } from '../../constants';
+import { IPlatformUserEmail } from '../../interfaces';
 
 export default function ConfirmEmail() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>("success");
-  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+    useState<AlertColor>('success');
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const navigate = useNavigate();
 
   const dialogRedirect = () => {
@@ -44,14 +44,14 @@ export default function ConfirmEmail() {
     },
     onError: (error: Error, variables: IPlatformUserEmail) => {
       if (error.message.endsWith(httpStatus.CONFLICT)) {
-        setSnackbarMessage("Yayyy! You have already confirmed your email.");
+        setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
-        setSnackbarSeverity("error");
+        setSnackbarSeverity('error');
         setSnackbarMessage(
           "Mmmm! We can't find an account for " + variables.email
         );
       } else {
-        setSnackbarSeverity("error");
+        setSnackbarSeverity('error');
         setSnackbarMessage(validation.GENERIC_ERROR_MSG);
       }
       setOpenSnackbar(true);
@@ -76,7 +76,7 @@ export default function ConfirmEmail() {
       <DialogBox
         open={openDialog}
         state={dialogState}
-        title="Email confirmed"
+        title='Email confirmed'
         text="Let's sign in!"
         redirect={dialogRedirect}
       />
@@ -85,43 +85,43 @@ export default function ConfirmEmail() {
 
   return (
     <Box
-      component="form"
+      component='form'
       onSubmit={formik.handleSubmit}
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "30vw" },
+        '& .MuiTextField-root': { m: 1, width: '30vw' },
       }}
-      data-testid="box"
+      data-testid='box'
     >
-      <WelcomeMessage data-testid="welcome-message">
+      <WelcomeMessage data-testid='welcome-message'>
         Confirm your email
       </WelcomeMessage>
-      <CatchyMessage data-testid="catchy-message">
+      <CatchyMessage data-testid='catchy-message'>
         You can enjoy all Car-Migo advantages after this confirmation.
       </CatchyMessage>
       <CustomTextField
-        id="confirm-email-address"
-        label="Email Address"
-        name="email"
-        autoComplete="email"
+        id='confirm-email-address'
+        label='Email Address'
+        name='email'
+        autoComplete='email'
         value={formik.values.email}
         onChange={formik.handleChange}
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
+            <InputAdornment position='start'>
               <EmailRounded />
             </InputAdornment>
           ),
         }}
         error={Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
-        datatestid="confirm-email-address"
+        datatestid='confirm-email-address'
       />
       <div>
         <CustomButton
-          label="Confirm Email"
-          type="submit"
+          label='Confirm Email'
+          type='submit'
           sx={{ mt: 3 }}
-          datatestid="submit-button"
+          datatestid='submit-button'
         />
       </div>
       <AlertPopUp
@@ -129,7 +129,7 @@ export default function ConfirmEmail() {
         onClose={handleCloseSnackbar}
         severity={snackbarSeverity}
         message={snackbarMessage}
-        datatestid="alert-pop-up"
+        datatestid='alert-pop-up'
       />
     </Box>
   );

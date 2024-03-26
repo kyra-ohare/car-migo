@@ -1,11 +1,11 @@
-import { Alert, AlertTitle, Box } from "@mui/material";
-import { CustomButton } from "..";
-import { IAlertSpanProps } from "../../interfaces";
+import { Alert, AlertTitle, Box } from '@mui/material';
+import { CustomButton } from '..';
+import { IAlertSpanProps } from '../../interfaces';
 
 export default function AlertSpan(props: IAlertSpanProps) {
   return (
     <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
     >
       <Alert severity={props.severity} variant={props.variant}>
         <AlertTitle>
@@ -13,9 +13,9 @@ export default function AlertSpan(props: IAlertSpanProps) {
         </AlertTitle>
         <b>{props.text}</b>
         <CustomButton
-          label="Close"
+          label='Close'
           onClick={props.state}
-          datatestid="close-button"
+          datatestid='close-button'
         />
       </Alert>
     </Box>

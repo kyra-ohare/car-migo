@@ -1,22 +1,22 @@
-import React from "react";
-import "@testing-library/jest-dom";
-import { DefaultTheme, ThemeProvider } from "styled-components";
+import React from 'react';
+import '@testing-library/jest-dom';
+import { DefaultTheme, ThemeProvider } from 'styled-components';
 import {
   Queries,
   RenderResult,
   render as rtlRender,
-} from "@testing-library/react";
-import { AxiosResponse } from "axios";
-import { BrowserRouter as Router } from "react-router-dom";
+} from '@testing-library/react';
+import { AxiosResponse } from 'axios';
+import { BrowserRouter as Router } from 'react-router-dom';
 import {
   createTheme,
   CssBaseline,
   ThemeProvider as MuiThemeProvider,
-} from "@mui/material";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { NavBar } from "../components";
+} from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { NavBar } from '../components';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

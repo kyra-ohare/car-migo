@@ -11,7 +11,9 @@ import { Info } from '@mui/icons-material';
 import { StyledTooltip } from './styled';
 import { IYesNoRadioButtonsGroupProps } from '../../interfaces';
 
-export default function YesNoRadioButtonsGroup(props: IYesNoRadioButtonsGroupProps) {
+export default function YesNoRadioButtonsGroup(
+  props: IYesNoRadioButtonsGroupProps
+) {
   return (
     <FormControl>
       <Grid container spacing={1} sx={{ marginTop: '20px', display: 'flex' }}>

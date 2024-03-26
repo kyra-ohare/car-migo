@@ -1,4 +1,4 @@
-import { ICustomTextFieldProps } from "../../interfaces";
+import { ICustomTextFieldProps } from '../../interfaces';
 
 export default function Text(props: ICustomTextFieldProps) {
   return (

@@ -1,18 +1,18 @@
-import { Alert, Snackbar } from "@mui/material";
-import { IAlertPopUpProps } from "../../interfaces";
+import { Alert, Snackbar } from '@mui/material';
+import { IAlertPopUpProps } from '../../interfaces';
 
 export default function AlertPopUp(props: IAlertPopUpProps) {
   return (
     <Snackbar
       open={props.open}
-      // autoHideDuration={3000}
+      autoHideDuration={3000}
       onClose={props.onClose}
       data-testid={props.datatestid}
     >
       <Alert
         onClose={props.onClose}
         severity={props.severity}
-        sx={{ width: "100" }}
+        sx={{ width: '100' }}
       >
         {props.message}
       </Alert>
