@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import TestUtils from '../../test_utils';
 import ConfirmEmail from '.';
 import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal();
@@ -24,13 +25,13 @@ describe('Confirm Email Unit Tests', () => {
   });
 
   test('renders AlertPopUp when user clicks on the button', async () => {
+    const user = userEvent.setup();
     TestUtils.render(<ConfirmEmail />);
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('submit-button'));
+    user.click(screen.getByTestId('submit-button'));
     screen.debug(undefined, Infinity);
-    await waitFor (() => {
-      expect(screen.getByText("Email must not be empty.")).toBeInTheDocument();
-      // expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Email must not be empty.')).toBeInTheDocument();
     });
   });
 });
