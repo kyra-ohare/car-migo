@@ -4,6 +4,7 @@ import { useAuthStore } from '../../hooks/useAuthStore';
 import TestUtils from '../../test_utils';
 import Homepage from '.';
 import { vi } from 'vitest';
+
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal();
   return {

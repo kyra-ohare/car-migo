@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import TestUtils from '../../test_utils';
 import ConfirmEmail from '.';
 import { vi } from 'vitest';
+
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal();
   return {
@@ -10,6 +11,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
     useNavigate: () => vi.fn(),
   };
 });
+
 describe('Confirm Email Unit Tests', () => {
   test('renders confirm_email page', () => {
     TestUtils.render(<ConfirmEmail />);
@@ -17,15 +19,18 @@ describe('Confirm Email Unit Tests', () => {
     expect(screen.getByTestId('box')).toBeInTheDocument();
     expect(screen.getByTestId('welcome-message')).toBeInTheDocument();
     expect(screen.getByTestId('catchy-message')).toBeInTheDocument();
-    // screen.debug(undefined, Infinity);
     expect(screen.getByTestId('confirm-email-address')).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
   });
 
-  // TODO:
   test('renders AlertPopUp when user clicks on the button', async () => {
-    // const user = userEvent.setup()
-    // await user.click(screen.getByRole('button', {name: /click me!/i}))
-    // expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+    TestUtils.render(<ConfirmEmail />);
+    expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('submit-button'));
+    screen.debug(undefined, Infinity);
+    await waitFor (() => {
+      expect(screen.getByText("Email must not be empty.")).toBeInTheDocument();
+      // expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+    });
   });
 });
