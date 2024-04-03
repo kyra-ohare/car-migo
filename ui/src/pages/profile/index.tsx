@@ -31,7 +31,6 @@ import { navigation } from '../../constants';
 import { ThisTextField } from './this_text_field';
 
 export default function Profile() {
-  console.log("STARTING PROFILE");
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [dob, setDob] = useState<string>('');
@@ -127,12 +126,12 @@ export default function Profile() {
     return isPassenger === true ? (
       <>
         <Grid item xs>
-          <Grid container justifyContent='center'>
-            <Typography variant='body1'>You are a passenger</Typography>
-            <InputAdornment position='start' sx={{ mt: 1.5 }}>
+          <Grid container justifyContent="center">
+            <Typography variant="body1">You are a passenger</Typography>
+            <InputAdornment position="start" sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
-                text='As a passenger, you can book journeys.'
+                text="As a passenger, you can book journeys."
                 link="Click here if you don't want to be a passenger anymore."
                 behaviour={handlePassenger}
               />
@@ -144,10 +143,10 @@ export default function Profile() {
       <>
         <Grid item xs>
           <CustomButton
-            label='Become a Passenger'
+            label="Become a Passenger"
             sx={{ mt: 3 }}
             onClick={handlePassenger}
-            datatestid='become-passenger'
+            datatestid="become-passenger"
           />
         </Grid>
       </>
@@ -158,12 +157,12 @@ export default function Profile() {
     return isDriver === true ? (
       <>
         <Grid item xs>
-          <Grid container justifyContent='center'>
-            <Typography variant='body1'>You are a driver</Typography>
-            <InputAdornment position='start' sx={{ mt: 1.5 }}>
+          <Grid container justifyContent="center">
+            <Typography variant="body1">You are a driver</Typography>
+            <InputAdornment position="start" sx={{ mt: 1.5 }}>
               <CustomTooltip
                 icon={<InfoOutlined />}
-                text='As a driver, you can create journeys.'
+                text="As a driver, you can create journeys."
                 link="Click here if you don't want to be a driver anymore."
                 behaviour={handleDriver}
               />
@@ -175,9 +174,9 @@ export default function Profile() {
       <>
         <Grid item xs>
           <CustomButton
-            label='Become a Driver'
+            label="Become a Driver"
             onClick={handleDriver}
-            datatestid='become-driver'
+            datatestid="become-driver"
           />
         </Grid>
       </>
@@ -200,49 +199,49 @@ export default function Profile() {
     <Loader />
   ) : (
     <ThemeProvider theme={defaultTheme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box component='form' noValidate sx={{ mt: 3 }}>
+        <Box component="form" noValidate sx={{ mt: 3 }}>
           <CatchyMessage>About you</CatchyMessage>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id='read-only-first-name'
-                label='First Name'
+                id="read-only-first-name"
+                label="First Name"
                 value={firstName}
-                datatestid='read-only-first-name'
+                datatestid="read-only-first-name"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id='read-only-last-name'
-                label='Last Name'
+                id="read-only-last-name"
+                label="Last Name"
                 value={lastName}
-                datatestid='read-only-last-name'
+                datatestid="read-only-last-name"
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id='read-only-dob'
-                label='Date of Birth'
+                id="read-only-dob"
+                label="Date of Birth"
                 value={dob}
-                datatestid='read-only-dob'
+                datatestid="read-only-dob"
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id='read-only-email'
-                label='Email'
+                id="read-only-email"
+                label="Email"
                 value={email}
-                datatestid='read-only-email'
+                datatestid="read-only-email"
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id='read-only-phone-number'
-                label='Phone Number'
+                id="read-only-phone-number"
+                label="Phone Number"
                 value={phoneNumber}
-                datatestid='read-only-phone-number'
+                datatestid="read-only-phone-number"
               />
             </Grid>
             <Grid item xs={12}>
@@ -253,21 +252,21 @@ export default function Profile() {
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type='submit'
-                label='Sign Out'
+                type="submit"
+                label="Sign Out"
                 sx={{ mt: 6, mb: 3 }}
                 onClick={signOut}
-                datatestid='submit-button'
+                datatestid="submit-button"
               />
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type='submit'
-                label='Delete my account'
-                color='error'
+                type="submit"
+                label="Delete my account"
+                color="error"
                 endIcon={<Delete />}
                 onClick={deleteAccount}
-                datatestid='delete-account'
+                datatestid="delete-account"
               />
             </Grid>
           </Grid>
@@ -277,7 +276,7 @@ export default function Profile() {
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}
           message={snackbarMessage}
-          datatestid='alert-pop-up'
+          datatestid="alert-pop-up"
         />
         <Footer />
       </Container>

@@ -40,7 +40,6 @@ export default function SignIn() {
   const mutateAuthenticateUser = useMutation({
     mutationFn: useAuthentication,
     onSuccess: (data: IToken) => {
-      console.log("onSuccess", data);
       setBearer(data.accessToken);
       checkIfValidToken({
         accessToken: data.accessToken,
@@ -49,7 +48,6 @@ export default function SignIn() {
       navigate(navigation.HOME_PAGE);
     },
     onError: (error: Error, variables: IAuthenticationRequest) => {
-      console.log("onError", error.message);
       if (error.message.endsWith(httpStatus.FORBIDDEN)) {
         setSnackbarMessage('Oh no! Bad credentials for ' + variables.email);
       } else {
@@ -59,9 +57,7 @@ export default function SignIn() {
     },
   });
 
-  console.log("STARTING SignIn componenent");
   const handleFormSubmit = (values: IAuthenticationRequest) => {
-    console.log("values", values);
     mutateAuthenticateUser.mutate({
       email: values.email,
       password: values.password,
@@ -83,7 +79,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component='main' maxWidth='xs' data-testid='container'>
+      <Container component="main" maxWidth="xs" data-testid="container">
         <CssBaseline />
         <Box
           sx={{
@@ -92,67 +88,67 @@ export default function SignIn() {
             flexDirection: 'column',
             alignItems: 'center',
           }}
-          data-testid='outer-box'
+          data-testid="outer-box"
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlined />
           </Avatar>
-          <Typography component='h1' variant='h5'>
+          <Typography component="h1" variant="h5">
             Sign In
           </Typography>
           <Box
-            component='form'
+            component="form"
             noValidate
             onSubmit={formik.handleSubmit}
             sx={{ mt: 1 }}
-            data-testid='inner-box'
+            data-testid="inner-box"
           >
             <CustomTextField
-              id='sign-in-with-email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
+              id="sign-in-with-email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
               required
               value={formik.values.email}
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
-              datatestid='sign-in-with-email'
+              datatestid="sign-in-with-email"
             />
             <CustomTextField
-              id='sign-in-with-password'
-              label='Password'
-              name='password'
-              autoComplete='current-password'
-              type='password'
+              id="sign-in-with-password"
+              label="Password"
+              name="password"
+              autoComplete="current-password"
+              type="password"
               required
               value={formik.values.password}
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
-              datatestid='sign-in-with-password'
+              datatestid="sign-in-with-password"
             />
             <FormControlLabel
               sx={{ mt: 2 }}
-              control={<Checkbox value='remember' color='primary' />}
-              label='Remember me'
-              data-testid='form-control-label'
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+              data-testid="form-control-label"
             />
             <CustomButton
               fullWidth
-              type='submit'
-              label='Sign In'
+              type="submit"
+              label="Sign In"
               sx={{ mt: 3, mb: 2 }}
-              datatestid='submit-button'
+              datatestid="submit-button"
             />
-            <Grid container data-testid='links'>
+            <Grid container data-testid="links">
               <Grid item xs sx={{ ml: -9 }}>
-                <Link href={navigation.FORGOT_PASSWORD_PAGE} variant='body2'>
+                <Link href={navigation.FORGOT_PASSWORD_PAGE} variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href={navigation.SIGN_UP_PAGE} variant='body2'>
+                <Link href={navigation.SIGN_UP_PAGE} variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>
@@ -162,9 +158,9 @@ export default function SignIn() {
         <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
-          severity='error'
+          severity="error"
           message={snackbarMessage}
-          datatestid='alert-pop-up'
+          datatestid="alert-pop-up"
         />
         <Footer />
       </Container>

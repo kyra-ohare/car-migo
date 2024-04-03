@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { http, HttpResponse } from 'msw';
 import { appConstants } from '../constants';
 import { testConstants } from './test_constants';
@@ -26,48 +27,39 @@ export const handlers = [
   }),
 
   http.post(baseUrl + '/login', async ({ request }) => {
-    console.log("from MockHandlers");
-    console.log(request);
-    const info = await request.formData();
-    console.log("\ninfo", info);
-    const url = new URL(request.url);
-    const email = url.searchParams.get('email');
-    const password = url.searchParams.get('password');
-    // const email = request.body;
-    
+    const info = await request.json();
+    //@ts-ignore
+    const { email, password } = info!;
 
     if (
       email == testConstants.validEmail &&
       password == testConstants.validPassword
     ) {
-      return new HttpResponse(null, { status: 200 });
-      // return HttpResponse.json(
-      //   {
-      //     accessToken: 'access-token',
-      //     refreshToken: 'refresh-token',
-      //   },
-      //   { status: 201 }
-      // );
+      return HttpResponse.json(
+        {
+          accessToken:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+          refreshToken:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+        },
+        { status: 201 }
+      );
     }
 
-    if (
-      email == testConstants.notFoundEmail ||
-      password == testConstants.invalidPassword
-    ) {
-      return new HttpResponse(null, { status: 403 });
-      // return HttpResponse.json(
-      //   {
-      //     status: 403,
-      //     error: 'Forbidden',
-      //     message: 'Incorrect email (foo@example.com) and/or password.',
-      //     path: 'Not specified',
-      //     timestamp: '2024-04-02T20:24:53.006643887',
-      //   },
-      //   { status: 403 }
-      // );
+    if (email == testConstants.notFoundEmail) {
+      return HttpResponse.json(
+        {
+          status: 403,
+          error: 'Forbidden',
+          message: 'Incorrect email (foo@example.com) and/or password.',
+          path: 'Not specified',
+          timestamp: '2024-04-02T20:24:53.006643887',
+        },
+        { status: 403 }
+      );
     }
 
-    return new HttpResponse(null, { status: 200 });
+    return new HttpResponse(null, { status: 500 });
   }),
 
   http.get(baseUrl + '/users/profile', () => {
