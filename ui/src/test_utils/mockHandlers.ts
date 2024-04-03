@@ -1,40 +1,90 @@
 import { http, HttpResponse } from 'msw';
 import { appConstants } from '../constants';
+import { testConstants } from './test_constants';
 
-const baseUrl = appConstants.serverDomain + ':' + appConstants.serverPort;
+const baseUrl =
+  appConstants.serverDomain + ':' + appConstants.serverPort + '/v1';
 
 export const handlers = [
-  http.get(baseUrl + '/response', () => {
-    return HttpResponse.json({});
-  }),
-  http.get(baseUrl + '/confirm-email', () => {
-    return new HttpResponse(null, { status: 404 });
-  }),
-  // http.get(baseUrl + '/confirm-email', ({ request }) => {
-  //   // no body when 200 OK
+  http.post(baseUrl + '/users/confirm-email', ({ request }) => {
+    const url = new URL(request.url);
+    const email = url.searchParams.get('email');
 
-  //   // 404 body:
-  //   //   {
-  //   //     "status": 404,
-  //   //     "error": "Not Found",
-  //   //     "message": "User not found!",
-  //   //     "path": "Not specified",
-  //   //     "timestamp": "2024-03-27T12:08:47.98217684"
-  //   // }
+    if (email == testConstants.validEmail) {
+      return new HttpResponse(null, { status: 200 });
+    }
 
-  //   // 409 CONFLICT
-  //   //   {
-  //   //     "status": 409,
-  //   //     "error": "Conflict",
-  //   //     "message": "User is already active",
-  //   //     "path": "Not specified",
-  //   //     "timestamp": "2024-03-27T12:09:19.72731059"
-  //   // }
-  //   const url = new URL(request.url);
-  //   const email = url.searchParams.get('email');
-  //   if (!email) {
-  //     return new HttpResponse(null, { status: 404 });
-  //   }
-  //   // return HttpResponse.json({ worked: true });
-  // }),
+    if (email == testConstants.notFoundEmail) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    if (email == testConstants.conflictEmail) {
+      return new HttpResponse(null, { status: 409 });
+    }
+
+    return new HttpResponse(null, { status: 500 });
+  }),
+
+  http.post(baseUrl + '/login', async ({ request }) => {
+    console.log("from MockHandlers");
+    console.log(request);
+    const info = await request.formData();
+    console.log("\ninfo", info);
+    const url = new URL(request.url);
+    const email = url.searchParams.get('email');
+    const password = url.searchParams.get('password');
+    // const email = request.body;
+    
+
+    if (
+      email == testConstants.validEmail &&
+      password == testConstants.validPassword
+    ) {
+      return new HttpResponse(null, { status: 200 });
+      // return HttpResponse.json(
+      //   {
+      //     accessToken: 'access-token',
+      //     refreshToken: 'refresh-token',
+      //   },
+      //   { status: 201 }
+      // );
+    }
+
+    if (
+      email == testConstants.notFoundEmail ||
+      password == testConstants.invalidPassword
+    ) {
+      return new HttpResponse(null, { status: 403 });
+      // return HttpResponse.json(
+      //   {
+      //     status: 403,
+      //     error: 'Forbidden',
+      //     message: 'Incorrect email (foo@example.com) and/or password.',
+      //     path: 'Not specified',
+      //     timestamp: '2024-04-02T20:24:53.006643887',
+      //   },
+      //   { status: 403 }
+      // );
+    }
+
+    return new HttpResponse(null, { status: 200 });
+  }),
+
+  http.get(baseUrl + '/users/profile', () => {
+    return HttpResponse.json(
+      {
+        id: 2,
+        createdDate: '2022-01-04T00:00:00Z',
+        firstName: 'Mary',
+        lastName: 'Green',
+        dob: '1990-06-30T00:00:00Z',
+        email: 'mary.green@example.com',
+        phoneNumber: '0286579635',
+        userAccessStatus: { id: 2, status: 'ACTIVE' },
+        passenger: true,
+        driver: true,
+      },
+      { status: 200 }
+    );
+  }),
 ];

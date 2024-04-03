@@ -40,6 +40,7 @@ export default function SignIn() {
   const mutateAuthenticateUser = useMutation({
     mutationFn: useAuthentication,
     onSuccess: (data: IToken) => {
+      console.log("onSuccess", data);
       setBearer(data.accessToken);
       checkIfValidToken({
         accessToken: data.accessToken,
@@ -48,6 +49,7 @@ export default function SignIn() {
       navigate(navigation.HOME_PAGE);
     },
     onError: (error: Error, variables: IAuthenticationRequest) => {
+      console.log("onError", error.message);
       if (error.message.endsWith(httpStatus.FORBIDDEN)) {
         setSnackbarMessage('Oh no! Bad credentials for ' + variables.email);
       } else {
@@ -57,7 +59,9 @@ export default function SignIn() {
     },
   });
 
+  console.log("STARTING SignIn componenent");
   const handleFormSubmit = (values: IAuthenticationRequest) => {
+    console.log("values", values);
     mutateAuthenticateUser.mutate({
       email: values.email,
       password: values.password,
@@ -79,7 +83,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main' maxWidth='xs' data-testid='container'>
         <CssBaseline />
         <Box
           sx={{

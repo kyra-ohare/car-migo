@@ -22,6 +22,7 @@ export default function DialogBox(props: IDialogBoxProps) {
         onClose={handleClose}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        data-testid={props.datatestid}
       >
         <DialogTitle id='alert-dialog-title'>{props.title}</DialogTitle>
         <DialogContent>

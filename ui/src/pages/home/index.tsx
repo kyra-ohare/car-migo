@@ -30,7 +30,7 @@ export default function Homepage() {
     <>
       <UpperHalfContainer>
         <WelcomeContainer>
-          <WelcomeMessageContainer>
+          <WelcomeMessageContainer data-testid='welcome-message-container'>
             <WelcomeMessage data-testid='welcome-message'>
               Welcome to Car-Migo
             </WelcomeMessage>

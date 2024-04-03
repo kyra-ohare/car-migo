@@ -6,4 +6,5 @@ export interface IDialogBoxProps {
   title: string;
   text: string;
   redirect: () => void;
+  datatestid?: string;
 }

@@ -31,6 +31,7 @@ import { navigation } from '../../constants';
 import { ThisTextField } from './this_text_field';
 
 export default function Profile() {
+  console.log("STARTING PROFILE");
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [dob, setDob] = useState<string>('');

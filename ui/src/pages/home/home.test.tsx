@@ -16,10 +16,11 @@ vi.mock('react-router-dom', async (importOriginal) => {
 const initialStoreState = useAuthStore.getState();
 
 describe('Home Unit Tests', () => {
-  test('renders the homepage where authorization is set to true', () => {
+  test('renders the homepage where authorization is set to false', () => {
     initialStoreState.setIsAuthorized(false);
     TestUtils.render(<Homepage />);
 
+    expect(screen.getByTestId('welcome-message-container')).toBeInTheDocument();
     expect(screen.getByTestId('welcome-message')).toBeInTheDocument();
     expect(screen.getByTestId('catchy-message')).toHaveTextContent(
       'The best way to get to places fast, at low cost and, most importantly, eco-friendly.'
@@ -30,11 +31,13 @@ describe('Home Unit Tests', () => {
     expect(screen.getByTestId('why-card')).toBeInTheDocument();
   });
 
-  test('does not render sign-in and sign-up buttons due to authorization is set to true', () => {
+  test('does not render sign-in and sign-up buttons because authorization is set to true', () => {
     initialStoreState.setIsAuthorized(true);
     TestUtils.render(<Homepage />);
 
+    expect(screen.getByTestId('welcome-message-container')).toBeInTheDocument();
     expect(screen.getByTestId('welcome-message')).toBeInTheDocument();
     expect(screen.queryByTestId('sign-up-render')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('sign-in-render')).not.toBeInTheDocument();
   });
 });

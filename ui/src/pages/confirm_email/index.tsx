@@ -18,7 +18,6 @@ import { httpStatus, navigation, validation } from '../../constants';
 import { IPlatformUserEmail } from '../../interfaces';
 
 export default function ConfirmEmail() {
-  console.log('starting CONFIRM_EMAIL');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarSeverity, setSnackbarSeverity] =
@@ -41,11 +40,9 @@ export default function ConfirmEmail() {
   const mutateConfirmEmail = useMutation({
     mutationFn: useEmailConfirmation,
     onSuccess: () => {
-      console.log('SUCCESS');
       setOpenDialog(true);
     },
     onError: (error: Error, variables: IPlatformUserEmail) => {
-      console.log("here the our error", error);
       if (error.message.endsWith(httpStatus.CONFLICT)) {
         setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
@@ -82,6 +79,7 @@ export default function ConfirmEmail() {
         title='Email confirmed'
         text="Let's sign in!"
         redirect={dialogRedirect}
+        datatestid='dialog-box'
       />
     );
   }
