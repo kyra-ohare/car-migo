@@ -29,6 +29,8 @@ describe('Sign In Unit Tests', () => {
     expect(screen.getByTestId('form-control-label')).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
     expect(screen.getByTestId('links')).toBeInTheDocument();
+    expect(screen.getByTestId('forgot-password-link')).toBeInTheDocument();
+    expect(screen.getByTestId('sign-up-link')).toBeInTheDocument();
   });
 });
 
@@ -101,11 +103,15 @@ describe('renders AlertPopUp component', () => {
     });
 
     await userEvent.click(submitButton);
-    await waitFor(() => {
+    await waitFor(async () => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
       expect(
         screen.getByText(validation.GENERIC_ERROR_MSG)
       ).toBeInTheDocument();
+      await userEvent.click(screen.getByTestId('CloseIcon'));
+      waitFor(() => {
+        expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();
+      });
     });
   });
 });

@@ -4,19 +4,22 @@ import { useAuthStore } from '../../hooks/useAuthStore';
 import TestUtils from '../../test_utils';
 import Homepage from '.';
 import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+
+const mockNavigate = vi.fn();
 
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal();
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
 const initialStoreState = useAuthStore.getState();
 
 describe('Home Unit Tests', () => {
-  test('renders the homepage where authorization is set to false', () => {
+  test('renders the homepage where authorization is set to false', async () => {
     initialStoreState.setIsAuthorized(false);
     TestUtils.render(<Homepage />);
 
@@ -29,6 +32,11 @@ describe('Home Unit Tests', () => {
     expect(screen.getByTestId('sign-in-render')).toBeInTheDocument();
     expect(screen.getByTestId('what-is-it-card')).toBeInTheDocument();
     expect(screen.getByTestId('why-card')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('sign-up-render'));
+    expect(mockNavigate).toHaveBeenCalled();
+    await userEvent.click(screen.getByTestId('sign-in-render'));
+    expect(mockNavigate).toHaveBeenCalled();
   });
 
   test('does not render sign-in and sign-up buttons because authorization is set to true', () => {

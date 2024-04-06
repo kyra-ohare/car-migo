@@ -6,7 +6,6 @@ export default function BasicDatePicker(props: IBasicDatePickerProps) {
   return (
     <StyledDatePicker
       format={appConstants.dateFormat}
-      data-testid={props.datatestid}
       {...props}
     />
   );

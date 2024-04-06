@@ -26,6 +26,38 @@ export const handlers = [
     return new HttpResponse(null, { status: 500 });
   }),
 
+  http.post(baseUrl + '/users/create', async ({request}) => {
+    const info = await request.json();
+    //@ts-ignore
+    const { firstName, lastName, dob, phoneNumber, email, password, confirmPassword } = info!;
+
+    if (
+      firstName == testConstants.firstName &&
+      lastName == testConstants.lastName &&
+      dob == testConstants.dob &&
+      phoneNumber == testConstants.phoneNumber &&
+      email == testConstants.validEmail &&
+      password == testConstants.validPassword &&
+      confirmPassword == testConstants.validPassword
+    ) {
+      return new HttpResponse(null, { status: 200 });
+    }
+
+    if (
+      firstName == testConstants.firstName &&
+      lastName == testConstants.lastName &&
+      dob == testConstants.dob &&
+      phoneNumber == testConstants.phoneNumber &&
+      email == testConstants.conflictEmail &&
+      password == testConstants.validPassword &&
+      confirmPassword == testConstants.validPassword
+    ) {
+      return new HttpResponse(null, { status: 409 });
+    }
+
+    return new HttpResponse(null, { status: 500 });
+  }),
+
   http.post(baseUrl + '/login', async ({ request }) => {
     const info = await request.json();
     //@ts-ignore
@@ -37,10 +69,8 @@ export const handlers = [
     ) {
       return HttpResponse.json(
         {
-          accessToken:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-          refreshToken:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+          accessToken: testConstants.jwtToken,
+          refreshToken: testConstants.jwtToken,
         },
         { status: 201 }
       );

@@ -5,7 +5,7 @@ export default function AlertPopUp(props: IAlertPopUpProps) {
   return (
     <Snackbar
       open={props.open}
-      // autoHideDuration={3000}
+      autoHideDuration={3000}
       onClose={props.onClose}
       data-testid={props.datatestid}
     >
