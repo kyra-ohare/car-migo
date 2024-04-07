@@ -1,8 +1,8 @@
 import { BuildRounded } from '@mui/icons-material';
 
-export default function ForgotPassword() {
+export default function Journey() {
   return (
-    <div>
+    <div data-testid='create-journey-container'>
       <h1>Create a journey</h1>
       <br />
       <div>

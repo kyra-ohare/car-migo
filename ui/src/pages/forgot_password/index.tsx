@@ -2,7 +2,7 @@ import { BuildRounded } from '@mui/icons-material';
 
 export default function ForgotPassword() {
   return (
-    <div>
+    <div data-testid='forgot-password'>
       <h1>Forgot Password</h1>
       <br />
       <div>
