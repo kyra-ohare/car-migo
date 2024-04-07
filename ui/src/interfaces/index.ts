@@ -16,8 +16,6 @@ export type {
 } from './Journey';
 export type { ILocations } from './Locations';
 export type { ISearchFormValues } from './Search';
-export type { ITextProps } from './Text';
-export type { IYesNoRadioButtonsGroupProps } from './YesNoRadioButtonsGroup';
 
 export type { IAuthenticationRequest } from './useAuthentication';
 export type { IAuthStore } from './useAuthStore';

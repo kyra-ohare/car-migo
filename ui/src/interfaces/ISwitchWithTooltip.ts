@@ -3,4 +3,5 @@ export interface ISwitchWithTooltip {
   label: string;
   isChecked: boolean;
   handleSwithWithTooltip: () => void;
+  datatestid: string;
 }

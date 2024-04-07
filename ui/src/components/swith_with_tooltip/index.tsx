@@ -14,6 +14,7 @@ export default function SwitchWithTooltip(props: ISwitchWithTooltip) {
             checked={props.isChecked}
             onChange={props.handleSwithWithTooltip}
             inputProps={{ 'aria-label': 'controlled' }}
+            data-testid={props.datatestid}
           />
         }
       />

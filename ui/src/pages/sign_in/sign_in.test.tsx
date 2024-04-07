@@ -108,6 +108,7 @@ describe('renders AlertPopUp component', () => {
       expect(
         screen.getByText(validation.GENERIC_ERROR_MSG)
       ).toBeInTheDocument();
+
       await userEvent.click(screen.getByTestId('CloseIcon'));
       waitFor(() => {
         expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();

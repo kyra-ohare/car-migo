@@ -201,6 +201,7 @@ export default function Profile() {
                 label={passengerLabel}
                 isChecked={isPassenger}
                 handleSwithWithTooltip={handlePassenger}
+                datatestid='passenger-switch-with-tooltip'
               />
             </Grid>
             <Grid item xs={12}>
@@ -209,6 +210,7 @@ export default function Profile() {
                 label={driverLabel}
                 isChecked={isDriver}
                 handleSwithWithTooltip={handleDriver}
+                datatestid='driver-switch-with-tooltip'
               />
             </Grid>
             <Grid item xs={12}>

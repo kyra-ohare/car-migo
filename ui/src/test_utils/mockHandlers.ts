@@ -26,7 +26,7 @@ export const handlers = [
     return new HttpResponse(null, { status: 500 });
   }),
 
-  http.post(baseUrl + '/users/create', async ({request}) => {
+  http.post(baseUrl + '/users/create', async ({ request }) => {
     const info = await request.json();
     //@ts-ignore
     const { firstName, lastName, dob, phoneNumber, email, password, confirmPassword } = info!;
@@ -108,5 +108,21 @@ export const handlers = [
       },
       { status: 200 }
     );
+  }),
+
+  http.post(baseUrl + '/drivers/create', () => {
+    return new HttpResponse(null, { status: 201 });
+  }),
+
+  http.delete(baseUrl + '/drivers', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post(baseUrl + '/passengers/create', () => {
+    return new HttpResponse(null, { status: 201 });
+  }),
+
+  http.delete(baseUrl + '/passengers', () => {
+    return new HttpResponse(null, { status: 204 });
   }),
 ];
