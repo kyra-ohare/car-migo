@@ -30,3 +30,4 @@ export type {
   IPlatformUserEmail,
   IPlatformUserEntity,
 } from './usePlatformUser';
+export type { ISwitchWithTooltip } from './ISwitchWithTooltip';

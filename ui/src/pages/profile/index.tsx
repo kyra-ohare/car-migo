@@ -2,26 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import {
-  AlertColor,
   Box,
   Container,
   createTheme,
   CssBaseline,
   Grid,
-  InputAdornment,
   ThemeProvider,
-  Typography,
 } from '@mui/material';
-import { InfoOutlined, Delete } from '@mui/icons-material';
-import {
-  AlertPopUp,
-  CustomButton,
-  CustomTooltip,
-  Footer,
-  Loader,
-} from '../../components';
+import { Delete } from '@mui/icons-material';
+import { CustomButton, Footer, Loader } from '../../components';
 import { CatchyMessage } from '../home/styled';
-import { useUserProfile } from '../../hooks/usePlatformUser';
+import { useUserDeletion, useUserProfile } from '../../hooks/usePlatformUser';
 import { useDriverCreation, useDriverDeletion } from '../../hooks/useDriver';
 import {
   usePassengerCreation,
@@ -29,6 +20,8 @@ import {
 } from '../../hooks/usePassenger';
 import { navigation } from '../../constants';
 import { ThisTextField } from './this_text_field';
+import { useTokens } from '../../hooks/useTokens';
+import SwitchWithTooltip from '../../components/swith_with_tooltip';
 
 export default function Profile() {
   const [firstName, setFirstName] = useState<string>('');
@@ -37,12 +30,13 @@ export default function Profile() {
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [isPassenger, setIsPassenger] = useState<boolean>(false);
+  const [passengerLabel, setPassengerLabel] = useState<string>('');
+  const [passengerTooltip, setPassengerTooltip] = useState<string>('');
   const [isDriver, setIsDriver] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>('success');
+  const [driverLabel, setDriverLabel] = useState<string>('');
+  const [driverTooltip, setDriverTooltip] = useState<string>('');
   const { isSuccess, data } = useUserProfile();
+  const { clearLocalStorageTokens } = useTokens();
   const navigate = useNavigate();
   const defaultTheme = createTheme();
 
@@ -53,18 +47,22 @@ export default function Profile() {
   };
 
   const signOut = () => {
-    navigate(navigation.HOME_PAGE);
+    clearLocalStorageTokens();
   };
+
+  const mutateDeleteUser = useMutation({
+    mutationFn: useUserDeletion,
+    onSuccess: () => {},
+    onError: () => {},
+  });
 
   const deleteAccount = () => {
+    mutateDeleteUser.mutate();
+    clearLocalStorageTokens();
     navigate(navigation.HOME_PAGE);
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
-  const mustateDeletePassenger = useMutation({
+  const mutateDeletePassenger = useMutation({
     mutationFn: usePassengerDeletion,
     onSuccess: () => {},
     onError: () => {},
@@ -78,19 +76,24 @@ export default function Profile() {
 
   const handlePassenger = () => {
     if (isPassenger) {
-      mustateDeletePassenger.mutate();
+      mutateDeletePassenger.mutate();
       setIsPassenger(false);
-      setSnackbarMessage("Oh no! You're not a passenger anymore.");
-      setSnackbarSeverity('error');
-      setOpenSnackbar(true);
-    } else if (!isPassenger) {
+    } else {
       mutateCreatePassenger.mutate();
       setIsPassenger(true);
-      setSnackbarMessage("Yabba dabba doo! You've just become a passenger.");
-      setSnackbarSeverity('success');
-      setOpenSnackbar(true);
     }
+    setPassengerLabelAndTooltip(!isPassenger);
   };
+
+  function setPassengerLabelAndTooltip(state: boolean) {
+    if (state) {
+      setPassengerLabel('You are a passenger');
+      setPassengerTooltip('which means you can book journeys.');
+    } else {
+      setPassengerLabel('Become a passenger');
+      setPassengerTooltip('since you cannot book journeys at the moment.');
+    }
+  }
 
   const mustateDeleteDriver = useMutation({
     mutationFn: useDriverDeletion,
@@ -108,176 +111,127 @@ export default function Profile() {
     if (isDriver) {
       mustateDeleteDriver.mutate();
       setIsDriver(false);
-      setSnackbarMessage("Oh no! You're not a driver anymore.");
-      setSnackbarSeverity('error');
-      setOpenSnackbar(true);
-    } else if (!isDriver) {
+    } else {
       mutateCreateDriver.mutate({
         licenseNumber: '11111',
       });
       setIsDriver(true);
-      setSnackbarMessage("Yippee! You've just become a driver.");
-      setSnackbarSeverity('success');
-      setOpenSnackbar(true);
     }
+    setDriverLabelAndTooltip(!isDriver);
   };
 
-  const PassengerGrid = () => {
-    return isPassenger === true ? (
-      <>
-        <Grid item xs>
-          <Grid container justifyContent="center">
-            <Typography variant="body1">You are a passenger</Typography>
-            <InputAdornment position="start" sx={{ mt: 1.5 }}>
-              <CustomTooltip
-                icon={<InfoOutlined />}
-                text="As a passenger, you can book journeys."
-                link="Click here if you don't want to be a passenger anymore."
-                behaviour={handlePassenger}
-              />
-            </InputAdornment>
-          </Grid>
-        </Grid>
-      </>
-    ) : (
-      <>
-        <Grid item xs>
-          <CustomButton
-            label="Become a Passenger"
-            sx={{ mt: 3 }}
-            onClick={handlePassenger}
-            datatestid="become-passenger"
-          />
-        </Grid>
-      </>
-    );
-  };
-
-  const DriverGrid = () => {
-    return isDriver === true ? (
-      <>
-        <Grid item xs>
-          <Grid container justifyContent="center">
-            <Typography variant="body1">You are a driver</Typography>
-            <InputAdornment position="start" sx={{ mt: 1.5 }}>
-              <CustomTooltip
-                icon={<InfoOutlined />}
-                text="As a driver, you can create journeys."
-                link="Click here if you don't want to be a driver anymore."
-                behaviour={handleDriver}
-              />
-            </InputAdornment>
-          </Grid>
-        </Grid>
-      </>
-    ) : (
-      <>
-        <Grid item xs>
-          <CustomButton
-            label="Become a Driver"
-            onClick={handleDriver}
-            datatestid="become-driver"
-          />
-        </Grid>
-      </>
-    );
-  };
-
+  function setDriverLabelAndTooltip(state: boolean) {
+    if (state) {
+      setDriverLabel('You are a driver');
+      setDriverTooltip('so you can create journeys.');
+    } else {
+      setDriverLabel('Become a driver');
+      setDriverTooltip('since you cannot create journeys.');
+    }
+  }
   useEffect(() => {
+    console.log('useEffect', data);
     if (isSuccess && data) {
       setFirstName(data.firstName);
       setLastName(data.lastName);
       setDob(parseDob(data.dob));
       setEmail(data.email);
       setPhoneNumber(data.phoneNumber);
+
       setIsDriver(data.driver);
+      setDriverLabelAndTooltip(data.driver);
+
       setIsPassenger(data.passenger);
+      setPassengerLabelAndTooltip(data.passenger);
     }
   }, [isSuccess, data]);
 
   return !isSuccess ? (
-    <Loader />
+    <Loader data-testid='loader' />
   ) : (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
-        <Box component="form" noValidate sx={{ mt: 3 }}>
+        <Box component='form' noValidate sx={{ mt: 3 }}>
           <CatchyMessage>About you</CatchyMessage>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id="read-only-first-name"
-                label="First Name"
+                id='read-only-first-name'
+                label='First Name'
                 value={firstName}
-                datatestid="read-only-first-name"
+                datatestid='read-only-first-name'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <ThisTextField
-                id="read-only-last-name"
-                label="Last Name"
+                id='read-only-last-name'
+                label='Last Name'
                 value={lastName}
-                datatestid="read-only-last-name"
+                datatestid='read-only-last-name'
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id="read-only-dob"
-                label="Date of Birth"
+                id='read-only-dob'
+                label='Date of Birth'
                 value={dob}
-                datatestid="read-only-dob"
+                datatestid='read-only-dob'
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id="read-only-email"
-                label="Email"
+                id='read-only-email'
+                label='Email'
                 value={email}
-                datatestid="read-only-email"
+                datatestid='read-only-email'
               />
             </Grid>
             <Grid item xs={12}>
               <ThisTextField
-                id="read-only-phone-number"
-                label="Phone Number"
+                id='read-only-phone-number'
+                label='Phone Number'
                 value={phoneNumber}
-                datatestid="read-only-phone-number"
+                datatestid='read-only-phone-number'
               />
             </Grid>
             <Grid item xs={12}>
-              <PassengerGrid />
+              <SwitchWithTooltip
+                tooltipText={passengerTooltip}
+                label={passengerLabel}
+                isChecked={isPassenger}
+                handleSwithWithTooltip={handlePassenger}
+              />
             </Grid>
             <Grid item xs={12}>
-              <DriverGrid />
+              <SwitchWithTooltip
+                tooltipText={driverTooltip}
+                label={driverLabel}
+                isChecked={isDriver}
+                handleSwithWithTooltip={handleDriver}
+              />
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type="submit"
-                label="Sign Out"
+                type='submit'
+                label='Sign Out'
                 sx={{ mt: 6, mb: 3 }}
                 onClick={signOut}
-                datatestid="submit-button"
+                datatestid='sign-out-button'
               />
             </Grid>
             <Grid item xs={12}>
               <CustomButton
-                type="submit"
-                label="Delete my account"
-                color="error"
+                type='submit'
+                label='Delete my account'
+                color='error'
                 endIcon={<Delete />}
                 onClick={deleteAccount}
-                datatestid="delete-account"
+                datatestid='delete-account'
               />
             </Grid>
           </Grid>
         </Box>
-        <AlertPopUp
-          open={openSnackbar}
-          onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
-          message={snackbarMessage}
-          datatestid="alert-pop-up"
-        />
         <Footer />
       </Container>
     </ThemeProvider>
