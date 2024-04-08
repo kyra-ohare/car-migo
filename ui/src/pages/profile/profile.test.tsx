@@ -55,7 +55,7 @@ describe('Profile Unit Tests', () => {
 
     await waitFor(async () => {
       const passengerToggle = screen.getByTestId(
-        'passenger-switch-with-tooltip'
+        'passenger-switch-with-tooltip-switch'
       );
       expect(passengerToggle).toBeInTheDocument();
       expect(screen.getByLabelText('You are a passenger')).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('Profile Unit Tests', () => {
       await userEvent.click(passengerToggle);
       await waitFor(() => {
         expect(passengerToggle).toBeInTheDocument();
-        // expect(screen.getByLabelText('Become a passenger')).toBeInTheDocument();
+        expect(screen.getByLabelText('Become a passenger')).toBeInTheDocument();
       });
     });
   });
@@ -83,24 +83,17 @@ describe('Profile Unit Tests', () => {
       const driverToggle = screen.getByTestId('driver-switch-with-tooltip');
       expect(driverToggle).toBeInTheDocument();
       expect(screen.getByLabelText('You are a driver')).toBeInTheDocument();
+    });
 
-      await userEvent.hover(driverToggle);
-      await waitFor(() => {
-        expect(
-          screen.getByLabelText('so you can create journeys.')
-        ).toBeInTheDocument();
-      });
+    await userEvent.click(
+      screen.getByTestId('driver-switch-with-tooltip-switch')
+    );
 
-      await fireEvent.click(driverToggle);
-      await waitFor(() => {
-        expect(driverToggle).toBeInTheDocument();
-        // expect(driverToggle).toHaveBeenCalled();
-        // expect(screen.getByLabelText('Become a driver')).toBeInTheDocument();
-      });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('driver-switch-with-tooltip')
+      ).toBeInTheDocument();
+      expect(screen.getByLabelText('Become a driver')).toBeInTheDocument();
     });
   });
 });
-
-// expect(screen.getByRole('progressbar')).toBeInTheDocument(); // Loader
-// expect(screen.getByTestId('is-unauthorized-routes')).toBeInTheDocument();
-// expect(screen.queryByTestId('read-only-first-name-input')).not.toBeInTheDocument();

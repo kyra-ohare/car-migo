@@ -7,6 +7,13 @@ export default function BasicDatePicker(props: IBasicDatePickerProps) {
     <StyledDatePicker
       format={appConstants.dateFormat}
       {...props}
+      slotProps={{
+        textField: {
+          inputProps: {
+            'data-testid': 'date-picker-input',
+          },
+        },
+      }}
     />
   );
 }

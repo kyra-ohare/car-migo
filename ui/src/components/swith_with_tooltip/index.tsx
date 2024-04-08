@@ -13,7 +13,12 @@ export default function SwitchWithTooltip(props: ISwitchWithTooltip) {
           <Switch
             checked={props.isChecked}
             onChange={props.handleSwithWithTooltip}
-            inputProps={{ 'aria-label': 'controlled' }}
+            inputProps={{
+              'aria-label': 'controlled',
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              'data-testid': `${props.datatestid}-switch`,
+            }}
             data-testid={props.datatestid}
           />
         }

@@ -37,7 +37,7 @@ describe('Sign Up Unit Tests', () => {
     TestUtils.render(<SignUp />);
     const firstNameField = screen.getByLabelText('First Name');
     const lastNameField = screen.getByLabelText('Last Name');
-    const dobField = screen.getByLabelText('Date of Birth');
+    const dobField = screen.getByTestId('date-picker-input');
     const phoneNumberField = screen.getByLabelText('Phone Number');
     const emailAddressField = screen.getByLabelText('Email Address');
     const passwordField = screen.getByLabelText('Password');
@@ -59,9 +59,7 @@ describe('Sign Up Unit Tests', () => {
     fireEvent.change(lastNameField, {
       target: { value: testConstants.lastName },
     });
-    fireEvent.change(dobField, {
-      target: { value: testConstants.dob },
-    });
+    fireEvent.change(dobField, { target: { value: '03/05/1997' } });
     fireEvent.change(phoneNumberField, {
       target: { value: testConstants.phoneNumber },
     });
@@ -162,13 +160,12 @@ describe('Sign Up Unit Tests', () => {
           'Oh! We already have an account for ' + testConstants.conflictEmail
         )
       ).toBeInTheDocument();
-
-      const closeAlertPopUp = screen.getByTestId('CloseIcon');
-      expect(closeAlertPopUp).toBeInTheDocument();
-      await userEvent.click(closeAlertPopUp);
-      await waitFor(() => {
-        expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();
-      });
+    });
+    const closeAlertPopUp = screen.getByTestId('CloseIcon');
+    expect(closeAlertPopUp).toBeInTheDocument();
+    await userEvent.click(closeAlertPopUp);
+    await waitFor(() => {
+      expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();
     });
   });
 });
