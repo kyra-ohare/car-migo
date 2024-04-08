@@ -6,11 +6,13 @@ import TestUtils from '../../test_utils';
 import ConfirmEmail from '.';
 import { testConstants } from '../../test_utils/test_constants';
 
+const mockNavigate = vi.fn();
+
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal();
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -45,6 +47,13 @@ describe('renders AlertPopUp component', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dialog-box')).toBeInTheDocument();
     });
+
+    const dialogOkButton = screen.getByTestId('ok-button');
+    expect(dialogOkButton).toBeInTheDocument();
+    await userEvent.click(dialogOkButton);
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalled();
+    });
   });
 
   test('button clicked with no input', async () => {
@@ -75,6 +84,13 @@ describe('renders AlertPopUp component', () => {
         )
       ).toBeInTheDocument();
     });
+
+    const closeAlertPopUp = screen.getByTestId('CloseIcon');
+    expect(closeAlertPopUp).toBeInTheDocument();
+    await userEvent.click(closeAlertPopUp);
+    await waitFor(() => {
+      expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();
+    });
   });
 
   test('button clicked with invalid data returns 409 CONFLICT', async () => {
@@ -92,6 +108,25 @@ describe('renders AlertPopUp component', () => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
       expect(
         screen.getByText('Yayyy! You have already confirmed your email.')
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('mocking server is down', async () => {
+    TestUtils.render(<ConfirmEmail />);
+    const emailDataField = screen.getByTestId('confirm-email-address-input');
+    const submitButton = screen.getByTestId('submit-button');
+
+    expect(submitButton).toBeInTheDocument();
+
+    fireEvent.change(emailDataField, {
+      target: { value: testConstants.serverDown },
+    });
+    await userEvent.click(submitButton);
+    await waitFor(() => {
+      expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+      expect(
+        screen.getByText("Something went wrong! Sorry. It's not you, it's us!")
       ).toBeInTheDocument();
     });
   });

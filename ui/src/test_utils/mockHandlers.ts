@@ -23,6 +23,10 @@ export const handlers = [
       return new HttpResponse(null, { status: 409 });
     }
 
+    if (email == testConstants.serverDown) {
+      return new HttpResponse(null, { status: 503 });
+    }
+
     return new HttpResponse(null, { status: 500 });
   }),
 
