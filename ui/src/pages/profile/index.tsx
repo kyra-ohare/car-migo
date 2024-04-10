@@ -130,7 +130,6 @@ export default function Profile() {
     }
   }
   useEffect(() => {
-    console.log('useEffect', data);
     if (isSuccess && data) {
       setFirstName(data.firstName);
       setLastName(data.lastName);

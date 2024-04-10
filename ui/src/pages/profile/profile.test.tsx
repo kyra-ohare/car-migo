@@ -35,12 +35,16 @@ describe('Profile Unit Tests', () => {
       expect(
         screen.getByTestId('read-only-phone-number-input')
       ).toBeInTheDocument();
+    });
 
+    await waitFor(async () => {
       const signOutButton = screen.getByTestId('sign-out-button');
       expect(signOutButton).toBeInTheDocument();
       await userEvent.click(signOutButton);
       expect(mockNavigate).toHaveBeenCalled();
+    });
 
+    await waitFor(async () => {
       const deleteButton = screen.getByTestId('delete-account');
       expect(deleteButton).toBeInTheDocument();
       await userEvent.click(deleteButton);
@@ -65,7 +69,12 @@ describe('Profile Unit Tests', () => {
           screen.getByLabelText('which means you can book journeys.')
         ).toBeInTheDocument();
       });
+    });
 
+    await waitFor(async () => {
+      const passengerToggle = screen.getByTestId(
+        'passenger-switch-with-tooltip-switch'
+      );
       await userEvent.click(passengerToggle);
       await waitFor(() => {
         expect(passengerToggle).toBeInTheDocument();
@@ -78,7 +87,12 @@ describe('Profile Unit Tests', () => {
           screen.getByLabelText('since you cannot book journeys at the moment.')
         ).toBeInTheDocument();
       });
+    });
 
+    await waitFor(async () => {
+      const passengerToggle = screen.getByTestId(
+        'passenger-switch-with-tooltip-switch'
+      );
       await userEvent.click(passengerToggle);
       await waitFor(() => {
         expect(passengerToggle).toBeInTheDocument();
@@ -106,6 +120,12 @@ describe('Profile Unit Tests', () => {
           screen.getByLabelText('so you can create journeys.')
         ).toBeInTheDocument();
       });
+    });
+
+    await waitFor(async () => {
+      const driverToggle = screen.getByTestId(
+        'driver-switch-with-tooltip-switch'
+      );
       await userEvent.click(driverToggle);
       await waitFor(() => {
         expect(
@@ -120,7 +140,12 @@ describe('Profile Unit Tests', () => {
           screen.getByLabelText('since you cannot create journeys.')
         ).toBeInTheDocument();
       });
+    });
 
+    await waitFor(async () => {
+      const driverToggle = screen.getByTestId(
+        'driver-switch-with-tooltip-switch'
+      );
       await userEvent.click(driverToggle);
       await waitFor(() => {
         expect(screen.getByLabelText('You are a driver')).toBeInTheDocument();

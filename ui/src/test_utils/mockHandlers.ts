@@ -114,6 +114,10 @@ export const handlers = [
     );
   }),
 
+  http.delete(baseUrl + '/users', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   http.post(baseUrl + '/drivers/create', () => {
     return new HttpResponse(null, { status: 201 });
   }),
