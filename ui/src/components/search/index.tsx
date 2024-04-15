@@ -24,7 +24,6 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function Search() {
-  console.log('SEARCH');
   const [selectedLeaving, setSelectedLeaving] = useState<string>('');
   const [selectedGoing, setSelectedGoing] = useState<string>('');
   const [journeys, setJourneys] = useState<IJourneyEntity[]>();
@@ -42,7 +41,6 @@ export default function Search() {
   };
 
   const handleFormSubmit = (values: ISearchFormValues) => {
-    console.log('handleFormSubmit', values);
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
       locationIdFrom: values.locationIdFrom,
@@ -63,13 +61,11 @@ export default function Search() {
   const mutateSearchJourneys = useMutation({
     mutationFn: useJourneySearchQuery,
     onSuccess: (data) => {
-      console.log('SUCCESS', data);
       setShowAlert(false);
       setJourneys(data);
       setShowResults(true);
     },
     onError: (error) => {
-      console.log('ERROR', error);
       setShowResults(false);
       setShowAlert(true);
     },

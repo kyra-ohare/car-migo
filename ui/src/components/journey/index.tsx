@@ -9,7 +9,10 @@ export default function Journey(props: IJourneyProps) {
   };
 
   return (
-    <Box sx={{ backgroundColor: '#f0f0f0', padding: 5 }}>
+    <Box
+      sx={{ backgroundColor: '#f0f0f0', padding: 5 }}
+      data-testid='journey-component'
+    >
       <Typography variant='h6' sx={{ mb: '15px', display: 'inline-flex' }}>
         <b>
           {props.departure}
@@ -24,7 +27,7 @@ export default function Journey(props: IJourneyProps) {
         <CustomButton
           label='Close results'
           onClick={handleCloseResults}
-          datatestid='close-button'
+          datatestid='close-journey-button'
         />
       </Box>
     </Box>

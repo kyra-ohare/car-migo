@@ -33,7 +33,15 @@ export const handlers = [
   http.post(baseUrl + '/users/create', async ({ request }) => {
     const info = await request.json();
     //@ts-ignore
-    const { firstName, lastName, dob, phoneNumber, email, password, confirmPassword } = info!;
+    const {
+      firstName,
+      lastName,
+      dob,
+      phoneNumber,
+      email,
+      password,
+      confirmPassword,
+    } = info!;
 
     if (
       firstName == testConstants.firstName &&
@@ -135,16 +143,13 @@ export const handlers = [
   }),
 
   http.get(baseUrl + '/journeys/search', async ({ request }) => {
-    const info = await request.json();
-    //@ts-ignore
-    const { locationIdFrom, locationIdTo, dateTimeFrom, dateTimeTo } = info!;
-    console.log(info);
+    const url = new URL(request.url);
+    const locationIdFrom = url.searchParams.get('locationIdFrom');
+    const locationIdTo = url.searchParams.get('locationIdTo');
 
     if (
-      locationIdFrom == locations[1].value &&
-      locationIdTo == locations[3].value// &&
-      // dateTimeFrom == '2023-11-30T09:00:00Z' &&
-      // dateTimeTo == '2023-12-01T09:00:00Z'
+      locationIdFrom == locations[0].value.toString() &&
+      locationIdTo == locations[2].value.toString()
     ) {
       return HttpResponse.json(
         {
@@ -157,6 +162,44 @@ export const handlers = [
         },
         { status: 404 }
       );
+    }
+
+    if (
+      locationIdFrom == locations[4].value.toString() &&
+      locationIdTo == locations[0].value.toString()
+    ) {
+      return HttpResponse.json([
+        {
+          id: 5,
+          createdDate: '2022-01-05T00:00:00Z',
+          locationFrom: {
+            id: 5,
+            description: 'Newry',
+          },
+          locationTo: {
+            id: 1,
+            description: 'Rostrevor',
+          },
+          maxPassengers: 3,
+          availability: 1,
+          dateTime: '2022-12-02T08:15:00Z',
+        },
+        {
+          id: 6,
+          createdDate: '2022-01-05T00:00:00Z',
+          locationFrom: {
+            id: 5,
+            description: 'Newry',
+          },
+          locationTo: {
+            id: 1,
+            description: 'Rostrevor',
+          },
+          maxPassengers: 3,
+          availability: 3,
+          dateTime: '2022-12-03T08:00:00Z',
+        },
+      ]);
     }
 
     return new HttpResponse(null, { status: 500 });
