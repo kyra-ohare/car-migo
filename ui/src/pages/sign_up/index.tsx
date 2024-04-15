@@ -165,6 +165,7 @@ export default function SignUp() {
                   }
                   error={formik.touched.dob && Boolean(formik.errors.dob)}
                   helperText={formik.touched.dob && formik.errors.dob}
+                  datatestid='date-picker-input'
                 />
               </Grid>
               <Grid item xs={12}>

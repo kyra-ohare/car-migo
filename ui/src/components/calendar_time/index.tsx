@@ -15,6 +15,9 @@ export default function BasicDateTimePicker(props: IBasicDateTimePickerProps) {
       format={appConstants.dateTimeFormat}
       slotProps={{
         textField: {
+          inputProps: {
+            'data-testid': props.datatestid,
+          },
           error: props.formikTouched && Boolean(props.formikErrors),
           helperText: props.formikTouched && props.formikErrors,
         },

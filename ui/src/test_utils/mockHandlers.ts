@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { http, HttpResponse } from 'msw';
-import { appConstants } from '../constants';
+import { appConstants, locations } from '../constants';
 import { testConstants } from './test_constants';
 
 const baseUrl =
@@ -132,5 +132,33 @@ export const handlers = [
 
   http.delete(baseUrl + '/passengers', () => {
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get(baseUrl + '/journeys/search', async ({ request }) => {
+    const info = await request.json();
+    //@ts-ignore
+    const { locationIdFrom, locationIdTo, dateTimeFrom, dateTimeTo } = info!;
+    console.log(info);
+
+    if (
+      locationIdFrom == locations[1].value &&
+      locationIdTo == locations[3].value// &&
+      // dateTimeFrom == '2023-11-30T09:00:00Z' &&
+      // dateTimeTo == '2023-12-01T09:00:00Z'
+    ) {
+      return HttpResponse.json(
+        {
+          status: 404,
+          error: 'Not Found',
+          message:
+            'No journeys found for this route. SearchJourneysRequest(locationIdFrom=1, locationIdTo=2, dateTimeFrom=2023-11-30T09:00:00Z, dateTimeTo=2023-12-01T09:00:00Z)',
+          path: 'Not specified',
+          timestamp: '2024-04-12T21:56:29.131168793',
+        },
+        { status: 404 }
+      );
+    }
+
+    return new HttpResponse(null, { status: 500 });
   }),
 ];

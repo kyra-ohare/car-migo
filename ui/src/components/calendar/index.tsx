@@ -10,7 +10,7 @@ export default function BasicDatePicker(props: IBasicDatePickerProps) {
       slotProps={{
         textField: {
           inputProps: {
-            'data-testid': 'date-picker-input',
+            'data-testid': props.datatestid,
           },
         },
       }}

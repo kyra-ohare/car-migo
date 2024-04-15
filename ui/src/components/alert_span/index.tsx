@@ -6,6 +6,7 @@ export default function AlertSpan(props: IAlertSpanProps) {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      data-testid='box-alert-span'
     >
       <Alert severity={props.severity} variant={props.variant}>
         <AlertTitle>

@@ -11,4 +11,5 @@ export interface IBasicDateTimePickerProps {
   ): Promise<any>;
   formikTouched: boolean | undefined;
   formikErrors: string | undefined;
+  datatestid: string;
 }

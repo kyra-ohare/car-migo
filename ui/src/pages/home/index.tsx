@@ -86,6 +86,7 @@ export default function Homepage() {
               }}
               alt='car-migo'
               src={Car}
+              data-testid='car-migo-pic'
             />
           </Grid>
         </Grid>

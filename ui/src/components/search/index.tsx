@@ -19,16 +19,17 @@ import { useJourneySearchQuery } from '../../hooks/useJourney';
 const validationSchema = Yup.object().shape({
   locationIdFrom: Yup.string().required('coming from...'),
   locationIdTo: Yup.string().required('heading to...'),
-  dateTimeFrom: Yup.string().required('date from required...'),
-  dateTimeTo: Yup.string().required('date to required...'),
+  dateTimeFrom: Yup.string().required('date from...'),
+  dateTimeTo: Yup.string().required('date to...'),
 });
 
 export default function Search() {
-  const [selectedLeaving, setSelectedLeaving] = useState('');
-  const [selectedGoing, setSelectedGoing] = useState('');
+  console.log('SEARCH');
+  const [selectedLeaving, setSelectedLeaving] = useState<string>('');
+  const [selectedGoing, setSelectedGoing] = useState<string>('');
   const [journeys, setJourneys] = useState<IJourneyEntity[]>();
-  const [showResults, setShowResults] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState(initialSearchValues);
 
   const resultState = (state: boolean) => {
@@ -41,6 +42,7 @@ export default function Search() {
   };
 
   const handleFormSubmit = (values: ISearchFormValues) => {
+    console.log('handleFormSubmit', values);
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
       locationIdFrom: values.locationIdFrom,
@@ -61,11 +63,13 @@ export default function Search() {
   const mutateSearchJourneys = useMutation({
     mutationFn: useJourneySearchQuery,
     onSuccess: (data) => {
+      console.log('SUCCESS', data);
       setShowAlert(false);
       setJourneys(data);
       setShowResults(true);
     },
-    onError: () => {
+    onError: (error) => {
+      console.log('ERROR', error);
       setShowResults(false);
       setShowAlert(true);
     },
@@ -90,6 +94,7 @@ export default function Search() {
           value={formik.values.locationIdFrom}
           formikErrors={formik.errors.locationIdFrom}
           formikTouched={formik.touched.locationIdFrom}
+          datatestid='leaving-from-dropdown'
         />
         <LocationDropdown
           id='going-to-dropdown'
@@ -101,6 +106,7 @@ export default function Search() {
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.locationIdTo}
           formikTouched={formik.touched.locationIdTo}
+          datatestid='going-to-dropdown'
         />
         <BasicDateTimePicker
           label='Earliest Date/Time'
@@ -109,6 +115,7 @@ export default function Search() {
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.dateTimeFrom}
           formikTouched={formik.touched.dateTimeFrom}
+          datatestid='earliest-date-time-picker'
         />
         <BasicDateTimePicker
           label='Latest Date/Time'
@@ -117,8 +124,9 @@ export default function Search() {
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.dateTimeTo}
           formikTouched={formik.touched.dateTimeTo}
+          datatestid='latest-date-time-picker'
         />
-        <CustomButton type='submit' label='Search' datatestid='submit-button' />
+        <CustomButton type='submit' label='Search' datatestid='search-submit-button' />
       </StyledSearchContainer>
       {showResults && journeys && journeys[0] && (
         <Journey

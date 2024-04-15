@@ -24,8 +24,11 @@ export default function LocationDropdown(props: any) {
           name={props.name}
           error={props.formikTouched && Boolean(props.formikErrors)}
           helperText={props.formikTouched && props.formikErrors}
-        />
-      )}
+          inputProps={{ 'data-testid': `${props.datatestid}-input` }}
+          />
+        )}
+        // data-testid={props.datatestid}
+      // ListboxProps={{ 'data-testid': 'list-box' }}
     />
   );
 }
