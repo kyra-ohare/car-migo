@@ -101,6 +101,9 @@ describe('Home Unit Tests', () => {
     // fireEvent.click(leavingFromField);
     fireEvent.change(leavingFromField, { target: { value: 'Rostrevor' } });
     // fireEvent.keyDown(leavingFromField, { key: 'Enter', code: 'Enter' });
+    fireEvent.keyDown(leavingFromField, { key: "ArrowDown" });
+    fireEvent.keyDown(leavingFromField, { key: "ArrowDown" });
+    fireEvent.keyDown(leavingFromField, { key: "Enter" }); 
 
     await waitFor(() => {
       const rostrevor = screen.getByText('Rostrevor');
