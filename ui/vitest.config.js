@@ -30,7 +30,8 @@ export default defineConfig({
         '**/playground/**',
         '.eslintrc.cjs',
         'src/main.tsx',
-        'src/integration/**'
+        'src/integration/**',
+        'src/hooks/useTokens.tsx',
       ],
     },
   },
