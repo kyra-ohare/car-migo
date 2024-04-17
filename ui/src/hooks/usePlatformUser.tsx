@@ -38,19 +38,19 @@ export const useUserDeletion = async () => {
   return response.data;
 };
 
-// TODO
+// TODO: admin UI
 // export const useAdminUserProfileById = async (id: number) => {
 //   const response = await axiosInstance.get(endpoint + '/' + id);
 //   return response.data;
 // };
 
-// TODO
+// TODO: admin UI
 // export const useAdminUserPatchById = async (id: number) => {
 //   const response = await axiosInstance.post(endpoint + '/' + id);
 //   return response.data;
 // };
 
-// TODO
+// TODO: admin UI
 // export const useAdminUserDeletionById = async (id: number) => {
 //   const response = await axiosInstance.delete(endpoint + '/' + id);
 //   return response.data;

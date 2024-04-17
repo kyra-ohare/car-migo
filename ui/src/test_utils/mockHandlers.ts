@@ -33,15 +33,7 @@ export const handlers = [
   http.post(baseUrl + '/users/create', async ({ request }) => {
     const info = await request.json();
     //@ts-ignore
-    const {
-      firstName,
-      lastName,
-      dob,
-      phoneNumber,
-      email,
-      password,
-      confirmPassword,
-    } = info!;
+    const { firstName, lastName, dob, phoneNumber, email, password, confirmPassword } = info!;
 
     if (
       firstName == testConstants.firstName &&
@@ -124,6 +116,28 @@ export const handlers = [
 
   http.delete(baseUrl + '/users', () => {
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get(baseUrl + '/drivers/profile', () => {
+    return HttpResponse.json(
+      {
+        id: 2,
+        licenseNumber: '16548329',
+        platformUser: {
+          id: 2,
+          createdDate: '2022-01-04T00:00:00Z',
+          firstName: 'Mary',
+          lastName: 'Green',
+          dob: '1990-06-30T00:00:00Z',
+          email: 'mary.green@example.com',
+          phoneNumber: '0286579635',
+          userAccessStatus: { id: 2, status: 'ACTIVE' },
+          passenger: true,
+          driver: true,
+        },
+      },
+      { status: 200 }
+    );
   }),
 
   http.post(baseUrl + '/drivers/create', () => {

@@ -13,7 +13,11 @@ import { Delete } from '@mui/icons-material';
 import { CustomButton, Footer, Loader } from '../../components';
 import { CatchyMessage } from '../home/styled';
 import { useUserDeletion, useUserProfile } from '../../hooks/usePlatformUser';
-import { useDriverCreation, useDriverDeletion } from '../../hooks/useDriver';
+import {
+  useDriverCreation,
+  useDriverDeletion,
+  useDriverProfile,
+} from '../../hooks/useDriver';
 import {
   usePassengerCreation,
   usePassengerDeletion,
@@ -35,7 +39,9 @@ export default function Profile() {
   const [isDriver, setIsDriver] = useState<boolean>(false);
   const [driverLabel, setDriverLabel] = useState<string>('');
   const [driverTooltip, setDriverTooltip] = useState<string>('');
+  const [licenseNumber, setLicenseNumber] = useState<string>('');
   const { isSuccess, data } = useUserProfile();
+  const { isSuccess: isDriverSuccess, data: dataDriver } = useDriverProfile();
   const { clearLocalStorageTokens } = useTokens();
   const navigate = useNavigate();
   const defaultTheme = createTheme();
@@ -129,6 +135,7 @@ export default function Profile() {
       setDriverTooltip('since you cannot create journeys.');
     }
   }
+
   useEffect(() => {
     if (isSuccess && data) {
       setFirstName(data.firstName);
@@ -144,6 +151,12 @@ export default function Profile() {
       setPassengerLabelAndTooltip(data.passenger);
     }
   }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (isDriverSuccess && dataDriver) {
+      setLicenseNumber(dataDriver.licenseNumber);
+    }
+  }, [isDriverSuccess, dataDriver]);
 
   return !isSuccess ? (
     <Loader data-testid='loader' />
@@ -194,6 +207,16 @@ export default function Profile() {
                 datatestid='read-only-phone-number'
               />
             </Grid>
+            {isDriver === true && (
+              <Grid item xs={12}>
+                <ThisTextField
+                  id='read-only-license-number'
+                  label='License Number'
+                  value={licenseNumber}
+                  datatestid='read-only-license-number'
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <SwitchWithTooltip
                 tooltipText={passengerTooltip}

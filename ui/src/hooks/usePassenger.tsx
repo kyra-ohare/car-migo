@@ -1,15 +1,6 @@
-import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../integration/instance';
-import { IPassengerEntity } from '../interfaces';
 
 const endpoint = '/v1/passengers';
-
-// TODO
-// export const usePassengerProfile = (): UseQueryResult<IPassengerEntity> =>
-//   useQuery({
-//     queryKey: ['useGetPassengerProfile'],
-//     queryFn: async () => (await axiosInstance.get(endpoint + '/profile')).data,
-//   });
 
 export const usePassengerCreation = async () => {
   const response = await axiosInstance.post(endpoint + '/create');
@@ -21,19 +12,19 @@ export const usePassengerDeletion = async () => {
   return response.data;
 };
 
-// TODO
+// TODO: admin UI
 // export const useAdminPassengerProfileById = async (id: number) => {
 //   const response = await axiosInstance.get(endpoint + '/profile/' + id);
 //   return response.data;
 // };
 
-// TODO
+// TODO: admin UI
 // export const useAdminPassengerCreationById = async (id: number) => {
 //   const response = await axiosInstance.post(endpoint + '/create/' + id);
 //   return response.data;
 // };
 
-// TODO
+// TODO: admin UI
 // export const useAdminPassengerDeleteById = async (id: number) => {
 //   const response = await axiosInstance.delete(endpoint + '/profile/' + id);
 //   return response.data;

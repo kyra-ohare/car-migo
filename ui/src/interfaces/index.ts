@@ -22,7 +22,6 @@ export type { IAuthStore } from './useAuthStore';
 export type { IDriverCreation, IDriverEntity } from './useDriver';
 export type { IHeartbeat } from './useHeartbeat';
 export type { IJourneyRequest, IJourneyResponse } from './useJourney';
-export type { IPassengerEntity } from './usePassenger';
 export type {
   IPlatformUserCreation,
   IPlatformUserEmail,

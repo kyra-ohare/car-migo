@@ -35,6 +35,7 @@ describe('Profile Unit Tests', () => {
       expect(
         screen.getByTestId('read-only-phone-number-input')
       ).toBeInTheDocument();
+     
     });
 
     await waitFor(async () => {
@@ -113,6 +114,9 @@ describe('Profile Unit Tests', () => {
       );
       expect(driverToggle).toBeInTheDocument();
       expect(screen.getByLabelText('You are a driver')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('read-only-license-number-input')
+      ).toBeInTheDocument();
 
       await userEvent.hover(driverToggle);
       await waitFor(() => {
@@ -132,6 +136,9 @@ describe('Profile Unit Tests', () => {
           screen.getByTestId('driver-switch-with-tooltip')
         ).toBeInTheDocument();
         expect(screen.getByLabelText('Become a driver')).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('read-only-license-number-input')
+        ).not.toBeInTheDocument();
       });
 
       await userEvent.hover(driverToggle);
@@ -149,6 +156,9 @@ describe('Profile Unit Tests', () => {
       await userEvent.click(driverToggle);
       await waitFor(() => {
         expect(screen.getByLabelText('You are a driver')).toBeInTheDocument();
+        expect(
+          screen.getByTestId('read-only-license-number-input')
+        ).toBeInTheDocument();
       });
     });
   });
