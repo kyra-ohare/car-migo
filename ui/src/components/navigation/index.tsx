@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Avatar,
@@ -13,7 +13,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { LogoDev, Menu as MenuIcon } from '@mui/icons-material';
 import Car from '../../assets/car.png';
 import { appConstants, navigation, pageMapper } from '../../constants';
 import { useTokens } from '../../hooks/useTokens';
@@ -36,15 +35,8 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { isAuthorized } = useAuthStore();
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleNav = (path: string) => {
@@ -60,6 +52,9 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
     setAnchorElUser(null);
     if (page === appConstants.profile) {
       navigateTo(navigation.PROFILE_PAGE);
+    }
+    if (page === appConstants.yourJourneys) {
+      navigateTo(navigation.YOUR_JOURNEYS);
     }
     if (page === appConstants.logout) {
       clearLocalStorageTokens();
@@ -82,6 +77,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
               }}
               alt='car-migo'
               src={Car}
+              data-testid='car-image-img'
             />
             <Typography
               variant='h6'
@@ -97,71 +93,20 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                 color: 'inherit',
                 textDecoration: 'none',
               }}
+              data-testid='car-migo-title'
             >
               Car-Migo
             </Typography>
-
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size='large'
-                aria-label='account of current user'
-                aria-controls='menu-appbar'
-                aria-haspopup='true'
-                onClick={handleOpenNavMenu}
-                color='inherit'
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id='menu-appbar'
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                }}
-              >
-                {pageMapper.map((page) => (
-                  <MenuItem key={page.label} onClick={handleCloseNavMenu}>
-                    <Link to={page.path!}>{page.label}</Link>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-            <LogoDev sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Typography
-              variant='h5'
-              noWrap
-              component='a'
-              href=''
-              sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
+            <Box
+              sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+              data-testid='row-menu'
             >
-              LOGO
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pageMapper.map((page) => (
                 <Button
                   key={page.label}
                   onClick={() => handleNav(page.path!)}
                   sx={{ my: 2, color: '#ffffff', display: 'block' }}
+                  data-testid={'row-menu-' + page.label}
                 >
                   {page.label}
                 </Button>
@@ -170,9 +115,13 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
 
             {isAuthorized === true && (
               <>
-                <Box sx={{ flexGrow: 0 }}>
+                <Box sx={{ flexGrow: 0 }} data-testid='authorized-settings'>
                   <Tooltip title='Open settings'>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <IconButton
+                      onClick={handleOpenUserMenu}
+                      sx={{ p: 0 }}
+                      data-testid='menu-settings-button'
+                    >
                       <Avatar alt='Remy Sharp' />
                     </IconButton>
                   </Tooltip>
@@ -196,6 +145,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                       <MenuItem
                         key={setting}
                         onClick={() => handleCloseUserMenu(setting)}
+                        data-testid={'settings-menu-' + setting}
                       >
                         <Typography textAlign='center'>{setting}</Typography>
                       </MenuItem>

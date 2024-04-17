@@ -4,6 +4,7 @@ import {
   ConfirmEmail,
   ForgotPassword,
   Homepage,
+  Journey,
   Playground,
   Profile,
   SignIn,
@@ -16,6 +17,7 @@ export const AuthenticatedRoutes = (
     <Route path='/' element={<Homepage />} />
     <Route path={navigation.HOME_PAGE} element={<Homepage />} />
     <Route path={navigation.PROFILE_PAGE} element={<Profile />} />
+    <Route path={navigation.YOUR_JOURNEYS} element={<Journey />} />
     <Route path={navigation.PLAYGROUND} element={<Playground />} />
   </Routes>
 );

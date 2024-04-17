@@ -5,6 +5,7 @@ export const navigation = {
   PROFILE_PAGE: '/profile',
   SIGN_IN_PAGE: '/sign-in',
   SIGN_UP_PAGE: '/sign-up',
+  YOUR_JOURNEYS: '/your-journeys',
   PLAYGROUND: '/playground',
 };
 
