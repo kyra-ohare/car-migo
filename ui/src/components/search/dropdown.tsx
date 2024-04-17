@@ -1,8 +1,9 @@
 import { TextField } from '@mui/material';
 import { StyledAutocomplete } from './styled';
 import { locations } from '../../constants/location';
+import { ILocationDropdown } from '../../interfaces';
 
-export default function LocationDropdown(props: any) {
+export default function LocationDropdown(props: ILocationDropdown) {
   return (
     <StyledAutocomplete
       disablePortal

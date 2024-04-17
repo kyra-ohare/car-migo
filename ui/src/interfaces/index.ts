@@ -15,6 +15,7 @@ export type {
   IJourneyProps,
 } from './Journey';
 export type { ILocations } from './Locations';
+export type { ILocationDropdown } from './LocationDropdown';
 export type { ISearchFormValues } from './Search';
 
 export type { IAuthenticationRequest } from './useAuthentication';
