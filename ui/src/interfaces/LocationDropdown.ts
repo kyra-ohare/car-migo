@@ -3,6 +3,8 @@ export interface ILocationDropdown {
   label: string;
   name: string;
   value: any;
+  selectedLocation: string;
+  setSelectedLocation: React.Dispatch<React.SetStateAction<string>>;
   onChange(
     field: string,
     value: any,
