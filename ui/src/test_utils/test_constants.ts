@@ -1,4 +1,7 @@
+import { appConstants } from '../constants';
+
 export const testConstants = {
+  baseUrl: appConstants.serverDomain + ':' + appConstants.serverPort + '/v1',
   firstName: 'Mary',
   lastName: 'Green',
   dob: '1990-06-30T00:00:00Z',
@@ -11,5 +14,5 @@ export const testConstants = {
   invalidPassword: 'noooooo',
   jwtToken:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-  serverDown: 'boooooo'
+  serverDown: 'boooooo',
 };

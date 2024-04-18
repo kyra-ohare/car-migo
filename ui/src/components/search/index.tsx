@@ -65,7 +65,7 @@ export default function Search() {
       setJourneys(data);
       setShowResults(true);
     },
-    onError: (error) => {
+    onError: () => {
       setShowResults(false);
       setShowAlert(true);
     },
