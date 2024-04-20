@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 export const StyledSearchContainer = styled.div`
   display: flex;
-  width: 80vw;
   justify-content: space-between;
-  margin: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 `;
 
 export const StyledAutocomplete = styled(Autocomplete)`

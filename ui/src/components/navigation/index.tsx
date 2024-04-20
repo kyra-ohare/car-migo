@@ -1,10 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Container,
   IconButton,
   Menu,
@@ -13,10 +12,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import Car from '../../assets/car.png';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { appConstants, navigation, pageMapper } from '../../constants';
 import { useTokens } from '../../hooks/useTokens';
 import { useAuthStore } from '../../hooks/useAuthStore';
+import ResponsiveAppBar from './responsive_app_bar';
+import { role } from '../../constants/navigation';
 
 const settings = [
   appConstants.profile,
@@ -35,8 +36,16 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { isAuthorized } = useAuthStore();
 
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
   };
 
   const handleNav = (path: string) => {
@@ -66,19 +75,6 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
       <AppBar>
         <Container maxWidth='xl'>
           <Toolbar disableGutters>
-            <Box
-              component='img'
-              sx={{
-                height: 60,
-                width: 100,
-                maxHeight: { xs: 60, md: 60 },
-                maxWidth: { xs: 100, md: 100 },
-                marginRight: '10px',
-              }}
-              alt='car-migo'
-              src={Car}
-              data-testid='car-image-img'
-            />
             <Typography
               variant='h6'
               noWrap
@@ -97,21 +93,59 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
             >
               Car-Migo
             </Typography>
+
             <Box
-              sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
               data-testid='row-menu'
             >
-              {pageMapper.map((page) => (
-                <Button
-                  key={page.label}
-                  onClick={() => handleNav(page.path!)}
-                  sx={{ my: 2, color: '#ffffff', display: 'block' }}
-                  data-testid={'row-menu-' + page.label}
-                >
-                  {page.label}
-                </Button>
-              ))}
+              <IconButton
+                size='large'
+                aria-label='account of current user'
+                aria-controls='menu-appbar'
+                aria-haspopup='true'
+                onClick={handleOpenNavMenu}
+                color='inherit'
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+                data-testid='menu-appbar-items'
+              >
+                {pageMapper
+                  .filter(
+                    (page) =>
+                      (isAuthorized === true && page.role == role.authorized) ||
+                      (isAuthorized === false && page.role == role.unauthorized)
+                  )
+                  .map((page) => (
+                    <MenuItem
+                      key={page.label}
+                      onClick={handleCloseNavMenu}
+                      data-testid={'menu-item-' + page.label}
+                    >
+                      <Link to={page.path!}>{page.label}</Link>
+                    </MenuItem>
+                  ))}
+              </Menu>
             </Box>
+
+            <ResponsiveAppBar handleNav={handleNav} />
 
             {isAuthorized === true && (
               <>

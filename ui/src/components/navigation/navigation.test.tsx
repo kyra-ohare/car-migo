@@ -30,22 +30,25 @@ describe('Navigation Unit Tests', () => {
     expect(screen.getAllByTestId('car-migo-title')).toBeDefined();
     expect(screen.getAllByTestId('row-menu')).toBeDefined();
 
-    const buttonsArray: Array<HTMLElement[]> = [
+    const menuRowOptions: Array<HTMLElement[]> = [
       screen.getAllByTestId('row-menu-Home'),
       screen.getAllByTestId('row-menu-Confirm email'),
-      screen.getAllByTestId('row-menu-Profile'),
       screen.getAllByTestId('row-menu-Playground'),
+      screen.getAllByTestId('row-menu-Forgot Password'),
+      screen.getAllByTestId('row-menu-Sign In'),
+      screen.getAllByTestId('row-menu-Sign Up'),
     ];
+    iterateArrayOfHtml(menuRowOptions);
 
-    buttonsArray.forEach((buttons) => {
-      buttons.forEach(async (button) => {
-        expect(button).toBeInTheDocument();
-        fireEvent.click(button);
-        await waitFor(() => {
-          expect(mockNavigate).toHaveBeenCalled();
-        });
-      });
-    });
+    const responsiveMenuItems: Array<HTMLElement[]> = [
+      screen.getAllByTestId('menu-item-Home'),
+      screen.getAllByTestId('menu-item-Confirm email'),
+      screen.getAllByTestId('menu-item-Playground'),
+      screen.getAllByTestId('menu-item-Forgot Password'),
+      screen.getAllByTestId('menu-item-Sign In'),
+      screen.getAllByTestId('menu-item-Sign Up'),
+    ];
+    iterateArrayOfHtml(responsiveMenuItems);
   });
 
   test('renders nav bar for authorized users', async () => {
@@ -58,27 +61,65 @@ describe('Navigation Unit Tests', () => {
 
     expect(screen.getAllByTestId('authorized-settings')).toBeDefined();
 
+    const menuRowOptions: Array<HTMLElement[]> = [
+      screen.getAllByTestId('row-menu-Home'),
+      screen.getAllByTestId('row-menu-Profile'),
+      screen.getAllByTestId('row-menu-Playground'),
+      screen.getAllByTestId('row-menu-Your Journeys'),
+    ];
+    iterateArrayOfHtml(menuRowOptions);
+
+    const responsiveMenuItems: Array<HTMLElement[]> = [
+      screen.getAllByTestId('menu-item-Home'),
+      screen.getAllByTestId('menu-item-Profile'),
+      screen.getAllByTestId('menu-item-Playground'),
+      screen.getAllByTestId('menu-item-Your Journeys'),
+    ];
+    iterateArrayOfHtml(responsiveMenuItems);
+
     const menuSettingsButton = screen.getAllByTestId('menu-settings-button');
-    menuSettingsButton.forEach(async (button) => {
+    iterateHtmlArray(menuSettingsButton);
+
+    const menuSettingsButtons: Array<HTMLElement[]> = [
+      screen.getAllByTestId('settings-menu-Profile'),
+      screen.getAllByTestId('settings-menu-Your Journeys'),
+    ];
+    iterateArrayOfHtml(menuSettingsButtons);
+
+    const logout = screen.getAllByTestId('settings-menu-Logout');
+    iterateHtmlArray(logout);
+  });
+
+  test('renders the MenuIcon', () => {
+    TestUtils.render(
+      <NavBar>
+        <div />
+      </NavBar>
+    );
+
+    const menuIcon = screen.getAllByTestId('MenuIcon');
+    expect(menuIcon).toBeDefined();
+    iterateHtmlArray(menuIcon);
+  });
+});
+
+function iterateArrayOfHtml(mapper: Array<HTMLElement[]>) {
+  mapper.forEach((buttons) => {
+    buttons.forEach(async (button) => {
       expect(button).toBeInTheDocument();
       fireEvent.click(button);
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalled();
       });
     });
+  });
+}
 
-    const settingsArray: Array<HTMLElement[]> = [
-      screen.getAllByTestId('settings-menu-Profile'),
-      screen.getAllByTestId('settings-menu-Your Journeys'),
-      screen.getAllByTestId('settings-menu-Logout'),
-    ];
-    settingsArray.forEach((settings) => {
-      settings.forEach(async (option) => {
-        fireEvent.click(option);
-        await waitFor(() => {
-          expect(mockNavigate).toHaveBeenCalled();
-        });
-      });
+function iterateHtmlArray(element: HTMLElement[]) {
+  element.forEach(async (icon) => {
+    fireEvent.click(icon);
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalled();
     });
   });
-});
+}
