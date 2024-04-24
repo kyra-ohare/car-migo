@@ -4,15 +4,7 @@ import {
   useGetDriverJourneys,
   useGetPassengerJourneys,
 } from '../../hooks/useJourney';
-import { JourneyCard, JourneyV2 } from '../../components';
-import { Box } from '@mui/material';
-import {
-  AlertSpan,
-  BasicDateTimePicker,
-  CustomButton,
-  Journey as ThisJourney,
-  LocationDropdown,
-} from '../../components/index';
+import { FloatingText, JourneyV2 } from '../../components';
 
 export default function Journey() {
   const [passengerJourneys, setPassengerJourneys] =
@@ -43,17 +35,21 @@ export default function Journey() {
 
   return (
     <>
-      {passengerJourneys && passengerJourneys[0] && (
+      {passengerJourneys && passengerJourneys[0] ? (
         <JourneyV2
           label='As a passenger, here are your upcoming journeys'
           journeys={passengerJourneys}
         />
+      ) : (
+        <FloatingText text='Passenger! Click here to book some journeys.' />
       )}
-      {driverJourneys && driverJourneys[0] && (
+      {driverJourneys && driverJourneys[0] ? (
         <JourneyV2
           label="As a driver, here are the journeys you've created"
           journeys={driverJourneys}
         />
+      ) : (
+        <FloatingText text='Driver! Click here to create some journeys.' />
       )}
     </>
   );

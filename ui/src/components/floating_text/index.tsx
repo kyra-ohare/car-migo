@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, keyframes } from '@mui/material';
 
-export default function FloatingText() {
+export default function FloatingText(prop: any) {
   return (
     <Box
       sx={{
@@ -9,25 +9,24 @@ export default function FloatingText() {
         alignItems: 'center',
         height: '15vh',
         overflow: 'hidden',
-        backgroundColor: 'yellow',
       }}
     >
       <Typography
         variant='h4'
         component='h1'
-        // sx={{ animation: `${float} 3s ease-in-out infinite` }}
+        sx={{ animation: `${float} 4s ease-in-out infinite` }}
       >
-        As a driver, you don't have any journeys. Click here to create some.
+        {prop.text}
       </Typography>
     </Box>
   );
 }
 
-// const float = keyframes`
-// 0%, 100% {
-//   transform: translateY(0);
-// }
-// 50% {
-//   transform: translateY(-20px);
-// }
-// `;
+const float = keyframes`
+0%, 100% {
+  transform: translateY(0);
+}
+50% {
+  transform: translateY(-20px);
+}
+`;
