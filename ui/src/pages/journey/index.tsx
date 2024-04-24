@@ -1,14 +1,60 @@
-import { BuildRounded } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { IJourneyEntity } from '../../interfaces';
+import {
+  useGetDriverJourneys,
+  useGetPassengerJourneys,
+} from '../../hooks/useJourney';
+import { JourneyCard, JourneyV2 } from '../../components';
+import { Box } from '@mui/material';
+import {
+  AlertSpan,
+  BasicDateTimePicker,
+  CustomButton,
+  Journey as ThisJourney,
+  LocationDropdown,
+} from '../../components/index';
 
 export default function Journey() {
+  const [passengerJourneys, setPassengerJourneys] =
+    useState<IJourneyEntity[]>();
+  const [driverJourneys, setDriverJourneys] = useState<IJourneyEntity[]>();
+  const [showResults, setShowResults] = useState<boolean>(true);
+  const { isSuccess: isPassengerJourneysSuccess, data: dataPassengerJourneys } =
+    useGetPassengerJourneys();
+  const { isSuccess: isDriverJourneysSuccess, data: dataDriverJourneys } =
+    useGetDriverJourneys();
+
+  const resultState = (state: boolean) => {
+    setShowResults(state);
+    // setJourneys(undefined);
+  };
+
+  useEffect(() => {
+    if (isDriverJourneysSuccess && dataDriverJourneys) {
+      setDriverJourneys(dataDriverJourneys);
+    }
+  }, [isDriverJourneysSuccess, dataDriverJourneys]);
+
+  useEffect(() => {
+    if (isPassengerJourneysSuccess && dataPassengerJourneys) {
+      setPassengerJourneys(dataPassengerJourneys);
+    }
+  }, [isPassengerJourneysSuccess, dataPassengerJourneys]);
+
   return (
-    <div data-testid='create-journey-container'>
-      <h1>Create a journey</h1>
-      <br />
-      <div>
-        <BuildRounded style={{ width: 60, height: 60 }} />
-      </div>
-      <p>Under construction</p>
-    </div>
+    <>
+      {passengerJourneys && passengerJourneys[0] && (
+        <JourneyV2
+          label='As a passenger, here are your upcoming journeys'
+          journeys={passengerJourneys}
+        />
+      )}
+      {driverJourneys && driverJourneys[0] && (
+        <JourneyV2
+          label="As a driver, here are the journeys you've created"
+          journeys={driverJourneys}
+        />
+      )}
+    </>
   );
 }

@@ -1,38 +1,43 @@
-import { useState } from 'react';
 import {
   Box,
+  Typography,
+  Grid,
   Card,
   CardContent,
   CardActions,
   Button,
-  Typography,
-  Grid,
 } from '@mui/material';
-import { IJourneyEntity } from '../../interfaces';
 import {
+  CalendarMonthRounded,
   AccessAlarmRounded,
   DeleteRounded,
-  CalendarMonthRounded,
   LocationOn,
+  GroupsRounded,
+  WeekendRounded,
 } from '@mui/icons-material';
+import { IJourneyEntity } from '../../interfaces';
 
-export default function ComboBox() {
-  const [passengerJourneys, setPassengerJourneys] =
-    useState<IJourneyEntity[]>(dummy_journeys);
+interface IJourneyV2 {
+  label: string;
+  journeys: IJourneyEntity[];
+}
+
+export default function JourneyV2(props: IJourneyV2) {
+  // label, journeys
 
   const handleCancel = (id: number) => {
-    setPassengerJourneys(
-      passengerJourneys.filter((journey) => journey.id !== id)
-    );
+    // setPassengerJourneys(
+    //   props.journeys.filter((journey) => journey.id !== id)
+    // );
   };
-
+  
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Typography variant='h4' component='h2' sx={{ mb: 3 }}>
-        Your Upcoming Journeys
+        {props.label}
       </Typography>
       <Grid container spacing={2}>
-        {passengerJourneys.map((journey) => (
+        {props.journeys.map((journey: IJourneyEntity) => (
           <Grid item key={journey.id}>
             <Card raised>
               <CardContent>
@@ -41,15 +46,23 @@ export default function ComboBox() {
                   {journey.locationFrom.description} →{' '}
                   {journey.locationTo.description}
                 </Typography>
-                <Typography variant='body1' sx={{ mb: 1.5 }}>
+                <Typography variant='body1' sx={{ mb: 1 }}>
                   <CalendarMonthRounded
                     sx={{ verticalAlign: 'bottom', mr: 1 }}
                   />
                   {formatDate(journey.dateTime)}
                 </Typography>
-                <Typography variant='body2'>
+                <Typography variant='body2'  sx={{ mb: 1 }}>
                   <AccessAlarmRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
                   {formatTime(journey.dateTime)}
+                </Typography>
+                <Typography variant='body2'>
+                  <GroupsRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
+                  Max passengers: {journey.maxPassengers}
+                </Typography>
+                <Typography variant='body2'>
+                  <WeekendRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
+                  Availability: {journey.availability}
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'center' }}>
@@ -92,66 +105,3 @@ function formatTime(dateTimeStr: string): string {
     dateObj.getMinutes().toString().padStart(2, '0'),
   ].join(':');
 }
-
-const dummy_journeys: IJourneyEntity[] = [
-  {
-    id: 1,
-    locationFrom: {
-      id: 1,
-      description: 'New York',
-    },
-    locationTo: {
-      id: 2,
-      description: 'Los Angeles',
-    },
-    maxPassengers: 3,
-    dateTime: '2020-11-30T09:00:00Z',
-    createdDate: '2020-11-30T09:00:00Z',
-    availability: 0,
-  },
-  {
-    id: 2,
-    locationFrom: {
-      id: 3,
-      description: 'Chicago',
-    },
-    locationTo: {
-      id: 4,
-      description: 'Houston',
-    },
-    maxPassengers: 4,
-    dateTime: '2020-11-30T09:00:00Z',
-    createdDate: '2020-11-30T09:00:00Z',
-    availability: 0,
-  },
-  {
-    id: 3,
-    locationFrom: {
-      id: 5,
-      description: 'Miami',
-    },
-    locationTo: {
-      id: 6,
-      description: 'Seattle',
-    },
-    maxPassengers: 5,
-    dateTime: '2020-11-30T09:00:00Z',
-    createdDate: '2020-11-30T09:00:00Z',
-    availability: 0,
-  },
-  {
-    id: 4,
-    locationFrom: {
-      id: 5,
-      description: 'Orlando',
-    },
-    locationTo: {
-      id: 1,
-      description: 'Philadelphia City',
-    },
-    maxPassengers: 5,
-    dateTime: '2020-11-30T09:00:00Z',
-    createdDate: '2020-11-30T09:00:00Z',
-    availability: 0,
-  },
-];

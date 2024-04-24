@@ -10,8 +10,10 @@ import BasicDateTimePicker from './calendar_time';
 import CustomButton from './custom_button';
 import CustomTextField from './custom_text_field';
 import DialogBox from './dialog_box';
+import FloatingText from './floating_text';
 import Footer from './footer';
 import Journey from './journey';
+import JourneyV2 from './journey_v2';
 import JourneyCard from './journey/journey_card';
 import Loader from './loader';
 import LocationDropdown from './search/dropdown';
@@ -28,8 +30,10 @@ export {
   CustomButton,
   CustomTextField,
   DialogBox,
+  FloatingText,
   Footer,
   Journey,
+  JourneyV2,
   JourneyCard,
   Loader,
   LocationDropdown,

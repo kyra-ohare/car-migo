@@ -56,10 +56,14 @@ export default function Homepage() {
             </>
           )}
         </WelcomeContainer>
-        <Grid container>
+        <Grid container 
+         
+        >
           <Grid
             item
-            xs={8}
+            xs={12}
+            sm={6}
+            md={8}
             sx={{
               display: 'flex',
               justifyContent: 'center',
@@ -71,7 +75,7 @@ export default function Homepage() {
               importantly, eco-friendly.
             </CatchyMessage>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Box
               component='img'
               sx={{
