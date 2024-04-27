@@ -6,6 +6,7 @@ import {
   CardContent,
   CardActions,
   Button,
+  styled,
 } from '@mui/material';
 import {
   CalendarMonthRounded,
@@ -14,6 +15,8 @@ import {
   LocationOn,
   GroupsRounded,
   WeekendRounded,
+  DirectionsCarRounded,
+  PersonOutlineRounded,
 } from '@mui/icons-material';
 import { IJourneyEntity } from '../../interfaces';
 
@@ -30,16 +33,17 @@ export default function JourneyV2(props: IJourneyV2) {
     //   props.journeys.filter((journey) => journey.id !== id)
     // );
   };
-  
+
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Typography variant='h4' component='h2' sx={{ mb: 3 }}>
+        {/* As a passenger, here are your upcoming journeys */}
         {props.label}
       </Typography>
       <Grid container spacing={2}>
         {props.journeys.map((journey: IJourneyEntity) => (
           <Grid item key={journey.id}>
-            <Card raised>
+            <StyledJourneyCard raised>
               <CardContent>
                 <Typography variant='h6' component='div' gutterBottom>
                   <LocationOn color='primary' />{' '}
@@ -52,7 +56,7 @@ export default function JourneyV2(props: IJourneyV2) {
                   />
                   {formatDate(journey.dateTime)}
                 </Typography>
-                <Typography variant='body2'  sx={{ mb: 1 }}>
+                <Typography variant='body2' sx={{ mb: 1 }}>
                   <AccessAlarmRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
                   {formatTime(journey.dateTime)}
                 </Typography>
@@ -60,10 +64,32 @@ export default function JourneyV2(props: IJourneyV2) {
                   <GroupsRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
                   Max passengers: {journey.maxPassengers}
                 </Typography>
-                <Typography variant='body2'>
+                {/* <Typography variant='body2'>
                   <WeekendRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
                   Availability: {journey.availability}
+                </Typography> */}
+                {}
+                <Typography variant='body2'>
+                  <DirectionsCarRounded
+                    sx={{ verticalAlign: 'bottom', mr: 1 }}
+                  />
+                  Driver: {journey.driver.platformUser.firstName}{' '}
+                  {journey.driver.platformUser.lastName}
                 </Typography>
+                {journey.passengers &&
+              //   <Typography variant='body2'>
+              //   <WeekendRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
+              //   Availability: {journey.availability}
+              // </Typography>
+                  (journey.passengers.map((passenger) => (
+                    <Typography variant='body2'>
+                      <PersonOutlineRounded
+                        sx={{ verticalAlign: 'bottom', mr: 1 }}
+                      />
+                      Passenger: {passenger.platformUser.firstName}{' '}
+                      {passenger.platformUser.lastName}
+                    </Typography>
+                  )))}
               </CardContent>
               <CardActions sx={{ justifyContent: 'center' }}>
                 <Button
@@ -76,12 +102,12 @@ export default function JourneyV2(props: IJourneyV2) {
                     },
                   }}
                   onClick={() => handleCancel(journey.id)}
-                  startIcon={<DeleteRounded />}
+                  endIcon={<DeleteRounded />}
                 >
                   Cancel Journey
                 </Button>
               </CardActions>
-            </Card>
+            </StyledJourneyCard>
           </Grid>
         ))}
       </Grid>
@@ -105,3 +131,12 @@ function formatTime(dateTimeStr: string): string {
     dateObj.getMinutes().toString().padStart(2, '0'),
   ].join(':');
 }
+
+export const StyledJourneyCard = styled(Card)`
+  transition: transform 0.2s ease-in-out;
+  margin-bottom: 15px;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;

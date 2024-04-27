@@ -1,3 +1,5 @@
+import { IDriverEntity, IPassengerEntity } from '.';
+
 export interface IJourneyEntity {
   id: number;
   createdDate: string;
@@ -6,6 +8,8 @@ export interface IJourneyEntity {
   maxPassengers: number;
   availability: number;
   dateTime: string;
+  driver: IDriverEntity;
+  passengers: IPassengerEntity[];
 }
 
 export interface IJourneyProps {
