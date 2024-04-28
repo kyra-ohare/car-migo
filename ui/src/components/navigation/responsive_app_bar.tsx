@@ -37,7 +37,7 @@ export default function ResponsiveAppBar(props: any) {
           textDecoration: 'none',
         }}
       >
-        Car-Migo2
+        Car-Migo
       </Typography>
       <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
         {pageMapper
