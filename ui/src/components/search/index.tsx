@@ -9,7 +9,6 @@ import {
   BasicDateTimePicker,
   CustomButton,
   Journey,
-  JourneyV2,
   LocationDropdown,
 } from '../../components/index';
 import { StyledSearchContainer } from './styled';
@@ -134,7 +133,7 @@ export default function Search() {
         />
       </StyledSearchContainer>
       {showResults && journeys && journeys[0] && (
-        <JourneyV2
+        <Journey
           label='search'
           journeys={journeys}
           origin={journeys[0].locationFrom.description}

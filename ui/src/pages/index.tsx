@@ -1,5 +1,5 @@
 import ConfirmEmail from './confirm_email';
-import Journey from './journey';
+import YourJourneys from './your_journeys';
 import ForgotPassword from './forgot_password';
 import Homepage from './home';
 import Playground from './playground';
@@ -9,7 +9,7 @@ import SignUp from './sign_up';
 
 export {
   ConfirmEmail,
-  Journey,
+  YourJourneys,
   ForgotPassword,
   Homepage,
   Playground,

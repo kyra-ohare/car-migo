@@ -4,9 +4,9 @@ import {
   useGetDriverJourneys,
   useGetPassengerJourneys,
 } from '../../hooks/useJourney';
-import { FloatingText, JourneyV2 } from '../../components';
+import { FloatingText, Journey } from '../../components';
 
-export default function Journey() {
+export default function YourJourneys() {
   const [passengerJourneys, setPassengerJourneys] =
     useState<IJourneyEntity[]>();
   const [driverJourneys, setDriverJourneys] = useState<IJourneyEntity[]>();
@@ -36,7 +36,7 @@ export default function Journey() {
   return (
     <>
       {passengerJourneys && passengerJourneys[0] ? (
-        <JourneyV2
+        <Journey
           label='As a passenger, here are your upcoming journeys'
           journeys={passengerJourneys}
         />
@@ -44,7 +44,7 @@ export default function Journey() {
         <FloatingText text='Passenger! Click here to book some journeys.' />
       )}
       {driverJourneys && driverJourneys[0] ? (
-        <JourneyV2
+        <Journey
           label="As a driver, here are the journeys you've created"
           journeys={driverJourneys}
         />
