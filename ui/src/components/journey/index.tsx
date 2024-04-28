@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
 import { ArrowForwardOutlined } from '@mui/icons-material';
 import { CustomButton, JourneyCard } from '..';
-import { IJourneyEntity, IJourneyProps } from '../../interfaces';
+import { IJourneyEntity } from '../../interfaces';
 
-export default function Journey(props: IJourneyProps) {
+export default function Journey(props: any) {
   const handleCloseResults = () => {
     props.state(false);
   };

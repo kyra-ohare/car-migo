@@ -12,23 +12,36 @@ import {
   CalendarMonthRounded,
   AccessAlarmRounded,
   DeleteRounded,
-  LocationOn,
-  GroupsRounded,
-  WeekendRounded,
-  DirectionsCarRounded,
-  PersonOutlineRounded,
 } from '@mui/icons-material';
 import { IJourneyEntity } from '../../interfaces';
+import { useMutation } from '@tanstack/react-query';
+import { useDeletePassenger } from '../../hooks/useJourney';
+import DriverCard from './card_driver';
+import PassengerCard from './card_passenger';
+import RouteHeadline from './route_headline';
+import DateTime from './card_date_time';
+import SearchCard from './card_search';
 
 interface IJourneyV2 {
   label: string;
   journeys: IJourneyEntity[];
+  origin?: string | undefined;
+  destination?: string;
 }
 
 export default function JourneyV2(props: IJourneyV2) {
-  // label, journeys
-
-  const handleCancel = (id: number) => {
+  const mutateDeletePassenger = useMutation({
+    mutationFn: useDeletePassenger,
+    onSuccess: (data) => {
+      console.log('Success deleting passenger', data);
+    },
+    onError: (error) => {
+      console.log('Success deleting passenger', error);
+    },
+  });
+  const handleCancelJourney = (journeyId: number) => {
+    console.log('Journey journeyId', journeyId);
+    mutateDeletePassenger.mutate(journeyId);
     // setPassengerJourneys(
     //   props.journeys.filter((journey) => journey.id !== id)
     // );
@@ -37,59 +50,35 @@ export default function JourneyV2(props: IJourneyV2) {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Typography variant='h4' component='h2' sx={{ mb: 3 }}>
-        {/* As a passenger, here are your upcoming journeys */}
-        {props.label}
+        {props.label === 'search' ? (
+          <RouteHeadline
+            origin={props.origin}
+            destination={props.destination}
+          />
+        ) : (
+          <>{props.label}</>
+        )}
       </Typography>
       <Grid container spacing={2}>
         {props.journeys.map((journey: IJourneyEntity) => (
           <Grid item key={journey.id}>
             <StyledJourneyCard raised>
               <CardContent>
-                <Typography variant='h6' component='div' gutterBottom>
-                  <LocationOn color='primary' />{' '}
-                  {journey.locationFrom.description} →{' '}
-                  {journey.locationTo.description}
-                </Typography>
-                <Typography variant='body1' sx={{ mb: 1 }}>
-                  <CalendarMonthRounded
-                    sx={{ verticalAlign: 'bottom', mr: 1 }}
-                  />
-                  {formatDate(journey.dateTime)}
-                </Typography>
-                <Typography variant='body2' sx={{ mb: 1 }}>
-                  <AccessAlarmRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
-                  {formatTime(journey.dateTime)}
-                </Typography>
-                <Typography variant='body2'>
-                  <GroupsRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
-                  Max passengers: {journey.maxPassengers}
-                </Typography>
-                {/* <Typography variant='body2'>
-                  <WeekendRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
-                  Availability: {journey.availability}
-                </Typography> */}
-                {}
-                <Typography variant='body2'>
-                  <DirectionsCarRounded
-                    sx={{ verticalAlign: 'bottom', mr: 1 }}
-                  />
-                  Driver: {journey.driver.platformUser.firstName}{' '}
-                  {journey.driver.platformUser.lastName}
-                </Typography>
-                {journey.passengers &&
-              //   <Typography variant='body2'>
-              //   <WeekendRounded sx={{ verticalAlign: 'bottom', mr: 1 }} />
-              //   Availability: {journey.availability}
-              // </Typography>
-                  (journey.passengers.map((passenger) => (
-                    <Typography variant='body2'>
-                      <PersonOutlineRounded
-                        sx={{ verticalAlign: 'bottom', mr: 1 }}
-                      />
-                      Passenger: {passenger.platformUser.firstName}{' '}
-                      {passenger.platformUser.lastName}
-                    </Typography>
-                  )))}
+                {props.label === 'search' ? (
+                  <SearchCard journey={journey} />
+                ) : (
+                  <>
+                    <RouteHeadline
+                      origin={journey.locationFrom.description}
+                      destination={journey.locationTo.description}
+                    />
+                    {journey.passengers ? (
+                      <PassengerCard journey={journey} />
+                    ) : (
+                      <DriverCard journey={journey} />
+                    )}
+                  </>
+                )}
               </CardContent>
               <CardActions sx={{ justifyContent: 'center' }}>
                 <Button
@@ -101,7 +90,7 @@ export default function JourneyV2(props: IJourneyV2) {
                       backgroundColor: '#f2f2f2',
                     },
                   }}
-                  onClick={() => handleCancel(journey.id)}
+                  onClick={() => handleCancelJourney(journey.id)}
                   endIcon={<DeleteRounded />}
                 >
                   Cancel Journey
@@ -113,23 +102,6 @@ export default function JourneyV2(props: IJourneyV2) {
       </Grid>
     </Box>
   );
-}
-
-function formatDate(dateTimeStr: string): string {
-  const dateObj = new Date(dateTimeStr);
-  return [
-    dateObj.getDate().toString().padStart(2, '0'),
-    (dateObj.getMonth() + 1).toString().padStart(2, '0'),
-    dateObj.getFullYear(),
-  ].join('-');
-}
-
-function formatTime(dateTimeStr: string): string {
-  const dateObj = new Date(dateTimeStr);
-  return [
-    dateObj.getHours().toString().padStart(2, '0'),
-    dateObj.getMinutes().toString().padStart(2, '0'),
-  ].join(':');
 }
 
 export const StyledJourneyCard = styled(Card)`

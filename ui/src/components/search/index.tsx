@@ -9,12 +9,13 @@ import {
   BasicDateTimePicker,
   CustomButton,
   Journey,
+  JourneyV2,
   LocationDropdown,
 } from '../../components/index';
 import { StyledSearchContainer } from './styled';
 import { initialSearchValues } from './initial_values';
 import { IJourneyEntity, ISearchFormValues } from '../../interfaces';
-import { useJourneySearchQuery } from '../../hooks/useJourney';
+import { useJourneySearch } from '../../hooks/useJourney';
 
 const validationSchema = Yup.object().shape({
   locationIdFrom: Yup.string().required('coming from...'),
@@ -43,6 +44,10 @@ export default function Search() {
   const handleFormSubmit = (values: ISearchFormValues) => {
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
+      // locationIdFrom: values.locationIdFrom,
+      // dateTimeFrom: values.dateTimeFrom,
+      // dateTimeTo: values.dateTimeTo,
+      // locationIdTo: values.locationIdTo,
       locationIdFrom: '5',
       locationIdTo: '1',
       dateTimeFrom: '2016-04-19T23:00:00.000Z',
@@ -59,7 +64,7 @@ export default function Search() {
   });
 
   const mutateSearchJourneys = useMutation({
-    mutationFn: useJourneySearchQuery,
+    mutationFn: useJourneySearch,
     onSuccess: (data) => {
       setShowAlert(false);
       setJourneys(data);
@@ -122,14 +127,18 @@ export default function Search() {
           formikTouched={formik.touched.dateTimeTo}
           datatestid='latest-date-time-picker'
         />
-        <CustomButton type='submit' label='Search' datatestid='search-submit-button' />
+        <CustomButton
+          type='submit'
+          label='Search'
+          datatestid='search-submit-button'
+        />
       </StyledSearchContainer>
       {showResults && journeys && journeys[0] && (
-        <Journey
-          results={journeys}
-          departure={journeys[0].locationFrom.description}
+        <JourneyV2
+          label='search'
+          journeys={journeys}
+          origin={journeys[0].locationFrom.description}
           destination={journeys[0].locationTo.description}
-          state={resultState}
         />
       )}
       {showAlert && (

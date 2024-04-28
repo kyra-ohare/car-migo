@@ -4,7 +4,7 @@ import { IJourneyEntity, IJourneyRequest } from '../interfaces';
 
 const endpoint = '/v1/journeys';
 
-export const useJourneySearchQuery = async (params: IJourneyRequest) => {
+export const useJourneySearch = async (params: IJourneyRequest) => {
   const response = await axiosInstanceNoAuth.get(endpoint + '/search', {
     params: {
       locationIdFrom: params.locationIdFrom,
@@ -29,3 +29,17 @@ export const useGetPassengerJourneys = (): UseQueryResult<IJourneyEntity[]> =>
     queryFn: async () =>
       (await axiosInstance.get(endpoint + '/passengers/my-journeys')).data,
   });
+
+export const useAddPassenger = async (journeyId: number) => {
+  const response = await axiosInstance.post(
+    endpoint + '/' + journeyId + '/add-passenger'
+  );
+  return response.data;
+};
+
+export const useDeletePassenger = async (journeyId: number) => {
+  const response = await axiosInstance.delete(
+    endpoint + '/' + journeyId + '/remove-passenger'
+  );
+  return response.data;
+};

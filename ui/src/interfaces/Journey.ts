@@ -13,10 +13,15 @@ export interface IJourneyEntity {
 }
 
 export interface IJourneyProps {
-  results: IJourneyEntity[];
-  departure: string;
-  destination: string;
-  state: (state: boolean) => void;
+  journey: {
+    availability: number;
+    dateTime: string;
+    maxPassengers: number;
+    driver: {
+      platformUser: { firstName: any; lastName: any };
+    };
+    passengers: IPassengerEntity[];
+  };
 }
 
 export interface IJourneyLocationProperty {
