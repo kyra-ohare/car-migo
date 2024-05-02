@@ -65,4 +65,155 @@ export const journeysHandlers = [
 
     return new HttpResponse(null, { status: 500 });
   }),
+
+  http.get(testConstants.baseUrl + '/journeys/passengers/my-journeys', () => {
+    return HttpResponse.json(
+      [
+        {
+          id: 1,
+          createdDate: '2021-11-30T00:00:00Z',
+          locationFrom: { id: 1, description: 'Rostrevor' },
+          locationTo: { id: 2, description: 'Belfast' },
+          maxPassengers: 2,
+          availability: 0,
+          dateTime: '2021-12-01T09:00:00Z',
+          driver: {
+            id: 1,
+            licenseNumber: '35789654',
+            platformUser: {
+              id: 1,
+              createdDate: '2021-12-24T00:00:00Z',
+              firstName: 'John',
+              lastName: 'Smith',
+              dob: '1970-02-23T00:00:00Z',
+              email: 'john.smith@example.com',
+              phoneNumber: '0287513626',
+              userAccessStatus: { id: 2, status: 'ACTIVE' },
+              passenger: false,
+              driver: false,
+            },
+          },
+        },
+        {
+          id: 2,
+          createdDate: '2021-11-30T00:00:00Z',
+          locationFrom: { id: 3, description: 'Downpatrick' },
+          locationTo: { id: 4, description: 'Armagh' },
+          maxPassengers: 3,
+          availability: 0,
+          dateTime: '2021-12-02T09:00:00Z',
+          driver: {
+            id: 1,
+            licenseNumber: '35789654',
+            platformUser: {
+              id: 1,
+              createdDate: '2021-12-24T00:00:00Z',
+              firstName: 'John',
+              lastName: 'Smith',
+              dob: '1970-02-23T00:00:00Z',
+              email: 'john.smith@example.com',
+              phoneNumber: '0287513626',
+              userAccessStatus: { id: 2, status: 'ACTIVE' },
+              passenger: false,
+              driver: false,
+            },
+          },
+        },
+      ],
+      { status: 200 }
+    );
+  }),
+
+  http.get(testConstants.baseUrl + '/journeys/drivers/my-journeys', () => {
+    return HttpResponse.json(
+      [
+        {
+          id: 3,
+          createdDate: '2022-01-04T00:00:00Z',
+          locationFrom: { id: 4, description: 'Armagh' },
+          locationTo: { id: 3, description: 'Downpatrick' },
+          maxPassengers: 4,
+          availability: 1,
+          dateTime: '2022-01-04T15:30:00Z',
+          driver: {
+            id: 2,
+            licenseNumber: '16548329',
+            platformUser: {
+              id: 2,
+              createdDate: '2022-01-04T00:00:00Z',
+              firstName: 'Mary',
+              lastName: 'Green',
+              dob: '1990-06-30T00:00:00Z',
+              email: 'mary.green@example.com',
+              phoneNumber: '0286579635',
+              userAccessStatus: { id: 2, status: 'ACTIVE' },
+              passenger: false,
+              driver: false,
+            },
+          },
+          passengers: [
+            {
+              id: 1,
+              platformUser: {
+                id: 1,
+                createdDate: '2021-12-24T00:00:00Z',
+                firstName: 'John',
+                lastName: 'Smith',
+                dob: '1970-02-23T00:00:00Z',
+                email: 'john.smith@example.com',
+                phoneNumber: '0287513626',
+                userAccessStatus: { id: 2, status: 'ACTIVE' },
+                passenger: false,
+                driver: false,
+              },
+            },
+            {
+              id: 3,
+              platformUser: {
+                id: 3,
+                createdDate: '2022-01-05T00:00:00Z',
+                firstName: 'Paul',
+                lastName: 'Gibson',
+                dob: '1995-07-08T00:00:00Z',
+                email: 'paul.gibson@example.com',
+                phoneNumber: '0286547891',
+                userAccessStatus: { id: 2, status: 'ACTIVE' },
+                passenger: false,
+                driver: false,
+              },
+            },
+            {
+              id: 4,
+              platformUser: {
+                id: 4,
+                createdDate: '2022-01-28T00:00:00Z',
+                firstName: 'Jess',
+                lastName: 'Brown',
+                dob: '1986-01-04T00:00:00Z',
+                email: 'jess.brown@example.com',
+                phoneNumber: '0283215978',
+                userAccessStatus: { id: 3, status: 'SUSPENDED' },
+                passenger: false,
+                driver: false,
+              },
+            },
+          ],
+        },
+      ],
+      { status: 200 }
+    );
+  }),
+
+  http.post(
+    testConstants.baseUrl + '/journeys/:passengerId/add-passenger',
+    ({ params }) => {
+      const { passengerId } = params;
+
+      if (passengerId === '1') return new HttpResponse(null, { status: 200 });
+
+      if (passengerId === '2') return new HttpResponse(null, { status: 409 });
+
+      return new HttpResponse(null, { status: 500 });
+    }
+  ),
 ];

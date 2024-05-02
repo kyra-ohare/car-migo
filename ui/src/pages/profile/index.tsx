@@ -207,7 +207,7 @@ export default function Profile() {
                 datatestid='read-only-phone-number'
               />
             </Grid>
-            {isDriver === true && (
+            {isDriver === true && isDriverSuccess && (
               <Grid item xs={12}>
                 <ThisTextField
                   id='read-only-license-number'

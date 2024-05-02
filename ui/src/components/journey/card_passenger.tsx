@@ -4,10 +4,10 @@ import {
   PersonOutlineRounded,
 } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-import { IJourneyProps, IPassengerEntity } from '../../interfaces';
+import { IJourneyResponseProps, IPassengerEntity } from '../../interfaces';
 import DateTime from './card_date_time';
 
-export default function PassengerCard(props: IJourneyProps) {
+export default function PassengerCard(props: IJourneyResponseProps) {
   const { maxPassengers, availability, passengers } = props.journey;
   return (
     <>

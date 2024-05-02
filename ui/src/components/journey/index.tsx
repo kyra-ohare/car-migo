@@ -1,87 +1,156 @@
 import { Box, Typography, Grid, CardContent, CardActions } from '@mui/material';
 import { DeleteRounded } from '@mui/icons-material';
-import { IJourneyEntity } from '../../interfaces';
+import { IJourneyEntity, IJourneyProps } from '../../interfaces';
 import { useMutation } from '@tanstack/react-query';
-import { useDeletePassenger } from '../../hooks/useJourney';
+import { useAddPassenger, useDeletePassenger } from '../../hooks/useJourney';
 import DriverCard from './card_driver';
 import PassengerCard from './card_passenger';
 import RouteHeadline from './route_headline';
 import SearchCard from './card_search';
 import { StyledButton, StyledGrid, StyledJourneyCard } from './styled';
+import CustomButton from '../custom_button';
+import { useEffect, useState } from 'react';
+import { httpStatus } from '../../constants';
+import { AlertPopUp } from '..';
 
-interface IJourneyV2 {
-  label: string;
-  journeys: IJourneyEntity[];
-  origin?: string | undefined;
-  destination?: string;
-}
+export default function Journey(props: IJourneyProps) {
+  const [journeys, setJourneys] = useState<IJourneyEntity[]>(props.journeys);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
-export default function Journey(props: IJourneyV2) {
   const mutateDeletePassenger = useMutation({
     mutationFn: useDeletePassenger,
-    onSuccess: (data) => {
-      console.log('Success deleting passenger', data);
+    onSuccess: async (resp) => {
+      if (resp.status.toString() === httpStatus.NO_CONTENT) {
+        const journeyIdFromURL = findJourneyIdFromURL(resp.config.url);
+        if (journeyIdFromURL !== 0) {
+          setJourneys(
+            journeys.filter((journey) => journey.id !== journeyIdFromURL)
+          );
+        }
+      }
     },
-    onError: (error) => {
-      console.log('Success deleting passenger', error);
-    },
+    onError: () => {},
   });
-  const handleCancelJourney = (journeyId: number) => {
-    console.log('Journey journeyId', journeyId);
+
+  const handleCancelJourney = async (journeyId: number) => {
     mutateDeletePassenger.mutate(journeyId);
-    // setPassengerJourneys(
-    //   props.journeys.filter((journey) => journey.id !== id)
-    // );
   };
 
+  const mutateAddPassenger = useMutation({
+    mutationFn: useAddPassenger,
+    onSuccess: (resp) => {
+      if (resp.status.toString() === httpStatus.OK) {
+        const journeyIdFromURL = findJourneyIdFromURL(resp.config.url);
+        if (journeyIdFromURL !== 0) {
+          setJourneys(
+            journeys.filter((journey) => journey.id !== journeyIdFromURL)
+          );
+        }
+      }
+    },
+    onError: () => {
+      setOpenSnackbar(true);
+    },
+  });
+
+  const bookJourney = (journeyId: number) => {
+    mutateAddPassenger.mutate(journeyId);
+  };
+
+  useEffect(() => {
+    journeys.length;
+  }, [journeys]);
+
+  const SearchRouteHeadling = () => (
+    <>
+      {journeys.length ? (
+        <RouteHeadline origin={props.origin} destination={props.destination} />
+      ) : (
+        <></>
+      )}
+    </>
+  );
+
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }} data-testid='journey-component'>
+    <Box sx={{ flexGrow: 1, padding: 2 }} data-testid={props.datatestid}>
       <Typography variant='h4' component='h2' sx={{ mb: 3 }}>
         {props.label === 'search' ? (
-          <RouteHeadline
-            origin={props.origin}
-            destination={props.destination}
-          />
+          <SearchRouteHeadling />
         ) : (
           <>{props.label}</>
         )}
       </Typography>
       <StyledGrid container spacing={2}>
-        {props.journeys.map((journey: IJourneyEntity) => (
-          <Grid item key={journey.id}>
-            <StyledJourneyCard raised>
-              <CardContent>
-                {props.label === 'search' ? (
-                  <SearchCard journey={journey} />
-                ) : (
-                  <>
-                    <RouteHeadline
-                      origin={journey.locationFrom.description}
-                      destination={journey.locationTo.description}
-                    />
-                    {journey.passengers ? (
-                      <PassengerCard journey={journey} />
+        {journeys &&
+          journeys.map((journey: IJourneyEntity) => (
+            <>
+              <Grid
+                item
+                key={journey.id}
+                data-testid={'journey-card-' + journey.id}
+              >
+                <StyledJourneyCard raised>
+                  <CardContent>
+                    {props.label === 'search' ? (
+                      <SearchCard journey={journey} />
                     ) : (
-                      <DriverCard journey={journey} />
+                      <>
+                        <RouteHeadline
+                          origin={journey.locationFrom.description}
+                          destination={journey.locationTo.description}
+                        />
+                        {journey.passengers ? (
+                          <PassengerCard journey={journey} />
+                        ) : (
+                          <DriverCard journey={journey} />
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'center' }}>
-                <StyledButton
-                  size='small'
-                  type='submit'
-                  onClick={() => handleCancelJourney(journey.id)}
-                  endIcon={<DeleteRounded />}
-                  data-testid='close-journey-button'
-                >
-                  Cancel Journey
-                </StyledButton>
-              </CardActions>
-            </StyledJourneyCard>
-          </Grid>
-        ))}
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'center' }}>
+                    {props.label === 'search' ? (
+                      <CustomButton
+                        label='Book'
+                        onClick={() => bookJourney(journey.id)}
+                        datatestid='book-journey-button'
+                      />
+                    ) : (
+                      <StyledButton
+                        size='small'
+                        type='submit'
+                        onClick={() => handleCancelJourney(journey.id)}
+                        endIcon={<DeleteRounded />}
+                        data-testid='close-journey-button'
+                      >
+                        Cancel Journey
+                      </StyledButton>
+                    )}
+                  </CardActions>
+                </StyledJourneyCard>
+              </Grid>
+            </>
+          ))}
       </StyledGrid>
+      <AlertPopUp
+        open={openSnackbar}
+        onClose={() => setOpenSnackbar(false)}
+        severity='info'
+        message='You are already a passenger to this journey.'
+        datatestid='alert-pop-up'
+      />
     </Box>
   );
+}
+
+function findJourneyIdFromURL(url: string | undefined): number {
+  if (url === undefined) {
+    return 0;
+  }
+  const regex = /\/journeys\/(\d+)/;
+  const match = url.match(regex);
+
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
+  }
+  return 0;
 }

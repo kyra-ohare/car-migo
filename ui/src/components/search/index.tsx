@@ -31,11 +31,6 @@ export default function Search() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState(initialSearchValues);
 
-  const resultState = (state: boolean) => {
-    setShowResults(state);
-    setJourneys(undefined);
-  };
-
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
@@ -43,20 +38,20 @@ export default function Search() {
   const handleFormSubmit = (values: ISearchFormValues) => {
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
-      // locationIdFrom: values.locationIdFrom,
-      // dateTimeFrom: values.dateTimeFrom,
-      // dateTimeTo: values.dateTimeTo,
-      // locationIdTo: values.locationIdTo,
-      locationIdFrom: '5',
-      locationIdTo: '1',
-      dateTimeFrom: '2016-04-19T23:00:00.000Z',
-      dateTimeTo: '2024-04-14T23:00:00.000Z',
+      locationIdFrom: values.locationIdFrom,
+      dateTimeFrom: values.dateTimeFrom,
+      dateTimeTo: values.dateTimeTo,
+      locationIdTo: values.locationIdTo,
+      // locationIdFrom: '5',
+      // locationIdTo: '1',
+      // dateTimeFrom: '2016-04-19T23:00:00.000Z',
+      // dateTimeTo: '2024-04-14T23:00:00.000Z',
     }));
   };
 
   const formik = useFormik({
     initialValues: initialSearchValues,
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: (values) => {
       handleFormSubmit(values);
     },
@@ -138,6 +133,7 @@ export default function Search() {
           journeys={journeys}
           origin={journeys[0].locationFrom.description}
           destination={journeys[0].locationTo.description}
+          datatestid='journey-component'
         />
       )}
       {showAlert && (

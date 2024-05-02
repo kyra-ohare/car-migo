@@ -31,15 +31,13 @@ export const useGetPassengerJourneys = (): UseQueryResult<IJourneyEntity[]> =>
   });
 
 export const useAddPassenger = async (journeyId: number) => {
-  const response = await axiosInstance.post(
+  return await axiosInstance.post(
     endpoint + '/' + journeyId + '/add-passenger'
   );
-  return response.data;
 };
 
 export const useDeletePassenger = async (journeyId: number) => {
-  const response = await axiosInstance.delete(
+  return await axiosInstance.delete(
     endpoint + '/' + journeyId + '/remove-passenger'
   );
-  return response.data;
 };

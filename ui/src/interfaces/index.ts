@@ -14,6 +14,7 @@ export type {
   IJourneyEntity,
   IJourneyLocationProperty,
   IJourneyProps,
+  IJourneyResponseProps,
 } from './Journey';
 export type { ILocations } from './Locations';
 export type { ILocationDropdown } from './LocationDropdown';

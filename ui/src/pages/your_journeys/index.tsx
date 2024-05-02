@@ -10,16 +10,10 @@ export default function YourJourneys() {
   const [passengerJourneys, setPassengerJourneys] =
     useState<IJourneyEntity[]>();
   const [driverJourneys, setDriverJourneys] = useState<IJourneyEntity[]>();
-  const [showResults, setShowResults] = useState<boolean>(true);
   const { isSuccess: isPassengerJourneysSuccess, data: dataPassengerJourneys } =
     useGetPassengerJourneys();
   const { isSuccess: isDriverJourneysSuccess, data: dataDriverJourneys } =
     useGetDriverJourneys();
-
-  const resultState = (state: boolean) => {
-    setShowResults(state);
-    // setJourneys(undefined);
-  };
 
   useEffect(() => {
     if (isDriverJourneysSuccess && dataDriverJourneys) {
@@ -39,6 +33,7 @@ export default function YourJourneys() {
         <Journey
           label='As a passenger, here are your upcoming journeys'
           journeys={passengerJourneys}
+          datatestid='passenger-journeys'
         />
       ) : (
         <FloatingText text='Passenger! Click here to book some journeys.' />
@@ -47,6 +42,7 @@ export default function YourJourneys() {
         <Journey
           label="As a driver, here are the journeys you've created"
           journeys={driverJourneys}
+          datatestid='driver-journeys'
         />
       ) : (
         <FloatingText text='Driver! Click here to create some journeys.' />

@@ -12,19 +12,27 @@ export interface IJourneyEntity {
   passengers: IPassengerEntity[];
 }
 
+export interface IJourneyLocationProperty {
+  id: number;
+  description: string;
+}
+
 export interface IJourneyProps {
+  label: string;
+  journeys: IJourneyEntity[];
+  origin?: string | undefined;
+  destination?: string;
+  datatestid: string;
+}
+
+export interface IJourneyResponseProps {
   journey: {
     availability: number;
     dateTime: string;
     maxPassengers: number;
     driver: {
-      platformUser: { firstName: any; lastName: any };
+      platformUser: { firstName: string; lastName: string };
     };
     passengers: IPassengerEntity[];
   };
-}
-
-export interface IJourneyLocationProperty {
-  id: number;
-  description: string;
 }

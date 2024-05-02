@@ -1,8 +1,8 @@
 import { CalendarMonthRounded, AccessAlarmRounded } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-import { IJourneyProps } from '../../interfaces';
+import { IJourneyResponseProps } from '../../interfaces';
 
-export default function DateTime(props: IJourneyProps) {
+export default function DateTime(props: IJourneyResponseProps) {
   const { date, time } = parseDateTime(props.journey.dateTime);
 
   return (

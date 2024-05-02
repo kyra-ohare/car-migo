@@ -118,14 +118,21 @@ describe('Home Unit Tests', () => {
       const journeyComponent = screen.getByTestId('journey-component');
       expect(journeyComponent).toBeInTheDocument();
 
-      const closeResultsButton = screen.getByTestId('close-journey-button');
-      expect(closeResultsButton).toBeInTheDocument();
-      userEvent.click(closeResultsButton);
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId('close-journey-button')
-        ).not.toBeInTheDocument();
-      });
+      const journeyCardId5 = screen.getByTestId('journey-card-5');
+      expect(journeyCardId5).toBeInTheDocument();
+      await userEvent.click(journeyCardId5);
+
+      const journeyCardId6 = screen.getByTestId('journey-card-6');
+      expect(journeyCardId6).toBeInTheDocument();
+
+      // const closeResultsButton = screen.getByTestId('close-journey-button');
+      // expect(closeResultsButton).toBeInTheDocument();
+      // userEvent.click(closeResultsButton);
+      // await waitFor(() => {
+      //   expect(
+      //     screen.queryByTestId('close-journey-button')
+      //   ).not.toBeInTheDocument();
+      // });
     });
   });
 
