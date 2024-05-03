@@ -25,6 +25,9 @@ describe('YourJourneys Unit Tests', () => {
     await waitFor(async () => {
       expect(screen.getByTestId('passenger-journeys')).toBeInTheDocument();
       expect(screen.getByTestId('driver-journeys')).toBeInTheDocument();
+      expect(screen.getByTestId('journey-card-1')).toBeInTheDocument();
+      expect(screen.getByTestId('journey-card-2')).toBeInTheDocument();
+      expect(screen.getByTestId('journey-card-3')).toBeInTheDocument();
     });
   });
 });

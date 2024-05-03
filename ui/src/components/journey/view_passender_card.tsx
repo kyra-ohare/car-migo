@@ -1,9 +1,9 @@
 import { DirectionsCarRounded } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-import DateTime from './card_date_time';
+import DateTime from './date_time';
 import { IJourneyResponseProps } from '../../interfaces';
 
-export default function DriverCard(props: IJourneyResponseProps) {
+export default function ViewPassengerCard(props: IJourneyResponseProps) {
   const { driver } = props.journey;
 
   return (

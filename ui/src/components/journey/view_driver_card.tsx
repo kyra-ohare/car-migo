@@ -3,11 +3,11 @@ import {
   WeekendRounded,
   PersonOutlineRounded,
 } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { IJourneyResponseProps, IPassengerEntity } from '../../interfaces';
-import DateTime from './card_date_time';
+import DateTime from './date_time';
 
-export default function PassengerCard(props: IJourneyResponseProps) {
+export default function ViewDriverCard(props: IJourneyResponseProps) {
   const { maxPassengers, availability, passengers } = props.journey;
   return (
     <>
@@ -25,16 +25,22 @@ export default function PassengerCard(props: IJourneyResponseProps) {
           <Typography variant='body2' sx={{ mt: 1.5 }}>
             Your passengers are:
           </Typography>
-          {passengers.map((passenger: IPassengerEntity) => (
-            <Typography variant='body2' sx={{ mt: 0.25 }}>
-              <PersonOutlineRounded
-                fontSize='small'
-                sx={{ verticalAlign: 'bottom', mr: 1 }}
-              />
-              {passenger.platformUser.firstName}{' '}
-              {passenger.platformUser.lastName}
-            </Typography>
-          ))}
+          {passengers.map(
+            (
+              passenger: IPassengerEntity
+            ) => (
+              <Grid item key={passenger.id}>
+                <Typography variant='body2' sx={{ mt: 0.25 }}>
+                  <PersonOutlineRounded
+                    fontSize='small'
+                    sx={{ verticalAlign: 'bottom', mr: 1 }}
+                  />
+                  {passenger.platformUser.firstName}{' '}
+                  {passenger.platformUser.lastName}
+                </Typography>
+              </Grid>
+            )
+          )}
         </>
       )}
     </>

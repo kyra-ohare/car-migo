@@ -31,10 +31,6 @@ export default function Search() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState(initialSearchValues);
 
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
-
   const handleFormSubmit = (values: ISearchFormValues) => {
     setSearchParams((prevSearchParams) => ({
       ...prevSearchParams,
@@ -142,7 +138,9 @@ export default function Search() {
           variant='filled'
           title='Oh no!'
           text='No rides for selected locations or dates. '
-          state={handleCloseAlert}
+          state={() => {
+            setShowAlert(false);
+          }}
         />
       )}
     </Box>

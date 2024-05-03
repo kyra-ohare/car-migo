@@ -3,10 +3,10 @@ import { DeleteRounded } from '@mui/icons-material';
 import { IJourneyEntity, IJourneyProps } from '../../interfaces';
 import { useMutation } from '@tanstack/react-query';
 import { useAddPassenger, useDeletePassenger } from '../../hooks/useJourney';
-import DriverCard from './card_driver';
-import PassengerCard from './card_passenger';
+import ViewPassengerCard from './view_passender_card';
+import ViewDriverCard from './view_driver_card';
 import RouteHeadline from './route_headline';
-import SearchCard from './card_search';
+import ViewSearchCard from './view_search_card';
 import { StyledButton, StyledGrid, StyledJourneyCard } from './styled';
 import CustomButton from '../custom_button';
 import { useEffect, useState } from 'react';
@@ -61,7 +61,7 @@ export default function Journey(props: IJourneyProps) {
     journeys.length;
   }, [journeys]);
 
-  const SearchRouteHeadling = () => (
+  const SearchRouteHeading = () => (
     <>
       {journeys.length ? (
         <RouteHeadline origin={props.origin} destination={props.destination} />
@@ -74,61 +74,55 @@ export default function Journey(props: IJourneyProps) {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} data-testid={props.datatestid}>
       <Typography variant='h4' component='h2' sx={{ mb: 3 }}>
-        {props.label === 'search' ? (
-          <SearchRouteHeadling />
-        ) : (
-          <>{props.label}</>
-        )}
+        {props.label === 'search' ? <SearchRouteHeading /> : <>{props.label}</>}
       </Typography>
       <StyledGrid container spacing={2}>
         {journeys &&
           journeys.map((journey: IJourneyEntity) => (
-            <>
-              <Grid
-                item
-                key={journey.id}
-                data-testid={'journey-card-' + journey.id}
-              >
-                <StyledJourneyCard raised>
-                  <CardContent>
-                    {props.label === 'search' ? (
-                      <SearchCard journey={journey} />
-                    ) : (
-                      <>
-                        <RouteHeadline
-                          origin={journey.locationFrom.description}
-                          destination={journey.locationTo.description}
-                        />
-                        {journey.passengers ? (
-                          <PassengerCard journey={journey} />
-                        ) : (
-                          <DriverCard journey={journey} />
-                        )}
-                      </>
-                    )}
-                  </CardContent>
-                  <CardActions sx={{ justifyContent: 'center' }}>
-                    {props.label === 'search' ? (
-                      <CustomButton
-                        label='Book'
-                        onClick={() => bookJourney(journey.id)}
-                        datatestid='book-journey-button'
+            <Grid
+              item
+              key={journey.id}
+              data-testid={'journey-card-' + journey.id}
+            >
+              <StyledJourneyCard raised>
+                <CardContent>
+                  {props.label === 'search' ? (
+                    <ViewSearchCard journey={journey} />
+                  ) : (
+                    <>
+                      <RouteHeadline
+                        origin={journey.locationFrom.description}
+                        destination={journey.locationTo.description}
                       />
-                    ) : (
-                      <StyledButton
-                        size='small'
-                        type='submit'
-                        onClick={() => handleCancelJourney(journey.id)}
-                        endIcon={<DeleteRounded />}
-                        data-testid='close-journey-button'
-                      >
-                        Cancel Journey
-                      </StyledButton>
-                    )}
-                  </CardActions>
-                </StyledJourneyCard>
-              </Grid>
-            </>
+                      {journey.passengers ? (
+                        <ViewDriverCard journey={journey} />
+                      ) : (
+                        <ViewPassengerCard journey={journey} />
+                      )}
+                    </>
+                  )}
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'center' }}>
+                  {props.label === 'search' ? (
+                    <CustomButton
+                      label='Book'
+                      onClick={() => bookJourney(journey.id)}
+                      datatestid='book-journey-button'
+                    />
+                  ) : (
+                    <StyledButton
+                      size='small'
+                      type='submit'
+                      onClick={() => handleCancelJourney(journey.id)}
+                      endIcon={<DeleteRounded />}
+                      data-testid='close-journey-button'
+                    >
+                      Cancel Journey
+                    </StyledButton>
+                  )}
+                </CardActions>
+              </StyledJourneyCard>
+            </Grid>
           ))}
       </StyledGrid>
       <AlertPopUp
