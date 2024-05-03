@@ -21,6 +21,7 @@ import { role } from '../../constants/navigation';
 
 const settings = [
   appConstants.profile,
+  appConstants.createJourneys,
   appConstants.yourJourneys,
   appConstants.logout,
 ];
@@ -61,6 +62,9 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
     setAnchorElUser(null);
     if (page === appConstants.profile) {
       navigateTo(navigation.PROFILE_PAGE);
+    }
+    if (page === appConstants.createJourneys) {
+      navigateTo(navigation.CREATE_JOURNEYS);
     }
     if (page === appConstants.yourJourneys) {
       navigateTo(navigation.YOUR_JOURNEYS);

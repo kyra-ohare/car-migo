@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { navigation } from '../../constants';
 import {
   ConfirmEmail,
+  CreateJourneys,
   ForgotPassword,
   Homepage,
   YourJourneys,
@@ -17,6 +18,7 @@ export const AuthenticatedRoutes = (
     <Route path='/' element={<Homepage />} />
     <Route path={navigation.HOME_PAGE} element={<Homepage />} />
     <Route path={navigation.PROFILE_PAGE} element={<Profile />} />
+    <Route path={navigation.CREATE_JOURNEYS} element={<CreateJourneys />} />
     <Route path={navigation.YOUR_JOURNEYS} element={<YourJourneys />} />
     <Route path={navigation.PLAYGROUND} element={<Playground />} />
   </Routes>

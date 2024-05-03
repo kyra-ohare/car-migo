@@ -1,3 +1,5 @@
+import { appConstants } from "./app_constants";
+
 export const navigation = {
   CONFIRM_EMAIL_PAGE: '/confirm-email',
   FORGOT_PASSWORD_PAGE: '/forgot-password',
@@ -5,6 +7,7 @@ export const navigation = {
   PROFILE_PAGE: '/profile',
   SIGN_IN_PAGE: '/sign-in',
   SIGN_UP_PAGE: '/sign-up',
+  CREATE_JOURNEYS: '/create-journeys',
   YOUR_JOURNEYS: '/your-journeys',
   PLAYGROUND: '/playground',
 };
@@ -31,7 +34,12 @@ export const pageMapper = [
     role: role.unauthorized,
   },
   {
-    label: 'Your Journeys',
+    label: appConstants.createJourneys,
+    path: navigation.CREATE_JOURNEYS,
+    role: role.authorized,
+  },
+  {
+    label: appConstants.yourJourneys,
     path: navigation.YOUR_JOURNEYS,
     role: role.authorized,
   },
