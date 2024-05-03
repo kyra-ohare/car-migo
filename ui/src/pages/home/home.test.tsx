@@ -117,22 +117,32 @@ describe('Home Unit Tests', () => {
     await waitFor(async () => {
       const journeyComponent = screen.getByTestId('journey-component');
       expect(journeyComponent).toBeInTheDocument();
+    });
 
+    await waitFor(async () => {
       const journeyCardId5 = screen.getByTestId('journey-card-5');
       expect(journeyCardId5).toBeInTheDocument();
-      await userEvent.click(journeyCardId5);
+      const bookjourneyCardId5 = screen.getByTestId('book-journey-button-5');
+      expect(bookjourneyCardId5).toBeInTheDocument();
+      await userEvent.click(bookjourneyCardId5);
+      await waitFor(async () => {
+        expect(journeyCardId5).not.toBeInTheDocument();
+      });
+    });
 
+    await waitFor(async () => {
       const journeyCardId6 = screen.getByTestId('journey-card-6');
       expect(journeyCardId6).toBeInTheDocument();
+      const bookjourneyCardId6 = screen.getByTestId('book-journey-button-6');
+      expect(bookjourneyCardId6).toBeInTheDocument();
 
-      // const closeResultsButton = screen.getByTestId('close-journey-button');
-      // expect(closeResultsButton).toBeInTheDocument();
-      // userEvent.click(closeResultsButton);
-      // await waitFor(() => {
-      //   expect(
-      //     screen.queryByTestId('close-journey-button')
-      //   ).not.toBeInTheDocument();
-      // });
+      await userEvent.click(bookjourneyCardId6);
+      await waitFor(async () => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('You are already a passenger to this journey.')
+        ).toBeInTheDocument();
+      });
     });
   });
 
@@ -174,13 +184,12 @@ describe('Home Unit Tests', () => {
 
     userEvent.click(searchSubmitButton);
     await waitFor(async () => {
-      const alertSpanButton = screen.getByTestId('close-button-alert-span');
-      expect(alertSpanButton).toBeInTheDocument();
-      userEvent.click(alertSpanButton);
+      expect(screen.getByTestId('box-alert-span')).toBeInTheDocument();
+      const boxAlertSpan = screen.getByTestId('close-button-box-alert-span');
+      expect(boxAlertSpan).toBeInTheDocument();
+      await userEvent.click(boxAlertSpan);
       await waitFor(() => {
-        expect(
-          screen.queryByTestId('close-button-alert-span')
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('box-alert-span')).not.toBeInTheDocument();
       });
     });
   });

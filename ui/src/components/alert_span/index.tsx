@@ -16,7 +16,7 @@ export default function AlertSpan(props: IAlertSpanProps) {
         <CustomButton
           label='Close'
           onClick={props.state}
-          datatestid='close-button-alert-span'
+          datatestid='close-button-box-alert-span'
         />
       </Alert>
     </Box>

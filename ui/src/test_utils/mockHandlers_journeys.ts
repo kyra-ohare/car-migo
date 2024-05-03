@@ -29,38 +29,41 @@ export const journeysHandlers = [
       locationIdFrom == locations[4].value.toString() &&
       locationIdTo == locations[0].value.toString()
     ) {
-      return HttpResponse.json([
-        {
-          id: 5,
-          createdDate: '2022-01-05T00:00:00Z',
-          locationFrom: {
+      return HttpResponse.json(
+        [
+          {
             id: 5,
-            description: 'Newry',
+            createdDate: '2022-01-05T00:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 3,
+            availability: 1,
+            dateTime: '2022-12-02T08:15:00Z',
           },
-          locationTo: {
-            id: 1,
-            description: 'Rostrevor',
+          {
+            id: 6,
+            createdDate: '2022-01-05T00:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 3,
+            availability: 3,
+            dateTime: '2022-12-03T08:00:00Z',
           },
-          maxPassengers: 3,
-          availability: 1,
-          dateTime: '2022-12-02T08:15:00Z',
-        },
-        {
-          id: 6,
-          createdDate: '2022-01-05T00:00:00Z',
-          locationFrom: {
-            id: 5,
-            description: 'Newry',
-          },
-          locationTo: {
-            id: 1,
-            description: 'Rostrevor',
-          },
-          maxPassengers: 3,
-          availability: 3,
-          dateTime: '2022-12-03T08:00:00Z',
-        },
-      ]);
+        ],
+        { status: 200 }
+      );
     }
 
     return new HttpResponse(null, { status: 500 });
@@ -209,11 +212,18 @@ export const journeysHandlers = [
     ({ params }) => {
       const { passengerId } = params;
 
-      if (passengerId === '1') return new HttpResponse(null, { status: 200 });
+      if (passengerId === '5') return new HttpResponse(null, { status: 200 });
 
-      if (passengerId === '2') return new HttpResponse(null, { status: 409 });
+      if (passengerId === '6') return new HttpResponse(null, { status: 409 });
 
       return new HttpResponse(null, { status: 500 });
+    }
+  ),
+
+  http.delete(
+    testConstants.baseUrl + '/journeys/:journeyId/remove-passenger',
+    () => {
+      return new HttpResponse(null, { status: 200 });
     }
   ),
 ];

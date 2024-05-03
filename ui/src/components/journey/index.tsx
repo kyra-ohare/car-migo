@@ -107,7 +107,7 @@ export default function Journey(props: IJourneyProps) {
                     <CustomButton
                       label='Book'
                       onClick={() => bookJourney(journey.id)}
-                      datatestid='book-journey-button'
+                      datatestid={'book-journey-button-' + journey.id}
                     />
                   ) : (
                     <StyledButton
@@ -115,7 +115,7 @@ export default function Journey(props: IJourneyProps) {
                       type='submit'
                       onClick={() => handleCancelJourney(journey.id)}
                       endIcon={<DeleteRounded />}
-                      data-testid='close-journey-button'
+                      data-testid={'cancel-journey-button-' + journey.id}
                     >
                       Cancel Journey
                     </StyledButton>
@@ -130,7 +130,7 @@ export default function Journey(props: IJourneyProps) {
         onClose={() => setOpenSnackbar(false)}
         severity='info'
         message='You are already a passenger to this journey.'
-        datatestid='alert-pop-up'
+        datatestid='journey-alert-pop-up'
       />
     </Box>
   );

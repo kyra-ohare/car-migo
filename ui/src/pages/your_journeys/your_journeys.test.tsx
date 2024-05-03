@@ -4,6 +4,7 @@ import TestUtils from '../../test_utils';
 import YourJourneys from '.';
 import { useAuthStore } from '../../hooks/useAuthStore';
 import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 
 const mockNavigate = vi.fn();
 
@@ -28,6 +29,17 @@ describe('YourJourneys Unit Tests', () => {
       expect(screen.getByTestId('journey-card-1')).toBeInTheDocument();
       expect(screen.getByTestId('journey-card-2')).toBeInTheDocument();
       expect(screen.getByTestId('journey-card-3')).toBeInTheDocument();
+    });
+  });
+
+  test('cancel a journey', async () => {
+    initialStoreState.setIsAuthorized(true);
+    TestUtils.render(<YourJourneys />);
+
+    await waitFor(async () => {
+      const cancelJourney1 = screen.getByTestId('cancel-journey-button-1');
+      expect(cancelJourney1).toBeInTheDocument();
+      await userEvent.click(cancelJourney1);
     });
   });
 });
