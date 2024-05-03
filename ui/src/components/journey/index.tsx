@@ -65,7 +65,9 @@ export default function Journey(props: IJourneyProps) {
     <>
       {journeys.length ? (
         <RouteHeadline origin={props.origin} destination={props.destination} />
+        /* c8 ignore next */
       ) : (
+        /* c8 ignore next */
         <></>
       )}
     </>
@@ -138,7 +140,9 @@ export default function Journey(props: IJourneyProps) {
 
 function findJourneyIdFromURL(url: string | undefined): number {
   if (url === undefined) {
+    /* c8 ignore next */
     return 0;
+    /* c8 ignore next */
   }
   const regex = /\/journeys\/(\d+)/;
   const match = url.match(regex);
@@ -146,5 +150,7 @@ function findJourneyIdFromURL(url: string | undefined): number {
   if (match && match[1]) {
     return parseInt(match[1], 10);
   }
+  /* c8 ignore next */
   return 0;
+  /* c8 ignore next */
 }

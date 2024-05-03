@@ -223,7 +223,7 @@ export const journeysHandlers = [
   http.delete(
     testConstants.baseUrl + '/journeys/:journeyId/remove-passenger',
     () => {
-      return new HttpResponse(null, { status: 200 });
+      return new HttpResponse(null, { status: 204 });
     }
   ),
 ];
