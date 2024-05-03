@@ -65,6 +65,7 @@ describe('Navigation Unit Tests', () => {
       screen.getAllByTestId('row-menu-Home'),
       screen.getAllByTestId('row-menu-Profile'),
       screen.getAllByTestId('row-menu-Playground'),
+      screen.getAllByTestId('row-menu-Create Journeys'),
       screen.getAllByTestId('row-menu-Your Journeys'),
     ];
     iterateArrayOfHtml(menuRowOptions);
@@ -73,6 +74,7 @@ describe('Navigation Unit Tests', () => {
       screen.getAllByTestId('menu-item-Home'),
       screen.getAllByTestId('menu-item-Profile'),
       screen.getAllByTestId('menu-item-Playground'),
+      screen.getAllByTestId('menu-item-Create Journeys'),
       screen.getAllByTestId('menu-item-Your Journeys'),
     ];
     iterateArrayOfHtml(responsiveMenuItems);
@@ -82,6 +84,7 @@ describe('Navigation Unit Tests', () => {
 
     const menuSettingsButtons: Array<HTMLElement[]> = [
       screen.getAllByTestId('settings-menu-Profile'),
+      screen.getAllByTestId('settings-menu-Create Journeys'),
       screen.getAllByTestId('settings-menu-Your Journeys'),
     ];
     iterateArrayOfHtml(menuSettingsButtons);

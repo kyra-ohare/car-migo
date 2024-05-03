@@ -1,4 +1,4 @@
-import { appConstants } from "./app_constants";
+import { appConstants } from './app_constants';
 
 export const navigation = {
   CONFIRM_EMAIL_PAGE: '/confirm-email',
@@ -26,8 +26,6 @@ export const pageMapper = [
     path: navigation.CONFIRM_EMAIL_PAGE,
     role: role.unauthorized,
   },
-  { label: 'Playground', path: navigation.PLAYGROUND, role: role.authorized },
-  { label: 'Playground', path: navigation.PLAYGROUND, role: role.unauthorized },
   {
     label: 'Forgot Password',
     path: navigation.FORGOT_PASSWORD_PAGE,
@@ -45,4 +43,6 @@ export const pageMapper = [
   },
   { label: 'Sign In', path: navigation.SIGN_IN_PAGE, role: role.unauthorized },
   { label: 'Sign Up', path: navigation.SIGN_UP_PAGE, role: role.unauthorized },
+  { label: 'Playground', path: navigation.PLAYGROUND, role: role.authorized },
+  { label: 'Playground', path: navigation.PLAYGROUND, role: role.unauthorized },
 ];
