@@ -11,7 +11,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
+import { PersonAddAltRounded } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
   BasicDatePicker,
@@ -109,7 +109,7 @@ export default function SignUp() {
           data-testid='outer-box'
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlined />
+            <PersonAddAltRounded />
           </Avatar>
           <Typography component='h1' variant='h5'>
             Sign up

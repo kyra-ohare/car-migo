@@ -12,8 +12,8 @@ export interface ICustomTextFieldProps {
   text?: string;
   autoComplete?: string;
   sx?: { mt?: number };
-  type?: string;
   required?: boolean;
+  type?: string;
   value?: string;
   onChange?: {
     (e: ChangeEvent<Element>): void;
