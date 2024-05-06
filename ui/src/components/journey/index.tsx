@@ -20,7 +20,7 @@ import RouteHeadline from './route_headline';
 import ViewSearchCard from './view_search_card';
 import { StyledButton, StyledGrid, StyledJourneyCard } from './styled';
 import CustomButton from '../custom_button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { httpStatus } from '../../constants';
 import { AlertPopUp } from '..';
 import { useUserProfile } from '../../hooks/usePlatformUser';
@@ -89,7 +89,14 @@ export default function Journey(props: IJourneyProps) {
     mutationFn: useDeleteJourney,
     onSuccess: (resp) => {
       if (resp.status.toString() === httpStatus.NO_CONTENT) {
-        processSnackbar('info', 'Journey deleted successfully.');
+        const journeyIdFromURL = findJourneyIdFromURL(resp.config.url);
+        if (journeyIdFromURL !== 0) {
+          setJourneys(
+            journeys &&
+              journeys.filter((journey) => journey.id !== journeyIdFromURL)
+          );
+          processSnackbar('info', 'Journey deleted successfully.');
+        }
       }
     },
     onError: () => {
@@ -106,16 +113,11 @@ export default function Journey(props: IJourneyProps) {
     }
   };
 
-  // useEffect(() => {
-  //   setJourneys(props.journeys);
-  // }, [props.journeys, journeys]);
-
   const SearchRouteHeading = () => (
     <>
       {journeys && journeys.length ? (
         <RouteHeadline origin={props.origin} destination={props.destination} />
       ) : (
-        /* c8 ignore next */
         /* c8 ignore next */
         <></>
       )}
