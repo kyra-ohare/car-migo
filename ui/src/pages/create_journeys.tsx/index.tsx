@@ -50,8 +50,14 @@ export default function CreateYourneys() {
   const formik = useFormik({
     initialValues: initialCreateJourneysValues,
     validationSchema: createJourneyValidationSchema,
-    onSubmit: (values) => {
-      handleFormSubmit(values);
+    onSubmit: (values: IJourneyCreation) => {
+      // handleFormSubmit(values);
+      mutateCreateJourney.mutate({
+        locationIdFrom: values.locationIdFrom,
+        locationIdTo: values.locationIdTo,
+        dateTime: values.dateTime,
+        maxPassengers: values.maxPassengers,
+      });
     },
     enableReinitialize: true,
   });
@@ -70,16 +76,16 @@ export default function CreateYourneys() {
     },
   });
 
-  useEffect(() => {
-    if (
-      searchParams.locationIdTo ||
-      searchParams.locationIdFrom ||
-      searchParams.dateTime ||
-      searchParams.maxPassengers
-    ) {
-      mutateCreateJourney.mutate(searchParams);
-    }
-  }, [searchParams]);
+  // useEffect(() => {
+  //   if (
+  // searchParams.locationIdTo ||
+  // searchParams.locationIdFrom ||
+  // searchParams.dateTime ||
+  //     searchParams.maxPassengers
+  //   ) {
+  //     mutateCreateJourney.mutate(searchParams);
+  //   }
+  // }, [searchParams]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -120,6 +126,8 @@ export default function CreateYourneys() {
                   value={formik.values.locationIdFrom}
                   formikErrors={formik.errors.locationIdFrom}
                   formikTouched={formik.touched.locationIdFrom}
+                  widthStyle='auto'
+                  mrStyle='auto'
                   datatestid='create-journey-origin'
                 />
               </Grid>
@@ -135,6 +143,8 @@ export default function CreateYourneys() {
                   onChange={formik.setFieldValue}
                   formikErrors={formik.errors.locationIdTo}
                   formikTouched={formik.touched.locationIdTo}
+                  widthStyle='auto'
+                  mrStyle='auto'
                   datatestid='create-journey-destination'
                 />
               </Grid>
@@ -142,6 +152,7 @@ export default function CreateYourneys() {
                 <BasicDateTimePicker
                   label='Date/Time'
                   name='dateTime'
+                  disablePast
                   value={formik.values.dateTime}
                   onChange={formik.setFieldValue}
                   formikErrors={formik.errors.dateTime}

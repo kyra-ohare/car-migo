@@ -143,7 +143,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                       onClick={handleCloseNavMenu}
                       data-testid={'menu-item-' + page.label}
                     >
-                      <Link to={page.path!}>{page.label}</Link>
+                      <Link to={page.path!}>{page.label} </Link>
                     </MenuItem>
                   ))}
               </Menu>

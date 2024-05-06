@@ -16,7 +16,7 @@ export default function Dropdown(props: IDropdown) {
         props.onChange(props.name, value?.value || '')
       }
       options={props.options}
-      sx={{ width: 300, mr: 0.5 }}
+      sx={{ width: props.widthStyle, mr: props.mrStyle}}
       renderInput={(params) => (
         <TextField
           {...params}

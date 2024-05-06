@@ -1,11 +1,15 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { axiosInstance, axiosInstanceNoAuth } from '../integration/instance';
-import { IJourneyCreation, IJourneyEntity, IJourneyRequest } from '../interfaces';
+import {
+  IJourneyCreation,
+  IJourneyEntity,
+  IJourneyRequest,
+} from '../interfaces';
 
 const endpoint = '/v1/journeys';
 
 export const useCreateJourney = async (request: IJourneyCreation) => {
-  const response =  await axiosInstance.post(endpoint, request);
+  const response = await axiosInstance.post(endpoint, request);
   return response.data;
 };
 
@@ -45,4 +49,8 @@ export const useDeletePassenger = async (journeyId: number) => {
   return await axiosInstance.delete(
     endpoint + '/' + journeyId + '/remove-passenger'
   );
+};
+
+export const useDeleteJourney = async (journeyId: number) => {
+  return await axiosInstance.delete(endpoint + '/' + journeyId);
 };

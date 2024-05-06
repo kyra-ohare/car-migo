@@ -1,6 +1,3 @@
-import { Theme } from "@emotion/react";
-import { SxProps } from "@mui/material";
-
 export interface IDropdown {
   id: string;
   label: string;
@@ -16,9 +13,7 @@ export interface IDropdown {
   ): Promise<any>;
   formikTouched: boolean | undefined;
   formikErrors: string | undefined;
+  widthStyle: string | number;
+  mrStyle: string | number;
   datatestid: string;
-  // sx?:  SxProps<Theme> | undefined;
 }
-
-
-//(property) AutocompleteProps<Value, Multiple extends boolean | undefined, DisableClearable extends boolean | undefined, FreeSolo extends boolean | undefined, ChipComponent extends React.ElementType<any, keyof React.JSX.IntrinsicElements> = "div">.sx?: SxProps<Theme> | undefined

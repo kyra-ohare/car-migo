@@ -30,19 +30,19 @@ export default function Search() {
       ...prevSearchParams,
       locationIdFrom: values.locationIdFrom,
       locationIdTo: values.locationIdTo,
-      // dateTimeFrom: values.dateTimeFrom,
-      // dateTimeTo: values.dateTimeTo,
+      dateTimeFrom: values.dateTimeFrom,
+      dateTimeTo: values.dateTimeTo,
       // locationIdFrom: '5',
       // locationIdTo: '1',
-      dateTimeFrom: '2016-04-19T23:00:00.000Z',
-      dateTimeTo: '2024-04-14T23:00:00.000Z',
+      // dateTimeFrom: '2016-04-19T23:00:00.000Z',
+      // dateTimeTo: '2024-04-14T23:00:00.000Z',
     }));
   };
 
   const formik = useFormik({
     initialValues: initialSearchValues,
-    // validationSchema: validationSchema,
-    onSubmit: (values) => {
+    validationSchema: validationSchema,
+    onSubmit: (values: ISearchFormValues) => {
       handleFormSubmit(values);
     },
   });
@@ -61,6 +61,7 @@ export default function Search() {
   });
 
   useEffect(() => {
+    setJourneys(undefined);
     if (
       searchParams.locationIdTo ||
       searchParams.locationIdFrom ||
@@ -85,6 +86,8 @@ export default function Search() {
           value={formik.values.locationIdFrom}
           formikErrors={formik.errors.locationIdFrom}
           formikTouched={formik.touched.locationIdFrom}
+          widthStyle={300}
+          mrStyle={0.5}
           datatestid='leaving-from-dropdown'
         />
         <Dropdown
@@ -98,6 +101,8 @@ export default function Search() {
           onChange={formik.setFieldValue}
           formikErrors={formik.errors.locationIdTo}
           formikTouched={formik.touched.locationIdTo}
+          widthStyle={300}
+          mrStyle={0.5}
           datatestid='going-to-dropdown'
         />
         <BasicDateTimePicker
