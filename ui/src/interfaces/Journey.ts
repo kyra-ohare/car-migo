@@ -36,3 +36,10 @@ export interface IJourneyResponseProps {
     passengers: IPassengerEntity[];
   };
 }
+
+export interface IJourneyCreation {
+  locationIdFrom: string;
+  locationIdTo: string;
+  dateTime: string;
+  maxPassengers: number;
+}

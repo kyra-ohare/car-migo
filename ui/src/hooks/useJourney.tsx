@@ -1,8 +1,13 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { axiosInstance, axiosInstanceNoAuth } from '../integration/instance';
-import { IJourneyEntity, IJourneyRequest } from '../interfaces';
+import { IJourneyCreation, IJourneyEntity, IJourneyRequest } from '../interfaces';
 
 const endpoint = '/v1/journeys';
+
+export const useCreateJourney = async (request: IJourneyCreation) => {
+  const response =  await axiosInstance.post(endpoint, request);
+  return response.data;
+};
 
 export const useJourneySearch = async (params: IJourneyRequest) => {
   const response = await axiosInstanceNoAuth.get(endpoint + '/search', {

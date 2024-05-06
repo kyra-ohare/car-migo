@@ -5,19 +5,21 @@ export type { IAlertSpanProps } from './AlertSpan';
 export type { IBasicDatePickerProps } from './BasicDatePicker';
 export type { IBasicDateTimePickerProps } from './BasicDateTimePicker';
 export type { ICustomButtonProps } from './CustomButton';
+export type { ICustomNumberFieldProps } from './CustomNumberField';
 export type { ICustomTextFieldProps } from './CustomTextField';
 export type { ICustomTooltipProps } from './CustomTooltip';
 export type { IDialogBoxProps } from './DialogBox';
 export type { IDriverEntity, IDriverLicenseNumberProperty } from './Driver';
+export type { IDropdown } from './Dropdown';
 export type { IJourneyCardProps } from './JourneyCard';
 export type {
+  IJourneyCreation,
   IJourneyEntity,
   IJourneyLocationProperty,
   IJourneyProps,
   IJourneyResponseProps,
 } from './Journey';
 export type { ILocations } from './Locations';
-export type { ILocationDropdown } from './LocationDropdown';
 export type { IPassengerEntity } from './Passenger';
 export type {
   IPlatformUserCreation,

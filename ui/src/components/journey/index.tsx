@@ -1,4 +1,11 @@
-import { Box, Typography, Grid, CardContent, CardActions } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Grid,
+  CardContent,
+  CardActions,
+  AlertColor,
+} from '@mui/material';
 import { DeleteRounded } from '@mui/icons-material';
 import { IJourneyEntity, IJourneyProps } from '../../interfaces';
 import { useMutation } from '@tanstack/react-query';
@@ -15,7 +22,9 @@ import { AlertPopUp } from '..';
 
 export default function Journey(props: IJourneyProps) {
   const [journeys, setJourneys] = useState<IJourneyEntity[]>(props.journeys);
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('info');
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
   const mutateDeletePassenger = useMutation({
     mutationFn: useDeletePassenger,
@@ -48,8 +57,17 @@ export default function Journey(props: IJourneyProps) {
         }
       }
     },
-    onError: () => {
-      setOpenSnackbar(true);
+    onError: (error: Error) => {
+      if (error.message.endsWith(httpStatus.CONFLICT)) {
+        setSnackbarSeverity('info');
+        setSnackbarMessage('You are already a passenger to this journey.');
+        setOpenSnackbar(true);
+      }
+      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+        setSnackbarSeverity('warning');
+        setSnackbarMessage('Please, log in to book this journey.');
+        setOpenSnackbar(true);
+      }
     },
   });
 
@@ -65,8 +83,8 @@ export default function Journey(props: IJourneyProps) {
     <>
       {journeys.length ? (
         <RouteHeadline origin={props.origin} destination={props.destination} />
-        /* c8 ignore next */
       ) : (
+        /* c8 ignore next */
         /* c8 ignore next */
         <></>
       )}
@@ -130,8 +148,8 @@ export default function Journey(props: IJourneyProps) {
       <AlertPopUp
         open={openSnackbar}
         onClose={() => setOpenSnackbar(false)}
-        severity='info'
-        message='You are already a passenger to this journey.'
+        severity={snackbarSeverity}
+        message={snackbarMessage}
         datatestid='journey-alert-pop-up'
       />
     </Box>

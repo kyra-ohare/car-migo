@@ -154,7 +154,7 @@ export default function SignUp() {
                   datatestid='sign-up-last-name'
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ mt: 1 }}>
                 <BasicDatePicker
                   label='Date of Birth'
                   name='dob'
