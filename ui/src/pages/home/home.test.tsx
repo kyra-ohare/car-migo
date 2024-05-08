@@ -114,7 +114,7 @@ describe('Home Unit Tests', () => {
     fireEvent.keyDown(latestDateTimeField, { key: 'Enter' });
 
     userEvent.click(searchSubmitButton);
-    await waitFor(async () => {
+    await waitFor(() => {
       const journeyComponent = screen.getByTestId('journey-component');
       expect(journeyComponent).toBeInTheDocument();
     });
@@ -125,7 +125,7 @@ describe('Home Unit Tests', () => {
       const bookjourneyCardId5 = screen.getByTestId('book-journey-button-5');
       expect(bookjourneyCardId5).toBeInTheDocument();
       await userEvent.click(bookjourneyCardId5);
-      await waitFor(async () => {
+      await waitFor(() => {
         expect(journeyCardId5).not.toBeInTheDocument();
       });
     });
@@ -137,7 +137,7 @@ describe('Home Unit Tests', () => {
       expect(bookjourneyCardId6).toBeInTheDocument();
 
       await userEvent.click(bookjourneyCardId6);
-      await waitFor(async () => {
+      await waitFor(() => {
         expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
         expect(
           screen.getByText('You are already a passenger to this journey.')

@@ -3,6 +3,22 @@ import { locations } from '../constants';
 import { testConstants } from './test_constants';
 
 export const journeysHandlers = [
+  http.post(testConstants.baseUrl + '/journeys', async ({ request }) => {
+    const info = await request.json();
+
+    const { locationIdFrom, locationIdTo, dateTime, maxPassengers } = info;
+
+    if (
+      locationIdFrom === 3 &&
+      locationIdTo === 4 &&
+      dateTime === '2016-04-15T09:00:00.000Z' &&
+      maxPassengers === 2
+    ) {
+      return new HttpResponse(null, { status: 201 });
+    }
+
+    return new HttpResponse(null, { status: 500 });
+  }),
   http.get(testConstants.baseUrl + '/journeys/search', async ({ request }) => {
     const url = new URL(request.url);
     const locationIdFrom = url.searchParams.get('locationIdFrom');
@@ -226,4 +242,8 @@ export const journeysHandlers = [
       return new HttpResponse(null, { status: 204 });
     }
   ),
+
+  http.delete(testConstants.baseUrl + '/journeys/:journeyId', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];

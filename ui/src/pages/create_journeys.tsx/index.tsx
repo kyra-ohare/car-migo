@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import {
@@ -28,7 +28,6 @@ import { useCreateJourney } from '../../hooks/useJourney';
 export default function CreateYourneys() {
   const [selectedLeaving, setSelectedLeaving] = useState<string>('');
   const [selectedGoing, setSelectedGoing] = useState<string>('');
-  const [searchParams, setSearchParams] = useState(initialCreateJourneysValues);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const defaultTheme = createTheme();
@@ -37,21 +36,10 @@ export default function CreateYourneys() {
     setOpenSnackbar(false);
   };
 
-  const handleFormSubmit = (values: IJourneyCreation) => {
-    setSearchParams((prevSearchParams) => ({
-      ...prevSearchParams,
-      locationIdFrom: values.locationIdFrom,
-      locationIdTo: values.locationIdTo,
-      dateTime: values.dateTime,
-      maxPassengers: values.maxPassengers,
-    }));
-  };
-
   const formik = useFormik({
     initialValues: initialCreateJourneysValues,
     validationSchema: createJourneyValidationSchema,
     onSubmit: (values: IJourneyCreation) => {
-      // handleFormSubmit(values);
       mutateCreateJourney.mutate({
         locationIdFrom: values.locationIdFrom,
         locationIdTo: values.locationIdTo,
@@ -75,17 +63,6 @@ export default function CreateYourneys() {
       setOpenSnackbar(true);
     },
   });
-
-  // useEffect(() => {
-  //   if (
-  // searchParams.locationIdTo ||
-  // searchParams.locationIdFrom ||
-  // searchParams.dateTime ||
-  //     searchParams.maxPassengers
-  //   ) {
-  //     mutateCreateJourney.mutate(searchParams);
-  //   }
-  // }, [searchParams]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
