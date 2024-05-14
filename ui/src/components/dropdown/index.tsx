@@ -1,8 +1,8 @@
 import { TextField } from '@mui/material';
 import { StyledAutocomplete } from './styled';
-import { locations } from '../../constants/location';
+import { IDropdown } from '../../interfaces';
 
-export default function LocationDropdown(props: any) {
+export default function Dropdown(props: IDropdown) {
   return (
     <StyledAutocomplete
       disablePortal
@@ -15,8 +15,8 @@ export default function LocationDropdown(props: any) {
       onChange={(_event, value) =>
         props.onChange(props.name, value?.value || '')
       }
-      options={locations}
-      sx={{ width: 300, mr: 0.5 }}
+      options={props.options}
+      sx={{ width: props.widthStyle, mr: props.mrStyle}}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -24,6 +24,10 @@ export default function LocationDropdown(props: any) {
           name={props.name}
           error={props.formikTouched && Boolean(props.formikErrors)}
           helperText={props.formikTouched && props.formikErrors}
+          inputProps={{
+            ...params.inputProps,
+            'data-testid': `${props.datatestid}-input`,
+          }}
         />
       )}
     />

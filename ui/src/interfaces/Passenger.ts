@@ -1,6 +1,6 @@
-import { IPlatformUserEntity } from '.';
+import { IPlatformUserEntity } from './PlatformUser';
 
 export interface IPassengerEntity {
-  id: number;
+  id: string;
   platformUser: IPlatformUserEntity;
 }

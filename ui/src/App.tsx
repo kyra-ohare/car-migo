@@ -26,8 +26,12 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <NavBar>
           <CssBaseline />
-          {isAuthorized === true && AuthenticatedRoutes}
-          {isAuthorized === false && UnauthenticatedRoutes}
+          <div data-testid='is-authorized-routes'>
+            {isAuthorized === true && AuthenticatedRoutes}
+          </div>
+          <div data-testid='is-unauthorized-routes'>
+            {isAuthorized === false && UnauthenticatedRoutes}
+          </div>
         </NavBar>
       </QueryClientProvider>
     </LocalizationProvider>

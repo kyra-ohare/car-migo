@@ -1,5 +1,5 @@
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
-    values('2021-12-24', 'John', 'Smith', '1970-02-23', 'john.smith@example.com', 'Pass1234!', '0287513626', 1);
+    values('2021-12-24', 'John', 'Smith', '1970-02-23', 'john.smith@example.com', 'Pass1234!', '0287513626', 2);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2022-01-04', 'Mary', 'Green', '1990-06-30', 'mary.green@example.com', 'Pass1234!', '0286579635', 2);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
@@ -12,6 +12,8 @@ insert into platform_user(created_date, first_name, last_name, dob, email, passw
     values('2022-05-11', 'Jake', 'Sully', '2009-05-30', 'jake.sully@example.com', 'Pass1234!', '02865783249', 5);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2022-06-03', 'Kyra', 'OHare', '1986-01-04', 'kyra.ohare@example.com', 'Pass1234!', '02854723651', 6);
+insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
+    values('2021-12-24', 'Peter', 'McDonald', '1995-03-25', 'petr@mcdonald@example.com', 'Pass1234!', '0287513626', 1);
 
 insert into driver(license_number, platform_user_id)
     values('35789654', 1);

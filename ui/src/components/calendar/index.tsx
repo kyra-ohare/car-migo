@@ -3,5 +3,17 @@ import { IBasicDatePickerProps } from '../../interfaces';
 import { appConstants } from '../../constants';
 
 export default function BasicDatePicker(props: IBasicDatePickerProps) {
-  return <StyledDatePicker {...props} format={appConstants.dateFormat} />;
+  return (
+    <StyledDatePicker
+      format={appConstants.dateFormat}
+      {...props}
+      slotProps={{
+        textField: {
+          inputProps: {
+            'data-testid': props.datatestid,
+          },
+        },
+      }}
+    />
+  );
 }

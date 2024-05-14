@@ -47,7 +47,9 @@ export default function ConfirmEmail() {
         setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         setSnackbarSeverity('error');
-        setSnackbarMessage("Mmmm! We can't find an account for " + variables.email);
+        setSnackbarMessage(
+          "Mmmm! We can't find an account for " + variables.email
+        );
       } else {
         setSnackbarSeverity('error');
         setSnackbarMessage(validation.GENERIC_ERROR_MSG);
@@ -77,6 +79,7 @@ export default function ConfirmEmail() {
         title='Email confirmed'
         text="Let's sign in!"
         redirect={dialogRedirect}
+        datatestid='dialog-box'
       />
     );
   }
@@ -88,38 +91,46 @@ export default function ConfirmEmail() {
       sx={{
         '& .MuiTextField-root': { m: 1, width: '30vw' },
       }}
+      data-testid='box'
     >
-      <WelcomeMessage>Confirm your email</WelcomeMessage>
-      <CatchyMessage>
+      <WelcomeMessage data-testid='welcome-message'>
+        Confirm your email
+      </WelcomeMessage>
+      <CatchyMessage data-testid='catchy-message'>
         You can enjoy all Car-Migo advantages after this confirmation.
       </CatchyMessage>
+      <CustomTextField
+        id='confirm-email-address'
+        label='Email Address'
+        name='email'
+        autoComplete='email'
+        value={formik.values.email}
+        onChange={formik.handleChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <EmailRounded />
+            </InputAdornment>
+          ),
+        }}
+        error={Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
+        datatestid='confirm-email-address'
+      />
       <div>
-        <CustomTextField
-          id='confirm-email-address'
-          label='Email Address'
-          name='email'
-          autoComplete='email'
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <EmailRounded />
-              </InputAdornment>
-            ),
-          }}
-          error={Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
+        <CustomButton
+          label='Confirm Email'
+          type='submit'
+          sx={{ mt: 3 }}
+          datatestid='submit-button'
         />
-      </div>
-      <div>
-        <CustomButton label='Confirm Email' type='submit' sx={{ mt: 3 }} />
       </div>
       <AlertPopUp
         open={openSnackbar}
         onClose={handleCloseSnackbar}
         severity={snackbarSeverity}
         message={snackbarMessage}
+        datatestid='alert-pop-up'
       />
     </Box>
   );

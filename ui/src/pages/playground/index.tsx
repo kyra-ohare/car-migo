@@ -1,12 +1,23 @@
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import React from 'react';
+import TextField from '@mui/material/TextField';
 
-export default function Playground() {
+function NumberInput() {
+  const [number, setNumber] = React.useState('');
+
+  const handleChange = (_event) => {
+    setNumber(_event.target.value);
+  };
+
   return (
-    <Stack direction="row" spacing={2}>
-      <Button variant="contained" color="error">
-        Error
-      </Button>
-    </Stack>
+    <TextField
+      label="Number Input"
+      type="number"
+      value={number}
+      onChange={handleChange}
+      variant="outlined"
+      fullWidth
+    />
   );
 }
+
+export default NumberInput;

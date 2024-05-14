@@ -11,7 +11,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
+import { PersonAddAltRounded } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
   BasicDatePicker,
@@ -106,9 +106,10 @@ export default function SignUp() {
             flexDirection: 'column',
             alignItems: 'center',
           }}
+          data-testid='outer-box'
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlined />
+            <PersonAddAltRounded />
           </Avatar>
           <Typography component='h1' variant='h5'>
             Sign up
@@ -118,6 +119,7 @@ export default function SignUp() {
             noValidate
             onSubmit={formik.handleSubmit}
             sx={{ mt: 3 }}
+            data-testid='inner-box'
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -134,6 +136,7 @@ export default function SignUp() {
                   helperText={
                     formik.touched.firstName && formik.errors.firstName
                   }
+                  datatestid='sign-up-first-name'
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -148,9 +151,10 @@ export default function SignUp() {
                     formik.touched.lastName && Boolean(formik.errors.lastName)
                   }
                   helperText={formik.touched.lastName && formik.errors.lastName}
+                  datatestid='sign-up-last-name'
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ mt: 1 }}>
                 <BasicDatePicker
                   label='Date of Birth'
                   name='dob'
@@ -161,6 +165,7 @@ export default function SignUp() {
                   }
                   error={formik.touched.dob && Boolean(formik.errors.dob)}
                   helperText={formik.touched.dob && formik.errors.dob}
+                  datatestid='date-picker-input'
                 />
               </Grid>
               <Grid item xs={12}>
@@ -178,6 +183,7 @@ export default function SignUp() {
                   helperText={
                     formik.touched.phoneNumber && formik.errors.phoneNumber
                   }
+                  datatestid='sign-up-phone-number'
                 />
               </Grid>
               <Grid item xs={12}>
@@ -190,6 +196,7 @@ export default function SignUp() {
                   onChange={formik.handleChange}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
+                  datatestid='sign-up-email-address'
                 />
               </Grid>
               <Grid item xs={12}>
@@ -205,6 +212,7 @@ export default function SignUp() {
                     formik.touched.password && Boolean(formik.errors.password)
                   }
                   helperText={formik.touched.password && formik.errors.password}
+                  datatestid='sign-up-password'
                 />
               </Grid>
               <Grid item xs={12}>
@@ -224,6 +232,7 @@ export default function SignUp() {
                     formik.touched.confirmPassword &&
                     formik.errors.confirmPassword
                   }
+                  datatestid='sign-up-confirm-password'
                 />
               </Grid>
             </Grid>
@@ -232,8 +241,9 @@ export default function SignUp() {
               type='submit'
               label='Sign Up'
               sx={{ mt: 5, mb: 2 }}
+              datatestid='submit-button'
             />
-            <Grid container justifyContent='flex-end'>
+            <Grid container justifyContent='flex-end' data-testid='links'>
               <Grid item>
                 <Link href={navigation.SIGN_IN_PAGE} variant='body2'>
                   Already have an account? Sign in
@@ -247,6 +257,7 @@ export default function SignUp() {
           onClose={handleCloseSnackbar}
           severity='info'
           message={snackbarMessage}
+          datatestid='alert-pop-up'
         />
         <Footer />
       </Container>

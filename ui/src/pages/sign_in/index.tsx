@@ -79,7 +79,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main' maxWidth='xs' data-testid='container'>
         <CssBaseline />
         <Box
           sx={{
@@ -88,6 +88,7 @@ export default function SignIn() {
             flexDirection: 'column',
             alignItems: 'center',
           }}
+          data-testid='outer-box'
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlined />
@@ -100,6 +101,7 @@ export default function SignIn() {
             noValidate
             onSubmit={formik.handleSubmit}
             sx={{ mt: 1 }}
+            data-testid='inner-box'
           >
             <CustomTextField
               id='sign-in-with-email'
@@ -111,6 +113,7 @@ export default function SignIn() {
               onChange={formik.handleChange}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
+              datatestid='sign-in-with-email'
             />
             <CustomTextField
               id='sign-in-with-password'
@@ -123,26 +126,37 @@ export default function SignIn() {
               onChange={formik.handleChange}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
+              datatestid='sign-in-with-password'
             />
             <FormControlLabel
               sx={{ mt: 2 }}
               control={<Checkbox value='remember' color='primary' />}
               label='Remember me'
+              data-testid='form-control-label'
             />
             <CustomButton
               fullWidth
               type='submit'
               label='Sign In'
               sx={{ mt: 3, mb: 2 }}
+              datatestid='submit-button'
             />
-            <Grid container>
+            <Grid container data-testid='links'>
               <Grid item xs sx={{ ml: -9 }}>
-                <Link href={navigation.FORGOT_PASSWORD_PAGE} variant='body2'>
+                <Link
+                  href={navigation.FORGOT_PASSWORD_PAGE}
+                  variant='body2'
+                  data-testid='forgot-password-link'
+                >
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href={navigation.SIGN_UP_PAGE} variant='body2'>
+                <Link
+                  href={navigation.SIGN_UP_PAGE}
+                  variant='body2'
+                  data-testid='sign-up-link'
+                >
                   Don't have an account? Sign Up
                 </Link>
               </Grid>
@@ -154,6 +168,7 @@ export default function SignIn() {
           onClose={handleCloseSnackbar}
           severity='error'
           message={snackbarMessage}
+          datatestid='alert-pop-up'
         />
         <Footer />
       </Container>

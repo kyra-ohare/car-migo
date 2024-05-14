@@ -1,6 +1,6 @@
 import { IPlatformUserEntity } from '.';
 
-export interface IDriverCreation {
+export interface IDriverLicenseNumberProperty {
   licenseNumber: string;
 }
 

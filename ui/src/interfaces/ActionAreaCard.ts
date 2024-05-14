@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 export interface IActionAreaCardProps {
   id: string;
@@ -7,4 +7,5 @@ export interface IActionAreaCardProps {
   imageAlt: string;
   title: string;
   text: ReactNode;
+  datatestid: string;
 }

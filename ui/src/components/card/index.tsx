@@ -3,7 +3,11 @@ import { IActionAreaCardProps } from '../../interfaces/ActionAreaCard';
 
 export default function ActionAreaCard(props: IActionAreaCardProps) {
   return (
-    <Grid container sx={{ marginTop: '20px', marginRight: '50px' }}>
+    <Grid
+      container
+      sx={{ marginTop: '20px', marginRight: '50px' }}
+      data-testid={props.datatestid}
+    >
       <Grid
         item
         xs={3}

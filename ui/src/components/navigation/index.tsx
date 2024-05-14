@@ -4,7 +4,6 @@ import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Container,
   IconButton,
   Menu,
@@ -13,14 +12,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { LogoDev, Menu as MenuIcon } from '@mui/icons-material';
-import Car from '../../assets/car.png';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { appConstants, navigation, pageMapper } from '../../constants';
 import { useTokens } from '../../hooks/useTokens';
 import { useAuthStore } from '../../hooks/useAuthStore';
+import ResponsiveAppBar from './responsive_app_bar';
+import { role } from '../../constants/navigation';
 
 const settings = [
   appConstants.profile,
+  appConstants.createJourneys,
   appConstants.yourJourneys,
   appConstants.logout,
 ];
@@ -39,6 +40,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -61,6 +63,12 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
     if (page === appConstants.profile) {
       navigateTo(navigation.PROFILE_PAGE);
     }
+    if (page === appConstants.createJourneys) {
+      navigateTo(navigation.CREATE_JOURNEYS);
+    }
+    if (page === appConstants.yourJourneys) {
+      navigateTo(navigation.YOUR_JOURNEYS);
+    }
     if (page === appConstants.logout) {
       clearLocalStorageTokens();
     }
@@ -71,18 +79,6 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
       <AppBar>
         <Container maxWidth='xl'>
           <Toolbar disableGutters>
-            <Box
-              component='img'
-              sx={{
-                height: 60,
-                width: 100,
-                maxHeight: { xs: 60, md: 60 },
-                maxWidth: { xs: 100, md: 100 },
-                marginRight: '10px',
-              }}
-              alt='car-migo'
-              src={Car}
-            />
             <Typography
               variant='h6'
               noWrap
@@ -97,11 +93,15 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                 color: 'inherit',
                 textDecoration: 'none',
               }}
+              data-testid='car-migo-title'
             >
               Car-Migo
             </Typography>
 
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <Box
+              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+              data-testid='row-menu'
+            >
               <IconButton
                 size='large'
                 aria-label='account of current user'
@@ -129,50 +129,37 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                 sx={{
                   display: { xs: 'block', md: 'none' },
                 }}
+                data-testid='menu-appbar-items'
               >
-                {pageMapper.map((page) => (
-                  <MenuItem key={page.label} onClick={handleCloseNavMenu}>
-                    <Link to={page.path!}>{page.label}</Link>
-                  </MenuItem>
-                ))}
+                {pageMapper
+                  .filter(
+                    (page) =>
+                      (isAuthorized === true && page.role == role.authorized) ||
+                      (isAuthorized === false && page.role == role.unauthorized)
+                  )
+                  .map((page) => (
+                    <MenuItem
+                      key={page.label}
+                      onClick={handleCloseNavMenu}
+                      data-testid={'menu-item-' + page.label}
+                    >
+                      <Link to={page.path!}>{page.label} </Link>
+                    </MenuItem>
+                  ))}
               </Menu>
             </Box>
-            <LogoDev sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Typography
-              variant='h5'
-              noWrap
-              component='a'
-              href=''
-              sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pageMapper.map((page) => (
-                <Button
-                  key={page.label}
-                  onClick={() => handleNav(page.path!)}
-                  sx={{ my: 2, color: '#ffffff', display: 'block' }}
-                >
-                  {page.label}
-                </Button>
-              ))}
-            </Box>
+
+            <ResponsiveAppBar handleNav={handleNav} />
 
             {isAuthorized === true && (
               <>
-                <Box sx={{ flexGrow: 0 }}>
+                <Box sx={{ flexGrow: 0 }} data-testid='authorized-settings'>
                   <Tooltip title='Open settings'>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <IconButton
+                      onClick={handleOpenUserMenu}
+                      sx={{ p: 0 }}
+                      data-testid='menu-settings-button'
+                    >
                       <Avatar alt='Remy Sharp' />
                     </IconButton>
                   </Tooltip>
@@ -196,6 +183,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                       <MenuItem
                         key={setting}
                         onClick={() => handleCloseUserMenu(setting)}
+                        data-testid={'settings-menu-' + setting}
                       >
                         <Typography textAlign='center'>{setting}</Typography>
                       </MenuItem>

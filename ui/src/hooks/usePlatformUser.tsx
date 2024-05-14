@@ -27,27 +27,31 @@ export const useEmailConfirmation = async (params: IPlatformUserEmail) => {
   return response.data;
 };
 
-export const useUserPatch = async (user: IPlatformUserEntity) => {
-  const response = await axiosInstance.patch(endpoint, user);
-  return response.data;
-};
+// TODO
+// export const useUserPatch = async (user: IPlatformUserEntity) => {
+//   const response = await axiosInstance.patch(endpoint, user);
+//   return response.data;
+// };
 
 export const useUserDeletion = async () => {
   const response = await axiosInstance.delete(endpoint);
   return response.data;
 };
 
-export const useAdminUserProfileById = async (id: number) => {
-  const response = await axiosInstance.get(endpoint + '/' + id);
-  return response.data;
-};
+// TODO: admin UI
+// export const useAdminUserProfileById = async (id: number) => {
+//   const response = await axiosInstance.get(endpoint + '/' + id);
+//   return response.data;
+// };
 
-export const useAdminUserPatchById = async (id: number) => {
-  const response = await axiosInstance.post(endpoint + '/' + id);
-  return response.data;
-};
+// TODO: admin UI
+// export const useAdminUserPatchById = async (id: number) => {
+//   const response = await axiosInstance.post(endpoint + '/' + id);
+//   return response.data;
+// };
 
-export const useAdminUserDeletionById = async (id: number) => {
-  const response = await axiosInstance.delete(endpoint + '/' + id);
-  return response.data;
-};
+// TODO: admin UI
+// export const useAdminUserDeletionById = async (id: number) => {
+//   const response = await axiosInstance.delete(endpoint + '/' + id);
+//   return response.data;
+// };

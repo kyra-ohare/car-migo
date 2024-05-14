@@ -30,38 +30,52 @@ export default function Homepage() {
     <>
       <UpperHalfContainer>
         <WelcomeContainer>
-          <WelcomeMessageContainer>
-            <WelcomeMessage>Welcome to Car-Migo</WelcomeMessage>
+          <WelcomeMessageContainer data-testid='welcome-message-container'>
+            <WelcomeMessage data-testid='welcome-message'>
+              Welcome to Car-Migo
+            </WelcomeMessage>
           </WelcomeMessageContainer>
           {isAuthorized === false && (
             <>
               <TopRightButtonsContainer>
-                <Button variant='contained' onClick={goToSignUp}>
+                <Button
+                  variant='contained'
+                  onClick={goToSignUp}
+                  data-testid='sign-up-render'
+                >
                   Sign up
                 </Button>
-                <Button variant='contained' onClick={goToSignIn}>
+                <Button
+                  variant='contained'
+                  onClick={goToSignIn}
+                  data-testid='sign-in-render'
+                >
                   Sign in
                 </Button>
               </TopRightButtonsContainer>
             </>
           )}
         </WelcomeContainer>
-        <Grid container>
+        <Grid container 
+         
+        >
           <Grid
             item
-            xs={8}
+            xs={12}
+            sm={6}
+            md={8}
             sx={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <CatchyMessage>
+            <CatchyMessage data-testid='catchy-message'>
               The best way to get to places fast, at low cost and, most
               importantly, eco-friendly.
             </CatchyMessage>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Box
               component='img'
               sx={{
@@ -76,14 +90,15 @@ export default function Homepage() {
               }}
               alt='car-migo'
               src={Car}
+              data-testid='car-migo-pic'
             />
           </Grid>
         </Grid>
         <Search />
       </UpperHalfContainer>
       <ActionAreaCard
-        id='boo'
-        label='boo'
+        id='what-is-it-card'
+        label='what-is-it-card'
         icon={<Info style={{ width: 60, height: 60 }} />}
         imageAlt='Information'
         title='What is it?'
@@ -101,10 +116,11 @@ export default function Homepage() {
             Come onboard and eperience this new lifestyle.
           </>
         }
+        datatestid='what-is-it-card'
       />
       <ActionAreaCard
-        id='boo'
-        label='boo'
+        id='why-card'
+        label='why-card'
         icon={<Info style={{ width: 60, height: 60 }} />}
         imageAlt='Information'
         title='Why?'
@@ -122,6 +138,7 @@ export default function Homepage() {
             passengers can pay the driver a fair amount for fuel costs.
           </>
         }
+        datatestid='why-card'
       />
       <Footer />
     </>

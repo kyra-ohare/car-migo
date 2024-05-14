@@ -9,5 +9,6 @@ export const appConstants = {
   refreshToken: 'refreshToken',
   serverDomain: 'http://localhost',
   serverPort: '8086',
+  createJourneys: 'Create Journeys',
   yourJourneys: 'Your Journeys',
 };
