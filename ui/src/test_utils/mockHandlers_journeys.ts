@@ -6,6 +6,7 @@ export const journeysHandlers = [
   http.post(testConstants.baseUrl + '/journeys', async ({ request }) => {
     const info = await request.json();
 
+     // @ts-expect-error Ignoring this error once I ensure it is possible to deconstruct `info`
     const { locationIdFrom, locationIdTo, dateTime, maxPassengers } = info;
 
     if (
@@ -91,6 +92,21 @@ export const journeysHandlers = [
             maxPassengers: 3,
             availability: 1,
             dateTime: '2023-04-01T12:00:00Z',
+          },
+          {
+            id: 8,
+            createdDate: '2024-31-10T15:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 2,
+            availability: 2,
+            dateTime: '2024-04-01T12:00:00Z',
           },
         ],
         { status: 200 }
@@ -311,6 +327,8 @@ export const journeysHandlers = [
       if (passengerId === '6') return new HttpResponse(null, { status: 409 });
 
       if (passengerId === '7') return new HttpResponse(null, { status: 403 });
+
+      if (passengerId === '8') return new HttpResponse(null, { status: 404 });
 
       return new HttpResponse(null, { status: 500 });
     }

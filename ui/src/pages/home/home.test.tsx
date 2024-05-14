@@ -159,6 +159,21 @@ describe('Home Unit Tests', () => {
         ).toBeInTheDocument();
       });
     });
+
+    await waitFor(async () => {
+      const journeyCardId8 = screen.getByTestId('journey-card-8');
+      expect(journeyCardId8).toBeInTheDocument();
+      const bookjourneyCardId8 = screen.getByTestId('book-journey-button-8');
+      expect(bookjourneyCardId8).toBeInTheDocument();
+
+      await userEvent.click(bookjourneyCardId8);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('Go to Profile to register as a passenger.')
+        ).toBeInTheDocument();
+      });
+    });
   });
 
   test('finding no journeys', async () => {

@@ -55,10 +55,12 @@ export default function Journey(props: IJourneyProps) {
     },
     onError: (error: Error) => {
       if (error.message.endsWith(httpStatus.CONFLICT)) {
+        // TODO: display a different error msg when passenger is also the driver.
         processSnackbar('info', 'You are already a passenger to this journey.');
-      }
-      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+      } else if (error.message.endsWith(httpStatus.FORBIDDEN)) {
         processSnackbar('warning', 'Please, log in to book this journey.');
+      } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
+        processSnackbar('error', 'Go to Profile to register as a passenger.');
       }
     },
   });

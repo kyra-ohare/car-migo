@@ -31,21 +31,21 @@ export default function YourJourneys() {
     <>
       {passengerJourneys && passengerJourneys[0] ? (
         <Journey
-          label='As a passenger, here are your upcoming journeys'
+          label='Dear passenger, here are your upcoming journeys'
           journeys={passengerJourneys}
           datatestid='passenger-journeys'
         />
       ) : (
-        <FloatingText text='Passenger! Click here to book some journeys.' />
+        <FloatingText text='Dear Passenger! You have not booked any journeys yet.' />
       )}
       {driverJourneys && driverJourneys[0] ? (
         <Journey
-          label="As a driver, here are the journeys you've created"
+          label="Dear driver, here are the journeys you've created"
           journeys={driverJourneys}
           datatestid='driver-journeys'
         />
       ) : (
-        <FloatingText text='Driver! Click here to create some journeys.' />
+        <FloatingText text="Dear Driver! Don't forget to create journeys." />
       )}
     </>
   );
