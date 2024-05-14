@@ -3,8 +3,9 @@ import Car from '../../assets/car.png';
 import { pageMapper } from '../../constants';
 import { role } from '../../constants/navigation';
 import { useAuthStore } from './../../hooks/useAuthStore';
+import { IResponsiveAppBar } from '../../interfaces';
 
-export default function ResponsiveAppBar(props: any) {
+export default function ResponsiveAppBar(props: IResponsiveAppBar) {
   const { isAuthorized } = useAuthStore();
   return (
     <>

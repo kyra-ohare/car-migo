@@ -27,7 +27,7 @@ export const platformUserHandlers = [
 
   http.post(testConstants.baseUrl + '/users/create', async ({ request }) => {
     const info = await request.json();
-    //@ts-ignore
+    // @ts-expect-error Ignoring this error once I ensure it is possible to deconstruct `info`
     const { firstName, lastName, dob, phoneNumber, email, password, confirmPassword } = info!;
 
     if (
@@ -59,7 +59,7 @@ export const platformUserHandlers = [
 
   http.post(testConstants.baseUrl + '/login', async ({ request }) => {
     const info = await request.json();
-    //@ts-ignore
+    // @ts-expect-error Ignoring this error once I ensure it is possible to deconstruct `info`
     const { email, password } = info!;
 
     if (

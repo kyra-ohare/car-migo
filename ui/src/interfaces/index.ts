@@ -11,6 +11,7 @@ export type { ICustomTooltipProps } from './CustomTooltip';
 export type { IDialogBoxProps } from './DialogBox';
 export type { IDriverEntity, IDriverLicenseNumberProperty } from './Driver';
 export type { IDropdown } from './Dropdown';
+export type { IFloatingText } from './FloatingText';
 export type { IJourneyCardProps } from './JourneyCard';
 export type {
   IJourneyCreation,
@@ -26,6 +27,7 @@ export type {
   IPlatformUserEmail,
   IPlatformUserEntity,
 } from './PlatformUser';
+export type { IResponsiveAppBar} from './ResponsiveAppBar';
 export type { ISearchFormValues } from './Search';
 export type { ISwitchWithTooltip } from './ISwitchWithTooltip';
 

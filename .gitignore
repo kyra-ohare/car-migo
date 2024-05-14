@@ -1,6 +1,7 @@
-/server/target
+/server/**/target/
 /server/.idea/
 ui/coverage/*
+
 # Logs
 logs
 *.log
@@ -25,3 +26,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.jar

@@ -1,6 +1,7 @@
 import { Box, Typography, keyframes } from '@mui/material';
+import { IFloatingText } from '../../interfaces';
 
-export default function FloatingText(prop: any) {
+export default function FloatingText(prop: IFloatingText) {
   return (
     <Box
       sx={{
