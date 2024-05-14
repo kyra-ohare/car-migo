@@ -76,12 +76,12 @@ export default function Journey(props: IJourneyProps) {
             journeys &&
               journeys.filter((journey) => journey.id !== journeyIdFromURL)
           );
-          processSnackbar('info', 'Journey deleted successfully.');
+          processSnackbar('info', 'You are no longer a passenger to this journey.');
         }
       }
     },
     onError: () => {
-      processSnackbar('error', 'It was not possible to delete this journey.');
+      processSnackbar('error', 'It was not possible to remove you from this journey.');
     },
   });
 
@@ -117,6 +117,7 @@ export default function Journey(props: IJourneyProps) {
     <>
       {journeys && journeys.length ? (
         <RouteHeadline origin={props.origin} destination={props.destination} />
+      /* c8 ignore next */
       ) : (
         /* c8 ignore next */
         <></>

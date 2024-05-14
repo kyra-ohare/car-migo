@@ -77,6 +77,21 @@ export const journeysHandlers = [
             availability: 3,
             dateTime: '2022-12-03T08:00:00Z',
           },
+          {
+            id: 7,
+            createdDate: '2022-31-10T00:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 3,
+            availability: 1,
+            dateTime: '2023-04-01T12:00:00Z',
+          },
         ],
         { status: 200 }
       );
@@ -218,6 +233,69 @@ export const journeysHandlers = [
             },
           ],
         },
+        {
+          id: 4,
+          createdDate: "2021-11-30T00:00:00Z",
+          locationFrom: {
+              id: 1,
+              description: "Rostrevor"
+          },
+          locationTo: {
+              id: 2,
+              description: "Belfast"
+          },
+          maxPassengers: 2,
+          availability: 0,
+          dateTime: "2021-12-01T09:00:00Z",
+          driver: {
+            id: 2,
+            licenseNumber: '16548329',
+            platformUser: {
+              id: 2,
+              createdDate: '2022-01-04T00:00:00Z',
+              firstName: 'Mary',
+              lastName: 'Green',
+              dob: '1990-06-30T00:00:00Z',
+              email: 'mary.green@example.com',
+              phoneNumber: '0286579635',
+              userAccessStatus: { id: 2, status: 'ACTIVE' },
+              passenger: false,
+              driver: false,
+            },
+          },
+          passengers: [
+            {
+              id: 1,
+              platformUser: {
+                id: 1,
+                createdDate: '2021-12-24T00:00:00Z',
+                firstName: 'John',
+                lastName: 'Smith',
+                dob: '1970-02-23T00:00:00Z',
+                email: 'john.smith@example.com',
+                phoneNumber: '0287513626',
+                userAccessStatus: { id: 2, status: 'ACTIVE' },
+                passenger: false,
+                driver: false,
+              },
+            },
+            {
+              id: 3,
+              platformUser: {
+                id: 3,
+                createdDate: '2022-01-05T00:00:00Z',
+                firstName: 'Paul',
+                lastName: 'Gibson',
+                dob: '1995-07-08T00:00:00Z',
+                email: 'paul.gibson@example.com',
+                phoneNumber: '0286547891',
+                userAccessStatus: { id: 2, status: 'ACTIVE' },
+                passenger: false,
+                driver: false,
+              },
+            },
+          ],
+        },
       ],
       { status: 200 }
     );
@@ -232,18 +310,28 @@ export const journeysHandlers = [
 
       if (passengerId === '6') return new HttpResponse(null, { status: 409 });
 
+      if (passengerId === '7') return new HttpResponse(null, { status: 403 });
+
       return new HttpResponse(null, { status: 500 });
     }
   ),
 
   http.delete(
     testConstants.baseUrl + '/journeys/:journeyId/remove-passenger',
-    () => {
-      return new HttpResponse(null, { status: 204 });
+    ({ params }) => {
+      const { journeyId } = params;
+      if (journeyId === '1') {
+        return new HttpResponse(null, { status: 204 });
+      }
+      return new HttpResponse(null, { status: 500 });
     }
   ),
 
-  http.delete(testConstants.baseUrl + '/journeys/:journeyId', () => {
-    return new HttpResponse(null, { status: 204 });
+  http.delete(testConstants.baseUrl + '/journeys/:journeyId', ({ params }) => {
+    const { journeyId } = params;
+    if (journeyId === '3') {
+      return new HttpResponse(null, { status: 204 });
+    }
+      return new HttpResponse(null, { status: 500 });
   }),
 ];

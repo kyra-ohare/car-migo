@@ -75,7 +75,7 @@ describe('Home Unit Tests', () => {
     });
   });
 
-  test('finding journeys', async () => {
+  test('finding and booking journeys', async () => {
     TestUtils.render(<Homepage />);
     const leavingFromField = screen.getByLabelText('Leaving From');
     const goingToField = screen.getByLabelText('Going to');
@@ -141,6 +141,21 @@ describe('Home Unit Tests', () => {
         expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
         expect(
           screen.getByText('You are already a passenger to this journey.')
+        ).toBeInTheDocument();
+      });
+    });
+
+    await waitFor(async () => {
+      const journeyCardId7 = screen.getByTestId('journey-card-7');
+      expect(journeyCardId7).toBeInTheDocument();
+      const bookjourneyCardId7 = screen.getByTestId('book-journey-button-7');
+      expect(bookjourneyCardId7).toBeInTheDocument();
+
+      await userEvent.click(bookjourneyCardId7);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('Please, log in to book this journey.')
         ).toBeInTheDocument();
       });
     });

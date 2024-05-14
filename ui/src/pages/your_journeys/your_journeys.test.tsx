@@ -29,10 +29,11 @@ describe('YourJourneys Unit Tests', () => {
       expect(screen.getByTestId('journey-card-1')).toBeInTheDocument();
       expect(screen.getByTestId('journey-card-2')).toBeInTheDocument();
       expect(screen.getByTestId('journey-card-3')).toBeInTheDocument();
+      expect(screen.getByTestId('journey-card-4')).toBeInTheDocument();
     });
   });
 
-  test('cancel a journey', async () => {
+  test('delete a passenger\'s journey', async () => {
     initialStoreState.setIsAuthorized(true);
     TestUtils.render(<YourJourneys />);
 
@@ -40,6 +41,53 @@ describe('YourJourneys Unit Tests', () => {
       const cancelJourney1 = screen.getByTestId('cancel-journey-button-1');
       expect(cancelJourney1).toBeInTheDocument();
       await userEvent.click(cancelJourney1);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('You are no longer a passenger to this journey.')
+        ).toBeInTheDocument();
+      });
+    });
+
+    await waitFor(async () => {
+      const cancelJourney2 = screen.getByTestId('cancel-journey-button-2');
+      expect(cancelJourney2).toBeInTheDocument();
+      await userEvent.click(cancelJourney2);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('It was not possible to remove you from this journey.')
+        ).toBeInTheDocument();
+      });
+    });
+  });
+
+  test('delete a journey', async () => {
+    initialStoreState.setIsAuthorized(true);
+    TestUtils.render(<YourJourneys />);
+
+    await waitFor(async () => {
+      const cancelJourney3 = screen.getByTestId('cancel-journey-button-3');
+      expect(cancelJourney3).toBeInTheDocument();
+      await userEvent.click(cancelJourney3);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('Journey deleted successfully.')
+        ).toBeInTheDocument();
+      });
+    });
+
+    await waitFor(async () => {
+      const cancelJourney4 = screen.getByTestId('cancel-journey-button-4');
+      expect(cancelJourney4).toBeInTheDocument();
+      await userEvent.click(cancelJourney4);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('It was not possible to delete this journey.')
+        ).toBeInTheDocument();
+      });
     });
   });
 });
