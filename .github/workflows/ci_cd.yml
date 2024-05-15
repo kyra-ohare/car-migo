@@ -49,9 +49,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
+      - name: Build with Node
+        run: cd ./ui && npm run lint && npm run testc && cd ..
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
