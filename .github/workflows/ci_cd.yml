@@ -42,15 +42,20 @@ jobs:
   node:
     name: Node Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:
+          - version: 20
+            env: NODE_OPTIONS=--openssl-legacy-provider
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Run linting rules and tests
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - name: Build with Node
-        run: cd ./ui && ls -al && node -v && npm ci && npm run lint && npm run testc && cd ..
+          node-version: ${{ matrix.node.version }}
+          cache: npm
+      - run: cd ./ui && ls -al && node -v && npm ci && npm run lint && npm run testc && cd ..
   # codeql:
   #   name: CodeQL Analysis
   #   runs-on: ubuntu-latest
