@@ -149,6 +149,7 @@ public class JourneyService {
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
     // TODO: Check if passenger exists first
     // TODO: passengers are being added in respective of maxPassengers.
+    // TODO: both EntityExistsException and IllegalStateException throw 409. Make them throw different http status codes
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
