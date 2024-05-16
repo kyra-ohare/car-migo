@@ -6,7 +6,7 @@
 # Queries: ./path/to/local/query, your-org/your-repo/queries@main
 # Command-line programs to run using the OS shell:https://git.io/JvXDl
 
-name: Car-Migo builds with Maven, CodeQL and Docker
+name: Car-Migo builds with Maven and Node.js, CodeQL and Docker
 
 on:
   push:
@@ -42,21 +42,21 @@ jobs:
   node:
     name: Node Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    # strategy:
+    #   matrix:
+    #     node-version: [14.x, 16.x, 18.x]
+    #     # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Build with Node
+        run: cd ./ui && npm ci && npm run lint && npm run testc && cd ..
   # codeql:
   #   name: CodeQL Analysis
   #   runs-on: ubuntu-latest
