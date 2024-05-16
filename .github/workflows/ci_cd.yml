@@ -63,7 +63,7 @@ jobs:
             - run: npm ci
             - run: npm lint
             - run: npm run testc
-            -run: cd ..
+            - run: cd ..
   # codeql:
   #   name: CodeQL Analysis
   #   runs-on: ubuntu-latest
