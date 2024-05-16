@@ -54,7 +54,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
       - name: Build with Node
         run: cd ./ui && npm ci && npm run lint && npm run testc && cd ..
   # codeql:
