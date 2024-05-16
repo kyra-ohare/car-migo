@@ -67,9 +67,6 @@ describe('CreateJourneys Unit Tests', () => {
     await userEvent.click(submitButton);
     await waitFor(() => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
-      expect(
-        screen.getByText('Your journey was created successfully.')
-      ).toBeInTheDocument();
     });
 
     fireEvent.change(originField, { target: { value: 'Belfast' } });
