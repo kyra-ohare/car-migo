@@ -4,7 +4,7 @@ cd ./server && \
 ./mvnw clean package -DskipTests && \
 cd .. && \
 docker build -t car-migo . && \
-docker-compose up -d
+docker compose up -d
 
 echo "$(tput setaf 6)-------------------- PAUSING FOR 10 SECONDS FOR COMPLETE STARTUP --------------------$(tput sgr0)"
 sleep 1; echo "10\c"; sleep 1; echo ", 9\c"

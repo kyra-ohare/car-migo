@@ -33,7 +33,6 @@ describe('Navigation Unit Tests', () => {
     const menuRowOptions: Array<HTMLElement[]> = [
       screen.getAllByTestId('row-menu-Home'),
       screen.getAllByTestId('row-menu-Confirm email'),
-      screen.getAllByTestId('row-menu-Playground'),
       screen.getAllByTestId('row-menu-Forgot Password'),
       screen.getAllByTestId('row-menu-Sign In'),
       screen.getAllByTestId('row-menu-Sign Up'),
@@ -43,7 +42,6 @@ describe('Navigation Unit Tests', () => {
     const responsiveMenuItems: Array<HTMLElement[]> = [
       screen.getAllByTestId('menu-item-Home'),
       screen.getAllByTestId('menu-item-Confirm email'),
-      screen.getAllByTestId('menu-item-Playground'),
       screen.getAllByTestId('menu-item-Forgot Password'),
       screen.getAllByTestId('menu-item-Sign In'),
       screen.getAllByTestId('menu-item-Sign Up'),
@@ -64,7 +62,6 @@ describe('Navigation Unit Tests', () => {
     const menuRowOptions: Array<HTMLElement[]> = [
       screen.getAllByTestId('row-menu-Home'),
       screen.getAllByTestId('row-menu-Profile'),
-      screen.getAllByTestId('row-menu-Playground'),
       screen.getAllByTestId('row-menu-Create Journeys'),
       screen.getAllByTestId('row-menu-Your Journeys'),
     ];
@@ -73,7 +70,6 @@ describe('Navigation Unit Tests', () => {
     const responsiveMenuItems: Array<HTMLElement[]> = [
       screen.getAllByTestId('menu-item-Home'),
       screen.getAllByTestId('menu-item-Profile'),
-      screen.getAllByTestId('menu-item-Playground'),
       screen.getAllByTestId('menu-item-Create Journeys'),
       screen.getAllByTestId('menu-item-Your Journeys'),
     ];

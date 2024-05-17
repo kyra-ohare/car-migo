@@ -3,22 +3,29 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
-* Spring Boot 3.2
-* Java 17
-* Maven
-* Docker
-* Git Actions
-* Hibernate
-* PostgreSQL
-* H2 Database
-* pgAdmin
-* Flyway
-* JWT
-* BCrypt
-* Swagger
-* Actuator
-* Checkstyle
-* Git Commit Id
+* Back-end
+  * Spring Boot 3
+  * Java 17
+  * Maven 3.9
+  * Docker
+  * Git Actions
+  * JWT
+  * BCrypt
+  * Swagger
+  * Actuator
+  * Checkstyle
+  * Git Commit Id
+* Front-end
+  * React
+  * Vite
+  * Node.js 20
+* Database
+  * Hibernate
+  * PostgreSQL
+  * H2 Database
+  * pgAdmin
+  * Flyway
+
 
 ## What is the application?
 The application is quite straightway. It is a match-making system for drivers and passengers.

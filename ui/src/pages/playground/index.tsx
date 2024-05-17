@@ -1,23 +1,15 @@
-import React from 'react';
-import TextField from '@mui/material/TextField';
+import { BuildRounded } from '@mui/icons-material';
 
-function NumberInput() {
-  const [number, setNumber] = React.useState('');
-
-  const handleChange = (_event) => {
-    setNumber(_event.target.value);
-  };
+export default function Playground() {
 
   return (
-    <TextField
-      label="Number Input"
-      type="number"
-      value={number}
-      onChange={handleChange}
-      variant="outlined"
-      fullWidth
-    />
+    <div>
+      <h2>This is just for Demo of new components</h2>
+      <br />
+      <div>
+        <BuildRounded style={{ width: 60, height: 60 }} />
+      </div>
+      <p>Under construction</p>
+    </div>
   );
 }
-
-export default NumberInput;

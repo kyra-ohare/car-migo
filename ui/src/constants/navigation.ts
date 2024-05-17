@@ -43,6 +43,4 @@ export const pageMapper = [
   },
   { label: 'Sign In', path: navigation.SIGN_IN_PAGE, role: role.unauthorized },
   { label: 'Sign Up', path: navigation.SIGN_UP_PAGE, role: role.unauthorized },
-  { label: 'Playground', path: navigation.PLAYGROUND, role: role.authorized },
-  { label: 'Playground', path: navigation.PLAYGROUND, role: role.unauthorized },
 ];

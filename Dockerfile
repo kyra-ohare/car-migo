@@ -5,7 +5,7 @@ EXPOSE 8086
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/app.jar"]
 
 
-FROM node:18-alpine as ui
+FROM node:20-alpine as ui
 RUN apk update
 WORKDIR /ui
 COPY ./ui .
