@@ -107,7 +107,7 @@ jobs:
       - run: docker tag car-migo_server ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_server:latest
       - run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_server:latest
       - run: docker build -t car-migo_ui --target ui .
-      - run: docker tag car-migo_server ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_ui:latest
+      - run: docker tag car-migo_ui ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_ui:latest
       - run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_ui:latest
         # id: docker_build
         # uses: docker/build-push-action@v5
