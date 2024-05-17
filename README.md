@@ -17,8 +17,19 @@ Car-migo application is awesome! It will revolutionize the way you get around. I
   * Git Commit Id
 * Front-end
   * React
+  * Typescript
+  * Javascript
   * Vite
   * Node.js 20
+  * Material UI
+  * Tanstack
+  * Axios
+  * Yup
+  * Formik
+  * Zustand
+  * ESLint
+  * Jest
+  * MSW
 * Database
   * Hibernate
   * PostgreSQL
@@ -59,7 +70,12 @@ From a macOS terminal, navigate to the root of this project and run:
 ```
 This script will create a jar file from Maven package lifecycle using the embedded Maven Wrapper.
 
-The script also creates Docker images and spins the necessary containers.
+The script also creates Docker images and spins the necessary containers:
+- `car-migo_ui`: this is the Front-End implementation, the website application.
+- `car-migo_server`: the Back-End implementation which holds the business logic.
+- `car-migo_postgres`: the application database.
+- `car-migo_flyway`: the database version control.
+- `car-migo_pgadmin`: the database client. More details below.
 
 Visit http://localhost:8086/v1/heartbeat to ensure the server is running as expected.
 
@@ -91,7 +107,7 @@ Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo 
 ### restart.sh
 This script restarts the containers. You are also given the option to restart PostgreSQL and pgAdmin volumes.
 
-## Login
+## Server Login
 Send a POST request to http://localhost:8086/v1/login with the following JSON body:
 ```json
 {
@@ -133,13 +149,13 @@ Open endpoints, i.e., no credentials needed:
 ## CI/CD
 Git Actions is triggered everytime there is a new code push or a new pull request against the `main` branch.
 
-The script will build the application and run tests using Apache Maven Wrapper.
+The script will build the application and run tests using Apache Maven Wrapper and Vitest.
 It will also scan the code and produce a security report using CodeQL Analysis.
 
 Git Actions is also scheduled to run once a week: every Monday at 7am UTC.
 
-Moreover, an image is built and sent to [Docker Hub](https://hub.docker.com/r/kleydocker/car-migo) repository when the code is merged into the main branch.
+Moreover, an image is built and sent to [Docker Hub](https://hub.docker.com/r/techtinkerer/car-migo) repository when the code is merged into the main branch.
 It can be pulled by:
 ```
-docker pull kleydocker/car-migo
+docker pull techtinkerer/car-migo
 ```

@@ -84,7 +84,7 @@ jobs:
   docker:
     name: Docker
     runs-on: ubuntu-latest
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'ui'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
