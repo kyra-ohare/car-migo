@@ -30,9 +30,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -66,9 +66,9 @@ jobs:
         language: ['java']
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -87,9 +87,9 @@ jobs:
     if: github.ref_name == 'ui'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -97,22 +97,29 @@ jobs:
       - name: Build with Maven
         run: cd ./server && ./mvnw clean verify -DskipTests && cd ..
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:buildcache,mode=max
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
+      - name: Build car-migo_server image
+        run: docker build -t car-migo_server --target server .
+      - name: Push car-migo-server
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_server:latest
+      - name: Build car-migo_ui image
+        run: docker build -t car-migo_ui --target ui .
+      - name: Push car-migo-ui
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo_ui:latest
+        # id: docker_build
+        # uses: docker/build-push-action@v5
+        # with:
+        #   context: ./
+        #   file: ./Dockerfile
+        #   builder: ${{ steps.buildx.outputs.name }}
+        #   push: true
+        #   tags: ${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:latest
+        #   cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:buildcache
+        #   cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/car-migo:buildcache,mode=max
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
