@@ -3,7 +3,7 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
-* Back-end
+* Back-end (server)
   * Spring Boot 3
   * Java 17
   * Maven 3.9
@@ -14,8 +14,7 @@ Car-migo application is awesome! It will revolutionize the way you get around. I
   * Swagger
   * Actuator
   * Checkstyle
-  * Git Commit Id
-* Front-end
+* Front-end (ui)
   * React
   * Typescript
   * Javascript
@@ -65,7 +64,7 @@ The application is not about profiting but about car sharing so the passengers c
 - Docker
 
 From a Linux based terminal, navigate to the root of this project (assuming you have cloned it) and run:
-```
+```sh
 ./run-app.sh
 ```
 This script will create a jar file from Maven package lifecycle using the embedded Maven Wrapper.
@@ -82,8 +81,8 @@ Visit http://localhost:8086/v1/heartbeat to ensure the server is running as expe
 Moreover, it will automatically open http://localhost:8087/home on your default browser. :tada:
 
 To stop and remove the containers, run:
-```
-docker-compose down
+```sh
+docker compose down
 ```
 
 ### pgAdmin
@@ -128,7 +127,7 @@ By the way, Jake Sully is our ADMIN. You can find more users to play with in [mi
 
 ### JWT
 The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a Bearer token. For example:
-```
+```sh
 curl -L 'http://localhost:8086/v1/users/profile' \
 -H 'Authorization: Bearer {paste-token-here}'
 ```
@@ -154,10 +153,10 @@ It will also scan the code and produce a security report using CodeQL Analysis.
 
 Git Actions is also scheduled to run once a week: every Monday at 7am UTC.
 
-Moreover, two Docker images are built, [car-migo_ui](https://hub.docker.com/r/techtinkerer/car-migo_ui) and [car-migo_server](https://hub.docker.com/r/techtinkerer/car-migo_server),  and sent to Docker Hub repository when the code is merged into the main branch.
+Moreover, two Docker images are automatically built, [car-migo_ui](https://hub.docker.com/r/techtinkerer/car-migo_ui) and [car-migo_server](https://hub.docker.com/r/techtinkerer/car-migo_server),  and sent to Docker Hub repository when the code is merged into the main branch.
 
 Run these to download them:
-```
+```sh
 docker pull techtinkerer/car-migo_ui
 docker pull techtinkerer/car-migo_server
 ```
