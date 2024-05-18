@@ -64,7 +64,7 @@ The application is not about profiting but about car sharing so the passengers c
 ### Requirements
 - Docker
 
-From a macOS terminal, navigate to the root of this project and run:
+From a Linux based terminal, navigate to the root of this project (assuming you have cloned it) and run:
 ```
 ./run-app.sh
 ```
@@ -116,7 +116,7 @@ Send a POST request to http://localhost:8086/v1/login with the following JSON bo
 }
 ```
 Here is the cURL command:
-```
+```sh
 curl -iL 'http://localhost:8086/v1/login' \
 -H 'Content-Type: application/json' \
 --data-raw '{
@@ -154,8 +154,10 @@ It will also scan the code and produce a security report using CodeQL Analysis.
 
 Git Actions is also scheduled to run once a week: every Monday at 7am UTC.
 
-Moreover, an image is built and sent to [Docker Hub](https://hub.docker.com/r/techtinkerer/car-migo) repository when the code is merged into the main branch.
-It can be pulled by:
+Moreover, two Docker images are built, [car-migo_ui](https://hub.docker.com/r/techtinkerer/car-migo_ui) and [car-migo_server](https://hub.docker.com/r/techtinkerer/car-migo_server),  and sent to Docker Hub repository when the code is merged into the main branch.
+
+Run these to download them:
 ```
-docker pull techtinkerer/car-migo
+docker pull techtinkerer/car-migo_ui
+docker pull techtinkerer/car-migo_server
 ```
