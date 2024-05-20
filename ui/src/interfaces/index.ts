@@ -27,7 +27,8 @@ export type {
   IPlatformUserEmail,
   IPlatformUserEntity,
 } from './PlatformUser';
-export type { IResponsiveAppBar} from './ResponsiveAppBar';
+export type { IResponsiveAppBar } from './ResponsiveAppBar';
+export type { IRouteHeadline } from './RouteHeadline';
 export type { ISearchFormValues } from './Search';
 export type { ISwitchWithTooltip } from './ISwitchWithTooltip';
 

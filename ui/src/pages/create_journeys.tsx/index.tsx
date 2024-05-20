@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import {
+  AlertColor,
   Avatar,
   Box,
   CssBaseline,
@@ -19,7 +20,7 @@ import {
   Dropdown,
   Footer,
 } from '../../components';
-import { locations } from '../../constants';
+import { httpStatus, locations } from '../../constants';
 import { IJourneyCreation } from '../../interfaces';
 import { initialCreateJourneysValues } from '../your_journeys/initial_values';
 import { createJourneyValidationSchema } from './validation_schema';
@@ -28,6 +29,7 @@ import { useCreateJourney } from '../../hooks/useJourney';
 export default function CreateYourneys() {
   const [selectedLeaving, setSelectedLeaving] = useState<string>('');
   const [selectedGoing, setSelectedGoing] = useState<string>('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('info');
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const defaultTheme = createTheme();
@@ -54,12 +56,20 @@ export default function CreateYourneys() {
     mutationFn: useCreateJourney,
     onSuccess: () => {
       setSnackbarMessage('Your journey was created successfully.');
+      setSnackbarSeverity('info');
       setOpenSnackbar(true);
     },
-    onError: () => {
-      setSnackbarMessage(
-        "Something didn't go according to the plan and your journey was not created."
-      );
+    onError: (error: Error) => {
+      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+        setSnackbarMessage(
+          'You cannot create a Journey. Are you a driver? Check if you are one in Profile.'
+        );
+      } else {
+        setSnackbarMessage(
+          "Something didn't go according to the plan and your journey was not created."
+        );
+      }
+      setSnackbarSeverity('error');
       setOpenSnackbar(true);
     },
   });
@@ -170,7 +180,7 @@ export default function CreateYourneys() {
         <AlertPopUp
           open={openSnackbar}
           onClose={handleCloseSnackbar}
-          severity='info'
+          severity={snackbarSeverity}
           message={snackbarMessage}
           datatestid='alert-pop-up'
         />

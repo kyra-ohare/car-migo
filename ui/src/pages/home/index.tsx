@@ -56,9 +56,7 @@ export default function Homepage() {
             </>
           )}
         </WelcomeContainer>
-        <Grid container 
-         
-        >
+        <Grid container>
           <Grid
             item
             xs={12}

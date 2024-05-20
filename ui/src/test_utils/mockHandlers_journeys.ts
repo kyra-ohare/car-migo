@@ -6,7 +6,7 @@ export const journeysHandlers = [
   http.post(testConstants.baseUrl + '/journeys', async ({ request }) => {
     const info = await request.json();
 
-     // @ts-expect-error Ignoring this error once I ensure it is possible to deconstruct `info`
+    // @ts-expect-error Ignoring this error once I ensure it is possible to deconstruct `info`
     const { locationIdFrom, locationIdTo, dateTime, maxPassengers } = info;
 
     if (
@@ -16,6 +16,15 @@ export const journeysHandlers = [
       maxPassengers === 2
     ) {
       return new HttpResponse(null, { status: 201 });
+    }
+
+    if (
+      locationIdFrom === 1 &&
+      locationIdTo === 2 &&
+      dateTime === '2024-05-20T10:00:00.000Z' &&
+      maxPassengers === 4
+    ) {
+      return new HttpResponse(null, { status: 403 });
     }
 
     return new HttpResponse(null, { status: 500 });
@@ -253,12 +262,12 @@ export const journeysHandlers = [
           id: 4,
           createdDate: "2021-11-30T00:00:00Z",
           locationFrom: {
-              id: 1,
-              description: "Rostrevor"
+            id: 1,
+            description: "Rostrevor"
           },
           locationTo: {
-              id: 2,
-              description: "Belfast"
+            id: 2,
+            description: "Belfast"
           },
           maxPassengers: 2,
           availability: 0,
@@ -350,6 +359,6 @@ export const journeysHandlers = [
     if (journeyId === '3') {
       return new HttpResponse(null, { status: 204 });
     }
-      return new HttpResponse(null, { status: 500 });
+    return new HttpResponse(null, { status: 500 });
   }),
 ];

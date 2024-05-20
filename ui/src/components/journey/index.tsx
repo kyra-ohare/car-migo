@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import {
   Box,
   Typography,
@@ -7,23 +9,20 @@ import {
   AlertColor,
 } from '@mui/material';
 import { DeleteRounded } from '@mui/icons-material';
+import { StyledButton, StyledGrid, StyledJourneyCard } from './styled';
+import { AlertPopUp, CustomButton } from '..';
+import ViewPassengerCard from './view_passender_card';
+import ViewDriverCard from './view_driver_card';
+import RouteHeadline from './route_headline';
+import ViewSearchCard from './view_search_card';
 import { IJourneyEntity, IJourneyProps } from '../../interfaces';
-import { useMutation } from '@tanstack/react-query';
 import {
   useAddPassenger,
   useDeleteJourney,
   useDeletePassenger,
 } from '../../hooks/useJourney';
-import ViewPassengerCard from './view_passender_card';
-import ViewDriverCard from './view_driver_card';
-import RouteHeadline from './route_headline';
-import ViewSearchCard from './view_search_card';
-import { StyledButton, StyledGrid, StyledJourneyCard } from './styled';
-import CustomButton from '../custom_button';
-import { useState } from 'react';
-import { httpStatus } from '../../constants';
-import { AlertPopUp } from '..';
 import { useUserProfile } from '../../hooks/usePlatformUser';
+import { httpStatus } from '../../constants';
 
 export default function Journey(props: IJourneyProps) {
   const [journeys, setJourneys] = useState<IJourneyEntity[]>(props.journeys);
@@ -78,12 +77,18 @@ export default function Journey(props: IJourneyProps) {
             journeys &&
               journeys.filter((journey) => journey.id !== journeyIdFromURL)
           );
-          processSnackbar('info', 'You are no longer a passenger to this journey.');
+          processSnackbar(
+            'info',
+            'You are no longer a passenger to this journey.'
+          );
         }
       }
     },
     onError: () => {
-      processSnackbar('error', 'It was not possible to remove you from this journey.');
+      processSnackbar(
+        'error',
+        'It was not possible to remove you from this journey.'
+      );
     },
   });
 

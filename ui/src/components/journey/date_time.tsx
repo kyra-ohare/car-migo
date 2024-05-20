@@ -1,5 +1,5 @@
-import { CalendarMonthRounded, AccessAlarmRounded } from '@mui/icons-material';
 import { Typography } from '@mui/material';
+import { CalendarMonthRounded, AccessAlarmRounded } from '@mui/icons-material';
 import { IJourneyResponseProps } from '../../interfaces';
 
 export default function DateTime(props: IJourneyResponseProps) {

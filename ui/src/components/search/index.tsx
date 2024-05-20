@@ -32,10 +32,6 @@ export default function Search() {
       locationIdTo: values.locationIdTo,
       dateTimeFrom: values.dateTimeFrom,
       dateTimeTo: values.dateTimeTo,
-      // locationIdFrom: '5',
-      // locationIdTo: '1',
-      // dateTimeFrom: '2016-04-19T23:00:00.000Z',
-      // dateTimeTo: '2024-04-14T23:00:00.000Z',
     }));
   };
 

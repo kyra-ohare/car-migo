@@ -33,7 +33,7 @@ describe('YourJourneys Unit Tests', () => {
     });
   });
 
-  test('delete a passenger\'s journey', async () => {
+  test("delete a passenger's journey", async () => {
     initialStoreState.setIsAuthorized(true);
     TestUtils.render(<YourJourneys />);
 
@@ -56,7 +56,9 @@ describe('YourJourneys Unit Tests', () => {
       await waitFor(() => {
         expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
         expect(
-          screen.getByText('It was not possible to remove you from this journey.')
+          screen.getByText(
+            'It was not possible to remove you from this journey.'
+          )
         ).toBeInTheDocument();
       });
     });

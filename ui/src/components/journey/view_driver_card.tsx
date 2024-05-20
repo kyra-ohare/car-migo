@@ -1,11 +1,11 @@
+import { Grid, Typography } from '@mui/material';
 import {
   GroupsRounded,
   WeekendRounded,
   PersonOutlineRounded,
 } from '@mui/icons-material';
-import { Grid, Typography } from '@mui/material';
-import { IJourneyResponseProps, IPassengerEntity } from '../../interfaces';
 import DateTime from './date_time';
+import { IJourneyResponseProps, IPassengerEntity } from '../../interfaces';
 
 export default function ViewDriverCard(props: IJourneyResponseProps) {
   const { maxPassengers, availability, passengers } = props.journey;

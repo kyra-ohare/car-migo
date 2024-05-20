@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { IJourneyEntity } from '../../interfaces';
 import {
   useGetDriverJourneys,
   useGetPassengerJourneys,
 } from '../../hooks/useJourney';
+import { IJourneyEntity } from '../../interfaces';
 import { FloatingText, Journey } from '../../components';
 
 export default function YourJourneys() {

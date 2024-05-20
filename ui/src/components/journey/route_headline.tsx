@@ -1,10 +1,6 @@
-import { LocationOn } from '@mui/icons-material';
 import { Typography } from '@mui/material';
-
-export interface IRouteHeadline {
-  origin: string | undefined;
-  destination: string | undefined;
-}
+import { LocationOn } from '@mui/icons-material';
+import { IRouteHeadline } from '../../interfaces';
 
 export default function RouteHeadline(props: IRouteHeadline) {
   const { origin, destination } = props;

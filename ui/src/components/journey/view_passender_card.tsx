@@ -1,5 +1,5 @@
-import { DirectionsCarRounded } from '@mui/icons-material';
 import { Typography } from '@mui/material';
+import { DirectionsCarRounded } from '@mui/icons-material';
 import DateTime from './date_time';
 import { IJourneyResponseProps } from '../../interfaces';
 

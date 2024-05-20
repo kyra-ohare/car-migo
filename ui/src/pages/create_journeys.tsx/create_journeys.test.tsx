@@ -27,7 +27,7 @@ describe('CreateJourneys Unit Tests', () => {
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
   });
 
-  test('create a journey', async () => {
+  test('create a journey returns 201', async () => {
     initialStoreState.setIsAuthorized(true);
     TestUtils.render(<CreateJourneys />);
 
@@ -67,7 +67,59 @@ describe('CreateJourneys Unit Tests', () => {
     await userEvent.click(submitButton);
     await waitFor(() => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+      expect(
+        screen.getByText('Your journey was created successfully.')
+      ).toBeInTheDocument();
     });
+  });
+
+  test('create a journey returns 403', async () => {
+    initialStoreState.setIsAuthorized(true);
+    TestUtils.render(<CreateJourneys />);
+
+    const originField = screen.getByLabelText('Origin');
+    const destinationField = screen.getByLabelText('Destination');
+    const dateTimeField = screen.getByLabelText('Date/Time');
+    const maxPassengersField = screen.getByLabelText('Max passengers');
+    const submitButton = screen.getByTestId('submit-button');
+
+    fireEvent.change(originField, { target: { value: 'Rostrevor' } });
+    fireEvent.keyDown(originField, { key: 'ArrowDown' });
+    fireEvent.keyDown(originField, { key: 'Enter' });
+
+    fireEvent.change(destinationField, { target: { value: 'Belfast' } });
+    fireEvent.keyDown(destinationField, { key: 'ArrowDown' });
+    fireEvent.keyDown(destinationField, { key: 'ArrowDown' });
+    fireEvent.keyDown(destinationField, { key: 'Enter' });
+
+    fireEvent.change(dateTimeField, {
+      target: { value: '20/05/2024 11:00 am' },
+    });
+
+    fireEvent.change(maxPassengersField, {
+      target: { value: 4 },
+    });
+
+    await userEvent.click(submitButton);
+    await waitFor(() => {
+      expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'You cannot create a Journey. Are you a driver? Check if you are one in Profile.'
+        )
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('create a journey returns 500', async () => {
+    initialStoreState.setIsAuthorized(true);
+    TestUtils.render(<CreateJourneys />);
+
+    const originField = screen.getByLabelText('Origin');
+    const destinationField = screen.getByLabelText('Destination');
+    const dateTimeField = screen.getByLabelText('Date/Time');
+    const maxPassengersField = screen.getByLabelText('Max passengers');
+    const submitButton = screen.getByTestId('submit-button');
 
     fireEvent.change(originField, { target: { value: 'Belfast' } });
     fireEvent.keyDown(originField, { key: 'ArrowDown' });
@@ -87,15 +139,24 @@ describe('CreateJourneys Unit Tests', () => {
     });
 
     fireEvent.change(maxPassengersField, {
-      target: { value: 2 },
+      target: { value: 3 },
     });
 
     await userEvent.click(submitButton);
     await waitFor(() => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
       expect(
-        screen.getByText("Something didn't go according to the plan and your journey was not created.")
+        screen.getByText(
+          "Something didn't go according to the plan and your journey was not created."
+        )
       ).toBeInTheDocument();
+    });
+
+    const closeAlertPopUp = screen.getByTitle('Close');
+    expect(closeAlertPopUp).toBeInTheDocument();
+    await userEvent.click(closeAlertPopUp);
+    await waitFor(() => {
+      expect(screen.queryByTestId('alert-pop-up')).not.toBeInTheDocument();
     });
   });
 });
