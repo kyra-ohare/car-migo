@@ -1,12 +1,23 @@
-version: "3.4"
 services:
   server:
-    image: car-migo
-    container_name: car-migo_app
+    build:
+      context: .
+      target: server
+    container_name: car-migo_server
     ports:
       - "8086:8086"
     depends_on:
       - db
+
+  ui:
+   build:
+     context: .
+     target: ui
+   container_name: car-migo_ui
+   ports:
+     - "8087:8087"
+   depends_on:
+     - server
 
   db:
     image: postgres:14-bullseye

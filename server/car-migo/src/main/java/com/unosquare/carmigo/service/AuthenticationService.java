@@ -33,7 +33,8 @@ public class AuthenticationService {
     final UserDetails userDetails = userSecurityService.loadUserByUsername(authenticationRequest.getEmail());
     final String jwt = jwtTokenService.generateToken(userDetails);
     final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-    authenticationResponse.setJwt(jwt);
+    authenticationResponse.setAccessToken(jwt);
+    authenticationResponse.setRefreshToken(jwt);
     return authenticationResponse;
   }
 }

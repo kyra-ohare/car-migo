@@ -84,10 +84,7 @@ public class JourneyService {
       throw new ResourceNotFoundException("No journeys found for this route. " + searchJourneysRequest);
     }
     final var journeys = MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
-    for (JourneyResponse j : journeys) {
-      int availability = j.getMaxPassengers() - j.getPassengers().size();
-      j.setAvailability(availability);
-    }
+    checkJourneyAvailability(journeys);
     hidePassengerAndMaybeDriverFields(journeys, true);
     return journeys;
   }
@@ -103,7 +100,9 @@ public class JourneyService {
     if (result.isEmpty()) {
       throw new ResourceNotFoundException("No journeys found for this driver.");
     }
-    return MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    final var journeys = MapperUtils.mapList(result, JourneyResponse.class, modelMapper);
+    checkJourneyAvailability(journeys);
+    return journeys;
   }
 
   /**
@@ -150,6 +149,7 @@ public class JourneyService {
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
     // TODO: Check if passenger exists first
     // TODO: passengers are being added in respective of maxPassengers.
+    // TODO: both EntityExistsException and IllegalStateException throw 409. Make them throw different http status codes
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
@@ -244,6 +244,13 @@ public class JourneyService {
     final String request = prepareRequestToDistanceApi(distanceRequest);
     final DistanceHolder distanceHolder = distanceApi.getDistance(request);
     return convertDistanceHolderDistanceResponse(distanceHolder);
+  }
+
+  private void checkJourneyAvailability(List<JourneyResponse> journeys) {
+    for (JourneyResponse j : journeys) {
+      int availability = j.getMaxPassengers() - j.getPassengers().size();
+      j.setAvailability(availability);
+    }
   }
 
   private void verifyUserAuthorization(final int userId) {

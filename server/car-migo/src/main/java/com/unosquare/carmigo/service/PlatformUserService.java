@@ -37,7 +37,7 @@ public class PlatformUserService {
 
   private static final int STAGED_USER_STATUS = 1;
   private static final int ACTIVE_USER_STATUS = 2;
-  private static final String USER_NOT_FOUND = "User not found";
+  private static final String USER_NOT_FOUND = "User not found!";
 
   private final PlatformUserRepository platformUserRepository;
   private final DriverRepository driverRepository;

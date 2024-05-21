@@ -54,7 +54,8 @@ public class AuthenticationControllerTest {
         .content(convertObjectToJsonBytes(authenticationRequestFixture))).andExpect(status().isCreated()).andReturn();
 
     final LinkedHashMap<String, Object> content = getObjectResponse(response.getResponse().getContentAsString());
-    assertEquals(content.get("jwt"), authenticationResponseFixture.getJwt(), "JWTs do not match");
+    assertEquals(content.get("accessToken"), authenticationResponseFixture.getAccessToken(), "Access Tokens match");
+    assertEquals(content.get("refreshToken"), authenticationResponseFixture.getRefreshToken(), "Refresh Tokens match");
     verify(authenticationServiceMock).createAuthenticationToken(any(AuthenticationRequest.class));
   }
 }

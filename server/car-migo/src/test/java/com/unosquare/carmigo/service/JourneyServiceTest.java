@@ -145,10 +145,14 @@ public class JourneyServiceTest {
   @Test
   public void get_Journeys_By_Driver_Id_Returns_List_Of_JourneyResponse() {
     when(journeyRepositoryMock.findJourneysByDriverId(anyInt())).thenReturn(journeyFixtureList);
-    final var response = journeyService.getJourneysByDriverId(anyInt());
+    try (MockedStatic<MapperUtils> utils = Mockito.mockStatic(MapperUtils.class)) {
+      utils.when(() -> MapperUtils.mapList(journeyFixtureList, JourneyResponse.class, modelMapperMock))
+          .thenReturn(journeyResponseFixtureList);
+      final var response = journeyService.getJourneysByDriverId(anyInt());
 
-    assertThat(response.size()).isEqualTo(journeyFixtureList.size());
-    verify(journeyRepositoryMock).findJourneysByDriverId(anyInt());
+      assertThat(response.size()).isEqualTo(journeyFixtureList.size());
+      verify(journeyRepositoryMock).findJourneysByDriverId(anyInt());
+    }
   }
 
   @Test
