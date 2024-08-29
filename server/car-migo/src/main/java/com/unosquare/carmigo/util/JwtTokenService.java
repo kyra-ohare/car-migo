@@ -3,16 +3,15 @@ package com.unosquare.carmigo.util;
 import com.unosquare.carmigo.exception.ExpiredJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -43,15 +42,15 @@ public class JwtTokenService {
     final Date now = Date.from(Instant.now());
     final Date inSuchHours = Date.from(now.toInstant().plus(Duration.ofHours(hours)));
     return Jwts.builder()
-        .setClaims(claims)
-        .setSubject(subject)
-        .setIssuedAt(now)
-        .setExpiration(inSuchHours)
-        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+        .claims(claims)
+        .subject(subject)
+        .issuedAt(now)
+        .expiration(inSuchHours)
+        .signWith(getSecretKey())
         .compact();
   }
 
-  private Key getSigningKey() {
+  private SecretKey getSecretKey() {
     byte[] keyBytes = Decoders.BASE64.decode(key);
     return Keys.hmacShaKeyFor(keyBytes);
   }
@@ -71,7 +70,11 @@ public class JwtTokenService {
 
   private Claims extractAllClaims(final String token) {
     try {
-      return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+      return Jwts.parser()
+          .verifyWith(getSecretKey())
+          .build()
+          .parseSignedClaims(token)
+          .getPayload();
     } catch (final io.jsonwebtoken.ExpiredJwtException ex) {
       throw new ExpiredJwtException("Expired JWT token.");
     }
