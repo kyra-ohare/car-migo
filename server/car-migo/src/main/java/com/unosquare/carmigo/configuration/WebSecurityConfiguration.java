@@ -47,6 +47,7 @@ public class WebSecurityConfiguration {
         .authorizeHttpRequests(
             authorize -> authorize
                 .requestMatchers(HttpMethod.GET, "/v1/heartbeat").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/health").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/users/create").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/users/confirm-email").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/login").permitAll()
