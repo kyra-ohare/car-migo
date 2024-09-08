@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ public class ExceptionResponseHandler {
       EntityNotFoundException.class,
       ResourceNotFoundException.class,
       NoResultException.class,
-      HttpRequestMethodNotSupportedException.class})
+      HttpRequestMethodNotSupportedException.class,
+      DataIntegrityViolationException.class})
   public ResponseEntity<ErrorResponse> handleNotFoundException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_FOUND, exception.getMessage());
   }

@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.dto.response;
 
+import java.io.Serial;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DriverResponse {
+public class DriverResponse implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 7895580125298236635L;
 
   private int id;
 

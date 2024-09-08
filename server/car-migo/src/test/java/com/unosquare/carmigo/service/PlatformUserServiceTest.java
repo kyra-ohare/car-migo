@@ -108,7 +108,7 @@ public class PlatformUserServiceTest {
     when(driverRepositoryMock.findById(anyInt())).thenReturn(Optional.of(driverFixture));
     when(passengerRepositoryMock.findById(anyInt())).thenReturn(Optional.of(passengerFixture));
     when(modelMapperMock.map(platformUserFixture,  PlatformUserResponse.class)).thenReturn(platformUserResponseFixture);
-    final var response = platformUserService.getPlatformUserById(anyInt());
+    final var response = platformUserService.cacheableGetPlatformUserById(anyInt());
 
     assertThat(response.getId()).isEqualTo(platformUserResponseFixture.getId());
     assertThat(response.getCreatedDate()).isEqualTo(platformUserResponseFixture.getCreatedDate());
@@ -124,7 +124,7 @@ public class PlatformUserServiceTest {
   public void get_PlatformUser_By_Id_Throws_EntityNotFoundException() {
     when(platformUserRepositoryMock.findById(anyInt())).thenReturn(Optional.empty());
     assertThrows(EntityNotFoundException.class,
-        () -> platformUserService.getPlatformUserById(anyInt()),
+        () -> platformUserService.cacheableGetPlatformUserById(anyInt()),
         "EntityNotFoundException is expected.");
     verify(platformUserRepositoryMock).findById(anyInt());
   }

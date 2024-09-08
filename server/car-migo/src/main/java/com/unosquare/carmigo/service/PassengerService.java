@@ -11,6 +11,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class PassengerService {
 
   protected static final String PASSENGER_NOT_FOUND = "Passenger not found";
+  private static final String PASSENGER_CACHE = "passenger";
 
   private final PassengerRepository passengerRepository;
   private final ModelMapper modelMapper;
@@ -33,6 +37,7 @@ public class PassengerService {
    * @param platformUserId the platform user id to create a passenger.
    * @return a {@link PassengerResponse}.
    */
+  @CachePut(value = PASSENGER_CACHE, key = "#result.id")
   public PassengerResponse createPassengerById(final int platformUserId) {
     try {
       findEntityById(platformUserId, passengerRepository, PASSENGER_NOT_FOUND);
@@ -57,6 +62,7 @@ public class PassengerService {
    * @param passengerId the passenger id to search for.
    * @return a {@link PassengerResponse}.
    */
+  @Cacheable(value = PASSENGER_CACHE, key = "#passengerId")
   public PassengerResponse getPassengerById(final int passengerId) {
     final var passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
     return modelMapper.map(passenger, PassengerResponse.class);
@@ -67,6 +73,7 @@ public class PassengerService {
    *
    * @param passengerId the passenger id to be deleted.
    */
+  @CacheEvict(value = PASSENGER_CACHE, key = "#passengerId")
   public void deletePassengerById(final int passengerId) {
     passengerRepository.deleteById(passengerId);
   }

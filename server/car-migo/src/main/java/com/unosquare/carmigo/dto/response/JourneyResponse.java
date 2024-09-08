@@ -2,6 +2,8 @@ package com.unosquare.carmigo.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import lombok.Getter;
@@ -15,7 +17,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
-public class JourneyResponse {
+public class JourneyResponse implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 8406425297604047618L;
 
   private int id;
 

@@ -223,24 +223,22 @@ public class JourneyServiceTest {
   @Test
   public void add_Passenger_To_Journey_Throws_EntityExistsException() {
     final int passengerId = 1;
-    when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
     journeyFixture.getPassengers().get(0).setId(passengerId);
-    assertThrows(EntityExistsException.class,
+    assertThrows(EntityNotFoundException.class,
         () -> journeyService.addPassengerToJourney(journeyFixture.getId(), passengerId),
         "EntityExistsException is expected.");
-    verify(journeyRepositoryMock).findById(anyInt());
+    verify(journeyRepositoryMock, times(0)).findById(anyInt());
     verify(journeyRepositoryMock, times(0)).save(any(Journey.class));
   }
 
   @Test
   public void add_Passenger_To_Journey_Throws_IllegalStateException() {
     final int driverId = 1;
-    when(journeyRepositoryMock.findById(anyInt())).thenReturn(Optional.of(journeyFixture));
     journeyFixture.getDriver().setId(driverId);
-    assertThrows(IllegalStateException.class,
+    assertThrows(EntityNotFoundException.class,
         () -> journeyService.addPassengerToJourney(journeyFixture.getId(), 1),
         "IllegalStateException is expected.");
-    verify(journeyRepositoryMock).findById(anyInt());
+    verify(journeyRepositoryMock, times(0)).findById(anyInt());
     verify(journeyRepositoryMock, times(0)).save(any(Journey.class));
   }
 
