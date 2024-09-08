@@ -18,6 +18,14 @@ spring:
       schema-locations: classpath:db/schema-h2.sql
   h2:
     console.enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6378
+
+redis:
+  host: localhost
+  port: 6378
 
 logging:
   level:
