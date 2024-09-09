@@ -12,6 +12,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +25,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DriverService {
 
-  private static final String DRIVER_NOT_FOUND = "Driver not found";
+  private static final String DRIVER_CACHE = "driver";
+  static final String DRIVER_NOT_FOUND = "Driver not found";
 
   private final DriverRepository driverRepository;
   private final ModelMapper modelMapper;
@@ -35,6 +39,7 @@ public class DriverService {
    * @param driverRequest  the requirements as {@link DriverRequest}.
    * @return a {@link DriverResponse}.
    */
+  @CachePut(value = DRIVER_CACHE, key = "#result.id")
   public DriverResponse createDriverById(final int platformUserId, final DriverRequest driverRequest) {
     try {
       findEntityById(platformUserId, driverRepository, DRIVER_NOT_FOUND);
@@ -59,6 +64,7 @@ public class DriverService {
    * @param driverId the driver id to search for.
    * @return a {@link DriverResponse}.
    */
+  @Cacheable(value = DRIVER_CACHE, key = "#driverId")
   public DriverResponse getDriverById(final int driverId) {
     return modelMapper.map(findEntityById(driverId, driverRepository, DRIVER_NOT_FOUND), DriverResponse.class);
   }
@@ -68,6 +74,7 @@ public class DriverService {
    *
    * @param driverId the driver id to be deleted.
    */
+  @CacheEvict(value = DRIVER_CACHE, key = "#driverId")
   public void deleteDriverById(final int driverId) {
     driverRepository.deleteById(driverId);
   }

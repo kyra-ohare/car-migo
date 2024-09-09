@@ -12,6 +12,7 @@ import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER;
 import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.unosquare.carmigo.config.TestRedisConfiguration;
 import com.unosquare.carmigo.entity.Passenger;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.PassengerRepository;
@@ -31,9 +32,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
+@SpringBootTest(classes = TestRedisConfiguration.class)
 public class PassengerControllerIT {
 
   private static final String API_LEADING = "/v1/passengers";

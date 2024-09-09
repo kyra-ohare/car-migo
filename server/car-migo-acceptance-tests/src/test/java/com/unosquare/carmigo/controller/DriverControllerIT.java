@@ -14,6 +14,7 @@ import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER;
 import static com.unosquare.carmigo.util.Constants.SUSPENDED_USER_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.unosquare.carmigo.config.TestRedisConfiguration;
 import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.PlatformUser;
 import com.unosquare.carmigo.repository.DriverRepository;
@@ -36,9 +37,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("h2")
+@SpringBootTest(classes = TestRedisConfiguration.class)
 public class DriverControllerIT {
 
   private static final String API_LEADING = "/v1/drivers";

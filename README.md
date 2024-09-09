@@ -7,6 +7,7 @@ Car-migo application is awesome! It will revolutionize the way you get around. I
   * Spring Boot 3
   * Java 17
   * Maven 3.9
+  * Redis
   * Docker
   * Git Actions
   * JWT
@@ -73,10 +74,13 @@ The script also creates Docker images and spins the necessary containers:
 - `car-migo_ui`: this is the Front-End implementation, the website application.
 - `car-migo_server`: the Back-End implementation which holds the business logic.
 - `car-migo_postgres`: the application database.
+- `car-migo_redis`: the application database cache whose time to live (TTL) is 3 hours.
 - `car-migo_flyway`: the database version control.
 - `car-migo_pgadmin`: the database client. More details below.
 
-Visit http://localhost:8086/v1/heartbeat to ensure the server is running as expected.
+Visit http://localhost:8086/v1/health to ensure the server is running as expected.
+
+There is also a heartbeat to verify whether other services are up and healthy: http://localhost:8086/v1/heartbeat.
 
 Moreover, it will automatically open http://localhost:8087/home on your default browser. :tada:
 

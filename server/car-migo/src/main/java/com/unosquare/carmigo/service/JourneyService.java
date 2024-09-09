@@ -2,6 +2,7 @@ package com.unosquare.carmigo.service;
 
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
 import static com.unosquare.carmigo.security.UserStatus.ADMIN;
+import static com.unosquare.carmigo.service.DriverService.DRIVER_NOT_FOUND;
 import static com.unosquare.carmigo.service.PassengerService.PASSENGER_NOT_FOUND;
 import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
@@ -38,6 +39,10 @@ import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JourneyService {
 
+  private static final String JOURNEY_CACHE = "journey";
   private static final String JOURNEY_NOT_FOUND = "Journey not found";
 
   private final JourneyRepository journeyRepository;
@@ -65,6 +71,7 @@ public class JourneyService {
    * @param journeyId the journey id to search for.
    * @return a {@link JourneyResponse}.
    */
+  @Cacheable(value = JOURNEY_CACHE, key = "#journeyId")
   public JourneyResponse getJourneyById(final int journeyId) {
     final var journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     return modelMapper.map(journey, JourneyResponse.class);
@@ -128,14 +135,19 @@ public class JourneyService {
    * @param journeyRequest the requirements as {@link JourneyRequest}.
    * @return a {@link JourneyResponse}.
    */
+  @CachePut(value = JOURNEY_CACHE, key = "#result.id")
   public JourneyResponse createJourney(final int driverId, final JourneyRequest journeyRequest) {
-    // TODO: Check if driver exists first
     final Journey journey = modelMapper.map(journeyRequest, Journey.class);
     journey.setCreatedDate(Instant.now());
     journey.setLocationFrom(entityManager.getReference(Location.class, journeyRequest.getLocationIdFrom()));
     journey.setLocationTo(entityManager.getReference(Location.class, journeyRequest.getLocationIdTo()));
     journey.setDriver(entityManager.getReference(Driver.class, driverId));
-    final Journey savedJourney = journeyRepository.save(journey);
+    final Journey savedJourney;
+    try {
+      savedJourney = journeyRepository.save(journey);
+    } catch (final DataIntegrityViolationException ex) {
+      throw new EntityNotFoundException(DRIVER_NOT_FOUND);
+    }
     savedJourney.setDriver(null);
     return modelMapper.map(savedJourney, JourneyResponse.class);
   }
@@ -146,11 +158,14 @@ public class JourneyService {
    * @param journeyId   the journey id to add this passenger.
    * @param passengerId the passenger id.
    */
+  @CacheEvict(value = JOURNEY_CACHE, key = "#journeyId")
   public void addPassengerToJourney(final int journeyId, final int passengerId) {
-    // TODO: Check if passenger exists first
-    // TODO: passengers are being added in respective of maxPassengers.
-    // TODO: both EntityExistsException and IllegalStateException throw 409. Make them throw different http status codes
+    /* Check if passenger exists first. If not, no need to find journeys and carry on*/
+    final Passenger passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
+    if (journey.getDriver().getId() == passengerId) {
+      throw new IllegalStateException("Driver cannot be passenger.");
+    }
     final List<Passenger> passengers = journey.getPassengers();
     passengers.forEach(
         p -> {
@@ -158,12 +173,9 @@ public class JourneyService {
             throw new EntityExistsException("Passenger is in this journey already.");
           }
         });
-    if (journey.getDriver().getId() == passengerId) {
-      throw new IllegalStateException("Driver cannot be passenger.");
-    }
-    final Passenger passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
     passengers.add(passenger);
     journey.setPassengers(passengers);
+    journey.setMaxPassengers(passengers.size());
     journeyRepository.save(journey);
   }
 
@@ -191,6 +203,7 @@ public class JourneyService {
    * @param patch     a {@link JsonPatch}.
    * @return a {@link JourneyResponse}.
    */
+  @CachePut(value = JOURNEY_CACHE, key = "#journeyId")
   public JourneyResponse patchJourney(final int journeyId, final JsonPatch patch) {
     final var journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final var response = modelMapper.map(journey, JourneyResponse.class);
@@ -209,6 +222,7 @@ public class JourneyService {
    *
    * @param journeyId the journey id to be deleted.
    */
+  @CacheEvict(value = JOURNEY_CACHE, key = "#journeyId")
   public void deleteJourneyById(final int journeyId) {
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     verifyUserAuthorization(journey.getDriver().getId());
@@ -222,12 +236,15 @@ public class JourneyService {
    * @param passengerId the passenger id.
    */
   @Transactional
+  @CacheEvict(value = JOURNEY_CACHE, key = "#journeyId")
   public void removePassengerFromJourney(final int journeyId, final int passengerId) {
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
     final List<Passenger> passengers = journey.getPassengers();
     for (Passenger p : passengers) {
       if (p.getId() == passengerId) {
         passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
+        journey.setMaxPassengers(passengers.size() - 1);
+        journeyRepository.save(journey);
         return;
       }
     }

@@ -8,6 +8,8 @@ services:
       - "8086:8086"
     depends_on:
       - db
+    networks:
+      - custom_network
 
   ui:
    build:
@@ -18,9 +20,11 @@ services:
      - "8087:8087"
    depends_on:
      - server
+   networks:
+     - custom_network
 
   db:
-    image: postgres:14-bullseye
+    image: postgres:16-bullseye
     container_name: car-migo_postgres
     restart: always
     ports:
@@ -31,9 +35,11 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - custom_network
 
   flyway:
-    image: flyway/flyway:9
+    image: flyway/flyway:10
     container_name: car-migo_flyway
     command: -url=jdbc:postgresql://db/carmigo -schemas=public -user=admin
       -password=password -connectRetries=5 migrate
@@ -41,9 +47,11 @@ services:
       - ./migrations:/flyway/sql
     depends_on:
       - db
+    networks:
+      - custom_network
 
   pgadmin:
-    image: dpage/pgadmin4:7
+    image: dpage/pgadmin4:8
     container_name: car-migo_pgadmin
     ports:
       - "8000:80"
@@ -52,9 +60,24 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
     volumes:
       - pgadmin:/var/lib/pgadmin
+    networks:
+      - custom_network
+
+  redis:
+    image: redis:latest
+    container_name: car-migo_redis
+    ports:
+      - "6379:6379"
+    hostname: redis
+    networks:
+      - custom_network
 
 volumes:
   db:
     name: car-migo_postgres
   pgadmin:
     name: car-migo_pgadmin
+
+networks:
+  custom_network:
+    name: local_network

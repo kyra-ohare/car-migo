@@ -2,7 +2,7 @@ FROM openjdk:17.0.2-jdk as server
 ARG JAR_FILE=server/car-migo/target/*.jar
 COPY ${JAR_FILE} app.jar
 EXPOSE 8086
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "-Dredis.hostname=redis", "/app.jar"]
 
 
 FROM node:20-alpine as ui

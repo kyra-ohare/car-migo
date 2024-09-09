@@ -24,6 +24,9 @@ import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class PlatformUserService {
   private static final int STAGED_USER_STATUS = 1;
   private static final int ACTIVE_USER_STATUS = 2;
   private static final String USER_NOT_FOUND = "User not found!";
+  private static final String PLATFORM_USER_CACHE = "platformUser";
 
   private final PlatformUserRepository platformUserRepository;
   private final DriverRepository driverRepository;
@@ -53,6 +57,7 @@ public class PlatformUserService {
    * @param platformUserRequest the requirements as {@link PlatformUserRequest}.
    * @return a {@link PlatformUserResponse}.
    */
+  @CachePut(value = PLATFORM_USER_CACHE, key = "#result.id")
   public PlatformUserResponse createPlatformUser(final PlatformUserRequest platformUserRequest) {
     final PlatformUser platformUser = modelMapper.map(platformUserRequest, PlatformUser.class);
     platformUser.setCreatedDate(Instant.now());
@@ -87,27 +92,25 @@ public class PlatformUserService {
   }
 
   /**
-   * Fetches a platform user.
+   * Fetches a platform user and caches them.
    *
    * @param platformUserId the platform user id to search for.
    * @return a {@link PlatformUserResponse}.
    */
-  public PlatformUserResponse getPlatformUserById(final int platformUserId) {
-    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
-    final var response = modelMapper.map(platformUser, PlatformUserResponse.class);
-    try {
-      findEntityById(platformUserId, driverRepository, "");
-      response.setDriver(true);
-    } catch (EntityNotFoundException ex) {
-      response.setDriver(false);
-    }
-    try {
-      findEntityById(platformUserId, passengerRepository, "");
-      response.setPassenger(true);
-    } catch (EntityNotFoundException ex) {
-      response.setPassenger(false);
-    }
-    return response;
+  @Cacheable(value = PLATFORM_USER_CACHE, key = "#platformUserId")
+  public PlatformUserResponse cacheableGetPlatformUserById(final int platformUserId) {
+    return getPlatformUserById(platformUserId);
+  }
+
+  /**
+   * Fetches a platform user and refreshes the cache.
+   *
+   * @param platformUserId the platform user id to search for.
+   * @return a {@link PlatformUserResponse}.
+   */
+  @CachePut(value = PLATFORM_USER_CACHE, key = "#platformUserId")
+  public PlatformUserResponse refreshableGetPlatformUserById(final int platformUserId) {
+    return getPlatformUserById(platformUserId);
   }
 
   /**
@@ -134,9 +137,9 @@ public class PlatformUserService {
    * @param patch          a {@link JsonPatch}.
    * @return a {@link PlatformUserResponse}.
    */
+  @CachePut(value = PLATFORM_USER_CACHE, key = "#platformUserId")
   public PlatformUserResponse patchPlatformUserById(final int platformUserId, final JsonPatch patch) {
-    // TODO: remove PlatformUserDto, try to use entityManger.getReference()
-    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    final PlatformUser platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
     final PlatformUserDto platformUserDto = modelMapper.map(platformUser, PlatformUserDto.class);
     final PlatformUser savedPlatformUser;
     try {
@@ -157,7 +160,26 @@ public class PlatformUserService {
    *
    * @param platformUserId the platform user id to be deleted.
    */
+  @CacheEvict(value = PLATFORM_USER_CACHE, key = "#platformUserId")
   public void deletePlatformUserById(final int platformUserId) {
     platformUserRepository.deleteById(platformUserId);
+  }
+
+  private PlatformUserResponse getPlatformUserById(final int platformUserId) {
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    final var response = modelMapper.map(platformUser, PlatformUserResponse.class);
+    try {
+      findEntityById(platformUserId, driverRepository, "");
+      response.setDriver(true);
+    } catch (EntityNotFoundException ex) {
+      response.setDriver(false);
+    }
+    try {
+      findEntityById(platformUserId, passengerRepository, "");
+      response.setPassenger(true);
+    } catch (EntityNotFoundException ex) {
+      response.setPassenger(false);
+    }
+    return response;
   }
 }

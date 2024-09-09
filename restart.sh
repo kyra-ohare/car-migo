@@ -26,4 +26,4 @@ then
 fi
 
 echo "$(tput setaf 2)Starting containers again:$(tput sgr0)"
-docker-compose up -d
+docker compose up -d

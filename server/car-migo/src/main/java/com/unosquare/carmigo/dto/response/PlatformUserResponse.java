@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.dto.response;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlatformUserResponse {
+public class PlatformUserResponse implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1259069678904869987L;
 
   private int id;
 

@@ -16,6 +16,13 @@ spring:
           time_zone: UTC
         temp:
           use_jdbc_metadata_defaults: false
+  cache:
+    redis:
+      time-to-live: 10800000  # 3 hours
+  data:
+    redis:
+      repositories:
+        enabled: false
   cloud:
     discovery:
       client:
@@ -64,6 +71,12 @@ management:
   health:
     mail:
       enabled: false
+
+redis:
+  hostname: localhost
+  port: 6379
+  connection_timeout: 5000
+  command_timeout: 5000
 
 ---
 spring:
