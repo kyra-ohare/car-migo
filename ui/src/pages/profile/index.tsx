@@ -6,7 +6,7 @@ import {
   Container,
   createTheme,
   CssBaseline,
-  Grid,
+  Grid2,
   ThemeProvider,
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -166,58 +166,58 @@ export default function Profile() {
         <CssBaseline />
         <Box component='form' noValidate sx={{ mt: 3 }}>
           <CatchyMessage>About you</CatchyMessage>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+          <Grid2 container spacing={2}>
+            <Grid2 size={{ xs: 12, sm: 6 }}>
               <ThisTextField
                 id='read-only-first-name'
                 label='First Name'
                 value={firstName}
                 datatestid='read-only-first-name'
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Grid2>
+            <Grid2 size={{ xs: 12, sm: 6 }}>
               <ThisTextField
                 id='read-only-last-name'
                 label='Last Name'
                 value={lastName}
                 datatestid='read-only-last-name'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }} paddingInline={10}>
               <ThisTextField
                 id='read-only-dob'
                 label='Date of Birth'
                 value={dob}
                 datatestid='read-only-dob'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }}>
               <ThisTextField
                 id='read-only-email'
                 label='Email'
                 value={email}
                 datatestid='read-only-email'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }}>
               <ThisTextField
                 id='read-only-phone-number'
                 label='Phone Number'
                 value={phoneNumber}
                 datatestid='read-only-phone-number'
               />
-            </Grid>
+            </Grid2>
             {isDriver === true && isDriverSuccess && (
-              <Grid item xs={12}>
+              <Grid2 size={{ xs: 12 }}>
                 <ThisTextField
                   id='read-only-license-number'
                   label='License Number'
                   value={licenseNumber}
                   datatestid='read-only-license-number'
                 />
-              </Grid>
+              </Grid2>
             )}
-            <Grid item xs={12}>
+            <Grid2 size={{ xs: 12 }}>
               <SwitchWithTooltip
                 tooltipText={passengerTooltip}
                 label={passengerLabel}
@@ -225,8 +225,8 @@ export default function Profile() {
                 handleSwithWithTooltip={handlePassenger}
                 datatestid='passenger-switch-with-tooltip'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }}>
               <SwitchWithTooltip
                 tooltipText={driverTooltip}
                 label={driverLabel}
@@ -234,8 +234,8 @@ export default function Profile() {
                 handleSwithWithTooltip={handleDriver}
                 datatestid='driver-switch-with-tooltip'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }}>
               <CustomButton
                 type='submit'
                 label='Sign Out'
@@ -243,8 +243,8 @@ export default function Profile() {
                 onClick={signOut}
                 datatestid='sign-out-button'
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid2>
+            <Grid2 size={{ xs: 12 }}>
               <CustomButton
                 type='submit'
                 label='Delete my account'
@@ -253,8 +253,8 @@ export default function Profile() {
                 onClick={deleteAccount}
                 datatestid='delete-account'
               />
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         </Box>
         <Footer />
       </Container>

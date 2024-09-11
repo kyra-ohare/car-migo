@@ -7,7 +7,7 @@ import {
   Box,
   CssBaseline,
   Container,
-  Grid,
+  Grid2,
   Link,
   Typography,
 } from '@mui/material';
@@ -121,8 +121,8 @@ export default function SignUp() {
             sx={{ mt: 3 }}
             data-testid='inner-box'
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ xs: 12, sm: 6 }}>
                 <ThisTextField
                   id='sign-up-first-name'
                   label='First Name'
@@ -138,8 +138,8 @@ export default function SignUp() {
                   }
                   datatestid='sign-up-first-name'
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              </Grid2>
+              <Grid2 size={{ xs: 12, sm: 6 }}>
                 <ThisTextField
                   id='sign-up-last-name'
                   label='Last Name'
@@ -153,8 +153,8 @@ export default function SignUp() {
                   helperText={formik.touched.lastName && formik.errors.lastName}
                   datatestid='sign-up-last-name'
                 />
-              </Grid>
-              <Grid item xs={12} sx={{ mt: 1 }}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }} sx={{ mt: 1 }}>
                 <BasicDatePicker
                   label='Date of Birth'
                   name='dob'
@@ -167,8 +167,8 @@ export default function SignUp() {
                   helperText={formik.touched.dob && formik.errors.dob}
                   datatestid='date-picker-input'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <ThisTextField
                   id='sign-up-phone-number'
                   label='Phone Number'
@@ -185,8 +185,8 @@ export default function SignUp() {
                   }
                   datatestid='sign-up-phone-number'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <ThisTextField
                   id='sign-up-email-address'
                   label='Email Address'
@@ -198,8 +198,8 @@ export default function SignUp() {
                   helperText={formik.touched.email && formik.errors.email}
                   datatestid='sign-up-email-address'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <ThisTextField
                   id='sign-up-password'
                   label='Password'
@@ -214,8 +214,8 @@ export default function SignUp() {
                   helperText={formik.touched.password && formik.errors.password}
                   datatestid='sign-up-password'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <ThisTextField
                   id='sign-up-confirm-password'
                   label='Confirm Password'
@@ -234,8 +234,8 @@ export default function SignUp() {
                   }
                   datatestid='sign-up-confirm-password'
                 />
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
             <CustomButton
               fullWidth
               type='submit'
@@ -243,13 +243,13 @@ export default function SignUp() {
               sx={{ mt: 5, mb: 2 }}
               datatestid='submit-button'
             />
-            <Grid container justifyContent='flex-end' data-testid='links'>
-              <Grid item>
+            <Grid2 container justifyContent='flex-end' data-testid='links'>
+              <Grid2>
                 <Link href={navigation.SIGN_IN_PAGE} variant='body2'>
                   Already have an account? Sign in
                 </Link>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
         </Box>
         <AlertPopUp

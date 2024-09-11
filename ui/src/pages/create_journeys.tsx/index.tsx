@@ -7,7 +7,7 @@ import {
   Box,
   CssBaseline,
   Container,
-  Grid,
+  Grid2,
   Typography,
 } from '@mui/material';
 import { EmojiTransportationRounded } from '@mui/icons-material';
@@ -60,7 +60,7 @@ export default function CreateYourneys() {
       setOpenSnackbar(true);
     },
     onError: (error: Error) => {
-      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+      if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         setSnackbarMessage(
           'You cannot create a Journey. Are you a driver? Check if you are one in Profile.'
         );
@@ -100,8 +100,8 @@ export default function CreateYourneys() {
             sx={{ mt: 3 }}
             data-testid='inner-box'
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ xs: 12 }}>
                 <Dropdown
                   id='create-journey-origin'
                   label='Origin'
@@ -117,8 +117,8 @@ export default function CreateYourneys() {
                   mrStyle='auto'
                   datatestid='create-journey-origin'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <Dropdown
                   id='create-journey-destination'
                   label='Destination'
@@ -134,8 +134,8 @@ export default function CreateYourneys() {
                   mrStyle='auto'
                   datatestid='create-journey-destination'
                 />
-              </Grid>
-              <Grid item xs={12} sx={{ mt: 1 }}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }} sx={{ mt: 1 }}>
                 <BasicDateTimePicker
                   label='Date/Time'
                   name='dateTime'
@@ -146,8 +146,8 @@ export default function CreateYourneys() {
                   formikTouched={formik.touched.dateTime}
                   datatestid='create-journeys-date-time-picker'
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <CustomNumberField
                   id='create-journeys-max-passengers'
                   label='Max passengers'
@@ -166,8 +166,8 @@ export default function CreateYourneys() {
                   }
                   datatestid='create-journeys-max-passengers'
                 />
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
             <CustomButton
               fullWidth
               type='submit'

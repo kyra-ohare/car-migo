@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
   Box,
   Typography,
-  Grid,
+  Grid2,
   CardContent,
   CardActions,
   AlertColor,
@@ -140,8 +140,7 @@ export default function Journey(props: IJourneyProps) {
       <StyledGrid container spacing={2}>
         {journeys &&
           journeys.map((journey: IJourneyEntity) => (
-            <Grid
-              item
+            <Grid2
               key={journey.id}
               data-testid={'journey-card-' + journey.id}
             >
@@ -185,7 +184,7 @@ export default function Journey(props: IJourneyProps) {
                   )}
                 </CardActions>
               </StyledJourneyCard>
-            </Grid>
+            </Grid2>
           ))}
       </StyledGrid>
       <AlertPopUp
