@@ -1,22 +1,20 @@
-export interface IPlatformUserCreation {
+export interface IPlatformUser {
   firstName: string;
   lastName: string;
   dob: string;
   email: string;
+  phoneNumber: string;
+}
+
+export interface IPlatformUserCreation extends IPlatformUser {
   password: string;
   confirmPassword: string;
-  phoneNumber: string;
   passenger: boolean;
   driver: boolean;
 }
-export interface IPlatformUserEntity {
+export interface IPlatformUserEntity extends IPlatformUser {
   id: number;
   createdDate: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  email: string;
-  phoneNumber: string;
   userAccessStatus: {
     id: number;
     status: string;

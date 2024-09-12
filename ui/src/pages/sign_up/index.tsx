@@ -159,12 +159,10 @@ export default function SignUp() {
                   label='Date of Birth'
                   name='dob'
                   disableFuture
-                  value={formik.values.dob || null}
-                  onChange={(value: unknown) =>
-                    formik.setFieldValue('dob', value, true)
-                  }
-                  error={formik.touched.dob && Boolean(formik.errors.dob)}
-                  helperText={formik.touched.dob && formik.errors.dob}
+                  value={formik.values.dob}
+                  onChange={formik.setFieldValue}
+                  formikErrors={formik.errors.dob}
+                  formikTouched={formik.touched.dob}
                   datatestid='date-picker-input'
                 />
               </Grid2>
@@ -199,41 +197,45 @@ export default function SignUp() {
                   datatestid='sign-up-email-address'
                 />
               </Grid2>
-              <Grid2 size={{ xs: 12 }}>
-                <ThisTextField
-                  id='sign-up-password'
-                  label='Password'
-                  name='password'
-                  type='password'
-                  autoComplete='password'
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                  }
-                  helperText={formik.touched.password && formik.errors.password}
-                  datatestid='sign-up-password'
-                />
-              </Grid2>
-              <Grid2 size={{ xs: 12 }}>
-                <ThisTextField
-                  id='sign-up-confirm-password'
-                  label='Confirm Password'
-                  name='confirmPassword'
-                  type='password'
-                  autoComplete='password'
-                  value={formik.values.confirmPassword}
-                  onChange={formik.handleChange}
-                  error={
-                    formik.touched.confirmPassword &&
-                    Boolean(formik.errors.confirmPassword)
-                  }
-                  helperText={
-                    formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword
-                  }
-                  datatestid='sign-up-confirm-password'
-                />
+              <Grid2 container spacing={2}>
+                <Grid2 size={{ xs: 12, sm: 6 }}>
+                  <ThisTextField
+                    id='sign-up-password'
+                    label='Password'
+                    name='password'
+                    type='password'
+                    autoComplete='password'
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.password && Boolean(formik.errors.password)
+                    }
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
+                    datatestid='sign-up-password'
+                  />
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6 }}>
+                  <ThisTextField
+                    id='sign-up-confirm-password'
+                    label='Confirm Password'
+                    name='confirmPassword'
+                    type='password'
+                    autoComplete='password'
+                    value={formik.values.confirmPassword}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.confirmPassword &&
+                      Boolean(formik.errors.confirmPassword)
+                    }
+                    helperText={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                    }
+                    datatestid='sign-up-confirm-password'
+                  />
+                </Grid2>
               </Grid2>
             </Grid2>
             <CustomButton

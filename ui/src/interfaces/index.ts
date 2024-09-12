@@ -23,6 +23,7 @@ export type {
 export type { ILocations } from './Locations';
 export type { IPassengerEntity } from './Passenger';
 export type {
+  IPlatformUser,
   IPlatformUserCreation,
   IPlatformUserEmail,
   IPlatformUserEntity,

@@ -27,8 +27,18 @@ export const journeysHandlers = [
       return new HttpResponse(null, { status: 403 });
     }
 
+    if (
+      locationIdFrom === 2 &&
+      locationIdTo === 4 &&
+      dateTime === '2024-09-11T18:00:00.000Z' &&
+      maxPassengers === 5
+    ) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
     return new HttpResponse(null, { status: 500 });
   }),
+
   http.get(testConstants.baseUrl + '/journeys/search', async ({ request }) => {
     const url = new URL(request.url);
     const locationIdFrom = url.searchParams.get('locationIdFrom');
@@ -121,7 +131,6 @@ export const journeysHandlers = [
         { status: 200 }
       );
     }
-
     return new HttpResponse(null, { status: 500 });
   }),
 

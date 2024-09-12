@@ -1,5 +1,4 @@
 import { FormikErrors } from "formik";
-import { IJourneyCreation } from ".";
 
 export interface IBasicDateTimePickerProps {
   label: string;
@@ -9,9 +8,9 @@ export interface IBasicDateTimePickerProps {
   value: string;
   onChange(
     field: string,
-    value: IJourneyCreation,
+    value: string,
     shouldValidate?: boolean | undefined
-  ): Promise<void> | Promise<FormikErrors<IJourneyCreation>>;
+  ): Promise<void> | Promise<FormikErrors<any>>;
   formikTouched: boolean | undefined;
   formikErrors: string | undefined;
   datatestid: string;

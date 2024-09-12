@@ -8,10 +8,6 @@ export default function Dropdown(props: IDropdown) {
       disablePortal
       id={props.id}
       value={props.value.value}
-      isOptionEqualToValue={(
-        option: { label: string; value: any },
-        value: { value: any }
-      ) => option?.value === value?.value}
       onChange={(_event, value) =>
         props.onChange(props.name, value?.value || '')
       }
