@@ -98,7 +98,6 @@ describe('Sign Up Unit Tests', () => {
       expect(
         screen.getByText('Last name must not be empty.')
       ).toBeInTheDocument();
-      // expect(screen.getByText('Minimum age is ' + minAge)).toBeInTheDocument(); // TODO
       expect(
         screen.getByText('Phone number must not be empty.')
       ).toBeInTheDocument();

@@ -19,21 +19,3 @@ export const useDriverDeletion = async () => {
   const response = await axiosInstance.delete(endpoint);
   return response.data;
 };
-
-// TODO: admin UI
-// export const useAdminDriverProfileById = async (id: number) => {
-//   const response = await axiosInstance.get(endpoint + '/profile/' + id);
-//   return response.data;
-// };
-
-// TODO: admin UI
-// export const useAdminDriverCreationById = async (id: number) => {
-//   const response = await axiosInstance.post(endpoint + '/create', id);
-//   return response.data;
-// };
-
-// TODO: admin UI
-// export const useAdminDeletionById = async (id: number) => {
-//   const response = await axiosInstance.delete(endpoint + '/profile/' + id);
-//   return response.data;
-// };
