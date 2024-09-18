@@ -70,11 +70,11 @@ public class PlatformUserControllerIT {
     controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "", status().isNotFound());
     controllerUtility.makePostRequestWithOneParam("/confirm-email", "email", "staged@example.com", status().isOk());
     controllerUtility.makePostRequestWithOneParam(
-        "/confirm-email", "email", "staged@example.com", status().isConflict());
+        "/confirm-email", "email", "staged@example.com", status().isUnprocessableEntity());
     controllerUtility.makePostRequestWithOneParam(
         "/confirm-email", "email", "fake-staged@example.com", status().isNotFound());
     controllerUtility.makePostRequestWithOneParam(
-        "/confirm-email", "email", "active@example.com", status().isConflict());
+        "/confirm-email", "email", "active@example.com", status().isUnprocessableEntity());
     testUnauthorizedUsersUltra(status().isForbidden());
   }
 

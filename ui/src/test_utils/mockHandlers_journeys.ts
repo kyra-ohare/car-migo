@@ -142,6 +142,21 @@ export const journeysHandlers = [
             availability: 0,
             dateTime: '2024-04-15T13:13:00.000Z',
           },
+          {
+            id: 10,
+            createdDate: '2024-31-10T15:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 1,
+            availability: 1,
+            dateTime: '2024-09-18T13:13:00.000Z',
+          },
         ],
         { status: 200 }
       );
@@ -364,6 +379,8 @@ export const journeysHandlers = [
       if (passengerId === '8') return new HttpResponse(null, { status: 404 });
 
       if (passengerId === '9') return new HttpResponse(null, { status: 406 });
+
+      if (passengerId === '10') return new HttpResponse(null, { status: 422 });
 
       return new HttpResponse(null, { status: 500 });
     }

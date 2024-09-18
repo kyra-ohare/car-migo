@@ -33,10 +33,13 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
-  @ExceptionHandler({
-      EntityExistsException.class,
-      IllegalStateException.class})
+  @ExceptionHandler(IllegalStateException.class)
   public ResponseEntity<ErrorResponse> handleConflictException(final Exception exception) {
+    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+  }
+
+  @ExceptionHandler(EntityExistsException.class)
+  public ResponseEntity<ErrorResponse> handleUnprocessableEntityException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.CONFLICT, exception.getMessage());
   }
 

@@ -53,14 +53,16 @@ export default function Journey(props: IJourneyProps) {
       }
     },
     onError: (error: Error) => {
-      if (error.message.endsWith(httpStatus.CONFLICT)) {
-        processSnackbar('info', 'You are already a passenger to this journey.');
-      } else if (error.message.endsWith(httpStatus.FORBIDDEN)) {
+      if (error.message.endsWith(httpStatus.FORBIDDEN)) {
         processSnackbar('warning', 'Please, log in to book this journey.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         processSnackbar('error', 'Go to Profile to register as a passenger.');
       } else if (error.message.endsWith(httpStatus.NOT_ACCEPTABLE)) {
         processSnackbar('error', 'Sorry but this journey is full.');
+      } else if (error.message.endsWith(httpStatus.UNPROCESSABLE_ENTITY)) {
+        processSnackbar('error', 'You are the driver of this journey.');
+      } else if (error.message.endsWith(httpStatus.CONFLICT)) {
+        processSnackbar('info', 'You are already a passenger to this journey.');
       }
     },
   });

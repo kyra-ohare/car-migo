@@ -143,7 +143,7 @@ public class PlatformUserControllerTest {
     doThrow(IllegalStateException.class).when(platformUserServiceMock).confirmEmail(anyString());
     mockMvc.perform(post(API_LEADING + "/confirm-email")
             .param("email", "my.test@example.com"))
-        .andExpect(status().isConflict()).andReturn();
+        .andExpect(status().isUnprocessableEntity()).andReturn();
 
     verify(platformUserServiceMock).confirmEmail(anyString());
   }
