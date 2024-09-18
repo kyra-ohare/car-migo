@@ -56,6 +56,11 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());
   }
 
+  @ExceptionHandler({MaxPassengerLimitException.class})
+  public ResponseEntity<ErrorResponse> handleNotAcceptableException(final Exception exception) {
+    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+  }
+
   /**
    * Handles exception thrown by {@link jakarta.validation.Valid} in controllers which parses error messages.
    *

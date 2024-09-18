@@ -54,12 +54,13 @@ export default function Journey(props: IJourneyProps) {
     },
     onError: (error: Error) => {
       if (error.message.endsWith(httpStatus.CONFLICT)) {
-        // TODO: display a different error msg when passenger is also the driver.
         processSnackbar('info', 'You are already a passenger to this journey.');
       } else if (error.message.endsWith(httpStatus.FORBIDDEN)) {
         processSnackbar('warning', 'Please, log in to book this journey.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         processSnackbar('error', 'Go to Profile to register as a passenger.');
+      } else if (error.message.endsWith(httpStatus.NOT_ACCEPTABLE)) {
+        processSnackbar('error', 'Sorry but this journey is full.');
       }
     },
   });
@@ -140,38 +141,42 @@ export default function Journey(props: IJourneyProps) {
       <StyledGrid container spacing={2}>
         {journeys &&
           journeys.map((journey: IJourneyEntity) => (
-            <Grid2
-              key={journey.id}
-              data-testid={'journey-card-' + journey.id}
-            >
-              <StyledJourneyCard raised>
-                <CardContent>
-                  {props.label === 'search' ? (
+            <Grid2 key={journey.id} data-testid={'journey-card-' + journey.id}>
+              {props.label === 'search' ? (
+                <StyledJourneyCard
+                  raised
+                  sx={{
+                    backgroundColor:
+                      journey.availability <= 0 ? 'grey.300' : 'white',
+                    opacity: journey.availability <= 0 ? 0.7 : 1,
+                  }}
+                >
+                  <CardContent>
                     <ViewSearchCard journey={journey} />
-                  ) : (
-                    <>
-                      <RouteHeadline
-                        origin={journey.locationFrom.description}
-                        destination={journey.locationTo.description}
-                      />
-                      {isUserProfileSuccess &&
-                      journey.driver.platformUser.id ===
-                        isUserDataSuccess.id ? (
-                        <ViewDriverCard journey={journey} />
-                      ) : (
-                        <ViewPassengerCard journey={journey} />
-                      )}
-                    </>
-                  )}
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'center' }}>
-                  {props.label === 'search' ? (
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'center' }}>
                     <CustomButton
                       label='Book'
                       onClick={() => bookJourney(journey.id)}
                       datatestid={'book-journey-button-' + journey.id}
                     />
-                  ) : (
+                  </CardActions>
+                </StyledJourneyCard>
+              ) : (
+                <StyledJourneyCard raised>
+                  <CardContent>
+                    <RouteHeadline
+                      origin={journey.locationFrom.description}
+                      destination={journey.locationTo.description}
+                    />
+                    {isUserProfileSuccess &&
+                    journey.driver.platformUser.id === isUserDataSuccess.id ? (
+                      <ViewDriverCard journey={journey} />
+                    ) : (
+                      <ViewPassengerCard journey={journey} />
+                    )}
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'center' }}>
                     <StyledButton
                       size='small'
                       type='submit'
@@ -181,9 +186,9 @@ export default function Journey(props: IJourneyProps) {
                     >
                       Cancel Journey
                     </StyledButton>
-                  )}
-                </CardActions>
-              </StyledJourneyCard>
+                  </CardActions>
+                </StyledJourneyCard>
+              )}
             </Grid2>
           ))}
       </StyledGrid>

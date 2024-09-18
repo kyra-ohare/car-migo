@@ -151,25 +151,25 @@ public class PlatformUserControllerTest {
   @SneakyThrows
   @Test
   void getCurrentPlatformUserProfileTest() {
-    when(platformUserServiceMock.cacheableGetPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
     final var response = mockMvc.perform(get(API_LEADING + "/profile")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn();
 
     callAssertions(response);
-    verify(platformUserServiceMock).cacheableGetPlatformUserById(anyInt());
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
   @SneakyThrows
   @Test
   void getPlatformUserByIdTest() {
-    when(platformUserServiceMock.cacheableGetPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
     final var response = mockMvc.perform(get(API_LEADING + "/1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn();
 
     callAssertions(response);
-    verify(platformUserServiceMock).cacheableGetPlatformUserById(anyInt());
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
   @SneakyThrows

@@ -6,7 +6,6 @@ export const testConstants = {
   lastName: 'Green',
   dob: '1990-06-30T00:00:00Z',
   phoneNumber: '0286579635',
-
   validEmail: 'mary.green@example.com',
   notFoundEmail: 'foo@example.com',
   conflictEmail: 'boo@example.com',

@@ -174,6 +174,21 @@ describe('Home Unit Tests', () => {
         ).toBeInTheDocument();
       });
     });
+
+    await waitFor(async () => {
+      const journeyCardId9 = screen.getByTestId('journey-card-9');
+      expect(journeyCardId9).toBeInTheDocument();
+      const bookjourneyCardId9 = screen.getByTestId('book-journey-button-9');
+      expect(bookjourneyCardId9).toBeInTheDocument();
+      
+      await userEvent.click(bookjourneyCardId9);
+      await waitFor(() => {
+        expect(screen.getByTestId('journey-alert-pop-up')).toBeInTheDocument();
+        expect(
+          screen.getByText('Sorry but this journey is full.')
+        ).toBeInTheDocument();
+      });
+    });
   });
 
   test('finding no journeys', async () => {

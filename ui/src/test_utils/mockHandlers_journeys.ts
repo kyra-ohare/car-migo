@@ -94,7 +94,7 @@ export const journeysHandlers = [
               description: 'Rostrevor',
             },
             maxPassengers: 3,
-            availability: 3,
+            availability: 2,
             dateTime: '2022-12-03T08:00:00Z',
           },
           {
@@ -108,7 +108,7 @@ export const journeysHandlers = [
               id: 1,
               description: 'Rostrevor',
             },
-            maxPassengers: 3,
+            maxPassengers: 2,
             availability: 1,
             dateTime: '2023-04-01T12:00:00Z',
           },
@@ -124,8 +124,23 @@ export const journeysHandlers = [
               description: 'Rostrevor',
             },
             maxPassengers: 2,
-            availability: 2,
+            availability: 0,
             dateTime: '2024-04-01T12:00:00Z',
+          },
+          { 
+            id: 9,
+            createdDate: '2024-31-10T15:00:00Z',
+            locationFrom: {
+              id: 5,
+              description: 'Newry',
+            },
+            locationTo: {
+              id: 1,
+              description: 'Rostrevor',
+            },
+            maxPassengers: 1,
+            availability: 0,
+            dateTime: '2024-04-15T13:13:00.000Z',
           },
         ],
         { status: 200 }
@@ -347,6 +362,8 @@ export const journeysHandlers = [
       if (passengerId === '7') return new HttpResponse(null, { status: 403 });
 
       if (passengerId === '8') return new HttpResponse(null, { status: 404 });
+
+      if (passengerId === '9') return new HttpResponse(null, { status: 406 });
 
       return new HttpResponse(null, { status: 500 });
     }

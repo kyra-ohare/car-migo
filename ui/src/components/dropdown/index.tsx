@@ -12,7 +12,7 @@ export default function Dropdown(props: IDropdown) {
         props.onChange(props.name, value?.value || '')
       }
       options={props.options}
-      sx={{ width: props.widthStyle, mr: props.mrStyle}}
+      sx={{ width: props.widthStyle, mr: props.mrStyle }}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -20,9 +20,11 @@ export default function Dropdown(props: IDropdown) {
           name={props.name}
           error={props.formikTouched && Boolean(props.formikErrors)}
           helperText={props.formikTouched && props.formikErrors}
-          inputProps={{
-            ...params.inputProps,
-            'data-testid': `${props.datatestid}-input`,
+          slotProps={{
+            htmlInput: {
+              ...params.inputProps,
+              'data-testid': `${props.datatestid}-input`,
+            },
           }}
         />
       )}
