@@ -194,7 +194,7 @@
                   </includes>
                 </resource>
               </resources>
-              <outputDirectory>../javadoc</outputDirectory>
+              <outputDirectory>../../docs</outputDirectory>
             </configuration>
           </execution>
         </executions>
