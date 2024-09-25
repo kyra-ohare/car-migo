@@ -172,6 +172,10 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
@@ -186,6 +190,16 @@
                 <java.source>${maven.compiler.release}</java.source>
                 <java.target>${maven.compiler.release}</java.target>
               </additionalProperties>
+            </configuration>
+          </execution>
+<!--          Not to create a .jar.original file-->
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
             </configuration>
           </execution>
         </executions>

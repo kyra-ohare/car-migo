@@ -1,0 +1,1239 @@
+{
+	"info": {
+		"_postman_id": "2853d340-e544-4af7-8225-2f6ac6652a8e",
+		"name": "Car-Migo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19419878"
+	},
+	"item": [
+		{
+			"name": "Actuator & Swagger",
+			"item": [
+				{
+					"name": "actuator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/actuator",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"actuator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator/beans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/actuator/beans",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"actuator",
+								"beans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator/health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/actuator/health",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator/info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/actuator/info",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"actuator",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator/metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/actuator/metrics",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"actuator",
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "swagger-ui/index.html",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/swagger-ui/index.html",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"swagger-ui",
+								"index.html"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v3/api-docs",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs/swagger-config",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v3/api-docs/swagger-config",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v3",
+								"api-docs",
+								"swagger-config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs.yaml",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v3/api-docs.yaml",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v3",
+								"api-docs.yaml"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Journeys",
+			"item": [
+				{
+					"name": "Admin endpoints",
+					"item": [
+						{
+							"name": "v1/journeys/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/2",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/journeys/drivers/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/drivers/2",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"drivers",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/journeys/drivers/{id}",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"locationIdFrom\": 4,\n    \"locationIdTo\": 1,\n    \"maxPassengers\": 2,\n    \"dateTime\": \"2022-04-26T09:00:00Z\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/drivers/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"drivers",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/journeys/passengers/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/passengers/3",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"passengers",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/journeys/{id}/add-passenger/{id}",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/2/add-passenger/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"2",
+										"add-passenger",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/journeys/{id}/remove-passenger/{d}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/journeys/2/remove-passenger/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"journeys",
+										"2",
+										"remove-passenger",
+										"12"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{admin_access_token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "v1/journeys/search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/search?locationIdFrom=5&locationIdTo=1&dateTimeFrom=2024-01-01T08:00:00Z&dateTimeTo=2024-12-31T09:00:00Z",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"search"
+							],
+							"query": [
+								{
+									"key": "locationIdFrom",
+									"value": "5"
+								},
+								{
+									"key": "locationIdTo",
+									"value": "1"
+								},
+								{
+									"key": "dateTimeFrom",
+									"value": "2024-01-01T08:00:00Z"
+								},
+								{
+									"key": "dateTimeTo",
+									"value": "2024-12-31T09:00:00Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"locationIdFrom\": 4,\n    \"locationIdTo\": 1,\n    \"maxPassengers\": 3,\n    \"dateTime\": \"2022-04-26T09:00:00Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/journeys",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"/maxPassengers\",\r\n        \"value\": \"55\"\r\n    },\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"/locationTo/id\",\r\n        \"value\": \"3\"\r\n    }\r\n]\r\n"
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/3",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/3",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/drivers/my-journeys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/drivers/my-journeys",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"drivers",
+								"my-journeys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/passengers/my-journeys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/passengers/my-journeys",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"passengers",
+								"my-journeys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/{id}/add-passenger",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/2/add-passenger",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"2",
+								"add-passenger"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/{id}/remove-passenger",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/2/remove-passenger",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"2",
+								"remove-passenger"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/journeys/calculateDistance",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/journeys/calculateDistance?locationFrom=BT62-3JR&countryFrom=GBR&locationTo=BT71-6SS&countryTo=GBR",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"journeys",
+								"calculateDistance"
+							],
+							"query": [
+								{
+									"key": "route",
+									"value": "[{\"t\":\"Belfast, United Kingdom\"},{\"t\":\"Dublin, Ireland\"}]",
+									"disabled": true
+								},
+								{
+									"key": "locationFrom",
+									"value": "BT62-3JR"
+								},
+								{
+									"key": "countryFrom",
+									"value": "GBR"
+								},
+								{
+									"key": "locationTo",
+									"value": "BT71-6SS"
+								},
+								{
+									"key": "countryTo",
+									"value": "GBR"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "https://distanceto.p.rapidapi.com/get?route=[{\"t\":\"BT62-3JR,GBR\"},{\"t\":\"BT71-6SS,GBR\"}]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RapidAPI-Host",
+								"value": "distanceto.p.rapidapi.com",
+								"type": "text"
+							},
+							{
+								"key": "X-RapidAPI-Key",
+								"value": "3ffaf4349cmsh9ac7982c92bfa92p19e6abjsnba4729663bdc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://distanceto.p.rapidapi.com/get?route=[{\"t\":\"BT62-3JR,GBR\"},{\"t\":\"BT71-6SS,GBR\"}]",
+							"protocol": "https",
+							"host": [
+								"distanceto",
+								"p",
+								"rapidapi",
+								"com"
+							],
+							"path": [
+								"get"
+							],
+							"query": [
+								{
+									"key": "route",
+									"value": "[{\"t\":\"BT62-3JR,GBR\"},{\"t\":\"BT71-6SS,GBR\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Admin endpoints",
+					"item": [
+						{
+							"name": "v1/users/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/users/9",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/users/{id}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json-patch+json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"op\": \"replace\",\n        \"path\": \"/phoneNumber\",\n        \"value\": \"my new phone number\"\n    },\n    {\n        \"op\": \"replace\",\n        \"path\": \"/userAccessStatus/id\",\n        \"value\": \"2\"\n    }\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/users/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/users/{id}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/users/2",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/drivers/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/drivers/2",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/v1/drivers/{id}",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"licenseNumber\": 11111\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/drivers/9",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers",
+										"9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/v1/drivers/{id}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/drivers/9",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers",
+										"9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/passengers/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/passengers/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/v1/passengers/{id}",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/passengers/12",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers",
+										"12"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/v1/passengers/{id}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/passengers/10",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers",
+										"10"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{admin_access_token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Passengers",
+					"item": [
+						{
+							"name": "v1/passengers/profile",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/passengers/profile",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/passengers/create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/passengers/create",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/passengers",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/passengers",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"passengers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Drivers",
+					"item": [
+						{
+							"name": "v1/drivers/profile",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/v1/drivers/profile",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/drivers/create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"licenseNumber\": 1111111\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/drivers/create",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "v1/drivers",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/v1/drivers",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"v1",
+										"drivers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "v1/login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jake.sully@example.com\",\n    // \"email\": \"kyra.ohare@example.com\",\n    // \"email\":\"mary.green@example.com\",\n    // \"email\":\"john.smith@example.com\",\n    // \"email\": \"my.test@example.com\",\n    \"password\": \"Pass1234!\"\n    // \"email\": \"boouihkj\",\n    // \"password\": \"44444444\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/login",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/users/create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"My\",\n  \"lastName\": \"Test\",\n  \"dob\": \"1960-02-26T00:00:00Z\",\n  \"phoneNumber\": \"028657345912\",\n  \"email\": \"my.test@example.com\",\n//   \"email\": \"mary.green@example.com\",\n  \"password\": \"Pass1234!\"\n//   \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/users/create",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/users/confirm-email?email={email}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/users/confirm-email?email=my.test@example.com",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"confirm-email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "my.test@example.com"
+								},
+								{
+									"key": "email",
+									"value": "mary.green@example.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/users/profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/users/profile",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/users",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"op\": \"replace\",\n        \"path\": \"/phoneNumber\",\n        \"value\": \"my new number\"\n    },\n    {\n        \"op\": \"replace\",\n        \"path\": \"/userAccessStatus/id\",\n        \"value\": \"1\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/v1/users",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v1/users",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/v1/users",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "v1/heartbeat",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/v1/heartbeat",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"v1",
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1/health",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/v1/health",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"v1",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
