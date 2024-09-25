@@ -115,12 +115,11 @@ export default function Journey(props: IJourneyProps) {
   });
 
   const handleCancelJourney = async (journey: IJourneyEntity) => {
-    {
-      isUserProfileSuccess &&
-      journey.driver.platformUser.id === isUserDataSuccess.id
-        ? mutateDeleteJourney.mutate(journey.id)
-        : mutateDeletePassenger.mutate(journey.id);
-    }
+    // eslint-disable-next-line
+    isUserProfileSuccess &&
+    journey.driver.platformUser.id === isUserDataSuccess.id
+      ? mutateDeleteJourney.mutate(journey.id)
+      : mutateDeletePassenger.mutate(journey.id);
   };
 
   const SearchRouteHeading = () => (
