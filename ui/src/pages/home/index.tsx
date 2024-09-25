@@ -108,7 +108,7 @@ export default function Homepage() {
             When inside the car share, you can enjoy the ride and make new
             friends.
             <br />
-            Come onboard and eperience this new lifestyle.
+            Come onboard and experience this new lifestyle.
           </>
         }
         datatestid='what-is-it-card'
