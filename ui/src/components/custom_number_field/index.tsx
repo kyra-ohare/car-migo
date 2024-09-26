@@ -7,10 +7,12 @@ export default function CustomNumberField(props: ICustomNumberFieldProps) {
       fullWidth
       sx={{ mt: 2 }}
       data-testid={props.datatestid}
-      inputProps={{
-        min: props.min,
-        max: props.max,
-        'data-testid': `${props.datatestid}-input`,
+      slotProps={{
+        htmlInput: {
+          min: props.min,
+          max: props.max,
+          'data-testid': `${props.datatestid}-input`,
+        },
       }}
       {...props}
     />

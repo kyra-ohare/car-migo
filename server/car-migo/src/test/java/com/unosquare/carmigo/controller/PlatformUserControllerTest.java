@@ -143,7 +143,7 @@ public class PlatformUserControllerTest {
     doThrow(IllegalStateException.class).when(platformUserServiceMock).confirmEmail(anyString());
     mockMvc.perform(post(API_LEADING + "/confirm-email")
             .param("email", "my.test@example.com"))
-        .andExpect(status().isConflict()).andReturn();
+        .andExpect(status().isUnprocessableEntity()).andReturn();
 
     verify(platformUserServiceMock).confirmEmail(anyString());
   }
@@ -151,25 +151,25 @@ public class PlatformUserControllerTest {
   @SneakyThrows
   @Test
   void getCurrentPlatformUserProfileTest() {
-    when(platformUserServiceMock.cacheableGetPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
     final var response = mockMvc.perform(get(API_LEADING + "/profile")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn();
 
     callAssertions(response);
-    verify(platformUserServiceMock).cacheableGetPlatformUserById(anyInt());
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
   @SneakyThrows
   @Test
   void getPlatformUserByIdTest() {
-    when(platformUserServiceMock.cacheableGetPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
+    when(platformUserServiceMock.getPlatformUserById(anyInt())).thenReturn(platformUserResponseFixture);
     final var response = mockMvc.perform(get(API_LEADING + "/1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn();
 
     callAssertions(response);
-    verify(platformUserServiceMock).cacheableGetPlatformUserById(anyInt());
+    verify(platformUserServiceMock).getPlatformUserById(anyInt());
   }
 
   @SneakyThrows

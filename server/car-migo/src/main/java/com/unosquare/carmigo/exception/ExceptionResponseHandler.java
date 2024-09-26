@@ -33,10 +33,13 @@ public class ExceptionResponseHandler {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 
-  @ExceptionHandler({
-      EntityExistsException.class,
-      IllegalStateException.class})
+  @ExceptionHandler(IllegalStateException.class)
   public ResponseEntity<ErrorResponse> handleConflictException(final Exception exception) {
+    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+  }
+
+  @ExceptionHandler(EntityExistsException.class)
+  public ResponseEntity<ErrorResponse> handleUnprocessableEntityException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.CONFLICT, exception.getMessage());
   }
 
@@ -54,6 +57,11 @@ public class ExceptionResponseHandler {
       BindException.class})
   public ResponseEntity<ErrorResponse> handleBadRequestException(final Exception exception) {
     return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.BAD_REQUEST, exception.getMessage());
+  }
+
+  @ExceptionHandler({MaxPassengerLimitException.class})
+  public ResponseEntity<ErrorResponse> handleNotAcceptableException(final Exception exception) {
+    return ExceptionBuilder.buildErrorResponseRepresentation(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
   }
 
   /**

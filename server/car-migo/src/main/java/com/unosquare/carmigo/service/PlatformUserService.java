@@ -1,5 +1,6 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.PLATFORM_USER_CACHE;
 import static com.unosquare.carmigo.security.UserStatus.ACTIVE;
 import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
@@ -41,7 +42,6 @@ public class PlatformUserService {
   private static final int STAGED_USER_STATUS = 1;
   private static final int ACTIVE_USER_STATUS = 2;
   private static final String USER_NOT_FOUND = "User not found!";
-  private static final String PLATFORM_USER_CACHE = "platformUser";
 
   private final PlatformUserRepository platformUserRepository;
   private final DriverRepository driverRepository;
@@ -98,19 +98,22 @@ public class PlatformUserService {
    * @return a {@link PlatformUserResponse}.
    */
   @Cacheable(value = PLATFORM_USER_CACHE, key = "#platformUserId")
-  public PlatformUserResponse cacheableGetPlatformUserById(final int platformUserId) {
-    return getPlatformUserById(platformUserId);
-  }
-
-  /**
-   * Fetches a platform user and refreshes the cache.
-   *
-   * @param platformUserId the platform user id to search for.
-   * @return a {@link PlatformUserResponse}.
-   */
-  @CachePut(value = PLATFORM_USER_CACHE, key = "#platformUserId")
-  public PlatformUserResponse refreshableGetPlatformUserById(final int platformUserId) {
-    return getPlatformUserById(platformUserId);
+  public PlatformUserResponse getPlatformUserById(final int platformUserId) {
+    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
+    final var response = modelMapper.map(platformUser, PlatformUserResponse.class);
+    try {
+      findEntityById(platformUserId, driverRepository, "");
+      response.setDriver(true);
+    } catch (EntityNotFoundException ex) {
+      response.setDriver(false);
+    }
+    try {
+      findEntityById(platformUserId, passengerRepository, "");
+      response.setPassenger(true);
+    } catch (EntityNotFoundException ex) {
+      response.setPassenger(false);
+    }
+    return response;
   }
 
   /**
@@ -163,23 +166,5 @@ public class PlatformUserService {
   @CacheEvict(value = PLATFORM_USER_CACHE, key = "#platformUserId")
   public void deletePlatformUserById(final int platformUserId) {
     platformUserRepository.deleteById(platformUserId);
-  }
-
-  private PlatformUserResponse getPlatformUserById(final int platformUserId) {
-    final var platformUser = findEntityById(platformUserId, platformUserRepository, USER_NOT_FOUND);
-    final var response = modelMapper.map(platformUser, PlatformUserResponse.class);
-    try {
-      findEntityById(platformUserId, driverRepository, "");
-      response.setDriver(true);
-    } catch (EntityNotFoundException ex) {
-      response.setDriver(false);
-    }
-    try {
-      findEntityById(platformUserId, passengerRepository, "");
-      response.setPassenger(true);
-    } catch (EntityNotFoundException ex) {
-      response.setPassenger(false);
-    }
-    return response;
   }
 }

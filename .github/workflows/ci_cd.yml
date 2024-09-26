@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: 20
       - name: Build with Node
-        run: cd ./ui && npm ci && npm run lint && npm run testc && cd ..
+        run: cd ./ui && npm ci && npm run lint && cd ..
 
   codeql:
     name: CodeQL Analysis

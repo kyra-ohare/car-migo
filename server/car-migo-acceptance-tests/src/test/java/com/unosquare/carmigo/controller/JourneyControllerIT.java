@@ -113,9 +113,7 @@ public class JourneyControllerIT {
     controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isForbidden());
     controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
     controllerUtility.makePostRequest("/1/add-passenger", "", status().isConflict());
-    controllerUtility.makePostRequest("/2/add-passenger", "", status().isOk());
-    controllerUtility.makePostRequest("/2/add-passenger", "", status().isConflict());
-    controllerUtility.makeDeleteRequest("/2/remove-passenger", status().isNoContent());
+    controllerUtility.makePostRequest("/2/add-passenger", "", status().isNotAcceptable());
     controllerUtility.makeDeleteRequest("/2/remove-passenger", status().isNotFound());
     controllerUtility.makePostRequest("/1/add-passenger/1", "", status().isForbidden());
     controllerUtility.makeDeleteRequest("/1/remove-passenger/1", status().isForbidden());
@@ -177,9 +175,9 @@ public class JourneyControllerIT {
     controllerUtility.makePostRequest("", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
     controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_VALID_JSON, status().isCreated());
     controllerUtility.makePostRequest("/drivers/1", POST_JOURNEY_INVALID_JSON, status().isBadRequest());
-    controllerUtility.makePostRequest("/2/add-passenger", "", status().isConflict());
+    controllerUtility.makePostRequest("/2/add-passenger", "", status().isNotAcceptable());
     controllerUtility.makePostRequest("/3/add-passenger", "", status().isOk());
-    controllerUtility.makePostRequest("/3/add-passenger", "", status().isConflict());
+    controllerUtility.makePostRequest("/3/add-passenger", "", status().isNotAcceptable());
     controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isNoContent());
     controllerUtility.makeDeleteRequest("/3/remove-passenger", status().isNotFound());
     controllerUtility.makePatchRequest("/1", PATCH_JOURNEY_VALID_JSON, status().isAccepted());

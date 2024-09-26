@@ -8,20 +8,21 @@ services:
       - "8086:8086"
     depends_on:
       - db
+      - redis
     networks:
       - custom_network
 
   ui:
-   build:
-     context: .
-     target: ui
-   container_name: car-migo_ui
-   ports:
-     - "8087:8087"
-   depends_on:
-     - server
-   networks:
-     - custom_network
+    build:
+      context: .
+      target: ui
+    container_name: car-migo_ui
+    ports:
+      - "8087:8087"
+    depends_on:
+      - server
+    networks:
+      - custom_network
 
   db:
     image: postgres:16-bullseye
@@ -80,4 +81,4 @@ volumes:
 
 networks:
   custom_network:
-    name: local_network
+    name: car-migo_network

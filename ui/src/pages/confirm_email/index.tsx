@@ -43,7 +43,7 @@ export default function ConfirmEmail() {
       setOpenDialog(true);
     },
     onError: (error: Error, variables: IPlatformUserEmail) => {
-      if (error.message.endsWith(httpStatus.CONFLICT)) {
+      if (error.message.endsWith(httpStatus.UNPROCESSABLE_ENTITY)) {
         setSnackbarMessage('Yayyy! You have already confirmed your email.');
       } else if (error.message.endsWith(httpStatus.NOT_FOUND)) {
         setSnackbarSeverity('error');

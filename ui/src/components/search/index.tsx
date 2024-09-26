@@ -83,7 +83,6 @@ export default function Search() {
           formikErrors={formik.errors.locationIdFrom}
           formikTouched={formik.touched.locationIdFrom}
           widthStyle={300}
-          mrStyle={0.5}
           datatestid='leaving-from-dropdown'
         />
         <Dropdown
@@ -98,7 +97,6 @@ export default function Search() {
           formikErrors={formik.errors.locationIdTo}
           formikTouched={formik.touched.locationIdTo}
           widthStyle={300}
-          mrStyle={0.5}
           datatestid='going-to-dropdown'
         />
         <BasicDateTimePicker

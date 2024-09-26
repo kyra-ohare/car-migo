@@ -1,6 +1,8 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.JOURNEY_CACHE;
 import static com.unosquare.carmigo.constant.AppConstants.NOT_PERMITTED;
+import static com.unosquare.carmigo.constant.AppConstants.NO_AVAILABILITY;
 import static com.unosquare.carmigo.security.UserStatus.ADMIN;
 import static com.unosquare.carmigo.service.DriverService.DRIVER_NOT_FOUND;
 import static com.unosquare.carmigo.service.PassengerService.PASSENGER_NOT_FOUND;
@@ -20,6 +22,7 @@ import com.unosquare.carmigo.entity.Driver;
 import com.unosquare.carmigo.entity.Journey;
 import com.unosquare.carmigo.entity.Location;
 import com.unosquare.carmigo.entity.Passenger;
+import com.unosquare.carmigo.exception.MaxPassengerLimitException;
 import com.unosquare.carmigo.exception.PatchException;
 import com.unosquare.carmigo.exception.ResourceNotFoundException;
 import com.unosquare.carmigo.exception.UnauthorizedException;
@@ -53,7 +56,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JourneyService {
 
-  private static final String JOURNEY_CACHE = "journey";
   private static final String JOURNEY_NOT_FOUND = "Journey not found";
 
   private final JourneyRepository journeyRepository;
@@ -73,8 +75,10 @@ public class JourneyService {
    */
   @Cacheable(value = JOURNEY_CACHE, key = "#journeyId")
   public JourneyResponse getJourneyById(final int journeyId) {
-    final var journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
-    return modelMapper.map(journey, JourneyResponse.class);
+    final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
+    final JourneyResponse journeyResponse = modelMapper.map(journey, JourneyResponse.class);
+    checkJourneyAvailability(List.of(journeyResponse));
+    return journeyResponse;
   }
 
   /**
@@ -138,10 +142,11 @@ public class JourneyService {
   @CachePut(value = JOURNEY_CACHE, key = "#result.id")
   public JourneyResponse createJourney(final int driverId, final JourneyRequest journeyRequest) {
     final Journey journey = modelMapper.map(journeyRequest, Journey.class);
-    journey.setCreatedDate(Instant.now());
     journey.setLocationFrom(entityManager.getReference(Location.class, journeyRequest.getLocationIdFrom()));
     journey.setLocationTo(entityManager.getReference(Location.class, journeyRequest.getLocationIdTo()));
     journey.setDriver(entityManager.getReference(Driver.class, driverId));
+    journey.setMaxPassengers(journeyRequest.getMaxPassengers());
+    journey.setCreatedDate(Instant.now());
     final Journey savedJourney;
     try {
       savedJourney = journeyRepository.save(journey);
@@ -163,6 +168,9 @@ public class JourneyService {
     /* Check if passenger exists first. If not, no need to find journeys and carry on*/
     final Passenger passenger = findEntityById(passengerId, passengerRepository, PASSENGER_NOT_FOUND);
     final Journey journey = findEntityById(journeyId, journeyRepository, JOURNEY_NOT_FOUND);
+    if (journey.getPassengers().size() >= journey.getMaxPassengers()) {
+      throw new MaxPassengerLimitException(NO_AVAILABILITY);
+    }
     if (journey.getDriver().getId() == passengerId) {
       throw new IllegalStateException("Driver cannot be passenger.");
     }
@@ -175,7 +183,6 @@ public class JourneyService {
         });
     passengers.add(passenger);
     journey.setPassengers(passengers);
-    journey.setMaxPassengers(passengers.size());
     journeyRepository.save(journey);
   }
 
@@ -243,7 +250,6 @@ public class JourneyService {
     for (Passenger p : passengers) {
       if (p.getId() == passengerId) {
         passengerJourneyRepository.deleteByJourneyIdAndPassengerId(journeyId, passengerId);
-        journey.setMaxPassengers(passengers.size() - 1);
         journeyRepository.save(journey);
         return;
       }

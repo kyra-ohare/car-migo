@@ -8,15 +8,11 @@ export default function Dropdown(props: IDropdown) {
       disablePortal
       id={props.id}
       value={props.value.value}
-      isOptionEqualToValue={(
-        option: { label: string; value: any },
-        value: { value: any }
-      ) => option?.value === value?.value}
       onChange={(_event, value) =>
         props.onChange(props.name, value?.value || '')
       }
       options={props.options}
-      sx={{ width: props.widthStyle, mr: props.mrStyle}}
+      sx={{ width: props.widthStyle, mr: props.mrStyle }}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -24,9 +20,11 @@ export default function Dropdown(props: IDropdown) {
           name={props.name}
           error={props.formikTouched && Boolean(props.formikErrors)}
           helperText={props.formikTouched && props.formikErrors}
-          inputProps={{
-            ...params.inputProps,
-            'data-testid': `${props.datatestid}-input`,
+          slotProps={{
+            htmlInput: {
+              ...params.inputProps,
+              'data-testid': `${props.datatestid}-input`,
+            },
           }}
         />
       )}

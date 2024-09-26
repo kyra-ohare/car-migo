@@ -1,14 +1,12 @@
-FROM openjdk:17.0.2-jdk as server
+FROM openjdk:17.0.2-jdk AS server
 ARG JAR_FILE=server/car-migo/target/*.jar
 COPY ${JAR_FILE} app.jar
 EXPOSE 8086
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "-Dredis.hostname=redis", "/app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/app.jar"]
 
-
-FROM node:20-alpine as ui
-RUN apk update
+FROM node:20-buster-slim AS ui
 WORKDIR /ui
 COPY ./ui .
-RUN npm ci
+RUN npm i
 EXPOSE 8087
 CMD [ "npm", "run", "dev" ]

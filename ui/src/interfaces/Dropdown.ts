@@ -16,7 +16,7 @@ export interface IDropdown {
   ): Promise<void> | Promise<FormikErrors<IJourneyCreation>>;
   formikTouched: boolean | undefined;
   formikErrors: string | undefined;
-  widthStyle: string | number;
-  mrStyle: string | number;
+  widthStyle?: string | number;
+  mrStyle?: string | number;
   datatestid: string;
 }

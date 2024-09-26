@@ -61,6 +61,7 @@ export const useTokens = (): IUseTokens => {
     localStorage.removeItem(appConstants.accessToken);
     localStorage.removeItem(appConstants.refreshToken);
     setIsAuthorized(false);
+    window.location.reload();
     navigate(navigation.SIGN_IN_PAGE);
   };
 

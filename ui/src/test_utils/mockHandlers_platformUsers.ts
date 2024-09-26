@@ -15,7 +15,7 @@ export const platformUserHandlers = [
     }
 
     if (email == testConstants.conflictEmail) {
-      return new HttpResponse(null, { status: 409 });
+      return new HttpResponse(null, { status: 422 });
     }
 
     if (email == testConstants.serverDown) {
