@@ -106,3 +106,6 @@ spring:
     url: jdbc:postgresql://db:5432/carmigo
   devtools:
     add-properties: false
+
+redis:
+  hostname: redis

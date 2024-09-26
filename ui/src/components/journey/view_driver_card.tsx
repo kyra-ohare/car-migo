@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid2, Typography } from '@mui/material';
 import {
   GroupsRounded,
   WeekendRounded,
@@ -29,7 +29,7 @@ export default function ViewDriverCard(props: IJourneyResponseProps) {
             (
               passenger: IPassengerEntity
             ) => (
-              <Grid item key={passenger.id}>
+              <Grid2 key={passenger.id}>
                 <Typography variant='body2' sx={{ mt: 0.25 }}>
                   <PersonOutlineRounded
                     fontSize='small'
@@ -38,7 +38,7 @@ export default function ViewDriverCard(props: IJourneyResponseProps) {
                   {passenger.platformUser.firstName}{' '}
                   {passenger.platformUser.lastName}
                 </Typography>
-              </Grid>
+              </Grid2>
             )
           )}
         </>

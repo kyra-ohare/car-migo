@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.PASSENGER_CACHE;
+import static com.unosquare.carmigo.constant.AppConstants.PLATFORM_USER_CACHE;
 import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
 import com.unosquare.carmigo.dto.response.PassengerResponse;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Service;
 public class PassengerService {
 
   protected static final String PASSENGER_NOT_FOUND = "Passenger not found";
-  private static final String PASSENGER_CACHE = "passenger";
 
   private final PassengerRepository passengerRepository;
   private final ModelMapper modelMapper;
@@ -38,6 +39,7 @@ public class PassengerService {
    * @return a {@link PassengerResponse}.
    */
   @CachePut(value = PASSENGER_CACHE, key = "#result.id")
+  @CacheEvict(value = PLATFORM_USER_CACHE, key = "#result.id")
   public PassengerResponse createPassengerById(final int platformUserId) {
     try {
       findEntityById(platformUserId, passengerRepository, PASSENGER_NOT_FOUND);
@@ -73,7 +75,7 @@ public class PassengerService {
    *
    * @param passengerId the passenger id to be deleted.
    */
-  @CacheEvict(value = PASSENGER_CACHE, key = "#passengerId")
+  @CacheEvict(value = {PASSENGER_CACHE, PLATFORM_USER_CACHE}, key = "#passengerId")
   public void deletePassengerById(final int passengerId) {
     passengerRepository.deleteById(passengerId);
   }

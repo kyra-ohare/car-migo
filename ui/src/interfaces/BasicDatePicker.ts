@@ -1,19 +1,17 @@
-import {
-  DateValidationError,
-  PickerChangeHandlerContext,
-} from "@mui/x-date-pickers";
+import { FormikErrors } from "formik";
 
 export interface IBasicDatePickerProps {
   label: string;
   name: string;
   disableFuture?: boolean;
   disablePast?: boolean;
-  value: string | null;
+  value: string;
   onChange(
-    value: unknown,
-    context: PickerChangeHandlerContext<DateValidationError>
-  ): void;
-  error: boolean | undefined;
-  helperText: string | boolean | undefined;
+    field: string,
+    value: string,
+    shouldValidate?: boolean | undefined
+  ): Promise<void> | Promise<FormikErrors<any>>;
+  formikTouched: boolean | undefined;
+  formikErrors: string | undefined;
   datatestid: string;
 }

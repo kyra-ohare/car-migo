@@ -98,7 +98,6 @@ describe('Sign Up Unit Tests', () => {
       expect(
         screen.getByText('Last name must not be empty.')
       ).toBeInTheDocument();
-      // expect(screen.getByText('Minimum age is ' + minAge)).toBeInTheDocument(); // TODO
       expect(
         screen.getByText('Phone number must not be empty.')
       ).toBeInTheDocument();
@@ -114,7 +113,7 @@ describe('Sign Up Unit Tests', () => {
     TestUtils.render(<SignUp />);
     const firstNameField = screen.getByLabelText('First Name');
     const lastNameField = screen.getByLabelText('Last Name');
-    const dobField = screen.getByLabelText('Date of Birth');
+    const dobField = screen.getByTestId('date-picker-input');
     const phoneNumberField = screen.getByLabelText('Phone Number');
     const emailAddressField = screen.getByLabelText('Email Address');
     const passwordField = screen.getByLabelText('Password');
@@ -136,9 +135,7 @@ describe('Sign Up Unit Tests', () => {
     fireEvent.change(lastNameField, {
       target: { value: testConstants.lastName },
     });
-    fireEvent.change(dobField, {
-      target: { value: testConstants.dob },
-    });
+    fireEvent.change(dobField, { target: { value: '03/05/1997' } });
     fireEvent.change(phoneNumberField, {
       target: { value: testConstants.phoneNumber },
     });

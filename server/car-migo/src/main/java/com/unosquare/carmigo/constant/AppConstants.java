@@ -17,5 +17,11 @@ public interface AppConstants {
 
   int ALIAS_CURRENT_USER = 0;
 
+  String PLATFORM_USER_CACHE = "platformUser";
+  String DRIVER_CACHE = "driver";
+  String PASSENGER_CACHE = "passenger";
+  String JOURNEY_CACHE = "journey";
+
   String NOT_PERMITTED = "Not permitted";
+  String NO_AVAILABILITY = "No availability. Max number of passengers reached";
 }

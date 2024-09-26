@@ -50,7 +50,7 @@ insert into journey(created_date, location_id_from, location_id_to, max_passenge
 insert into journey(created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
     values('2024-01-05', 5, 1, 2, '2024-02-02 08:15:00', 3);
 insert into journey(created_date, location_id_from, location_id_to, max_passengers, date_time, driver_id)
-    values('2024-01-05', 5, 1, 0, '2024-03-03 08:00:00', 3);
+    values('2024-01-05', 5, 1, 1, '2024-03-03 08:00:00', 3);
 
 
 insert into passenger_journey(passenger_id, journey_id)

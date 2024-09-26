@@ -1,7 +1,7 @@
-import { Button, Card, Grid } from '@mui/material';
+import { Button, Card, Grid2 } from '@mui/material';
 import styled from 'styled-components';
 
-export const StyledGrid = styled(Grid)`
+export const StyledGrid = styled(Grid2)`
   justify-content: center;
   align-items: center;
 `;

@@ -7,7 +7,7 @@ import {
   Box,
   CssBaseline,
   Container,
-  Grid,
+  Grid2,
   Link,
   Typography,
   Checkbox,
@@ -141,8 +141,8 @@ export default function SignIn() {
               sx={{ mt: 3, mb: 2 }}
               datatestid='submit-button'
             />
-            <Grid container data-testid='links'>
-              <Grid item xs sx={{ ml: -9 }}>
+            <Grid2 container data-testid='links'>
+              <Grid2 size={{ xs: 6, md: 4 }} textAlign='left'>
                 <Link
                   href={navigation.FORGOT_PASSWORD_PAGE}
                   variant='body2'
@@ -150,8 +150,8 @@ export default function SignIn() {
                 >
                   Forgot password?
                 </Link>
-              </Grid>
-              <Grid item>
+              </Grid2>
+              <Grid2 size={{ xs: 6, md: 8 }} textAlign='right'>
                 <Link
                   href={navigation.SIGN_UP_PAGE}
                   variant='body2'
@@ -159,8 +159,8 @@ export default function SignIn() {
                 >
                   Don't have an account? Sign Up
                 </Link>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
         </Box>
         <AlertPopUp

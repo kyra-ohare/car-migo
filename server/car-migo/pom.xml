@@ -160,6 +160,7 @@
           <includeResources>true</includeResources>
           <violationSeverity>warning</violationSeverity>
           <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+          <violationIgnore>config/checkstyle/suppressions.xml</violationIgnore>
         </configuration>
         <executions>
           <execution>

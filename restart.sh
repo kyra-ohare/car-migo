@@ -1,15 +1,17 @@
 #!/bin/sh
 
-carmigo="car-migo_app"
+carmigo_server="car-migo_server"
+carmigo_ui="car-migo_ui"
 postgres="car-migo_postgres"
 pgAdmin="car-migo_pgadmin"
 
 echo "$(tput setaf 1)Removing containers:$(tput sgr0)"
-docker container rm $carmigo -f
+docker container rm $carmigo_server -f
+docker container rm $carmigo_ui -f
 docker container rm $postgres -f
 docker container rm $pgAdmin -f
 
-echo "$(tput setaf 6)Restart volume $postgres?$(tput sgr0) (y/n)"
+echo "$(tput setaf 6)Restart volume $postgres? (y/n)$(tput sgr0) \c"
 read postgresResponse
 if [ $postgresResponse = "y" ]
 then
@@ -17,7 +19,7 @@ then
   echo "Removed volume $postgres"
 fi
 
-echo "$(tput setaf 4)Restart volume $pgAdmin?$(tput sgr0) (y/n)"
+echo "$(tput setaf 4)Restart volume $pgAdmin? (y/n)$(tput sgr0) \c"
 read pgAdminResponse
 if [ $pgAdminResponse = "y" ]
 then

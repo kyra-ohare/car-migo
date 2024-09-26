@@ -1,5 +1,7 @@
 package com.unosquare.carmigo.service;
 
+import static com.unosquare.carmigo.constant.AppConstants.DRIVER_CACHE;
+import static com.unosquare.carmigo.constant.AppConstants.PLATFORM_USER_CACHE;
 import static com.unosquare.carmigo.util.CommonBehaviours.findEntityById;
 
 import com.unosquare.carmigo.dto.request.DriverRequest;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DriverService {
 
-  private static final String DRIVER_CACHE = "driver";
   static final String DRIVER_NOT_FOUND = "Driver not found";
 
   private final DriverRepository driverRepository;
@@ -40,6 +41,7 @@ public class DriverService {
    * @return a {@link DriverResponse}.
    */
   @CachePut(value = DRIVER_CACHE, key = "#result.id")
+  @CacheEvict(value = PLATFORM_USER_CACHE, key = "#result.id")
   public DriverResponse createDriverById(final int platformUserId, final DriverRequest driverRequest) {
     try {
       findEntityById(platformUserId, driverRepository, DRIVER_NOT_FOUND);
@@ -74,7 +76,7 @@ public class DriverService {
    *
    * @param driverId the driver id to be deleted.
    */
-  @CacheEvict(value = DRIVER_CACHE, key = "#driverId")
+  @CacheEvict(value = {DRIVER_CACHE, PLATFORM_USER_CACHE}, key = "#driverId")
   public void deleteDriverById(final int driverId) {
     driverRepository.deleteById(driverId);
   }

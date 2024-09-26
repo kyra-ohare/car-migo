@@ -69,14 +69,8 @@ public class PlatformUserController {
    */
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ACTIVE') or hasAuthority('SUSPENDED') or hasAuthority('ADMIN') or hasAuthority('DEV')")
-  public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile(
-      @RequestParam(value = "refreshCache", required = false) boolean refreshCache) {
-    final PlatformUserResponse response;
-    if (refreshCache) {
-      response = platformUserService.refreshableGetPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
-    } else {
-      response = platformUserService.cacheableGetPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
-    }
+  public ResponseEntity<PlatformUserResponse> getCurrentPlatformUserProfile() {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(ALIAS_CURRENT_USER));
     return ResponseEntity.ok(response);
   }
 
@@ -88,14 +82,8 @@ public class PlatformUserController {
    */
   @GetMapping(value = "/{platformUserId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int platformUserId,
-      @RequestParam(value = "refreshCache", required = false) boolean refreshCache) {
-    final PlatformUserResponse response;
-    if (refreshCache) {
-      response = platformUserService.refreshableGetPlatformUserById(getCurrentId(platformUserId));
-    } else {
-      response = platformUserService.cacheableGetPlatformUserById(getCurrentId(platformUserId));
-    }
+  public ResponseEntity<PlatformUserResponse> getPlatformUserById(@PathVariable final int platformUserId) {
+    final var response = platformUserService.getPlatformUserById(getCurrentId(platformUserId));
     return ResponseEntity.ok(response);
   }
 

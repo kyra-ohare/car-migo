@@ -7,7 +7,11 @@ export default function CustomTextField(props: ICustomTextFieldProps) {
       fullWidth
       sx={{ mt: '20px' }}
       data-testid={props.datatestid}
-      inputProps={{ 'data-testid': `${props.datatestid}-input` }}
+      slotProps={{
+        htmlInput: {
+          'data-testid': `${props.datatestid}-input`,
+        },
+      }}
       {...props}
     />
   );
