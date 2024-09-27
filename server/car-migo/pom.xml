@@ -218,16 +218,6 @@
               </additionalProperties>
             </configuration>
           </execution>
-<!--          Not to create a .jar.original file-->
-          <execution>
-            <id>repackage</id>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <excludes>
