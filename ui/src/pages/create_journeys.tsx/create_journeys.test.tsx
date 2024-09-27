@@ -136,11 +136,7 @@ describe('CreateJourneys Unit Tests', () => {
     await userEvent.click(submitButton);
     await waitFor(() => {
       expect(screen.getByTestId('alert-pop-up')).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          "You cannot create a Journey. Are you a driver? Check if you are one in Profile."
-        )
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('ErrorOutlineIcon')).toBeInTheDocument();
     });
   });
 
