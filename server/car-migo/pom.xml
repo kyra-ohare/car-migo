@@ -173,6 +173,35 @@
         </executions>
       </plugin>
       <plugin>
+<!--        to run: ./mvnw javadoc:javadoc-->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-car-migo-javadoc</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>../car-migo/target/reports/apidocs</directory>
+                  <includes>
+                    <include>**/*.*</include>
+                  </includes>
+                </resource>
+              </resources>
+              <outputDirectory>../../docs</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>

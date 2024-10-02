@@ -39,8 +39,7 @@ Car-migo application is awesome! It will revolutionize the way you get around. I
 
 
 ## What is the application?
-The application is quite straightway. It is a match-making system for drivers and passengers.
-You can either advertise rides or query them.
+It is a match-making system for drivers and passengers. You can either advertise rides or query them.
 
 Drivers can create rides (a journey and a timeframe) while passengers can book them.
 
@@ -80,7 +79,7 @@ The script also creates Docker images and spins the necessary containers:
 
 Visit http://localhost:8086/v1/health to ensure the server is running as expected.
 
-There is also a heartbeat to verify whether other services are up and healthy: http://localhost:8086/v1/heartbeat.
+There is also a heartbeat to verify whether other consumed services are up: http://localhost:8086/v1/heartbeat.
 
 Moreover, it will automatically open http://localhost:8087/home on your default browser. :tada:
 
@@ -107,6 +106,10 @@ Once inside the pgAdmin 4, click on `Add New Server`. From the dialog box, enter
 
 Then, from the left panel, navigate to Servers > car-migo > Databases > carmigo > Schemas > public > Tables.
 
+This is the Entity Relationship Diagram (ERD) for the application.
+
+![Application ERD](.github/assets/erd.png "Application ERD")
+
 ### restart.sh
 This script restarts the containers. You are also given the option to restart PostgreSQL and pgAdmin volumes.
 
@@ -128,6 +131,8 @@ curl -iL 'http://localhost:8086/v1/login' \
 }'
 ```
 By the way, Jake Sully is our ADMIN. You can find more users to play with in [migrations/local-data-seed/V1000.1___local_data_seed.sql](./migrations/local-data-seed/V1000.1___local_data_seed.sql).
+
+Moreover, follow the link to [Postman Collection](.github/assets/Car-Migo.postman_collection.json) which contains all the application APIs plus some extra admin endpoints. As well as, these are the [Postman Environments](.github/assets/Car-Migo-envs.postman_environment.json).
 
 ### JWT
 The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a Bearer token. For example:
@@ -161,6 +166,11 @@ Moreover, two Docker images are automatically built, [car-migo_ui](https://hub.d
 
 Run these to download them:
 ```sh
-docker pull techtinkerer/car-migo_ui
 docker pull techtinkerer/car-migo_server
+docker pull techtinkerer/car-migo_ui
+```
+And in case you want to run these two (without the database):
+```sh
+docker run -p 8086:8086 -d techtinkerer/car-migo_server
+docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
