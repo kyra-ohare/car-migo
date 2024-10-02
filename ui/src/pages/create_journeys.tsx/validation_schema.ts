@@ -6,6 +6,6 @@ export const createJourneyValidationSchema = Yup.object().shape({
   dateTime: Yup.string().required('Date and time must not be empty.'),
   maxPassengers: Yup.number()
     .min(1)
-    .max(10)
+    .max(5)
     .required('Max number of passengers must not be empty.'),
 });
