@@ -1,5 +1,4 @@
 # Car-Migo
-
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
@@ -57,7 +56,8 @@ There are 5 types of users:
 It is great for the environment once there will be less CO<sub>2</sub> released into the atmosphere.
 Moreover, there will be less traffic in our cities thus emergency vehicles will respond to emergencies more rapidly, 
 less noise pollution, less road accidents, and you can make new friends to top it off.
-The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for fuel costs.
+The application is not about profiting but about car sharing so the passengers can pay the driver a fair amount for
+fuel costs.
 
 ## How to run it?
 ### Requirements
@@ -79,9 +79,9 @@ The script also creates Docker images and spins the necessary containers:
 
 Visit http://localhost:8086/v1/health to ensure the server is running as expected.
 
-There is also a heartbeat to verify whether other consumed services are up: http://localhost:8086/v1/heartbeat.
+There is a heartbeat to verify whether other consumed services are up: http://localhost:8086/v1/heartbeat.
 
-Moreover, it will automatically open http://localhost:8087/home on your default browser. :tada:
+Furthermore, it will automatically open http://localhost:8087/home on your default browser. :tada:
 
 To stop and remove the containers, run:
 ```sh
@@ -130,12 +130,16 @@ curl -iL 'http://localhost:8086/v1/login' \
   "password": "Pass1234!"
 }'
 ```
-By the way, Jake Sully is our ADMIN. You can find more users to play with in [migrations/local-data-seed/V1000.1___local_data_seed.sql](./migrations/local-data-seed/V1000.1___local_data_seed.sql).
+By the way, Jake Sully is our ADMIN. You can find more users to play with in
+[migrations/local-data-seed/V1000.1___local_data_seed.sql](./migrations/local-data-seed/V1000.1___local_data_seed.sql).
 
-Moreover, follow the link to [Postman Collection](.github/assets/Car-Migo.postman_collection.json) which contains all the application APIs plus some extra admin endpoints. As well as, these are the [Postman Environments](.github/assets/Car-Migo-envs.postman_environment.json).
+Additionally, follow the link to [Postman Collection](.github/assets/Car-Migo.postman_collection.json) which contains
+all the application APIs plus some extraadmin endpoints. As well as, these are the
+[Postman Environments](.github/assets/Car-Migo-envs.postman_environment.json).
 
 ### JWT
-The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a Bearer token. For example:
+The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a
+Bearer token. For example:
 ```sh
 curl -L 'http://localhost:8086/v1/users/profile' \
 -H 'Authorization: Bearer {paste-token-here}'
@@ -162,7 +166,8 @@ It will also scan the code and produce a security report using CodeQL Analysis.
 
 Git Actions is also scheduled to run once a week: every Monday at 7am UTC.
 
-Moreover, two Docker images are automatically built, [car-migo_ui](https://hub.docker.com/r/techtinkerer/car-migo_ui) and [car-migo_server](https://hub.docker.com/r/techtinkerer/car-migo_server),  and sent to Docker Hub repository when the code is merged into the main branch.
+Also, two Docker images are automatically built, [car-migo_ui](https://hub.docker.com/r/techtinkerer/car-migo_ui) and [car-migo_server](https://hub.docker.com/r/techtinkerer/car-migo_server),  and sent to Docker Hub
+repository when the code is merged into the main branch.
 
 Run these to download them:
 ```sh
@@ -174,3 +179,40 @@ And in case you want to run these two (without the database):
 docker run -p 8086:8086 -d techtinkerer/car-migo_server
 docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
+
+## Application Deployment
+And this is how I would deploy the application to AWS Cloud Services.
+
+![AWS Deployment](.github/assets/car-migo-aws-flowchart.png "AWS Deployment")
+
+Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
+
+_Route 53_: This is AWS’s DNS (Domain Name System) service that routes user requests to the appropriate resources.
+In this case, it directs the traffic to CloudFront.
+
+_Web Application Firewall_: AWS WAF is a security feature that helps protect the application from common web exploits,
+such as SQL injection and Cross-Site Scripting (XSS). It filters out malicious traffic before it reaches CloudFront and
+other downstream services.
+
+_AWS CloudFront_: is a Content Delivery Network (CDN) that caches and delivers static and dynamic content to users based
+on their geographic location. This improves the speed and reduces the latency of delivering assets such as images, CSS,
+and JavaScript files stored in the S3 bucket.
+
+_S3 Bucket (Asset Files)_: AWS S3 is used to store static assets such as images, media, and other static files. These
+files are served to users through CloudFront.
+
+_Application Load Balancer_: The ALB distributes incoming traffic across multiple instances of the application running
+in Elastic Container Service (ECS). It ensures that no single service is overwhelmed with traffic and improves the
+scalability and availability of the application.
+
+_Elastic Container Service (ECS) Fargate (UI)_: This is where the user interface (UI) part of the application is running.
+It hosts the frontend of the application in containers, ensuring that the UI is served efficiently to users.
+
+_Elastic Container Service (ECS) Fargate (Server)_: This is the backend or server side of the application, where
+business logic, API calls, and other server-side processing occur.
+
+_Elastic Container Registry (ECR)_:This is where the application’s container images (both UI and Server) are stored.
+The ECS services pull these container images from ECR to deploy the latest versions of the application.
+
+_Aurora Database_ & _ElastiCache Redis_: AWS Aurora is a managed relational database while ElasticCache is the Cache service. Both of these work together to enhance the application’s performance and reliability to efficiently manage data while maintaining high performance and availability.
+The application’s backend (server) interacts with the Aurora database to perform read and write operations related to user data and transactions and with ElastiCache to cache frequently accessed data, reducing the load on Aurora and providing faster response times for users.
