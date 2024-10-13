@@ -3,9 +3,9 @@ Car-migo application is awesome! It will revolutionize the way you get around. I
 
 ## Technologies
 * Back-end (server)
-  * Spring Boot 3
+  * Spring Boot 3.3.4
   * Java 17
-  * Maven 3.9
+  * Maven 3.9.9
   * Redis
   * Docker
   * Git Actions
@@ -181,11 +181,11 @@ docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
 
 ## Application Deployment
-And this is how I would deploy the application to AWS Cloud Services.
-
-![AWS Deployment](.github/assets/car-migo-aws-flowchart.png "AWS Deployment")
+This is how I would deploy the application to AWS Cloud Services.
 
 Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
+
+<img src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" style="float: right; max-width:100%">
 
 _Route 53_: This is AWS’s DNS (Domain Name System) service that routes user requests to the appropriate resources.
 In this case, it directs the traffic to CloudFront.
