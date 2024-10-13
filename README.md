@@ -180,12 +180,14 @@ docker run -p 8086:8086 -d techtinkerer/car-migo_server
 docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
 
-## Application Deployment
+## Application Deployment - mock
 This is how I would deploy the application to AWS Cloud Services.
 
 Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
 
-<img src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" style="float:right; max-width:100%;" />
+<p float="left">
+  <img src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" />
+</p>
 
 _Route 53_: This is AWS’s DNS (Domain Name System) service that routes user requests to the appropriate resources.
 In this case, it directs the traffic to CloudFront.
