@@ -185,7 +185,9 @@ This is how I would deploy the application to AWS Cloud Services.
 
 Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
 
-<img src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" style="max-width:100%; float:right !important;" />
+<a target="_blank" rel="noopener noreferrer" href="/kyra-ohare/car-migo/blob/aws/.github/assets/car-migo-aws-flowchart.png">
+  <img src="/kyra-ohare/car-migo/raw/aws/.github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" style="float:right; max-width: 100%;" />
+</a>
 
 _Route 53_: This is AWS’s DNS (Domain Name System) service that routes user requests to the appropriate resources.
 In this case, it directs the traffic to CloudFront.
