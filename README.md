@@ -181,31 +181,31 @@ docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
 
 ## Application Deployment - mock
-This is how I would deploy the application to AWS Cloud Services.
+This is how I would deploy the application to AWS Cloud Services:
 
 Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
 
-<img align="right" src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock" />
+<img align="right" src=".github/assets/car-migo-aws-flowchart.png" alt="AWS Deployment mock " title="AWS Deployment mock"/>
 
 _Route 53_: This is AWS’s DNS (Domain Name System) service that routes user requests to the appropriate resources.
-In this case, it directs the traffic to CloudFront.
+In this case, it directs the traffic to CloudFront through WAF.
 
 _Web Application Firewall_: AWS WAF is a security feature that helps protect the application from common web exploits,
 such as SQL injection and Cross-Site Scripting (XSS). It filters out malicious traffic before it reaches CloudFront and
 other downstream services.
 
-_AWS CloudFront_: is a Content Delivery Network (CDN) that caches and delivers static and dynamic content to users based
-on their geographic location. This improves the speed and reduces the latency of delivering assets such as images, CSS,
-and JavaScript files stored in the S3 bucket.
+_AWS CloudFront_: is a Content Delivery Network (CDN) that caches and delivers static and dynamic content to users from
+nearby edge locations. This improves the speed and reduces the latency of delivering assets stored in the S3 bucket.
 
-_S3 Bucket (Asset Files)_: AWS S3 is used to store static assets such as images, media, and other static files. These
-files are served to users through CloudFront.
+_S3 Bucket (Asset Files)_: AWS S3 is used to store static assets such as images, media, CSS, JavaScript and other static
+files which are served to users through CloudFront.
 
 _Application Load Balancer_: The ALB distributes incoming traffic across multiple instances of the application running
 in Elastic Container Service (ECS). It ensures that no single service is overwhelmed with traffic and improves the
 scalability and availability of the application.
 
-_Elastic Container Service (ECS) Fargate (UI)_: This is where the user interface (UI) part of the application is running.
+_Elastic Container Service (ECS) Fargate (UI)_: This is where the user interface (UI) part of the application is
+running.
 It hosts the frontend of the application in containers, ensuring that the UI is served efficiently to users.
 
 _Elastic Container Service (ECS) Fargate (Server)_: This is the backend or server side of the application, where
@@ -214,5 +214,10 @@ business logic, API calls, and other server-side processing occur.
 _Elastic Container Registry (ECR)_:This is where the application’s container images (both UI and Server) are stored.
 The ECS services pull these container images from ECR to deploy the latest versions of the application.
 
-_Aurora Database_ & _ElastiCache Redis_: AWS Aurora is a managed relational database while ElasticCache is the Cache service. Both of these work together to enhance the application’s performance and reliability to efficiently manage data while maintaining high performance and availability.
-The application’s backend (server) interacts with the Aurora database to perform read and write operations related to user data and transactions and with ElastiCache to cache frequently accessed data, reducing the load on Aurora and providing faster response times for users.
+_Aurora Database_ & _ElastiCache Redis_: AWS Aurora is a managed relational database while ElasticCache is the Cache
+service. Both of these work together to enhance the application’s performance and reliability to efficiently manage data
+while maintaining high performance and availability.
+
+The application’s backend (server) interacts with the Aurora database to perform read and write operations related to
+user data and transactions and with ElastiCache to cache frequently accessed data, reducing the load on Aurora and
+providing faster response times for users.
