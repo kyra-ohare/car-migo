@@ -2,7 +2,7 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
-| Front-end (ui) | Back-end (server) | Data Layer  |
+| Front-end (UI) | Back-end (Server) | Data Layer  |
 |----------------|-------------------|-------------|
 | React 18.3.1   | Spring Boot 3.3.4 | PostgreSQL  |
 | Typescript     | Java 17           | Hibernate   |
