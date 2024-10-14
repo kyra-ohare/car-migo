@@ -134,12 +134,12 @@ By the way, Jake Sully is our ADMIN. You can find more users to play with in
 [migrations/local-data-seed/V1000.1___local_data_seed.sql](./migrations/local-data-seed/V1000.1___local_data_seed.sql).
 
 Additionally, follow the link to [Postman Collection](.github/assets/Car-Migo.postman_collection.json) which contains
-all the application APIs plus some extraadmin endpoints. As well as, these are the
+all the application APIs plus some extra admin endpoints. As well as, these are the
 [Postman Environments](.github/assets/Car-Migo-envs.postman_environment.json).
 
 ### JWT
-The response to the request above will contain a JWT token which you should pass to every subsequent HTTP request as a
-Bearer token. For example:
+The response to the request above will contain a Json Web Token which you should pass to every subsequent HTTP request
+as a Bearer token. For example:
 ```sh
 curl -L 'http://localhost:8086/v1/users/profile' \
 -H 'Authorization: Bearer {paste-token-here}'
@@ -181,7 +181,7 @@ docker run -p 8087:8087 -d techtinkerer/car-migo_ui
 ```
 
 ## Application Deployment - mock
-This is how I would deploy the application to AWS Cloud Services:
+This is how I would deploy the application to Amazon Web Services (AWS):
 
 Users interact with the application via a web interface (UI). Their requests are routed to the AWS infrastructure.
 
