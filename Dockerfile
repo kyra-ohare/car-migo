@@ -7,6 +7,6 @@ ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/app.jar"]
 FROM node:20-buster-slim AS ui
 WORKDIR /ui
 COPY ./ui .
-RUN npm i
+RUN npm ci
 EXPOSE 8087
 CMD [ "npm", "run", "dev" ]
