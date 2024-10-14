@@ -197,8 +197,8 @@ other downstream services.
 _AWS CloudFront_: is a Content Delivery Network (CDN) that caches and delivers static and dynamic content to users from
 nearby edge locations. This improves the speed and reduces the latency of delivering assets stored in the S3 bucket.
 
-_S3 Bucket (Asset Files)_: AWS S3 is used to store static assets such as images, media, CSS, JavaScript and other static
-files which are served to users through CloudFront.
+_Simple Storage Service_: An AWS S3 bucket is used to store static assets such as images, media, CSS, JavaScript and 
+other static files which are served to users through CloudFront.
 
 _Application Load Balancer_: The ALB distributes incoming traffic across multiple instances of the application running
 in Elastic Container Service (ECS). It ensures that no single service is overwhelmed with traffic and improves the
@@ -211,7 +211,7 @@ It hosts the frontend of the application in containers, ensuring that the UI is 
 _Elastic Container Service (ECS) Fargate (Server)_: This is the backend or server side of the application, where
 business logic, API calls, and other server-side processing occur.
 
-_Elastic Container Registry (ECR)_:This is where the application’s container images (both UI and Server) are stored.
+_Elastic Container Registry (ECR)_: This is where the application’s container images (both UI and Server) are stored.
 The ECS services pull these container images from ECR to deploy the latest versions of the application.
 
 _Aurora Database_ & _ElastiCache Redis_: AWS Aurora is a managed relational database while ElasticCache is the Cache
