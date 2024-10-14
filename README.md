@@ -2,40 +2,23 @@
 Car-migo application is awesome! It will revolutionize the way you get around. It is eco-friendly and helps your pocket.
 
 ## Technologies
-* Back-end (server)
-  * Spring Boot 3.3.4
-  * Java 17
-  * Maven 3.9.9
-  * Redis
-  * Docker
-  * Git Actions
-  * JWT
-  * BCrypt
-  * Swagger
-  * Actuator
-  * Checkstyle
-* Front-end (ui)
-  * React
-  * Typescript
-  * Javascript
-  * Vite
-  * Node.js 20
-  * Material UI
-  * Tanstack
-  * Axios
-  * Yup
-  * Formik
-  * Zustand
-  * ESLint
-  * Jest
-  * MSW
-* Database
-  * Hibernate
-  * PostgreSQL
-  * H2 Database
-  * pgAdmin
-  * Flyway
-
+| Front-end (ui) | Back-end (server) | Data Layer  |
+|----------------|-------------------|-------------|
+| React 18.3.1   | Spring Boot 3.3.4 | PostgreSQL  |
+| Typescript     | Java 17           | Hibernate   |
+| Javascript     | Maven 3.9.9       | H2 Database |
+| Vite           | Docker            | pgAdmin     |
+| Node.js 20     | Git Actions       | Flyway      |
+| Material UI    | JWT               | Redis       |
+| Tanstack       | BCrypt            |             |
+| Axios          | Swagger           |             |
+| Yup            | Actuator          |             |
+| Formik         | Checkstyle        |             |
+| Zustand        |                   |             |
+| Vitest         |                   |             |
+| Jest           |                   |             |
+| MSW            |                   |             |
+| ESLint         |                   |             |
 
 ## What is the application?
 It is a match-making system for drivers and passengers. You can either advertise rides or query them.
