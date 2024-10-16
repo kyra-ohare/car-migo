@@ -1,4 +1,3 @@
 ./ui/node_modules
 ./ui/dist
 ./ui/coverage
-./ui/package-lock.json
