@@ -13,7 +13,7 @@ insert into platform_user(created_date, first_name, last_name, dob, email, passw
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
     values('2024-06-03', 'Kyra', 'OHare', '1986-01-04', 'kyra.ohare@example.com', 'Pass1234!', '02854723651', 6);
 insert into platform_user(created_date, first_name, last_name, dob, email, password, phone_number, user_access_status_id)
-    values('2024-09-24', 'Peter', 'McDonald', '1995-03-25', 'petr@mcdonald@example.com', 'Pass1234!', '0287513626', 1);
+    values('2024-09-24', 'Peter', 'McDonald', '1995-03-25', 'peter.mcdonald@example.com', 'Pass1234!', '02875136265', 1);
 
 insert into driver(license_number, platform_user_id)
     values('35789654', 1);
